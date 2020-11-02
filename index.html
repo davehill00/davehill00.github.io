@@ -1,9 +1,22 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    </head>
 
-<body>
-    <h1>Hello World</h1>
-    <p>I'm hosted with GitHub Pages.</p>
-</body>
+    <body>
+        <a-scene>
+            <!-- <a-entity id="foo" gltf-model="content/punch-target.glb" position="0 1 -1" scale="2.0 2.0 2.0" visible="true"></a-entity> -->
+
+            <a-box position="0 0 -5" color:"#ff00ff"></a-box>
+            <a-entity 
+            light="type: directional; color: white; intensity: 2"
+            position="2 5 3"></a-entity> 
+            
+            <a-entity light="type:ambient; color:white; intensity: 0.8"/>
+            <a-background color="#ff00ff"/>
+        </a-scene>
+        
+    </body>
 
 </html>
