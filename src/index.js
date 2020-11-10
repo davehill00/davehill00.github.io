@@ -1,10 +1,13 @@
     import * as THREE from 'three';
     import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
+
+    
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.antialias = true;
@@ -14,7 +17,10 @@
 
     document.body.appendChild( VRButton.createButton( renderer ) );
 
+    camera.position.z = 5;
 
+    const controls = new OrbitControls( camera, renderer.domElement );
+    controls.update();
 
 
     const boxGeometry = new THREE.BoxGeometry();
@@ -24,7 +30,7 @@
 //			const cube = new THREE.Mesh( geometry, material );
 //			scene.add( cube );
     let i;
-    const spread = 100;
+    const spread = 5;
     for (i = 0; i < spread * spread; i++)
     {
         let cube = new THREE.Mesh( boxGeometry, material );
@@ -43,9 +49,10 @@
     scene.add( light );
 
     scene.add( directionalLight );
+    scene.add(camera);
 
 
-    camera.position.z = 5;
+
 
 
     const squareGeo = new THREE.BufferGeometry();
@@ -122,14 +129,17 @@ loadFont('fonts/arial.fnt', function(err, font) {
 
     // now do something with our mesh!
     fontMesh = new THREE.Mesh(fontGeometry, fontMaterial); //fontGeometry, material); //fontMaterial)
-    fontMesh.position.set(0, 0, 0);
-    fontMesh.scale.set(1,1,1);
+    fontMesh.position.set(1, 0, -5);
+    fontMesh.scale.set(0.005,0.005,0.005);
     fontMesh.rotation.set(3.14,0,0);
 
-    var fontObject = new THREE.Object3D();
-    fontObject.scale.multiplyScalar(0.005);
-    fontObject.add(fontMesh);
-    scene.add(fontObject);
+    //var fontObject = new THREE.Object3D();
+    //fontObject.scale.multiplyScalar(0.005);
+    //fontObject.add(fontMesh);
+    //fontObject.position.set(0,0,-10.0);
+    //camera.add(fontMesh);
+
+    camera.add(fontMesh);
 });
 
 
@@ -169,13 +179,3 @@ loadFont('fonts/arial.fnt', function(err, font) {
         lastFrameTime = performance.now() - prevTime;
     });
 
-// 			const animate = function () {
-// 				requestAnimationFrame( animate );
-
-// //				cube.rotation.x += 0.01;
-// //				cube.rotation.y += 0.01;
-
-// 				renderer.render( scene, camera );
-// 			};
-
-//			animate();
