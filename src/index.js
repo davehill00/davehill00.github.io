@@ -31,7 +31,7 @@ const material = new THREE.MeshPhysicalMaterial({ color: 0xff40ff });
 //			const cube = new THREE.Mesh( geometry, material );
 //			scene.add( cube );
 let i;
-const spread = 50;
+const spread = 40;
 for (i = 0; i < spread * spread; i++) {
     let cube = new THREE.Mesh(boxGeometry, material);
     let row = i % spread;
@@ -108,7 +108,14 @@ loadFont('fonts/arial.fnt', function (err, font) {
 // the resulting layout has metrics and bounds
 //   console.log(geometry.layout.height)
 //   console.log(geometry.layout.descender)
-
+function onSelectStart(event)
+{
+    console.log(event);
+}
+function onSelectEnd(event)
+{
+    console.log(event);
+}
 
 const controllerGrip0 = renderer.xr.getControllerGrip(0);
 const model0 = controllerModelFactory.createControllerModel( controllerGrip0 );
@@ -119,7 +126,9 @@ const model1 = controllerModelFactory.createControllerModel( controllerGrip1 );
 controllerGrip1.add( model1 );
 scene.add( controllerGrip1 );
 
-
+const controller1 = renderer.xr.getController(0);
+controller1.addEventListener('selectstart', onSelectStart);
+controller1.addEventListener('selectend', onSelectEnd);
 
 
 
