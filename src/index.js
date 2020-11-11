@@ -31,7 +31,7 @@ const material = new THREE.MeshPhysicalMaterial({ color: 0xff40ff });
 //			const cube = new THREE.Mesh( geometry, material );
 //			scene.add( cube );
 let i;
-const spread = 40;
+const spread = 15;
 for (i = 0; i < spread * spread; i++) {
     let cube = new THREE.Mesh(boxGeometry, material);
     let row = i % spread;
