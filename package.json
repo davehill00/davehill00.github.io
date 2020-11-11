@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "webpack --config webpack.config.js",
+    "dev": "webpack --config webpack-dev.config.js",
     "start": "webpack serve"
   }
 }
