@@ -6,7 +6,7 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-
+var gGamepads = new Array();
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -24,6 +24,8 @@ controls.update();
 
 const controllerModelFactory = new XRControllerModelFactory();
 
+    
+
 const boxGeometry = new THREE.BoxGeometry();
 //const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 const material = new THREE.MeshPhysicalMaterial({ color: 0xff40ff });
@@ -32,6 +34,12 @@ const material = new THREE.MeshPhysicalMaterial({ color: 0xff40ff });
 //			scene.add( cube );
 let i;
 const spread = 15;
+
+var drawGroups = new Array();
+const groupSize = 10;
+var currentGroup = new THREE.Group();
+var groupCounter = 0;
+
 for (i = 0; i < spread * spread; i++) {
     let cube = new THREE.Mesh(boxGeometry, material);
     let row = i % spread;
@@ -39,9 +47,24 @@ for (i = 0; i < spread * spread; i++) {
     cube.position.set(-spread + row * 2.0, -spread + col * 2.0, -2 * spread);
     cube.rotation.x = 0.707;
     cube.rotation.y = 0.707;
-    scene.add(cube);
+    //scene.add(cube);
+
+    currentGroup.add(cube);
+    groupCounter++;
+    if (groupCounter == groupSize)
+    {
+        scene.add(currentGroup);
+        drawGroups.push(currentGroup);
+        currentGroup = new THREE.Group();
+        groupCounter = 0;
+    }
+
     //cube.matrixWorldNeedsUpdate = true;
     //cube.matrixAutoUpdate = false;      
+}
+if (currentGroup.children.length != 0)
+{
+    scene.add(currentGroup);
 }
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
@@ -110,7 +133,10 @@ loadFont('fonts/arial.fnt', function (err, font) {
 //   console.log(geometry.layout.descender)
 function onSelectStart(event)
 {
+    var gamepad = event.data.gamepad;
+
     console.log(event);
+
 }
 function onSelectEnd(event)
 {
@@ -150,8 +176,60 @@ renderer.setAnimationLoop(function () {
         //fontMesh.rotation.y += 0.01;
     }
 
+    //Process controllers...
+    var xrSession = renderer.xr.getSession();
+    if (xrSession)
+    {
+        for (let source of xrSession.inputSources)
+        {
+            if (source.gamepad)
+            {
+                ProcessInputSource(source);
+            }
+        }
+    }
+
+
     //        textObject = new THREE.TextGeometry( lastFrameTime + "ms", parameters );
     startOfCurrentFrame = performance.now();
     renderer.render(scene, camera);
 });
 
+
+
+
+/// Gamepad stuff
+var buttonPressed = false;
+function ProcessInputSource(inputSource)
+{
+    var gamepad = inputSource.gamepad;
+    var handedness = inputSource.handedness;
+
+    if (gamepad.handedness)
+    {
+        if (gamepad.buttons[0])
+        {
+            buttonPressed = true;
+        } else if (buttonPressed)
+        {
+            buttonPressed = false;
+            onButtonPressed();
+        }
+    }
+}
+
+function onButtonPressed()
+{
+    for (i = 0; i < drawGroups.length; i++)
+    {
+        var group = drawGroups[i];
+        if (i%2 == 0)
+        {
+            group.visible = false;
+        }
+        else
+        {
+            group.visible = true;
+        }
+    }
+}
