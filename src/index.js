@@ -54,6 +54,7 @@ for (i = 0; i < spread * spread; i++) {
     if (groupCounter == groupSize)
     {
         scene.add(currentGroup);
+        currentGroup.visible = false;
         drawGroups.push(currentGroup);
         currentGroup = new THREE.Group();
         groupCounter = 0;
@@ -65,7 +66,12 @@ for (i = 0; i < spread * spread; i++) {
 if (currentGroup.children.length != 0)
 {
     scene.add(currentGroup);
+    currentGroup.visible = false;
 }
+
+var firstInvisible = -1;
+initVisibility(1);
+
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
 directionalLight.position.set(2, 2, 1);
@@ -140,7 +146,9 @@ function onSelectStart(event)
 }
 function onSelectEnd(event)
 {
-    console.log(event);
+    let increment = event.data.handedness == "right";
+    updateVisibility(increment);
+
 }
 
 const controllerGrip0 = renderer.xr.getControllerGrip(0);
@@ -152,7 +160,10 @@ const model1 = controllerModelFactory.createControllerModel( controllerGrip1 );
 controllerGrip1.add( model1 );
 scene.add( controllerGrip1 );
 
-const controller1 = renderer.xr.getController(0);
+const controller0 = renderer.xr.getController(0);
+controller0.addEventListener('selectstart', onSelectStart);
+controller0.addEventListener('selectend', onSelectEnd);
+const controller1 = renderer.xr.getController(1);
 controller1.addEventListener('selectstart', onSelectStart);
 controller1.addEventListener('selectend', onSelectEnd);
 
@@ -170,7 +181,7 @@ renderer.setAnimationLoop(function () {
     endOfLastFrame = performance.now();
     if (fontGeometry) {
         let delta = endOfLastFrame - startOfCurrentFrame;
-        fontGeometry.update((spread * spread) + " objects, " + delta.toFixed(3) + " ms, " + (1000.0 / delta).toFixed(0) + "Hz");
+        fontGeometry.update((firstInvisible * groupSize) + " objects, " + delta.toFixed(3) + " ms, " + (1000.0 / delta).toFixed(0) + "Hz");
         // console.log(fontGeometry.layout.height)
         // console.log(fontGeometry.layout.descender)
         //fontMesh.rotation.y += 0.01;
@@ -218,6 +229,36 @@ function ProcessInputSource(inputSource)
     }
 }
 
+function initVisibility(numVisible)
+{
+    firstInvisible = 0;
+    for(firstInvisible = 0; firstInvisible < numVisible; firstInvisible++)
+    {
+        if (firstInvisible >= drawGroups.length)
+            break;
+        
+        drawGroups[firstInvisible].visible = true;
+    }
+}
+function updateVisibility(increment)
+{
+    if (increment)
+    {
+        if (firstInvisible < drawGroups.length)
+        {
+            drawGroups[firstInvisible].visible = true;
+            firstInvisible++;
+        }
+    }
+    else
+    {
+        if (firstInvisible > 0)
+        {
+            firstInvisible--;
+            drawGroups[firstInvisible].visible = false;
+        }
+    }
+}
 function onButtonPressed()
 {
     for (i = 0; i < drawGroups.length; i++)
