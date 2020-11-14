@@ -28,12 +28,12 @@ const controllerModelFactory = new XRControllerModelFactory();
 
 const boxGeometry = new THREE.BoxGeometry();
 //const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-const material = new THREE.MeshPhysicalMaterial({ color: 0xff40ff });
+const materials = [new THREE.MeshPhysicalMaterial({ color: 0xff40ff }), new THREE.MeshPhysicalMaterial({ color: 0x40ff40 })];
 
 //			const cube = new THREE.Mesh( geometry, material );
 //			scene.add( cube );
 let i;
-const spread = 15;
+const spread = 20;
 
 var drawGroups = new Array();
 const groupSize = 10;
@@ -41,7 +41,7 @@ var currentGroup = new THREE.Group();
 var groupCounter = 0;
 
 for (i = 0; i < spread * spread; i++) {
-    let cube = new THREE.Mesh(boxGeometry, material);
+    let cube = new THREE.Mesh(boxGeometry, materials[i%2]);
     let row = i % spread;
     let col = Math.floor(i / spread);
     cube.position.set(-spread + row * 2.0, -spread + col * 2.0, -2 * spread);
@@ -60,8 +60,9 @@ for (i = 0; i < spread * spread; i++) {
         groupCounter = 0;
     }
 
+    
+    //cube.matrixAutoUpdate = false;
     //cube.matrixWorldNeedsUpdate = true;
-    //cube.matrixAutoUpdate = false;      
 }
 if (currentGroup.children.length != 0)
 {
@@ -70,7 +71,7 @@ if (currentGroup.children.length != 0)
 }
 
 var firstInvisible = -1;
-initVisibility(1);
+initVisibility((spread*spread*0.5)/groupSize);
 
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
@@ -95,7 +96,7 @@ loadFont('fonts/arial.fnt', function (err, font) {
     // create a geometry of packed bitmap glyphs,
     // word wrapped to 300px and right-aligned
     fontGeometry = createGeometry({
-        width: 500,
+        width: 300,
         align: 'right',
         font: font
     })
@@ -107,14 +108,14 @@ loadFont('fonts/arial.fnt', function (err, font) {
     // we can use a simple ThreeJS material
     var fontMaterial = new THREE.MeshBasicMaterial({
         map: texture,
-        transparent: false,
+        transparent: true,
         side: THREE.DoubleSide,
         color: 0xffffff
     });
 
     // now do something with our mesh!
     fontMesh = new THREE.Mesh(fontGeometry, fontMaterial);
-    fontMesh.position.set(1, 0, -5);
+    fontMesh.position.set(0, -0.75, -5);
     fontMesh.scale.set(0.005, 0.005, 0.005);
     fontMesh.rotation.set(3.14, 0, 0);
 
