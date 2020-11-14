@@ -41,7 +41,7 @@ var currentGroup = new THREE.Group();
 var groupCounter = 0;
 
 for (i = 0; i < spread * spread; i++) {
-    let cube = new THREE.Mesh(boxGeometry, materials[i%2]);
+    let cube = new THREE.Mesh(boxGeometry, materials[0]);
     let row = i % spread;
     let col = Math.floor(i / spread);
     cube.position.set(-spread + row * 2.0, -spread + col * 2.0, -2 * spread);
@@ -178,28 +178,31 @@ var textParams = {}
 
 var endOfLastFrame = 0.0;
 var startOfCurrentFrame = 0.0;
+var averageDelta = 0.0;
+const kSmoothing = 0.90;
 renderer.setAnimationLoop(function () {
     endOfLastFrame = performance.now();
     if (fontGeometry) {
         let delta = endOfLastFrame - startOfCurrentFrame;
-        fontGeometry.update((firstInvisible * groupSize) + " objects, " + delta.toFixed(3) + " ms, " + (1000.0 / delta).toFixed(0) + "Hz");
+        averageDelta = (delta*kSmoothing) + (averageDelta*(1.0-kSmoothing));
+        fontGeometry.update((firstInvisible * groupSize) + " objects " + delta.toFixed(3) + " ms " + (1000.0/averageDelta).toFixed(1) + "Hz");
         // console.log(fontGeometry.layout.height)
         // console.log(fontGeometry.layout.descender)
         //fontMesh.rotation.y += 0.01;
     }
 
     //Process controllers...
-    var xrSession = renderer.xr.getSession();
-    if (xrSession)
-    {
-        for (let source of xrSession.inputSources)
-        {
-            if (source.gamepad)
-            {
-                ProcessInputSource(source);
-            }
-        }
-    }
+    // var xrSession = renderer.xr.getSession();
+    // if (xrSession)
+    // {
+    //     for (let source of xrSession.inputSources)
+    //     {
+    //         if (source.gamepad)
+    //         {
+    //             ProcessInputSource(source);
+    //         }
+    //     }
+    // }
 
 
     //        textObject = new THREE.TextGeometry( lastFrameTime + "ms", parameters );
