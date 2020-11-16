@@ -1,0 +1,115 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.3.48",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "Suzanne",
+            "translation" : [
+                0,
+                0.20583339035511017,
+                0
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "Material.001",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.13474319875240326,
+                    0,
+                    0.0030922354198992252,
+                    1
+                ],
+                "metallicFactor" : 0.9166666865348816,
+                "roughnessFactor" : 0.3134920299053192
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Suzanne",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1
+                    },
+                    "indices" : 2,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 31658,
+            "max" : [
+                1.3287925720214844,
+                0.9392361640930176,
+                0.8226352334022522
+            ],
+            "min" : [
+                -1.328792691230774,
+                -0.971822202205658,
+                -0.7782661318778992
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 31658,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5123,
+            "count" : 188928,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 379896,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 379896,
+            "byteOffset" : 379896
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 377856,
+            "byteOffset" : 759792
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 1137648,
+            "uri" : "monkey-head-63k.bin"
+        }
+    ]
+}

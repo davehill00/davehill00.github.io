@@ -7,7 +7,7 @@ const webpack = require('webpack'); //to access built-in plugins
 module.exports = {
 
   // Path to your entry point. From this file Webpack will begin his work
-  entry: './src/index.js',
+  entry: './src/three-tricount.js',
 
   // Path and filename of your result bundle.
   // Webpack will bundle all JavaScript into this file
