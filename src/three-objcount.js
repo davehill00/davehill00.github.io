@@ -81,7 +81,7 @@ loadFont('fonts/arial.fnt', function (err, font) {
     // create a geometry of packed bitmap glyphs,
     // word wrapped to 300px and right-aligned
     fontGeometry = createGeometry({
-        width: 300,
+        width: 350,
         align: 'right',
         font: font
     })
@@ -149,43 +149,39 @@ document.onkeydown = function(e) {
 var endOfLastFrame = 0.0;
 var startOfCurrentFrame = 0.0;
 var averageDelta = 0.0;
-const kFpsSmoothing = 0.90;
+const kFpsSmoothing = 0.10;
 var curMaxDelta = 0.0;
 var expiryMaxDelta = performance.now();
-const kMaxDeltaPersist = 2000.0;
+var curMinHertz = 90.0;
+var expiryMinHertz = performance.now();
+const kMaxPersist = 2000.0;
 
-renderer.setAnimationLoop(function () {
-    endOfLastFrame = performance.now();
-    let delta = endOfLastFrame - startOfCurrentFrame;
-    if( delta > curMaxDelta || endOfLastFrame > expiryMaxDelta)
-    {
-        curMaxDelta = delta;
-        expiryMaxDelta = endOfLastFrame + kMaxDeltaPersist;
-    }
-    averageDelta = (delta*kFpsSmoothing) + (averageDelta*(1.0-kFpsSmoothing));
-    startOfCurrentFrame = performance.now();
+renderer.setAnimationLoop(
+    function () {
+        endOfLastFrame = performance.now();
+        let delta = endOfLastFrame - startOfCurrentFrame;
+        if (delta > curMaxDelta || endOfLastFrame > expiryMaxDelta) {
+            curMaxDelta = delta;
+            expiryMaxDelta = endOfLastFrame + kMaxPersist;
+        }
+        averageDelta = (delta * kFpsSmoothing) + (averageDelta * (1.0 - kFpsSmoothing));
+        let hertz = 1000.0 / averageDelta;
+        if (hertz < curMinHertz || endOfLastFrame > expiryMinHertz) {
+            curMinHertz = hertz;
+            expiryMinHertz = endOfLastFrame + kMaxPersist;
+        }
 
-    if (fontGeometry)
-    {
-        fontGeometry.update((firstInvisible * groupSize) + " objects " + delta.toFixed(1) + "(" + curMaxDelta.toFixed(1) + ") ms " + (1000.0/averageDelta).toFixed(1) + "Hz");
-    }
-
-    //Process controllers...
-    // var xrSession = renderer.xr.getSession();
-    // if (xrSession)
-    // {
-    //     for (let source of xrSession.inputSources)
-    //     {
-    //         if (source.gamepad)
-    //         {
-    //             ProcessInputSource(source);
-    //         }
-    //     }
-    // }
+        startOfCurrentFrame = performance.now();
+        if (fontGeometry) {
+            fontGeometry.update(
+                (firstInvisible * kSpread) + " tris " +
+                delta.toFixed(1) + "(" + curMaxDelta.toFixed(1) + ") ms " +
+                (1000.0 / averageDelta).toFixed(0) + "(" + curMinHertz.toFixed(0) + ") Hz");
+        }
 
 
-    renderer.render(scene, camera);
-});
+        renderer.render(scene, camera);
+    });
 
 function initVisibility(numVisible)
 {
