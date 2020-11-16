@@ -174,7 +174,7 @@ renderer.setAnimationLoop(
         startOfCurrentFrame = performance.now();
         if (fontGeometry) {
             fontGeometry.update(
-                (firstInvisible * kSpread) + " tris " +
+                (firstInvisible * groupSize) + " objs " +
                 delta.toFixed(1) + "(" + curMaxDelta.toFixed(1) + ") ms " +
                 (1000.0 / averageDelta).toFixed(0) + "(" + curMinHertz.toFixed(0) + ") Hz");
         }
