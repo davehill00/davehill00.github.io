@@ -23,7 +23,7 @@ document.body.appendChild(VRButton.createButton(renderer));
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
 directionalLight.position.set(2, 2, 1);
 scene.add(directionalLight);
 
@@ -49,8 +49,8 @@ loader.load('./content/monkey-head-100k.gltf', function (gltf) {
 
     let monkeyHead = gltf.scene.children[0];
     numFaces = monkeyHead.geometry.index.count / 3;
-    monkeyHead.material.metalness = 0.25;
-    monkeyHead.material.roughness = 0.7;
+    // monkeyHead.material.metalness = 0.25;
+    // monkeyHead.material.roughness = 0.7;
 
     let x, y;
     for (y = 0; y < kRows; y++) {
