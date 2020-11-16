@@ -16,8 +16,11 @@
     "three-bmfont-text": "^3.0.1"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "dev": "webpack --config webpack-dev.config.js",
-    "start": "webpack  --config webpack-dev.config.js serve"
+    "buildobj": "webpack --config webpack-objcount.config.js",
+    "buildtri": "webpack --config webpack-tricount.config.js",
+    "startobj": "webpack serve --config webpack-objcount.config.js ",
+    "starttri": "webpack serve --config webpack-tricount.config.js "
   }
+
+
 }

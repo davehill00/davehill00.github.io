@@ -14,6 +14,7 @@ const renderer = new THREE.WebGLRenderer( {antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.antialias = false;
 renderer.xr.enabled = true;
+renderer.setClearColor(0x303030);
 
 document.body.appendChild(renderer.domElement);
 document.body.appendChild(VRButton.createButton(renderer));
@@ -31,7 +32,7 @@ scene.add(light);
 
 
 const boxGeometry = new THREE.BoxGeometry();
-const boxMaterials = [new THREE.MeshPhysicalMaterial({ color: 0xff0000 }), new THREE.MeshPhysicalMaterial({ color: 0x0000ff })];
+const boxMaterials = [new THREE.MeshPhysicalMaterial({ color: 0xff8020 }), new THREE.MeshPhysicalMaterial({ color: 0xaaaaaa })];
 
 let i;
 const kSpread = 20;
@@ -164,7 +165,7 @@ renderer.setAnimationLoop(function () {
     averageDelta = (delta*kFpsSmoothing) + (averageDelta*(1.0-kFpsSmoothing));
     startOfCurrentFrame = performance.now();
 
-    if (fontGeometry) 
+    if (fontGeometry)
     {
         fontGeometry.update((firstInvisible * groupSize) + " objects " + delta.toFixed(1) + "(" + curMaxDelta.toFixed(1) + ") ms " + (1000.0/averageDelta).toFixed(1) + "Hz");
     }
@@ -193,7 +194,7 @@ function initVisibility(numVisible)
     {
         if (firstInvisible >= drawGroups.length)
             break;
-        
+
         drawGroups[firstInvisible].visible = true;
     }
 }

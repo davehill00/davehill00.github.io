@@ -7,13 +7,13 @@ const webpack = require('webpack'); //to access built-in plugins
 module.exports = {
 
   // Path to your entry point. From this file Webpack will begin his work
-  entry: './src/three-tricount.js',
+  entry: './src/three-objcount.js',
 
   // Path and filename of your result bundle.
   // Webpack will bundle all JavaScript into this file
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main.js'
+    filename: 'main-objcount.js'
   },
 
   devServer: {
