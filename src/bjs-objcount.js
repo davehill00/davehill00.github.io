@@ -4,7 +4,7 @@ const canvas = document.getElementById("renderCanvas"); // Get the canvas elemen
 const engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
 let i;
-const kSpread = 10;
+const kSpread = 20;
 
 var drawGroups = new Array();
 const groupSize = 10;
@@ -17,10 +17,45 @@ var rightController = null;
 var rightTrigger = null;
 var leftTrigger = null;
 
+    var materialSortFrontToBackCompare = function (a, b) {
+        // debugger;
+        if (a.getRenderingMesh().occlusionQueryAlgorithmType < b.getRenderingMesh().occlusionQueryAlgorithmType)
+            return - 1;
+
+        if (a.getRenderingMesh().occlusionQueryAlgorithmType > b.getRenderingMesh().occlusionQueryAlgorithmType)
+            return  1;
+
+
+        if (a.getMaterial().id < b.getMaterial().id)
+            return -1;
+
+        if (a.getMaterial().id > b.getMaterial().id)
+            return 1;
+
+        if (a.getRenderingMesh().geometry.id < b.getRenderingMesh().geometry.id)
+            return -1;
+
+        if (a.getRenderingMesh().geometry.id > b.getRenderingMesh().geometry.id)
+            return 1;
+
+        // debugger;
+        // Then distance to camera
+        if (a._distanceToCamera < b._distanceToCamera) {
+            return -1;
+        }
+        if (a._distanceToCamera > b._distanceToCamera) {
+            return 1;
+        }
+
+        return 0;
+    };
 
 var createScene = async function () {
 
     var scene = new BABYLON.Scene(engine);
+    scene.clearColor.set(0.2, 0.2, 0.2, 1.0);
+    scene.setRenderingOrder(0, materialSortFrontToBackCompare);
+
     var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
