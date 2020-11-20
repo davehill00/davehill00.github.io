@@ -18,9 +18,9 @@
   "scripts": {
     "buildobj": "webpack --config webpack-objcount.config.js",
     "buildtri": "webpack --config webpack-tricount.config.js",
+    "buildbjsobj": "webpack --config webpack-bjs-objcount.config.js",
     "startobj": "webpack serve --config webpack-objcount.config.js ",
-    "starttri": "webpack serve --config webpack-tricount.config.js "
+    "starttri": "webpack serve --config webpack-tricount.config.js ",
+    "startbjsobj": "webpack serve --config webpack-bjs-objcount.config.js"
   }
-
-
 }
