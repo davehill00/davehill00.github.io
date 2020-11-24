@@ -58663,49 +58663,77 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+let clock = null;
+let accumulatedTime = 0.0;
+let scene = null;
+let camera = null;
+let renderer = null;
 
-const scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
-const camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 15;
+initialize();
 
-// add camera to scene so that objects attached to the camera get rendered
-scene.add(camera);
+function initialize()
+{
+    scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
+    camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 0;
 
-const renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.antialias = false;
-renderer.xr.enabled = true;
-renderer.setClearColor(0xfff4ed);
+    // add camera to scene so that objects attached to the camera get rendered
+    scene.add(camera);
 
-document.body.appendChild(renderer.domElement);
-document.body.appendChild(three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_1__["VRButton"].createButton(renderer));
+    renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.antialias = false;
+    renderer.xr.enabled = true;
+    renderer.setClearColor(0xfff4ed);
 
-const controls = new three_examples_jsm_controls_OrbitControls_js__WEBPACK_IMPORTED_MODULE_2__["OrbitControls"](camera, renderer.domElement);
-controls.update();
+    document.body.appendChild(renderer.domElement);
+    document.body.appendChild(three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_1__["VRButton"].createButton(renderer));
 
-const directionalLight = new three__WEBPACK_IMPORTED_MODULE_0__["DirectionalLight"](0xffffff, 0.5);
-directionalLight.position.set(2, 2, 1);
-scene.add(directionalLight);
-
-const light = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xf58789); // soft white light
-scene.add(light);
-
-var clock = new three__WEBPACK_IMPORTED_MODULE_0__["Clock"]();
-
-// create an AudioListener and add it to the camera
-const listener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
-camera.add( listener );
+    renderer.xr.addEventListener( 'sessionstart', onSessionStart);
+    renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
 
-_scene_js__WEBPACK_IMPORTED_MODULE_4__["initialize"](renderer, listener, scene);
+    const controls = new three_examples_jsm_controls_OrbitControls_js__WEBPACK_IMPORTED_MODULE_2__["OrbitControls"](camera, renderer.domElement);
+    controls.update();
 
-renderer.setAnimationLoop(
-    function () {
-        let dt = clock.getDelta();
-        _scene_js__WEBPACK_IMPORTED_MODULE_4__["update"](dt);
-        renderer.render(scene, camera);
-    });
+    const directionalLight = new three__WEBPACK_IMPORTED_MODULE_0__["DirectionalLight"](0xffffff, 0.5);
+    directionalLight.position.set(2, 2, 1);
+    scene.add(directionalLight);
 
+    const light = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xf58789); // soft white light
+    scene.add(light);
+
+    clock = new three__WEBPACK_IMPORTED_MODULE_0__["Clock"]();
+
+    // create an AudioListener and add it to the camera
+    const listener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
+    camera.add( listener );
+
+
+    _scene_js__WEBPACK_IMPORTED_MODULE_4__["initialize"](renderer, listener, scene);
+
+    renderer.setAnimationLoop(render);
+
+        
+};
+
+
+function render() {
+    let dt = clock.getDelta();
+    _scene_js__WEBPACK_IMPORTED_MODULE_4__["update"](dt);
+    accumulatedTime += dt;
+    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__["update"](accumulatedTime);
+    renderer.render(scene, camera);
+}
+
+function onSessionStart(event)
+{
+    _scene_js__WEBPACK_IMPORTED_MODULE_4__["onSessionStart"](accumulatedTime);
+}
+function onSessionEnd(event)
+{
+    _scene_js__WEBPACK_IMPORTED_MODULE_4__["onSessionEnd"](accumulatedTime);
+}
 
 /***/ }),
 
@@ -58797,13 +58825,15 @@ class Interval
 /*!**********************!*\
   !*** ./src/scene.js ***!
   \**********************/
-/*! exports provided: initialize, update */
+/*! exports provided: initialize, update, onSessionStart, onSessionEnd */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initialize", function() { return initialize; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "update", function() { return update; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onSessionStart", function() { return onSessionStart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onSessionEnd", function() { return onSessionEnd; });
 /* harmony import */ var _interval_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./interval.js */ "./src/interval.js");
 /* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
 
@@ -58813,38 +58843,48 @@ var sphere = null;
 var anim = 0.0;
 var listener = null;
 
+
+
 function initialize(inRenderer, inListener, inScene)
 {
     listener = inListener;
 
     // Create a simple focus object
-    const geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    const geometry = new THREE.SphereGeometry( 3, 32, 32 );
     const material = new THREE.MeshPhysicalMaterial( {color: 0xfac3b9} );
     sphere = new THREE.Mesh( geometry, material );
     inScene.add( sphere );
 
     // // create the PositionalAudio object (passing in the listener)
-    // const sound = new THREE.PositionalAudio( listener );
+    const sound = new THREE.PositionalAudio( listener );
 
-    // // load a sound and set it as the PositionalAudio object's buffer
-    // const audioLoader = new THREE.AudioLoader();
-    // audioLoader.load( 'content/Joyful-Flutterbee.mp3', function( buffer ) {
-    //     sound.setBuffer( buffer );
-    //     sound.setRefDistance( 20 );
-    //     sound.play();
-    // });
-    // sphere.add(sound);
+    // load a sound and set it as the PositionalAudio object's buffer
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'content/Joyful-Flutterbee.mp3', function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setRefDistance( 20 );
+    });
+    sphere.add(sound);
+    sphere.sound = sound;
 
-    var tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["Tween"](sphere.position).to({x: 100, y: 100, z: 100}, 10000).repeat( Infinity )
-        .yoyo( true )
-        .easing( _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["Easing"].Cubic.InOut )
-        .start();
+    //sphere.scale.set(0.0, 0.0, 0.0);
+    sphere.position.z = -500.0;
+    sphere.initialPosition = sphere.position;
+    var tweenIntro = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["Tween"](sphere.position).to({z:-10.0}, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["Easing"].Cubic.InOut);
+    var tweenUp = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["Tween"](sphere.position).delay(0.75).to({y:3}, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["Easing"].Cubic.InOut);
+    var tweenDown = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["Tween"](sphere.position).delay(0.75).to({y:0}, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["Easing"].Cubic.InOut);
 
+    tweenIntro.chain(tweenUp);
+    tweenUp.chain(tweenDown);
+    tweenDown.chain(tweenUp);
 
-    // tween.to({y: 10.0}, 10000.0).start();
-    //tween.start();
-    sphere.tween = tween;
+    sphere.tween = tweenIntro;
+    //tweenIntro.start(0.0);
     
+
+    let fog = new THREE.Fog(0xfff4ed, 15.0, 500.0); //0.1);
+    inScene.fog = fog;
+
     // new TWEEN.Tween(sphere.position.y);
     // sphere
     // sphere.interval = new INTERVAL.Interval([
@@ -58853,17 +58893,32 @@ function initialize(inRenderer, inListener, inScene)
     //     new INTERVAL.Segment(1.0, 1.0, 1.5), 
     //     new INTERVAL.Segment(1.0, 0.0, 3.0)
     // ]);
+
+
 }
 
 
 function update(dt)
 {
     
-    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["update"](dt);
+    //TWEEN.update(dt);
     // anim = sphere.interval.clampTime(anim + dt);
     // sphere.position.y = sphere.interval.valueAt(anim) * 3.0; //Math.sin(anim * Math.PI * 0.25);
 }
 
+function onSessionStart(time)
+{
+    sphere.position.set(sphere.initialPosition.x, sphere.initialPosition.y, sphere.initialPosition.z);
+    sphere.sound.play();
+    sphere.tween.start(time);
+}
+
+function onSessionEnd(time)
+{
+    sphere.tween.stop();
+    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__["update"](0.0);
+    sphere.sound.stop();
+}
 
 // exports.initialize = initialize;
 // exports.update = update;
