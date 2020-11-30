@@ -1,3 +1,5 @@
+import { DDSLoader } from 'three/examples/jsm/loaders/DDSLoader.js';
+
 var createGeometry = require('three-bmfont-text')
 var loadFont = require('load-bmfont')
 
@@ -13,30 +15,36 @@ export class StatsHud {
     initialize(camera)
     {
         var self = this;
-        loadFont('./content/arial.fnt',
+        loadFont('./content/arial-rounded.fnt',
             function (err, font) {
                 // create a geometry of packed bitmap glyphs,
                 // word wrapped to 300px and right-aligned
                 self.fontGeometry = createGeometry({
-                    width: 400,
+                    width: 800,
                     align: 'left',
                     font: font
                 })
 
+                const manager = new THREE.LoadingManager();
+				manager.addHandler( /\.dds$/i, new DDSLoader() );
+
                 // the texture atlas containing our glyphs
-                var texture = new THREE.TextureLoader().load('./content/arial.png');
+                var texture = new DDSLoader(manager).load('./content/output.dds');
 
                 // we can use a simple ThreeJS material
                 var fontMaterial = new THREE.MeshBasicMaterial({
                     map: texture,
                     transparent: true,
-                    color: 0xffffff
+                    color: 0xf58789,
+                    depthTest: false //:THREE.NeverDepth
+
                 });
 
                 // scale and position the mesh to get it doing something reasonable
                 self.fontMesh = new THREE.Mesh(self.fontGeometry, fontMaterial);
-                self.fontMesh.position.set(-2.5, -0.75, -5);
-                self.fontMesh.scale.set(0.005, 0.005, 0.005);
+                self.fontMesh.renderOrder = 1;
+                self.fontMesh.position.set(-1.5, -0.75, -5);
+                self.fontMesh.scale.set(0.0025, 0.0025, 0.0025);
                 self.fontMesh.rotation.set(3.14, 0, 0);
 
                 camera.add(self.fontMesh);

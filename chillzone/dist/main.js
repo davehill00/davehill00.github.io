@@ -57773,6 +57773,295 @@ class MotionController {
 
 /***/ }),
 
+/***/ "./node_modules/three/examples/jsm/loaders/DDSLoader.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/three/examples/jsm/loaders/DDSLoader.js ***!
+  \**************************************************************/
+/*! exports provided: DDSLoader */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DDSLoader", function() { return DDSLoader; });
+/* harmony import */ var _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../build/three.module.js */ "./node_modules/three/build/three.module.js");
+
+
+var DDSLoader = function ( manager ) {
+
+	_build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["CompressedTextureLoader"].call( this, manager );
+
+};
+
+DDSLoader.prototype = Object.assign( Object.create( _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["CompressedTextureLoader"].prototype ), {
+
+	constructor: DDSLoader,
+
+	parse: function ( buffer, loadMipmaps ) {
+
+		var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
+
+		// Adapted from @toji's DDS utils
+		// https://github.com/toji/webgl-texture-utils/blob/master/texture-util/dds.js
+
+		// All values and structures referenced from:
+		// http://msdn.microsoft.com/en-us/library/bb943991.aspx/
+
+		var DDS_MAGIC = 0x20534444;
+
+		// var DDSD_CAPS = 0x1;
+		// var DDSD_HEIGHT = 0x2;
+		// var DDSD_WIDTH = 0x4;
+		// var DDSD_PITCH = 0x8;
+		// var DDSD_PIXELFORMAT = 0x1000;
+		var DDSD_MIPMAPCOUNT = 0x20000;
+		// var DDSD_LINEARSIZE = 0x80000;
+		// var DDSD_DEPTH = 0x800000;
+
+		// var DDSCAPS_COMPLEX = 0x8;
+		// var DDSCAPS_MIPMAP = 0x400000;
+		// var DDSCAPS_TEXTURE = 0x1000;
+
+		var DDSCAPS2_CUBEMAP = 0x200;
+		var DDSCAPS2_CUBEMAP_POSITIVEX = 0x400;
+		var DDSCAPS2_CUBEMAP_NEGATIVEX = 0x800;
+		var DDSCAPS2_CUBEMAP_POSITIVEY = 0x1000;
+		var DDSCAPS2_CUBEMAP_NEGATIVEY = 0x2000;
+		var DDSCAPS2_CUBEMAP_POSITIVEZ = 0x4000;
+		var DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x8000;
+		// var DDSCAPS2_VOLUME = 0x200000;
+
+		// var DDPF_ALPHAPIXELS = 0x1;
+		// var DDPF_ALPHA = 0x2;
+		var DDPF_FOURCC = 0x4;
+		// var DDPF_RGB = 0x40;
+		// var DDPF_YUV = 0x200;
+		// var DDPF_LUMINANCE = 0x20000;
+
+		function fourCCToInt32( value ) {
+
+			return value.charCodeAt( 0 ) +
+				( value.charCodeAt( 1 ) << 8 ) +
+				( value.charCodeAt( 2 ) << 16 ) +
+				( value.charCodeAt( 3 ) << 24 );
+
+		}
+
+		function int32ToFourCC( value ) {
+
+			return String.fromCharCode(
+				value & 0xff,
+				( value >> 8 ) & 0xff,
+				( value >> 16 ) & 0xff,
+				( value >> 24 ) & 0xff
+			);
+
+		}
+
+		function loadARGBMip( buffer, dataOffset, width, height ) {
+
+			var dataLength = width * height * 4;
+			var srcBuffer = new Uint8Array( buffer, dataOffset, dataLength );
+			var byteArray = new Uint8Array( dataLength );
+			var dst = 0;
+			var src = 0;
+			for ( var y = 0; y < height; y ++ ) {
+
+				for ( var x = 0; x < width; x ++ ) {
+
+					var b = srcBuffer[ src ]; src ++;
+					var g = srcBuffer[ src ]; src ++;
+					var r = srcBuffer[ src ]; src ++;
+					var a = srcBuffer[ src ]; src ++;
+					byteArray[ dst ] = r; dst ++;	//r
+					byteArray[ dst ] = g; dst ++;	//g
+					byteArray[ dst ] = b; dst ++;	//b
+					byteArray[ dst ] = a; dst ++;	//a
+
+				}
+
+			}
+
+			return byteArray;
+
+		}
+
+		var FOURCC_DXT1 = fourCCToInt32( "DXT1" );
+		var FOURCC_DXT3 = fourCCToInt32( "DXT3" );
+		var FOURCC_DXT5 = fourCCToInt32( "DXT5" );
+		var FOURCC_ETC1 = fourCCToInt32( "ETC1" );
+
+		var headerLengthInt = 31; // The header length in 32 bit ints
+
+		// Offsets into the header array
+
+		var off_magic = 0;
+
+		var off_size = 1;
+		var off_flags = 2;
+		var off_height = 3;
+		var off_width = 4;
+
+		var off_mipmapCount = 7;
+
+		var off_pfFlags = 20;
+		var off_pfFourCC = 21;
+		var off_RGBBitCount = 22;
+		var off_RBitMask = 23;
+		var off_GBitMask = 24;
+		var off_BBitMask = 25;
+		var off_ABitMask = 26;
+
+		// var off_caps = 27;
+		var off_caps2 = 28;
+		// var off_caps3 = 29;
+		// var off_caps4 = 30;
+
+		// Parse header
+
+		var header = new Int32Array( buffer, 0, headerLengthInt );
+
+		if ( header[ off_magic ] !== DDS_MAGIC ) {
+
+			console.error( 'THREE.DDSLoader.parse: Invalid magic number in DDS header.' );
+			return dds;
+
+		}
+
+		if ( ! header[ off_pfFlags ] & DDPF_FOURCC ) {
+
+			console.error( 'THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.' );
+			return dds;
+
+		}
+
+		var blockBytes;
+
+		var fourCC = header[ off_pfFourCC ];
+
+		var isRGBAUncompressed = false;
+
+		switch ( fourCC ) {
+
+			case FOURCC_DXT1:
+
+				blockBytes = 8;
+				dds.format = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGB_S3TC_DXT1_Format"];
+				break;
+
+			case FOURCC_DXT3:
+
+				blockBytes = 16;
+				dds.format = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBA_S3TC_DXT3_Format"];
+				break;
+
+			case FOURCC_DXT5:
+
+				blockBytes = 16;
+				dds.format = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBA_S3TC_DXT5_Format"];
+				break;
+
+			case FOURCC_ETC1:
+
+				blockBytes = 8;
+				dds.format = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGB_ETC1_Format"];
+				break;
+
+			default:
+
+				if ( header[ off_RGBBitCount ] === 32
+					&& header[ off_RBitMask ] & 0xff0000
+					&& header[ off_GBitMask ] & 0xff00
+					&& header[ off_BBitMask ] & 0xff
+					&& header[ off_ABitMask ] & 0xff000000 ) {
+
+					isRGBAUncompressed = true;
+					blockBytes = 64;
+					dds.format = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBAFormat"];
+
+				} else {
+
+					console.error( 'THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC( fourCC ) );
+					return dds;
+
+				}
+
+		}
+
+		dds.mipmapCount = 1;
+
+		if ( header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false ) {
+
+			dds.mipmapCount = Math.max( 1, header[ off_mipmapCount ] );
+
+		}
+
+		var caps2 = header[ off_caps2 ];
+		dds.isCubemap = caps2 & DDSCAPS2_CUBEMAP ? true : false;
+		if ( dds.isCubemap && (
+			! ( caps2 & DDSCAPS2_CUBEMAP_POSITIVEX ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_NEGATIVEX ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_POSITIVEY ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_NEGATIVEY ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_POSITIVEZ ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_NEGATIVEZ )
+		) ) {
+
+			console.error( 'THREE.DDSLoader.parse: Incomplete cubemap faces' );
+			return dds;
+
+		}
+
+		dds.width = header[ off_width ];
+		dds.height = header[ off_height ];
+
+		var dataOffset = header[ off_size ] + 4;
+
+		// Extract mipmaps buffers
+
+		var faces = dds.isCubemap ? 6 : 1;
+
+		for ( var face = 0; face < faces; face ++ ) {
+
+			var width = dds.width;
+			var height = dds.height;
+
+			for ( var i = 0; i < dds.mipmapCount; i ++ ) {
+
+				if ( isRGBAUncompressed ) {
+
+					var byteArray = loadARGBMip( buffer, dataOffset, width, height );
+					var dataLength = byteArray.length;
+
+				} else {
+
+					var dataLength = Math.max( 4, width ) / 4 * Math.max( 4, height ) / 4 * blockBytes;
+					var byteArray = new Uint8Array( buffer, dataOffset, dataLength );
+
+				}
+
+				var mipmap = { "data": byteArray, "width": width, "height": height };
+				dds.mipmaps.push( mipmap );
+
+				dataOffset += dataLength;
+
+				width = Math.max( width >> 1, 1 );
+				height = Math.max( height >> 1, 1 );
+
+			}
+
+		}
+
+		return dds;
+
+	}
+
+} );
+
+
+
+
+/***/ }),
+
 /***/ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js":
 /*!***************************************************************!*\
   !*** ./node_modules/three/examples/jsm/loaders/GLTFLoader.js ***!
@@ -62665,6 +62954,9 @@ function extend() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StatsHud", function() { return StatsHud; });
+/* harmony import */ var three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/DDSLoader.js */ "./node_modules/three/examples/jsm/loaders/DDSLoader.js");
+
+
 var createGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js")
 var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
 
@@ -62680,30 +62972,36 @@ class StatsHud {
     initialize(camera)
     {
         var self = this;
-        loadFont('./content/arial.fnt',
+        loadFont('./content/arial-rounded.fnt',
             function (err, font) {
                 // create a geometry of packed bitmap glyphs,
                 // word wrapped to 300px and right-aligned
                 self.fontGeometry = createGeometry({
-                    width: 400,
+                    width: 800,
                     align: 'left',
                     font: font
                 })
 
+                const manager = new THREE.LoadingManager();
+				manager.addHandler( /\.dds$/i, new three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_0__["DDSLoader"]() );
+
                 // the texture atlas containing our glyphs
-                var texture = new THREE.TextureLoader().load('./content/arial.png');
+                var texture = new three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_0__["DDSLoader"](manager).load('./content/output.dds');
 
                 // we can use a simple ThreeJS material
                 var fontMaterial = new THREE.MeshBasicMaterial({
                     map: texture,
                     transparent: true,
-                    color: 0xffffff
+                    color: 0xf58789,
+                    depthTest: false //:THREE.NeverDepth
+
                 });
 
                 // scale and position the mesh to get it doing something reasonable
                 self.fontMesh = new THREE.Mesh(self.fontGeometry, fontMaterial);
-                self.fontMesh.position.set(-2.5, -0.75, -5);
-                self.fontMesh.scale.set(0.005, 0.005, 0.005);
+                self.fontMesh.renderOrder = 1;
+                self.fontMesh.position.set(-1.5, -0.75, -5);
+                self.fontMesh.scale.set(0.0025, 0.0025, 0.0025);
                 self.fontMesh.rotation.set(3.14, 0, 0);
 
                 camera.add(self.fontMesh);
@@ -62780,13 +63078,14 @@ let renderer = null;
 let listener = null;
 let zone = null;
 let hud = null;
+const bShowHud = false;
 
 initialize();
 
 function initialize()
 {
     scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
-    camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](50, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5.0;
     camera.position.y = 2.0;
     //camera.rotation.x = 90.0;
@@ -62808,26 +63107,19 @@ function initialize()
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
 
-    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_6__["StatsHud"](camera);
+    if (bShowHud) hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_6__["StatsHud"](camera);
 
     // const controls = new OrbitControls(camera, renderer.domElement);
     // controls.target.set(0.0, 0.0, -3.0);
     // controls.update();
 
-    const directionalLight = new three__WEBPACK_IMPORTED_MODULE_0__["DirectionalLight"](0xffffff, 0.5);
-    directionalLight.position.set(2, 2, 1);
-    scene.add(directionalLight);
 
-    const light = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xf58789); // soft white light
-    scene.add(light);
 
     clock = new three__WEBPACK_IMPORTED_MODULE_0__["Clock"]();
 
-    // create an AudioListener and add it to the camera
-    listener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
-    camera.add( listener );
+ 
 
-    zone = new _zone_js__WEBPACK_IMPORTED_MODULE_5__["ZoneIntro"](scene, renderer, listener);
+    zone = new _zone_js__WEBPACK_IMPORTED_MODULE_5__["ZoneIntro"](scene, renderer, camera);
     zone.onStart(accumulatedTime);
 
     renderer.setAnimationLoop(render);     
@@ -62835,9 +63127,9 @@ function initialize()
 
 
 function render() {
-    hud.update();
+    if (bShowHud) hud.update();
 
-    let dt = clock.getDelta();
+    let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
 
     zone.update(dt, accumulatedTime);
@@ -62848,271 +63140,91 @@ function render() {
 function onSessionStart(event)
 {
     zone.onEnd();
-    zone = new _zone_js__WEBPACK_IMPORTED_MODULE_5__["ZoneDefault"](scene, renderer, listener);
+    zone = new _zone_js__WEBPACK_IMPORTED_MODULE_5__["ZoneDefault"](scene, renderer, camera);
     zone.onStart(accumulatedTime);
-    //CZScene.onSessionStart(accumulatedTime);
 }
 function onSessionEnd(event)
 {
     zone.onEnd();
 
-    zone = new _zone_js__WEBPACK_IMPORTED_MODULE_5__["ZoneIntro"](scene, renderer, listener);
+    zone = new _zone_js__WEBPACK_IMPORTED_MODULE_5__["ZoneIntro"](scene, renderer, camera);
     zone.onStart(accumulatedTime);
-    //CZScene.onSessionEnd(accumulatedTime);
 }
 
 /***/ }),
 
-/***/ "./src/zone.js":
-/*!*********************!*\
-  !*** ./src/zone.js ***!
-  \*********************/
-/*! exports provided: Zone, ZoneIntro, ZoneDefault */
+/***/ "./src/pdacceleration.js":
+/*!*******************************!*\
+  !*** ./src/pdacceleration.js ***!
+  \*******************************/
+/*! exports provided: ComputePDAcceleration, ApplyPDVec3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Zone", function() { return Zone; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZoneIntro", function() { return ZoneIntro; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZoneDefault", function() { return ZoneDefault; });
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
-
-
-
-
-class Zone
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComputePDAcceleration", function() { return ComputePDAcceleration; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ApplyPDVec3", function() { return ApplyPDVec3; });
+function ComputePDAcceleration(
+    value,
+    velocity,
+    targetValue,
+    targetVelocity,
+    frequency,
+    damping,
+    dt
+)
 {
-    constructor(inScene, inRenderer, inListener)
-    {
-        this.scene = inScene;
-        this.listener = inListener;
-        this.renderer = inRenderer;
-        this.focusObjectsGroup = new THREE.Group();
-        this.sceneObjectsGroup = new THREE.Group();
-        this.currentState = null;
-        this.accumlatedTime = 0.0;
+    const ks = frequency * frequency * 36.0;
+    const kd = frequency * damping * 9.0;
+    const scale = 1.0 / ( 1.0 + kd * dt + ks*dt*dt );
 
-        this.initialize();
-    }
+    const ksI = ks  *  scale;
+	const kdI = ( kd + ks* dt ) * scale;
 
-    initialize()
-    {
-    }
-
-    onStart(accumulatedTime)
-    {
-        this.scene.add(this.focusObjectsGroup);
-        this.scene.add(this.sceneObjectsGroup);
-    }
-
-    onEnd()
-    {
-        this.scene.remove(this.focusObjectsGroup);
-        this.scene.remove(this.sceneObjectsGroup);
-        this.scene.fog = null;
-    }
-
-    update(dt, accumlatedTime)
-    {
-        this.accumlatedTime = accumlatedTime;
-        if (this.currentState)
-        {
-            let newState = this.currentState.update(dt);
-            if (newState)
-            {
-                this.currentState.onEnd();
-                newState.onStart();
-                this.currentState = newState;
-            }
-        }
-    }
-
-    startState(newState)
-    {
-        if (this.currentState)
-        {
-            this.currentState.onEnd();
-        }
-        if (newState)
-        {
-            newState.onStart();
-        }
-        this.currentState = newState;
-    }
-
-    addFocusObject(object)
-    {
-        console.assert(object.tween != null);
-        this.focusObjectsGroup.add(object);
-    }
-
-    addSceneObject(object)
-    {
-        this.sceneObjectsGroup.add(object);
-    }
-
-    onGltfLoadScene(gltf)
-    {
-        this.addSceneObject(gltf.scene);
-    }
+    return ksI * (targetValue - value) + kdI * (targetVelocity - velocity);
 }
 
-class ZoneIntro extends Zone
+let _newVelocity = new THREE.Vector3();
+let _newValue = new THREE.Vector3();
+
+function ApplyPDVec3(
+    value, 
+    velocity,
+    targetValue,
+    targetVelocity,
+    frequency,
+    damping,
+    dt
+)
 {
-    initialize()
-    {
-        super.initialize();
-
-        const geometry = new THREE.SphereGeometry( 0.15, 32, 32 );
-        const material = new THREE.MeshPhysicalMaterial( {color: 0xfac3b9} );
-
-        // for (let i = 0; i < 30; i++)
-        // {
-        //     let sphere = new THREE.Mesh(geometry, material);
-        //     sphere.position.x = Math.random() * 20.0 - 1.0;
-        //     sphere.position.y = Math.random() * 20.0 - 10.0;
-        //     sphere.position.z = -10.0 + Math.random() * 10.0;
-        //     this.addSceneObject(sphere);
-        // }
-
-
-        let fog = new THREE.FogExp2(0xfff4ed, 0.015);
-        this.scene.fog = fog;
-
-
-        const texture = new THREE.TextureLoader().load( './content/chillzone.png' );
-
-// immediately use the texture for material creation
-//const material = new THREE.MeshBasicMaterial( { map: texture } );
-
-        const pg = new THREE.PlaneGeometry( 4, 1, 1 );
-        const pm = new THREE.MeshBasicMaterial( {color: 0xffffff, transparent:true, map: texture} );
-        const plane = new THREE.Mesh( pg, pm );
-
-        plane.position.y = 2.0;
-        plane.position.z = -2.0;
-
-        let tweenUp = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](plane.position).to({y:2.1}, 4.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
-        let tweenDown = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](plane.position).to({y:2.0}, 4.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
-        tweenUp.chain(tweenDown);
-        tweenDown.chain(tweenUp);
-        plane.tween = tweenUp;
-        this.plane = plane;
-
-        const loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__["GLTFLoader"]();
-        let self = this;
-        loader.load('./content/intro_environment.gltf', function(gltf) {
-            self.addSceneObject(gltf.scene);
-        });
-
-        this.addFocusObject(plane);
-    }
-
-    onStart(accumulatedTime)
-    {
-        super.onStart(accumulatedTime);
-        this.plane.tween.start(accumulatedTime);
-    }
-
-}
-
-class ZoneDefault extends Zone
-{
-    initialize()
-    {
-        super.initialize();
-
-        const geometry = new THREE.SphereGeometry( 0.15, 32, 32 );
-        const material = new THREE.MeshPhysicalMaterial( {color: 0xfac3b9} );
-        let sphere = new THREE.Mesh( geometry, material );
+    let accelX = ComputePDAcceleration(value.x, velocity.x, targetValue.x, targetVelocity.x, frequency, damping, dt);
+    let accelY = ComputePDAcceleration(value.y, velocity.y, targetValue.y, targetVelocity.y, frequency, damping, dt);
+    let accelZ = ComputePDAcceleration(value.z, velocity.z, targetValue.z, targetVelocity.z, frequency, damping, dt);
     
-        // create the PositionalAudio object (passing in the listener)
-        const sound = new THREE.PositionalAudio(this.listener);
-
-        // load a sound and set it as the PositionalAudio object's buffer
-        const audioLoader = new THREE.AudioLoader();
-        audioLoader.load('content/Joyful-Flutterbee.mp3', function (buffer) {
-            sound.setBuffer(buffer);
-            sound.setRefDistance(20);
-        });
-        sphere.add(sound);
-        sphere.sound = sound;
-
-        this.sound = sound;
-        this.sphere = sphere;
-
-        sphere.position.z = -3.0;
-        sphere.position.y = 0.75;
-        sphere.initialPosition = sphere.position;
-        var tweenIntro = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).to({ z: -2.0 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
-        var tweenUp = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).delay(0.75).to({ y: 1.25 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
-        var tweenDown = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).delay(0.75).to({ y: 0.75 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
-
-        tweenUp.chain(tweenDown);
-        tweenDown.chain(tweenUp);
-
-        sphere.tweenIntro = tweenIntro;
-        sphere.tween = tweenUp;
-
-        this.addFocusObject(sphere);
-
-        let fog = new THREE.FogExp2(0xfff4ed, 0.005);
-        this.scene.fog = fog;
+    velocity.x += accelX * dt;
+    velocity.y += accelY * dt;
+    velocity.z += accelZ * dt;
     
-        const loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__["GLTFLoader"]();
-        let self = this;
-        loader.load('./content/environment1.gltf', function(gltf) {
-            self.addSceneObject(gltf.scene);
-        });
-
-    }
-
-    onIntroStart()
-    {
-        this.sphere.tweenIntro.start(this.accumlatedTime);
-    }
-
-    onBreatheStart()
-    {
-        this.sound.play();
-        this.sphere.tween.start(this.accumlatedTime);
-    }
-
-    onBreatheEnd()
-    {
-        if (this.sound.isPlaying)
-            this.sound.stop();
-    }
-
-    onStart(accumulatedTime)
-    {
-        super.onStart(accumulatedTime);
-
-        let endState = new EndState();
-        let breatheState = new TimedState(30.0, endState);
-        let introState = new TimedState(3.0, breatheState);
-
-        let self = this;
-        breatheState.onStartCallbacks.push(function() {
-            self.onBreatheStart();
-        });
-        breatheState.onEndCallbacks.push(function() {
-            self.onBreatheEnd();
-        });
-        introState.onStartCallbacks.push(function() {
-            self.onIntroStart();
-        });
-        this.startState(introState);
-    }
-
-    onEnd()
-    {
-        super.onEnd();
-        this.sound.stop();
-    }
+    value.x += velocity.x * dt;
+    value.y += velocity.y * dt;
+    value.z += velocity.z * dt;
 }
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
+/***/ }),
+
+/***/ "./src/state.js":
+/*!**********************!*\
+  !*** ./src/state.js ***!
+  \**********************/
+/*! exports provided: State, TimedState, EndState */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "State", function() { return State; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TimedState", function() { return TimedState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EndState", function() { return EndState; });
 
 class State 
 {
@@ -63189,6 +63301,441 @@ class EndState extends State
         return null;
     }
 }
+
+
+/***/ }),
+
+/***/ "./src/zone.js":
+/*!*********************!*\
+  !*** ./src/zone.js ***!
+  \*********************/
+/*! exports provided: Zone, ZoneIntro, ZoneDefault */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Zone", function() { return Zone; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZoneIntro", function() { return ZoneIntro; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZoneDefault", function() { return ZoneDefault; });
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var _state_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./state.js */ "./src/state.js");
+/* harmony import */ var three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/DDSLoader.js */ "./node_modules/three/examples/jsm/loaders/DDSLoader.js");
+/* harmony import */ var _pdacceleration_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pdacceleration.js */ "./src/pdacceleration.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+
+
+
+var createGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js")
+var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
+
+
+
+
+class Zone
+{
+    constructor(inScene, inRenderer, inCamera)
+    {
+        this.scene = inScene;
+        this.camera = inCamera;
+        this.renderer = inRenderer;
+        this.focusObjectsGroup = new THREE.Group();
+        this.sceneObjectsGroup = new THREE.Group();
+        this.currentState = null;
+        this.accumlatedTime = 0.0;
+
+        this.loaded = false;
+
+        this.initialize();
+    }
+
+    initialize()
+    {
+    }
+
+    onStart(accumulatedTime)
+    {
+        this.scene.add(this.focusObjectsGroup);
+        this.scene.add(this.sceneObjectsGroup);
+    }
+
+    onEnd()
+    {
+        this.scene.remove(this.focusObjectsGroup);
+        this.scene.remove(this.sceneObjectsGroup);
+        this.scene.fog = null;
+    }
+
+    update(dt, accumlatedTime)
+    {
+        this.accumlatedTime = accumlatedTime;
+        if (this.currentState)
+        {
+            let newState = this.currentState.update(dt);
+            if (newState)
+            {
+                this.currentState.onEnd();
+                newState.onStart();
+                this.currentState = newState;
+            }
+        }
+    }
+
+    startState(newState)
+    {
+        if (this.currentState)
+        {
+            this.currentState.onEnd();
+        }
+        if (newState)
+        {
+            newState.onStart();
+        }
+        this.currentState = newState;
+    }
+
+    addFocusObject(object)
+    {
+        this.focusObjectsGroup.add(object);
+    }
+
+    addSceneObject(object)
+    {
+        this.sceneObjectsGroup.add(object);
+    }
+}
+
+class ZoneIntro extends Zone
+{
+    initialize()
+    {
+        super.initialize();
+
+
+        let fog = new THREE.FogExp2(0xfff4ed, 0.015);
+        this.scene.fog = fog;
+
+
+        const texture = new THREE.TextureLoader().load( './content/chillzone.png' );
+
+        const pg = new THREE.PlaneGeometry( 4, 1, 1 );
+        const pm = new THREE.MeshBasicMaterial( {color: 0xffffff, transparent:true, map: texture} );
+        const logo = new THREE.Mesh( pg, pm );
+
+        logo.position.y = 2.0;
+        logo.position.z = -2.0;
+
+        let tweenUp = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](logo.position).to({y:2.1}, 4.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
+        let tweenDown = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](logo.position).to({y:2.0}, 4.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
+        tweenUp.chain(tweenDown);
+        tweenDown.chain(tweenUp);
+        logo.tween = tweenUp;
+        this.logo = logo;
+        this.addFocusObject(logo);
+
+        const directionalLight = new THREE.DirectionalLight(0xf58789, 1);
+        directionalLight.position.set(10.095, 9.2364, 14.453);
+        this.addSceneObject(directionalLight);
+    
+        const light = new THREE.AmbientLight(0xf58789); // soft white light
+        this.addSceneObject(light);
+
+
+        const loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__["GLTFLoader"]();
+        loader.load('./content/intro_environment.gltf', 
+            gltf => this.addSceneObject(gltf.scene));
+        
+
+    }
+
+    onStart(accumulatedTime)
+    {
+        super.onStart(accumulatedTime);
+        //this.logo.tween.start(accumulatedTime);
+        this.nextLogoPositionTime = accumulatedTime + Math.random() * 2.0;
+        this.currentLogoPosition = this.logo.position.clone();
+        this.currentLogoVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
+        
+        this.targetLogoVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
+        this.targetLogoPosition = this.logo.position.clone();
+        // this.targetLogoPosition.x += Math.random()*2.0 - 1.0;
+        // this.targetLogoPosition.y += Math.random()*2.0 - 1.0;
+
+        this.originalLogoPosition = this.logo.position.clone();
+
+
+    }
+
+    update(dt, accumulatedTime)
+    {
+        super.update(dt, accumulatedTime);
+
+        _pdacceleration_js__WEBPACK_IMPORTED_MODULE_4__["ApplyPDVec3"](
+            this.logo.position, this.currentLogoVelocity,
+            this.targetLogoPosition, this.targetLogoVelocity,
+            0.05, 0.2, dt);
+ 
+        if (this.nextLogoPositionTime < accumulatedTime)
+        {
+            this.nextLogoPositionTime = accumulatedTime + Math.random() * 5.0;
+            this.targetLogoPosition.x = this.originalLogoPosition.x + (Math.random() * 2.0 - 1.0) * 0.125;
+            this.targetLogoPosition.y = this.originalLogoPosition.y + (Math.random() * 2.0 - 1.0) * 0.125;
+        }
+    }
+}
+
+class ZoneDefault extends Zone
+{
+    initialize()
+    {
+        super.initialize();
+
+        const geometry = new THREE.SphereGeometry( 0.15, 32, 32 );
+        const material = new THREE.MeshPhysicalMaterial( {color: 0xfac3b9, metalness:0.2, roughness: 0.5} );
+        let sphere = new THREE.Mesh( geometry, material );
+    
+       // create an AudioListener and add it to the camera
+        let listener = new THREE.AudioListener();
+        this.camera.add( listener );
+        
+        // create the PositionalAudio object (passing in the listener)
+        this.sound = new THREE.PositionalAudio(listener);
+
+        // this.listener.context.resume();
+
+        // load a sound and set it as the PositionalAudio object's buffer
+        var audioLoader = new THREE.AudioLoader();
+        audioLoader.load('./content/Wind-Mark_DiAngelo-1940285615.mp3', (buffer) => {
+        //audioLoader.load('./content/Joyful-Flutterbee.mp3', (buffer) => {
+            this.sound.setBuffer(buffer);
+            this.sound.setRefDistance(40);
+            this.sound.setVolume(0.125);
+        });
+
+        this.soundObject = new THREE.Object3D();
+        this.soundObject.position.set(0.0, 2.0, -2.0);
+        this.soundObject.add(this.sound);
+        this.addSceneObject(this.soundObject);
+
+        this.sphere = sphere;
+        // this.sphere.add(this.sound);
+
+        sphere.position.z = -2.0;
+        sphere.position.y = 0.75;
+        sphere.scale.set(0.0, 0.0, 0.0);
+        sphere.initialPosition = sphere.position;
+        var tweenIntro = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.scale).to({ x:1.0, y:1.0, z:1.0 }, 2.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.Out);
+        var tweenUp = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).to({ y: 1.25 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
+        var tweenDown = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).to({ y: 0.75 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
+
+        var tweenUpLoop = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).to({ y: 1.25 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
+        var tweenDownLoop = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).to({ y: 0.75 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
+
+
+        tweenUpLoop.chain(tweenDownLoop);
+        tweenDownLoop.chain(tweenUpLoop);
+
+        sphere.tweenIntro = tweenIntro;
+        sphere.tweenUp = tweenUp;
+        sphere.tweenDown = tweenDown;
+        sphere.tweenLoop = tweenUpLoop;
+        sphere.tweenOut = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.scale).delay(0.75).to({ x:0.0, y:0.0, z:0.0}, 3.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.In);
+
+        this.addFocusObject(sphere);
+
+        let fog = new THREE.FogExp2(0xfff4ed, 0.0027);
+        this.scene.fog = fog;
+    
+
+        const directionalLight = new THREE.DirectionalLight(0xfff7fc, 0.55);
+        directionalLight.position.set(10.095, 9.2364, 14.453);
+        this.addSceneObject(directionalLight);
+    
+        // const light = new THREE.AmbientLight(0xf58789); // soft white light
+        // this.addSceneObject(light);
+
+        const hemi = new THREE.HemisphereLight( 0xffffff, 0x909090, 0.55); //0xf58779, 0.55 );
+        this.addSceneObject(hemi);
+
+
+        // const loader = new GLTFLoader();
+        // loader.load('./content/environment1.gltf', 
+        //     gltf => this.addSceneObject(gltf.scene)
+        // );
+
+
+
+        let loaderPromise = new Promise( resolve => {
+            let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__["GLTFLoader"]();
+            loader.load('./content/environment1_2.gltf', resolve);
+        });
+        loaderPromise.then(
+            gltf => {
+                for (let i = 0; i < gltf.scene.children.length; i++)
+                {
+                    let obj = gltf.scene.children[i];
+                    if (obj.name == "Skydome")
+                    {
+                    obj.material.fog = false;
+                    // obj.material.emissive.set(1.0, 1.0, 1.0); // = 0xffffff;
+                    // obj.material.emissiveMap = obj.material.map;
+                    // obj.material.map = null;
+                    // obj.material.color.set(1.0, 1.0, 1.0); //, 1.0); // = 0xffffff;
+                    //     // obj.material = new THREE.MeshBasicMaterial({
+                        //     color: 0x00ace7, //obj.material.color,
+                        //     fog:false,
+                        //     side: THREE.BackSide
+                        // });
+                        break;
+                    }
+                }
+                this.addSceneObject(gltf.scene);
+            });
+
+
+
+
+        // LOAD FONT
+        loadFont('./content/arial-rounded.fnt',
+            (err, font) => {
+                // create a geometry of packed bitmap glyphs,
+                // word wrapped to 300px and right-aligned
+                this.fontGeometry = createGeometry({
+                    align: 'center',
+                    font: font,
+                    flipY: true,
+                    //width: 800
+                })
+
+                // const manager = new THREE.LoadingManager();
+				// manager.addHandler( /\.dds$/i, new DDSLoader() );
+
+                // // the texture atlas containing our glyphs
+                // var texture = new DDSLoader(manager).load('./content/output.dds');
+
+                var texture = new three__WEBPACK_IMPORTED_MODULE_5__["TextureLoader"]().load('./content/arial-rounded_0.png');
+
+                // we can use a simple ThreeJS material
+                var fontMaterial = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    side: THREE.DoubleSide,
+                    color: 0xfac3b9,
+                    depthTest: false //:THREE.NeverDepth
+
+                });
+
+                // scale and position the mesh to get it doing something reasonable
+                this.fontMesh = new THREE.Mesh(this.fontGeometry, fontMaterial);
+                this.fontMesh.renderOrder = 0;
+                this.fontMesh.position.set(0.0, 0.0, -3);
+                this.fontMesh.scale.set(0.0025, 0.0025, 0.0025);
+                this.fontMesh.rotation.set(3.14, 0, 0);
+
+                this.addSceneObject(this.fontMesh);
+            });
+
+    }
+
+    updateText(str)
+    {
+        this.fontGeometry.update(str);
+        this.fontGeometry.computeBoundingBox();
+        let box = this.fontGeometry.boundingBox;
+        this.fontMesh.position.x = (box.max.x - box.min.x) * -0.5;
+        this.fontMesh.position.y = (box.max.y - box.min.y) * -0.5;
+        this.fontMesh.position.x *= this.fontMesh.scale.x;
+        this.fontMesh.position.y *= this.fontMesh.scale.y;
+
+    }
+    onIntroStart()
+    {
+
+        this.sphere.tweenIntro.start(this.accumlatedTime);
+    }
+
+    onBreatheStart()
+    {
+        this.sound.play();
+        this.sphere.tween.start(this.accumlatedTime);
+    }
+
+    onBreatheEnd()
+    {
+        // if (this.sound.isPlaying)
+        //     this.sound.stop();
+    }
+
+    onStart(accumulatedTime)
+    {
+        super.onStart(accumulatedTime);
+
+        let endState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["EndState"]();
+        let outroState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](3.0, endState);
+        let breatheState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](10.0*6, outroState);
+        let breatheOutState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](5.0, breatheState);
+        let breatheInState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](5.0, breatheOutState);
+        let introFocusObjectState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](3.0, breatheInState);
+        let instructionsState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](5.0, introFocusObjectState);
+        let introBeatState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](3.0, instructionsState);
+
+        introBeatState.onStartCallbacks.push(() => {
+
+        });
+
+        instructionsState.onStartCallbacks.push(() => {
+            this.sound.play();
+            this.updateText("Clear your mind\nand focus\non your breathing.");
+        });
+        instructionsState.onEndCallbacks.push(() => {
+            this.updateText("");
+        });
+
+        introFocusObjectState.onStartCallbacks.push(() => {
+            this.sphere.tweenIntro.start(this.accumlatedTime);
+        });
+
+        breatheInState.onStartCallbacks.push(() => {
+            this.sphere.tweenUp.start(this.accumlatedTime);
+            this.updateText("Breathe In");
+        });
+        breatheOutState.onStartCallbacks.push(() => {
+            this.sphere.tweenDown.start(this.accumlatedTime);
+            this.updateText("Breathe Out");
+        });
+        breatheState.onStartCallbacks.push(() => {
+            this.updateText("");
+            this.sphere.tweenLoop.start(this.accumlatedTime);
+        });
+        breatheState.onEndCallbacks.push(() => {
+            this.sphere.tweenLoop.stop();
+        });
+        outroState.onStartCallbacks.push(() => {
+            this.updateText("Great job!")
+            this.sphere.tweenOut.start(this.accumlatedTime);
+        });
+        outroState.onEndCallbacks.push(() => {
+            this.updateText("");
+        });
+
+        // let introState = new TimedState(3.0, breatheState);
+
+        // breatheState.onStartCallbacks.push(() => this.onBreatheStart());
+        // breatheState.onEndCallbacks.push(() => this.onBreatheEnd());
+        // introState.onStartCallbacks.push(() => this.onIntroStart());
+
+        this.startState(introBeatState);
+    }
+
+    onEnd()
+    {
+        super.onEnd();
+        this.sound.stop();
+    }
+}
+
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
