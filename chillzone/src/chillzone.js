@@ -15,6 +15,7 @@ let listener = null;
 let zone = null;
 let hud = null;
 const bShowHud = false;
+let controllers = [];
 
 initialize();
 
@@ -50,10 +51,24 @@ function initialize()
     // controls.update();
 
 
+    controllers.push(renderer.xr.getController( 0 ));
+    scene.add( controllers[0] );
+
+    renderer.xr.getControllerGrip(0).addEventListener("connected", (evt) => {
+        controllers[0].gamepad = evt.data.gamepad;
+    });
+
+    controllers.push(renderer.xr.getController( 1 ));
+    scene.add( controllers[1] );
+
+    renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
+        controllers[1].gamepad = evt.data.gamepad;
+    });
 
     clock = new THREE.Clock();
 
  
+    scene.controllers = controllers;
 
     zone = new ZONE.ZoneIntro(scene, renderer, camera);
     zone.onStart(accumulatedTime);

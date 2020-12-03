@@ -167,8 +167,10 @@ export class ZoneDefault extends Zone
     {
         super.initialize();
 
+        this.repeatingHaptics = [];
+
         const geometry = new THREE.SphereGeometry( 0.15, 32, 32 );
-        const material = new THREE.MeshPhysicalMaterial( {color: 0xfac3b9, metalness:0.2, roughness: 0.5} );
+        const material = new THREE.MeshPhysicalMaterial( {color: 0xeac3b9, metalness:0.125, roughness:0.55}); //{color: 0xfac3b9, metalness:0.2, roughness: 0.5} );
         let sphere = new THREE.Mesh( geometry, material );
     
        // create an AudioListener and add it to the camera
@@ -189,9 +191,22 @@ export class ZoneDefault extends Zone
             this.sound.setVolume(0.125);
         });
 
+        this.soundChime = new THREE.PositionalAudio(listener);
+        this.soundChime2 = new THREE.PositionalAudio(listener);
+        audioLoader.load('./content/Mono-Electronic_Chime-KevanGC-495939803.mp3', (buffer) => {
+            this.soundChime.setBuffer(buffer);
+            this.soundChime.setRefDistance(50);
+            this.soundChime.setVolume(0.5);
+
+            this.soundChime2.setBuffer(buffer);
+            this.soundChime2.setRefDistance(10);
+            this.soundChime2.setVolume(1.0);
+        });
+
         this.soundObject = new THREE.Object3D();
         this.soundObject.position.set(0.0, 2.0, -2.0);
         this.soundObject.add(this.sound);
+        this.soundObject.add(this.soundChime);
         this.addSceneObject(this.soundObject);
 
         this.sphere = sphere;
@@ -231,7 +246,7 @@ export class ZoneDefault extends Zone
         // const light = new THREE.AmbientLight(0xf58789); // soft white light
         // this.addSceneObject(light);
 
-        const hemi = new THREE.HemisphereLight( 0xffffff, 0x909090, 0.55); //0xf58779, 0.55 );
+        const hemi = new THREE.HemisphereLight( 0xffffff, 0xf58779, 0.55 );
         this.addSceneObject(hemi);
 
 
@@ -272,6 +287,7 @@ export class ZoneDefault extends Zone
 
 
 
+
         // LOAD FONT
         loadFont('./content/arial-rounded.fnt',
             (err, font) => {
@@ -293,29 +309,58 @@ export class ZoneDefault extends Zone
                 var texture = new TextureLoader().load('./content/arial-rounded_0.png');
 
                 // we can use a simple ThreeJS material
-                var fontMaterial = new THREE.MeshBasicMaterial({
+                this.fontMaterial = new THREE.MeshBasicMaterial({
                     map: texture,
                     transparent: true,
                     side: THREE.DoubleSide,
                     color: 0xfac3b9,
+                    opacity: 0.0,
                     depthTest: false //:THREE.NeverDepth
 
                 });
 
                 // scale and position the mesh to get it doing something reasonable
-                this.fontMesh = new THREE.Mesh(this.fontGeometry, fontMaterial);
+                this.fontMesh = new THREE.Mesh(this.fontGeometry, this.fontMaterial);
                 this.fontMesh.renderOrder = 0;
                 this.fontMesh.position.set(0.0, 0.0, -3);
                 this.fontMesh.scale.set(0.0025, 0.0025, 0.0025);
                 this.fontMesh.rotation.set(3.14, 0, 0);
 
                 this.addSceneObject(this.fontMesh);
+
+                this.textTweenIn = new TWEEN.Tween(this.fontMaterial); //.to({a:1.0}, 0.5).easing(TWEEN.Easing.Cubic.InOut);
+                this.textTweenOut = new TWEEN.Tween(this.fontMaterial); //.to({a:0.0}, 0.5).easing(TWEEN.Easing.Cubic.InOut);
+                this.textTweenIn.chain(this.textTweenOut);
             });
 
     }
 
-    updateText(str)
+    update(dt, accumulatedTime)
     {
+        super.update(dt, accumulatedTime);
+        if (this.repeatingHaptics.length != 0)
+        {
+            //loop backwards so we can remove expired elements as we encounter them
+            for (let i = this.repeatingHaptics.length - 1; i >= 0; i--)
+            {
+                let rh = this.repeatingHaptics[i];
+                if (accumulatedTime >= rh.nextBuzz)
+                {
+                    rh.numLeft--;
+                    this.activateHaptics(rh.index, rh.intensity, rh.milliseconds);
+                    if (rh.numLeft > 0) 
+                        rh.nextBuzz = accumulatedTime + rh.waitTime;
+                    else
+                        this.repeatingHaptics.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    updateText(str, fadeInTime, opaqueDuration, fadeOutTime)
+    {
+
+        
         this.fontGeometry.update(str);
         this.fontGeometry.computeBoundingBox();
         let box = this.fontGeometry.boundingBox;
@@ -324,7 +369,53 @@ export class ZoneDefault extends Zone
         this.fontMesh.position.x *= this.fontMesh.scale.x;
         this.fontMesh.position.y *= this.fontMesh.scale.y;
 
+        let fadeIn = (fadeInTime > 0.0);
+        let fadeOut = (fadeOutTime > 0.0);
+        if (fadeIn)
+            this.textTweenIn.to({opacity:1.0}, fadeInTime).easing(TWEEN.Easing.Cubic.Out);
+        if (fadeOut)
+            this.textTweenOut.delay(opaqueDuration).to({opacity:0.0}, fadeOutTime).easing(TWEEN.Easing.Cubic.Out);
+
+        if (fadeIn && fadeOut)
+        {
+            this.fontMaterial.opacity = 0.0;
+            this.textTweenIn.chain(this.textTweenOut);
+            this.textTweenIn.start(this.accumlatedTime);
+        }
+        else if (fadeIn)
+        {
+            this.fontMaterial.opacity = 0.0;
+            this.textTweenIn._chainedTweens.length = 0;
+            this.textTweenIn.start(this.accumlatedTime);
+        }
+        else if (fadeOut)
+        {
+            this.fontMaterial.opacity = 1.0;
+            this.textTweenOut.start(this.accumlatedTime);
+        }
+        else
+        {
+            this.fontMaterial.opacity = 1.0;
+        }
+
     }
+
+    activateHaptics(index, intensity, milliseconds)
+    {
+        let gamepad = this.scene.controllers[index].gamepad;
+        if (gamepad != null && gamepad.hapticActuators != null)
+        {
+            let hapticActuator = gamepad.hapticActuators[0];
+            if( hapticActuator != null)
+                hapticActuator.pulse( intensity, milliseconds );
+        }
+    }
+    pulseHapticsRepeat(index, intensity, seconds, wait, repeat)
+    {
+        let rh = {index: index, intensity: intensity, milliseconds: seconds*1000.0, waitTime: wait, numLeft: repeat, nextBuzz: this.accumlatedTime};
+        this.repeatingHaptics.push(rh);
+    }
+
     onIntroStart()
     {
 
@@ -347,9 +438,10 @@ export class ZoneDefault extends Zone
     {
         super.onStart(accumulatedTime);
 
+        const kNumIterations = 3;
         let endState = new EndState();
         let outroState = new TimedState(3.0, endState);
-        let breatheState = new TimedState(10.0*6, outroState);
+        let breatheState = new TimedState(10.0*kNumIterations, outroState);
         let breatheOutState = new TimedState(5.0, breatheState);
         let breatheInState = new TimedState(5.0, breatheOutState);
         let introFocusObjectState = new TimedState(3.0, breatheInState);
@@ -362,44 +454,59 @@ export class ZoneDefault extends Zone
 
         instructionsState.onStartCallbacks.push(() => {
             this.sound.play();
-            this.updateText("Clear your mind\nand focus\non your breathing.");
+            //this.soundChime.play();
+            //this.soundChime2.play(0.5);
+            this.updateText("Clear your mind\nand focus\non your breathing.", 1.0, 3.0, 1.0);
+            // this.activateHaptics(1, 0.1, 100);
+            // this.activateHaptics(0, 0.1, 250);
         });
         instructionsState.onEndCallbacks.push(() => {
-            this.updateText("");
+            //this.updateText("");
         });
 
         introFocusObjectState.onStartCallbacks.push(() => {
             this.sphere.tweenIntro.start(this.accumlatedTime);
+
+            //this.soundChime.play();
+            //this.soundChime2.play(1.0);
+
         });
 
         breatheInState.onStartCallbacks.push(() => {
+
+            //this.soundChime.play();
+            //this.soundChime2.play(1.0);
+
             this.sphere.tweenUp.start(this.accumlatedTime);
-            this.updateText("Breathe In");
+            this.updateText("Breathe In", 1.5, 3.0, 0.05);
+            this.pulseHapticsRepeat(0, 0.1, 0.01, 0.95, 5);
+            this.pulseHapticsRepeat(1, 0.1, 0.01, 0.95, 5);
         });
         breatheOutState.onStartCallbacks.push(() => {
             this.sphere.tweenDown.start(this.accumlatedTime);
-            this.updateText("Breathe Out");
+            this.updateText("Breathe Out", 0.05, 3.0, 1.5);
+
+            this.pulseHapticsRepeat(0, 0.1, 0.01, 0.95, 5);
+            this.pulseHapticsRepeat(1, 0.1, 0.01, 0.95, 5);
+
         });
         breatheState.onStartCallbacks.push(() => {
-            this.updateText("");
+            //this.updateText("");
             this.sphere.tweenLoop.start(this.accumlatedTime);
+
+            this.pulseHapticsRepeat(0, 0.1, 0.01, 0.95, kNumIterations*2*5);
+            this.pulseHapticsRepeat(1, 0.1, 0.01, 0.95, kNumIterations*2*5);
         });
         breatheState.onEndCallbacks.push(() => {
             this.sphere.tweenLoop.stop();
         });
         outroState.onStartCallbacks.push(() => {
-            this.updateText("Great job!")
+            this.updateText("Great job!", 1.0, 3.0, 1.0)
             this.sphere.tweenOut.start(this.accumlatedTime);
+            this.soundChime.play();
         });
         outroState.onEndCallbacks.push(() => {
-            this.updateText("");
         });
-
-        // let introState = new TimedState(3.0, breatheState);
-
-        // breatheState.onStartCallbacks.push(() => this.onBreatheStart());
-        // breatheState.onEndCallbacks.push(() => this.onBreatheEnd());
-        // introState.onStartCallbacks.push(() => this.onIntroStart());
 
         this.startState(introBeatState);
     }
