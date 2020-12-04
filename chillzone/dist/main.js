@@ -63429,14 +63429,14 @@ class ZoneIntro extends Zone
         super.initialize();
 
 
-        let fog = new THREE.FogExp2(0xfff4ed, 0.015);
+        let fog = new THREE.Fog(0xfff4ed, 1.0, 35.0); //new THREE.FogExp2(0xfff4ed, 0.035);
         this.scene.fog = fog;
 
 
         const texture = new THREE.TextureLoader().load( './content/chillzone.png' );
 
         const pg = new THREE.PlaneGeometry( 4, 1, 1 );
-        const pm = new THREE.MeshBasicMaterial( {color: 0xffffff, transparent:true, map: texture} );
+        const pm = new THREE.MeshBasicMaterial( {color: 0xff9582, transparent:true, map: texture} );
         const logo = new THREE.Mesh( pg, pm );
 
         logo.position.y = 2.0;
@@ -63709,6 +63709,9 @@ class ZoneDefault extends Zone
         this.fontMesh.position.x *= this.fontMesh.scale.x;
         this.fontMesh.position.y *= this.fontMesh.scale.y;
 
+        this.textTweenIn.stop();
+        this.textTweenOut.stop();
+
         let fadeIn = (fadeInTime > 0.0);
         let fadeOut = (fadeOutTime > 0.0);
         if (fadeIn)
@@ -63778,7 +63781,7 @@ class ZoneDefault extends Zone
     {
         super.onStart(accumulatedTime);
 
-        const kNumIterations = 3;
+        const kNumIterations = 1;
         let endState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["EndState"]();
         let outroState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](3.0, endState);
         let breatheState = new _state_js__WEBPACK_IMPORTED_MODULE_2__["TimedState"](10.0*kNumIterations, outroState);
@@ -63818,24 +63821,27 @@ class ZoneDefault extends Zone
             //this.soundChime2.play(1.0);
 
             this.sphere.tweenUp.start(this.accumlatedTime);
-            this.updateText("Breathe In", 1.5, 3.0, 0.05);
-            this.pulseHapticsRepeat(0, 0.1, 0.01, 0.95, 5);
-            this.pulseHapticsRepeat(1, 0.1, 0.01, 0.95, 5);
+            this.updateText("Breathe In", 1.5, 3.3, 0.1);
+            // this.pulseHapticsRepeat(0, 0.01, 0.03, 0.97, 5);
+            // this.pulseHapticsRepeat(1, 0.01, 0.03, 0.97, 5);
+
+            this.pulseHapticsRepeat(0, 0.01, 0.03, 0.97, (kNumIterations+1)*2*5); // (kNumIterations+1)*2*5 == number of breath iterations plus initial breathe in/out iteration time 5 seconds per direction
+            this.pulseHapticsRepeat(1, 0.01, 0.03, 0.97, (kNumIterations+1)*2*5);
         });
         breatheOutState.onStartCallbacks.push(() => {
             this.sphere.tweenDown.start(this.accumlatedTime);
-            this.updateText("Breathe Out", 0.05, 3.0, 1.5);
+            this.updateText("Breathe Out", 0.1, 3.4, 1.5);
 
-            this.pulseHapticsRepeat(0, 0.1, 0.01, 0.95, 5);
-            this.pulseHapticsRepeat(1, 0.1, 0.01, 0.95, 5);
+            // this.pulseHapticsRepeat(0, 0.01, 0.03, 0.97, 5);
+            // this.pulseHapticsRepeat(1, 0.01, 0.03, 0.97, 5);
 
         });
         breatheState.onStartCallbacks.push(() => {
             //this.updateText("");
             this.sphere.tweenLoop.start(this.accumlatedTime);
 
-            this.pulseHapticsRepeat(0, 0.1, 0.01, 0.95, kNumIterations*2*5);
-            this.pulseHapticsRepeat(1, 0.1, 0.01, 0.95, kNumIterations*2*5);
+            // this.pulseHapticsRepeat(0, 0.01, 0.03, 0.97, kNumIterations*2*5);
+            // this.pulseHapticsRepeat(1, 0.01, 0.03, 0.97, kNumIterations*2*5);
         });
         breatheState.onEndCallbacks.push(() => {
             this.sphere.tweenLoop.stop();
@@ -63843,7 +63849,9 @@ class ZoneDefault extends Zone
         outroState.onStartCallbacks.push(() => {
             this.updateText("Great job!", 1.0, 3.0, 1.0)
             this.sphere.tweenOut.start(this.accumlatedTime);
-            this.soundChime.play();
+            //this.soundChime.play();
+            this.pulseHapticsRepeat(0, 0.1, 0.5, 0.0, 1);
+            this.pulseHapticsRepeat(1, 0.1, 0.5, 0.0, 1);
         });
         outroState.onEndCallbacks.push(() => {
         });
