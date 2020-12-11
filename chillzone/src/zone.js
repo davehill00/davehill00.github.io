@@ -2,12 +2,15 @@ import * as TWEEN from "@tweenjs/tween.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {State, TimedState, EndState} from './state.js';
 import { DDSLoader } from 'three/examples/jsm/loaders/DDSLoader.js';
+import {Simple1DNoise} from './noise.js';
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
+import { InputManager } from './inputManager.js';
 
 var createGeometry = require('three-bmfont-text')
 var loadFont = require('load-bmfont')
 
 import * as PDAccel from './pdacceleration.js';
-import { TextureLoader } from "three";
+import { SphereGeometry, TextureLoader } from "three";
 
 export class Zone
 {
@@ -19,7 +22,7 @@ export class Zone
         this.focusObjectsGroup = new THREE.Group();
         this.sceneObjectsGroup = new THREE.Group();
         this.currentState = null;
-        this.accumlatedTime = 0.0;
+        this.accumulatedTime = 0.0;
 
         this.loaded = false;
 
@@ -32,6 +35,9 @@ export class Zone
 
     onStart(accumulatedTime)
     {
+
+        this.accumulatedTime = accumulatedTime;
+        
         this.scene.add(this.focusObjectsGroup);
         this.scene.add(this.sceneObjectsGroup);
     }
@@ -43,9 +49,9 @@ export class Zone
         this.scene.fog = null;
     }
 
-    update(dt, accumlatedTime)
+    update(dt, accumulatedTime)
     {
-        this.accumlatedTime = accumlatedTime;
+        this.accumulatedTime = accumulatedTime;
         if (this.currentState)
         {
             let newState = this.currentState.update(dt);
@@ -89,7 +95,7 @@ export class ZoneIntro extends Zone
         super.initialize();
 
 
-        let fog = new THREE.Fog(0xfff4ed, 1.0, 35.0); //new THREE.FogExp2(0xfff4ed, 0.035);
+        let fog = new THREE.Fog(0xfff4ed, 1.0, 85.0); //new THREE.FogExp2(0xfff4ed, 0.035);
         this.scene.fog = fog;
 
 
@@ -99,7 +105,7 @@ export class ZoneIntro extends Zone
         const pm = new THREE.MeshBasicMaterial( {color: 0xff9582, transparent:true, map: texture} );
         const logo = new THREE.Mesh( pg, pm );
 
-        logo.position.y = 2.0;
+        logo.position.y = 0.0;
         logo.position.z = -2.0;
 
         let tweenUp = new TWEEN.Tween(logo.position).to({y:2.1}, 4.0).easing(TWEEN.Easing.Cubic.InOut);
@@ -123,6 +129,10 @@ export class ZoneIntro extends Zone
             gltf => this.addSceneObject(gltf.scene));
         
 
+        this.noise = new Simple1DNoise;
+        this.noise.setAmplitude(1);
+        this.noise.setScale(2);
+
     }
 
     onStart(accumulatedTime)
@@ -140,6 +150,11 @@ export class ZoneIntro extends Zone
 
         this.originalLogoPosition = this.logo.position.clone();
 
+        this.targetCameraPosition = this.camera.position.clone();
+        this.targetCameraPosition.x = this.noise.getVal(this.accumulatedTime);
+        this.targetCameraPosition.y = this.noise.getVal(this.accumulatedTime + 2.0);
+        this.currentCameraVelocity = new THREE.Vector3(0,0,0);
+        this.targetCameraVelocity = new THREE.Vector3(0,0,0);
 
     }
 
@@ -147,17 +162,24 @@ export class ZoneIntro extends Zone
     {
         super.update(dt, accumulatedTime);
 
-        PDAccel.ApplyPDVec3(
-            this.logo.position, this.currentLogoVelocity,
-            this.targetLogoPosition, this.targetLogoVelocity,
-            0.05, 0.2, dt);
+        // PDAccel.ApplyPDVec3(
+        //     this.logo.position, this.currentLogoVelocity,
+        //     this.targetLogoPosition, this.targetLogoVelocity,
+        //     0.05, 0.2, dt);
  
-        if (this.nextLogoPositionTime < accumulatedTime)
-        {
-            this.nextLogoPositionTime = accumulatedTime + Math.random() * 5.0;
-            this.targetLogoPosition.x = this.originalLogoPosition.x + (Math.random() * 2.0 - 1.0) * 0.125;
-            this.targetLogoPosition.y = this.originalLogoPosition.y + (Math.random() * 2.0 - 1.0) * 0.125;
-        }
+        // if (this.nextLogoPositionTime < accumulatedTime)
+        // {
+        //     this.nextLogoPositionTime = accumulatedTime + Math.random() * 5.0;
+        //     this.targetLogoPosition.x = this.originalLogoPosition.x + (Math.random() * 2.0 - 1.0) * 0.125;
+        //     this.targetLogoPosition.y = this.originalLogoPosition.y + (Math.random() * 2.0 - 1.0) * 0.125;
+        // }
+
+        this.targetCameraPosition.x = this.noise.getVal(this.accumulatedTime);
+        this.targetCameraPosition.y = this.noise.getVal(this.accumulatedTime + 2.0);
+
+        PDAccel.ApplyPDVec3(this.camera.position, this.currentCameraVelocity,
+            this.targetCameraPosition, this.targetCameraVelocity,
+            0.05, 0.2, dt);
     }
 }
 
@@ -167,12 +189,33 @@ export class ZoneDefault extends Zone
     {
         super.initialize();
 
+        this.nextExitPromptTime = Infinity;
+        this.lookForExitInput = false;
         this.repeatingHaptics = [];
 
         const geometry = new THREE.SphereGeometry( 0.15, 32, 32 );
         const material = new THREE.MeshPhysicalMaterial( {color: 0xeac3b9, metalness:0.125, roughness:0.55}); //{color: 0xfac3b9, metalness:0.2, roughness: 0.5} );
         let sphere = new THREE.Mesh( geometry, material );
     
+        const blackoutQuad = new THREE.PlaneGeometry(1000.0, 1000.0, 1, 1);
+        const blackoutMaterial = new THREE.MeshBasicMaterial(
+            {
+                color:0x000000, 
+                opacity:1.0, 
+                transparent:true,
+                depthTest: false,
+                fog: false
+            }
+        );
+        this.fadeInFromBlack = new TWEEN.Tween(blackoutMaterial).delay(0.5).to({opacity:0.0}, 1.5).easing(TWEEN.Easing.Cubic.InOut);
+        this.fadeOutToBlack = new TWEEN.Tween(blackoutMaterial).to({opacity:1.0}, 1.5).easing(TWEEN.Easing.Cubic.InOut).onComplete(
+            () => {this.exitSession();});
+
+        let blackoutMesh = new THREE.Mesh(blackoutQuad, blackoutMaterial);
+        blackoutMesh.renderOrder = 1;
+        blackoutMesh.position.z = -100;
+        this.addSceneObject(blackoutMesh);
+
        // create an AudioListener and add it to the camera
         let listener = new THREE.AudioListener();
         this.camera.add( listener );
@@ -237,7 +280,9 @@ export class ZoneDefault extends Zone
 
         let fog = new THREE.FogExp2(0xfff4ed, 0.0027);
         this.scene.fog = fog;
-    
+
+        if (true)
+        {
 
         const directionalLight = new THREE.DirectionalLight(0xfff7fc, 0.55);
         directionalLight.position.set(10.095, 9.2364, 14.453);
@@ -248,7 +293,9 @@ export class ZoneDefault extends Zone
 
         const hemi = new THREE.HemisphereLight( 0xffffff, 0xf58779, 0.55 );
         this.addSceneObject(hemi);
-
+        }
+        this.startedEnvMapLoad = false;
+        // this.loadEnvMap();
 
         // const loader = new GLTFLoader();
         // loader.load('./content/environment1.gltf', 
@@ -257,9 +304,12 @@ export class ZoneDefault extends Zone
 
 
 
+        this.monolithObject = null;
+
         let loaderPromise = new Promise( resolve => {
             let loader = new GLTFLoader();
             loader.load('./content/environment1_2.gltf', resolve);
+            //loader.load('./content/lightbakingtest.gltf', resolve);
         });
         loaderPromise.then(
             gltf => {
@@ -268,18 +318,28 @@ export class ZoneDefault extends Zone
                     let obj = gltf.scene.children[i];
                     if (obj.name == "Skydome")
                     {
-                    obj.material.fog = false;
-                    // obj.material.emissive.set(1.0, 1.0, 1.0); // = 0xffffff;
-                    // obj.material.emissiveMap = obj.material.map;
-                    // obj.material.map = null;
-                    // obj.material.color.set(1.0, 1.0, 1.0); //, 1.0); // = 0xffffff;
-                    //     // obj.material = new THREE.MeshBasicMaterial({
-                        //     color: 0x00ace7, //obj.material.color,
-                        //     fog:false,
-                        //     side: THREE.BackSide
-                        // });
+                        //swap with a basic material so that the sky is unlit
+                        obj.material = new THREE.MeshBasicMaterial(
+                            {
+                                color: 0xffffff,
+                                fog: false,
+                                side: THREE.BackSide,
+                                map: obj.material.map
+                            }
+                        );
+
                         break;
                     }
+                    if (obj.name == "Monolith")
+                    {
+                        this.monolithObject = obj;
+                        this.setMonolithEnvMap = false;
+                    }
+                    // if (obj.name == "Terrain")
+                    // {
+                    //     obj.material.lightMap = obj.material.map;
+                    //     obj.material.map = null;
+                    // }
                 }
                 this.addSceneObject(gltf.scene);
             });
@@ -333,11 +393,59 @@ export class ZoneDefault extends Zone
                 this.textTweenIn.chain(this.textTweenOut);
             });
 
+
+
+
+
     }
 
+    loadEnvMap()
+    {
+        this.pmremRenderer = new THREE.WebGLRenderer({antialias: true});
+        this.pmremRenderer.physicallyCorrectLights = true;
+        this.pmremRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+        
+
+        this.pmremRenderer.setSize(256, 256);
+        this.pmremRenderer.setClearColor(0xfff4ed);
+
+        this.pmremGenerator = new THREE.PMREMGenerator( this.pmremRenderer );
+        this.pmremGenerator.compileEquirectangularShader();
+
+
+        // THREE.DefaultLoadingManager.onLoad = function ( ) {
+
+        //     this.pmremGenerator.dispose();
+        //     this.pmremGenerator = null;
+
+        new THREE.TextureLoader().load( './content/envmap.png', ( texture ) => {
+
+            texture.encoding = THREE.sRGBEncoding;
+
+            this.envMapRT = this.pmremGenerator.fromEquirectangular( texture );
+
+            this.envMapCube = this.envMapRT.texture;
+
+            texture.dispose();
+
+        } );
+
+
+
+    }
+    exitSession()
+    {
+        this.renderer.xr.getSession().end();
+    }
     update(dt, accumulatedTime)
     {
         super.update(dt, accumulatedTime);
+        if (false) //!this.startedEnvMapLoad)
+        {
+            this.startedEnvMapLoad = true;
+            this.loadEnvMap();
+        }
         if (this.repeatingHaptics.length != 0)
         {
             //loop backwards so we can remove expired elements as we encounter them
@@ -354,6 +462,41 @@ export class ZoneDefault extends Zone
                         this.repeatingHaptics.splice(i, 1);
                 }
             }
+        }
+
+        if (this.lookForExitInput && this.nextExitPromptTime < this.accumulatedTime)
+        {
+            this.updateText("Press and hold\nthe right trigger\nto exit.", 1.0, 2.0, 1.0);
+            this.nextExitPromptTime = this.accumulatedTime + 10.0;
+        }
+
+
+        if (this.lookForExitInput && this.renderer.inputManager.getTriggerPressedDuration(1) > 1.0)
+        {
+            this.lookForExitInput = false;
+            this.fadeOutToBlack.start(this.accumulatedTime);
+            //this.renderer.xr.getSession().end();
+        }
+
+        if (this.monolithObject && 
+            //this.envMapCube && 
+            this.renderer.envMapCube && this.setMonolithEnvMap == false)
+        {
+            this.monolithObject.material.envMap = this.renderer.envMapCube;
+            this.monolithObject.material.envMapIntensity = 1.2;
+            this.monolithObject.material.metalness = 0.8;
+            this.monolithObject.material.roughness = 0.46;
+            this.monolithObject.material.needsUpdate = true;
+            this.monolithObject.material.color.set(0xffffff);
+
+            this.sphere.material.envMap = this.renderer.envMapCube;
+            this.sphere.material.envMapIntensity = 1.9;
+            this.sphere.material.metalness = 0.6;
+            this.sphere.material.roughness = 0.5;
+            this.sphere.material.needsUpdate = true;
+
+            this.setMonolithEnvMap = true;
+            //this.monolithObject.material.map = this.envMapCube;
         }
     }
 
@@ -383,18 +526,18 @@ export class ZoneDefault extends Zone
         {
             this.fontMaterial.opacity = 0.0;
             this.textTweenIn.chain(this.textTweenOut);
-            this.textTweenIn.start(this.accumlatedTime);
+            this.textTweenIn.start(this.accumulatedTime);
         }
         else if (fadeIn)
         {
             this.fontMaterial.opacity = 0.0;
             this.textTweenIn._chainedTweens.length = 0;
-            this.textTweenIn.start(this.accumlatedTime);
+            this.textTweenIn.start(this.accumulatedTime);
         }
         else if (fadeOut)
         {
             this.fontMaterial.opacity = 1.0;
-            this.textTweenOut.start(this.accumlatedTime);
+            this.textTweenOut.start(this.accumulatedTime);
         }
         else
         {
@@ -415,33 +558,14 @@ export class ZoneDefault extends Zone
     }
     pulseHapticsRepeat(index, intensity, seconds, wait, repeat)
     {
-        let rh = {index: index, intensity: intensity, milliseconds: seconds*1000.0, waitTime: wait, numLeft: repeat, nextBuzz: this.accumlatedTime};
+        let rh = {index: index, intensity: intensity, milliseconds: seconds*1000.0, waitTime: wait, numLeft: repeat, nextBuzz: this.accumulatedTime};
         this.repeatingHaptics.push(rh);
     }
-
-    onIntroStart()
-    {
-
-        this.sphere.tweenIntro.start(this.accumlatedTime);
-    }
-
-    onBreatheStart()
-    {
-        this.sound.play();
-        this.sphere.tween.start(this.accumlatedTime);
-    }
-
-    onBreatheEnd()
-    {
-        // if (this.sound.isPlaying)
-        //     this.sound.stop();
-    }
-
     onStart(accumulatedTime)
     {
         super.onStart(accumulatedTime);
 
-        const kNumIterations = 1;
+        const kNumIterations = 4;
         let endState = new EndState();
         let outroState = new TimedState(3.0, endState);
         let breatheState = new TimedState(10.0*kNumIterations, outroState);
@@ -452,14 +576,14 @@ export class ZoneDefault extends Zone
         let introBeatState = new TimedState(3.0, instructionsState);
 
         introBeatState.onStartCallbacks.push(() => {
-
+            this.fadeInFromBlack.start(this.accumulatedTime);
         });
 
         instructionsState.onStartCallbacks.push(() => {
             this.sound.play();
             //this.soundChime.play();
             //this.soundChime2.play(0.5);
-            this.updateText("Clear your mind\nand focus\non your breathing.", 1.0, 3.0, 1.0);
+            this.updateText("Clear your mind\nand focus on\nyour breathing.", 1.0, 3.0, 1.0);
             // this.activateHaptics(1, 0.1, 100);
             // this.activateHaptics(0, 0.1, 250);
         });
@@ -468,7 +592,7 @@ export class ZoneDefault extends Zone
         });
 
         introFocusObjectState.onStartCallbacks.push(() => {
-            this.sphere.tweenIntro.start(this.accumlatedTime);
+            this.sphere.tweenIntro.start(this.accumulatedTime);
 
             //this.soundChime.play();
             //this.soundChime2.play(1.0);
@@ -480,8 +604,8 @@ export class ZoneDefault extends Zone
             //this.soundChime.play();
             //this.soundChime2.play(1.0);
 
-            this.sphere.tweenUp.start(this.accumlatedTime);
-            this.updateText("Breathe In", 1.5, 3.3, 0.1);
+            this.sphere.tweenUp.start(this.accumulatedTime);
+            this.updateText("Breathe in.", 1.5, 3.3, 0.1);
             // this.pulseHapticsRepeat(0, 0.01, 0.03, 0.97, 5);
             // this.pulseHapticsRepeat(1, 0.01, 0.03, 0.97, 5);
 
@@ -489,8 +613,8 @@ export class ZoneDefault extends Zone
             this.pulseHapticsRepeat(1, 0.01, 0.03, 0.97, (kNumIterations+1)*2*5);
         });
         breatheOutState.onStartCallbacks.push(() => {
-            this.sphere.tweenDown.start(this.accumlatedTime);
-            this.updateText("Breathe Out", 0.1, 3.4, 1.5);
+            this.sphere.tweenDown.start(this.accumulatedTime);
+            this.updateText("Breathe out.", 0.1, 3.4, 1.5);
 
             // this.pulseHapticsRepeat(0, 0.01, 0.03, 0.97, 5);
             // this.pulseHapticsRepeat(1, 0.01, 0.03, 0.97, 5);
@@ -498,7 +622,7 @@ export class ZoneDefault extends Zone
         });
         breatheState.onStartCallbacks.push(() => {
             //this.updateText("");
-            this.sphere.tweenLoop.start(this.accumlatedTime);
+            this.sphere.tweenLoop.start(this.accumulatedTime);
 
             // this.pulseHapticsRepeat(0, 0.01, 0.03, 0.97, kNumIterations*2*5);
             // this.pulseHapticsRepeat(1, 0.01, 0.03, 0.97, kNumIterations*2*5);
@@ -508,12 +632,17 @@ export class ZoneDefault extends Zone
         });
         outroState.onStartCallbacks.push(() => {
             this.updateText("Great job!", 1.0, 3.0, 1.0)
-            this.sphere.tweenOut.start(this.accumlatedTime);
+            this.sphere.tweenOut.start(this.accumulatedTime);
             //this.soundChime.play();
             this.pulseHapticsRepeat(0, 0.1, 0.5, 0.0, 1);
             this.pulseHapticsRepeat(1, 0.1, 0.5, 0.0, 1);
         });
         outroState.onEndCallbacks.push(() => {
+        });
+
+        endState.onStartCallbacks.push(() => {
+            this.nextExitPromptTime = this.accumulatedTime + 3.0;
+            this.lookForExitInput = true;
         });
 
         this.startState(introBeatState);
@@ -522,7 +651,8 @@ export class ZoneDefault extends Zone
     onEnd()
     {
         super.onEnd();
-        this.sound.stop();
+        if (this.sound && this.sound.isPlaying)
+            this.sound.stop();
     }
 }
 

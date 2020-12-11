@@ -5,6 +5,9 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 import * as TWEEN from '@tweenjs/tween.js';
 import * as ZONE from './zone.js';
 import * as HUD from './StatsHud.js';
+import { InputManager } from './inputManager.js';
+
+//import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 
 let clock = null;
 let accumulatedTime = 0.0;
@@ -17,6 +20,9 @@ let hud = null;
 const bShowHud = false;
 let controllers = [];
 
+let pmremGenerator = null;
+
+
 initialize();
 
 function initialize()
@@ -24,7 +30,7 @@ function initialize()
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5.0;
-    camera.position.y = 2.0;
+    //camera.position.y = 2.0;
     //camera.rotation.x = 90.0;
     //camera.lookAt( {x:0.0, y:0.0, z:-10.0});
 
@@ -33,12 +39,17 @@ function initialize()
 
     renderer = new THREE.WebGLRenderer( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.antialias = false;
     renderer.xr.enabled = true;
     renderer.setClearColor(0xfff4ed);
+    // renderer.physicallyCorrectLights = true;
+
+    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    // renderer.outputEncoding = THREE.sRGBEncoding;
+    // renderer.toneMappingExposure = 2.0;
 
     document.body.appendChild(renderer.domElement);
-    document.body.appendChild(VRButton.createButton(renderer));
+    let button = VRButton.createButton(renderer);
+    document.body.appendChild(button);
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
@@ -70,8 +81,12 @@ function initialize()
  
     scene.controllers = controllers;
 
+    renderer.inputManager = new InputManager(renderer.xr);
+
     zone = new ZONE.ZoneIntro(scene, renderer, camera);
     zone.onStart(accumulatedTime);
+
+    loadEnvMap();
 
     renderer.setAnimationLoop(render);     
 };
@@ -83,6 +98,7 @@ function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
 
+    renderer.inputManager.update(dt, accumulatedTime);
     zone.update(dt, accumulatedTime);
     TWEEN.update(accumulatedTime);
     renderer.render(scene, camera);
@@ -92,6 +108,7 @@ function onSessionStart(event)
 {
     zone.onEnd();
     zone = new ZONE.ZoneDefault(scene, renderer, camera);
+    console.log("starting zone @ " + accumulatedTime);
     zone.onStart(accumulatedTime);
 }
 function onSessionEnd(event)
@@ -100,4 +117,45 @@ function onSessionEnd(event)
 
     zone = new ZONE.ZoneIntro(scene, renderer, camera);
     zone.onStart(accumulatedTime);
+}
+
+
+function loadEnvMap()
+{
+    pmremGenerator = new THREE.PMREMGenerator( renderer );
+    pmremGenerator.compileEquirectangularShader();
+
+    // THREE.DefaultLoadingManager.onLoad = function ( ) {
+
+    //     this.pmremGenerator.dispose();
+    //     this.pmremGenerator = null;
+
+    // };
+
+    // new EXRLoader()
+    //     .setDataType( THREE.UnsignedByteType )
+    //     .load( './content/threejs-piz_compressed.exr',  ( texture ) => {
+
+    //         let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
+    //         renderer.exrCube = exrCubeRenderTarget.texture;
+
+    //         texture.dispose();
+
+    //     } );
+
+    new THREE.TextureLoader().load( './content/envmap.png', ( texture ) => {
+
+        texture.encoding = THREE.sRGBEncoding;
+
+        renderer.envMapRT = pmremGenerator.fromEquirectangular( texture );
+
+        renderer.envMapCube = renderer.envMapRT.texture;
+
+        renderer.envMapFromDisk = texture;
+        //texture.dispose();
+
+    } );
+
+
+
 }
