@@ -66397,22 +66397,11 @@ class ZoneDefault extends Zone
             this.sound.setVolume(0.125);
         });
 
-        this.soundChime = new THREE.PositionalAudio(listener);
-        this.soundChime2 = new THREE.PositionalAudio(listener);
-        audioLoader.load('./content/Mono-Electronic_Chime-KevanGC-495939803.mp3', (buffer) => {
-            this.soundChime.setBuffer(buffer);
-            this.soundChime.setRefDistance(50);
-            this.soundChime.setVolume(0.5);
-
-            this.soundChime2.setBuffer(buffer);
-            this.soundChime2.setRefDistance(10);
-            this.soundChime2.setVolume(1.0);
-        });
+        
 
         this.soundObject = new THREE.Object3D();
         this.soundObject.position.set(0.0, 2.0, -2.0);
         this.soundObject.add(this.sound);
-        this.soundObject.add(this.soundChime);
         this.addSceneObject(this.soundObject);
 
         this.sphere = sphere;
@@ -66863,7 +66852,7 @@ function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX,
     // let euler = new THREE.Euler((xDeg) * kDegToRad, (yDeg) * kDegToRad, zDeg * kDegToRad);
     light.position.set(0.0, 20.0, 0.0);
     light.position.applyQuaternion(quaternion);
-    console.log("LIGHT POS: " + light.position.x * 20.0 + ", " + light.position.y * 20.0 + ", " + light.position.z * 20.0 );
+    //console.log("LIGHT POS: " + light.position.x * 20.0 + ", " + light.position.y * 20.0 + ", " + light.position.z * 20.0 );
 }
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
