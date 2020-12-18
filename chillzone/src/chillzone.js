@@ -40,12 +40,16 @@ function initialize()
     renderer = new THREE.WebGLRenderer( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    renderer.setClearColor(0xfff4ed);
-    // renderer.physicallyCorrectLights = true;
+    let color = new THREE.Color(0xfffbf8);
+    color.convertSRGBToLinear();
+    renderer.setClearColor(color);
+    renderer.physicallyCorrectLights = true;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    // renderer.outputEncoding = THREE.sRGBEncoding;
-    // renderer.toneMappingExposure = 2.0;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
 
     document.body.appendChild(renderer.domElement);
     let button = VRButton.createButton(renderer);
@@ -108,7 +112,6 @@ function onSessionStart(event)
 {
     zone.onEnd();
     zone = new ZONE.ZoneDefault(scene, renderer, camera);
-    console.log("starting zone @ " + accumulatedTime);
     zone.onStart(accumulatedTime);
 }
 function onSessionEnd(event)

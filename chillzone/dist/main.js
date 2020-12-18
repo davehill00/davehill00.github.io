@@ -65606,12 +65606,16 @@ function initialize()
     renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    renderer.setClearColor(0xfff4ed);
-    // renderer.physicallyCorrectLights = true;
+    let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0xfffbf8);
+    color.convertSRGBToLinear();
+    renderer.setClearColor(color);
+    renderer.physicallyCorrectLights = true;
+    renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_0__["sRGBEncoding"];
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = three__WEBPACK_IMPORTED_MODULE_0__["PCFSoftShadowMap"];
 
-    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    // renderer.outputEncoding = THREE.sRGBEncoding;
-    // renderer.toneMappingExposure = 2.0;
+    renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_0__["ACESFilmicToneMapping"];
+    renderer.toneMappingExposure = 1.1;
 
     document.body.appendChild(renderer.domElement);
     let button = three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_1__["VRButton"].createButton(renderer);
@@ -65674,7 +65678,6 @@ function onSessionStart(event)
 {
     zone.onEnd();
     zone = new _zone_js__WEBPACK_IMPORTED_MODULE_5__["ZoneDefault"](scene, renderer, camera);
-    console.log("starting zone @ " + accumulatedTime);
     zone.onStart(accumulatedTime);
 }
 function onSessionEnd(event)
@@ -65725,6 +65728,103 @@ function loadEnvMap()
 
 
 }
+
+/***/ }),
+
+/***/ "./src/flare.js":
+/*!**********************!*\
+  !*** ./src/flare.js ***!
+  \**********************/
+/*! exports provided: Flare */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Flare", function() { return Flare; });
+class Flare
+{
+    constructor(position, zone, camera, renderer)
+    {
+
+        var texture = new THREE.TextureLoader().load('./content/sunflare.png');
+        let geo = new THREE.PlaneGeometry(8.0, 5.0, 1, 1);
+        let mat = new THREE.MeshBasicMaterial( 
+            {
+                color: 0xffffff,
+                side: THREE.DoubleSide,
+                opacity: 0.0,
+                transparent: true,
+                map: texture,
+            }
+        );
+        this.mesh = new THREE.Mesh(geo, mat);
+        this.mesh.position.set(position.x, position.y, position.z);
+        zone.addSceneObject(this.mesh);
+
+
+        this.zone = zone;
+        this.camera = camera;
+        this.renderer = renderer;
+        this.camHeading = new THREE.Vector3(0,0,0);
+        this.toFlarePos = new THREE.Vector3(0,0,0);
+
+        this.targetPos = new THREE.Vector3(0,0,0);
+
+        let sunGeo = new THREE.CircleGeometry(3.0, 32);
+        let sunMat = new THREE.MeshBasicMaterial(
+            {
+                color: 0xffffff,
+                side: THREE.DoubleSide,
+                opacity: 1.0
+            }
+        );
+        this.sunMesh = new THREE.Mesh(sunGeo, sunMat);
+        this.sunMesh.position.set(position.x*1.01, position.y*1.01, position.z*1.01);
+        zone.addSceneObject(this.sunMesh);
+    
+        
+        this.posAccum = 0.0;
+
+    }
+
+    update(dt)
+    {
+
+        let xrCamera = this.renderer.xr.getCamera(this.camera);
+        xrCamera.getWorldDirection(this.camHeading);
+
+        this.mesh.lookAt(xrCamera.position);
+        this.sunMesh.lookAt(xrCamera.position);
+
+        this.posAccum += dt;
+        this.targetPos.y = Math.sin(this.posAccum) * 10.0;
+
+        //this.camera.getWorldDirection(this.camHeading);
+        this.toFlarePos.subVectors(this.mesh.position, xrCamera.position);
+        this.toFlarePos.normalize();
+
+        let dot = this.camHeading.dot(this.toFlarePos);
+        const kMin = 0.7;
+        const kMax = 0.95;
+        const kSmall = 4.0;
+        const kBig = 12.0;
+
+        if (dot > kMin)
+        {
+            let t = Math.min((dot - kMin) / (kMax - kMin), 1.0);
+            this.mesh.material.opacity = t;
+            let size = kSmall + (kBig - kSmall) * t;
+            this.mesh.scale.set(size, size, size);
+        }
+        else
+        {
+            this.mesh.material.opacity = 0.0;
+            this.mesh.scale.set(1.0, 1.0, 1.0);
+        }
+
+    }
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ }),
 
@@ -66030,7 +66130,7 @@ class EndState extends State
 /*!*********************!*\
   !*** ./src/zone.js ***!
   \*********************/
-/*! exports provided: Zone, ZoneIntro, ZoneDefault */
+/*! exports provided: Zone, ZoneIntro, ZoneDefault, setDirectionalLightPositionFromBlenderQuaternion */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -66038,6 +66138,7 @@ __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Zone", function() { return Zone; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZoneIntro", function() { return ZoneIntro; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZoneDefault", function() { return ZoneDefault; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDirectionalLightPositionFromBlenderQuaternion", function() { return setDirectionalLightPositionFromBlenderQuaternion; });
 /* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
 /* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
 /* harmony import */ var _state_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./state.js */ "./src/state.js");
@@ -66047,6 +66148,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _inputManager_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./inputManager.js */ "./src/inputManager.js");
 /* harmony import */ var _pdacceleration_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./pdacceleration.js */ "./src/pdacceleration.js");
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _flare_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./flare.js */ "./src/flare.js");
 
 
 
@@ -66061,6 +66163,7 @@ var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfon
 
 
 
+
 class Zone
 {
     constructor(inScene, inRenderer, inCamera)
@@ -66070,6 +66173,7 @@ class Zone
         this.renderer = inRenderer;
         this.focusObjectsGroup = new THREE.Group();
         this.sceneObjectsGroup = new THREE.Group();
+        this.cameraObjectsGroup = new THREE.Group();
         this.currentState = null;
         this.accumulatedTime = 0.0;
 
@@ -66089,12 +66193,14 @@ class Zone
         
         this.scene.add(this.focusObjectsGroup);
         this.scene.add(this.sceneObjectsGroup);
+        this.camera.add(this.cameraObjectsGroup);
     }
 
     onEnd()
     {
         this.scene.remove(this.focusObjectsGroup);
         this.scene.remove(this.sceneObjectsGroup);
+        this.camera.remove(this.cameraObjectsGroup);
         this.scene.fog = null;
     }
 
@@ -66135,6 +66241,11 @@ class Zone
     {
         this.sceneObjectsGroup.add(object);
     }
+
+    addCameraObject(object)
+    {
+        this.cameraObjectsGroup.add(object);
+    }
 }
 
 class ZoneIntro extends Zone
@@ -66143,8 +66254,8 @@ class ZoneIntro extends Zone
     {
         super.initialize();
 
-
-        let fog = new THREE.Fog(0xfff4ed, 1.0, 85.0); //new THREE.FogExp2(0xfff4ed, 0.035);
+        let fog = new THREE.Fog(0xfffbf8, 1.0, 95.0); //new THREE.FogExp2(0xfff4ed, 0.035);
+        fog.color.convertSRGBToLinear();
         this.scene.fog = fog;
 
 
@@ -66152,6 +66263,7 @@ class ZoneIntro extends Zone
 
         const pg = new THREE.PlaneGeometry( 4, 1, 1 );
         const pm = new THREE.MeshBasicMaterial( {color: 0xff9582, transparent:true, map: texture} );
+        pm.color.convertSRGBToLinear();
         const logo = new THREE.Mesh( pg, pm );
 
         logo.position.y = 0.0;
@@ -66165,11 +66277,13 @@ class ZoneIntro extends Zone
         this.logo = logo;
         this.addFocusObject(logo);
 
-        const directionalLight = new THREE.DirectionalLight(0xf58789, 1);
+        const directionalLight = new THREE.DirectionalLight(0xf58789, 8);
+        directionalLight.color.convertSRGBToLinear();
         directionalLight.position.set(10.095, 9.2364, 14.453);
         this.addSceneObject(directionalLight);
     
-        const light = new THREE.AmbientLight(0xf58789); // soft white light
+        const light = new THREE.AmbientLight(0xf58789, 2.0); // soft white light
+        light.color.convertSRGBToLinear();
         this.addSceneObject(light);
 
 
@@ -66242,7 +66356,7 @@ class ZoneDefault extends Zone
         this.lookForExitInput = false;
         this.repeatingHaptics = [];
 
-        const geometry = new THREE.SphereGeometry( 0.15, 32, 32 );
+        const geometry = new THREE.SphereGeometry( 0.14, 32, 32 );
         const material = new THREE.MeshPhysicalMaterial( {color: 0xeac3b9, metalness:0.125, roughness:0.55}); //{color: 0xfac3b9, metalness:0.2, roughness: 0.5} );
         let sphere = new THREE.Mesh( geometry, material );
     
@@ -66263,7 +66377,7 @@ class ZoneDefault extends Zone
         let blackoutMesh = new THREE.Mesh(blackoutQuad, blackoutMaterial);
         blackoutMesh.renderOrder = 1;
         blackoutMesh.position.z = -100;
-        this.addSceneObject(blackoutMesh);
+        this.addCameraObject(blackoutMesh);
 
        // create an AudioListener and add it to the camera
         let listener = new THREE.AudioListener();
@@ -66304,10 +66418,11 @@ class ZoneDefault extends Zone
         this.sphere = sphere;
         // this.sphere.add(this.sound);
 
-        sphere.position.z = -2.0;
+        sphere.position.z = -3.0;
         sphere.position.y = 0.75;
         sphere.scale.set(0.0, 0.0, 0.0);
         sphere.initialPosition = sphere.position;
+        sphere.castShadow = true;
         var tweenIntro = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.scale).to({ x:1.0, y:1.0, z:1.0 }, 2.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.Out);
         var tweenUp = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).to({ y: 1.25 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
         var tweenDown = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Tween"](sphere.position).to({ y: 0.75 }, 5.0).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["Easing"].Cubic.InOut);
@@ -66327,21 +66442,46 @@ class ZoneDefault extends Zone
 
         this.addFocusObject(sphere);
 
-        let fog = new THREE.FogExp2(0xfff4ed, 0.0027);
+        let fog = new THREE.FogExp2(0xfff4ed, 0.002527);
+        fog.color.convertSRGBToLinear();
         this.scene.fog = fog;
 
         if (true)
         {
 
-        const directionalLight = new THREE.DirectionalLight(0xfff7fc, 0.55);
-        directionalLight.position.set(10.095, 9.2364, 14.453);
-        this.addSceneObject(directionalLight);
-    
-        // const light = new THREE.AmbientLight(0xf58789); // soft white light
-        // this.addSceneObject(light);
+            const directionalLight = new THREE.DirectionalLight(0xfff7fc, 2.5);
+            directionalLight.color.convertSRGBToLinear();
+            //directionalLight.position.set(10.095, 9.2364, 14.453);
 
-        const hemi = new THREE.HemisphereLight( 0xffffff, 0xf58779, 0.55 );
-        this.addSceneObject(hemi);
+            setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205); //, 0.275, 0.287, 0.487);
+
+            this.addSceneObject(directionalLight);
+
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048; // default
+            directionalLight.shadow.mapSize.height = 2048; // default
+            directionalLight.shadow.camera.near = 0.5; // default
+            directionalLight.shadow.camera.far = 100; // default
+            const kSize = 20;
+            directionalLight.shadow.camera.left = -kSize;
+            directionalLight.shadow.camera.right = kSize;
+            directionalLight.shadow.camera.top = 20; //kSize;
+            directionalLight.shadow.camera.bottom = -2.5; //-kSize;
+            directionalLight.shadow.bias = -0.00055;
+
+        
+            let sunVector = directionalLight.position.clone();
+            sunVector.normalize();
+            sunVector.multiplyScalar(100.0);
+            this.flare = new _flare_js__WEBPACK_IMPORTED_MODULE_9__["Flare"](sunVector, this, this.camera, this.renderer);
+
+            // const light = new THREE.AmbientLight(0xf58789); // soft white light
+            // this.addSceneObject(light);
+
+            const hemi = new THREE.HemisphereLight( 0x8080aa, 0xf58779, 1.25 );
+            hemi.color.convertSRGBToLinear();
+            hemi.groundColor.convertSRGBToLinear();
+            this.addSceneObject(hemi);
         }
         this.startedEnvMapLoad = false;
         // this.loadEnvMap();
@@ -66376,19 +66516,23 @@ class ZoneDefault extends Zone
                                 map: obj.material.map
                             }
                         );
-
-                        break;
                     }
-                    if (obj.name == "Monolith")
+                    else if (obj.name == "Monolith")
                     {
                         this.monolithObject = obj;
                         this.setMonolithEnvMap = false;
+                        obj.castShadow = true;
                     }
-                    // if (obj.name == "Terrain")
-                    // {
-                    //     obj.material.lightMap = obj.material.map;
-                    //     obj.material.map = null;
-                    // }
+                    else if (obj.name == "Terrain")
+                    {
+                        obj.receiveShadow = true;
+                        //obj.castShadow = true;
+                    }
+                    else
+                    {
+                        obj.castShadow = true;
+                        obj.receiveShadow = true;
+                    }
                 }
                 this.addSceneObject(gltf.scene);
             });
@@ -66422,17 +66566,18 @@ class ZoneDefault extends Zone
                     map: texture,
                     transparent: true,
                     side: THREE.DoubleSide,
-                    color: 0xfac3b9,
+                    color: 0xfe9789, //0xfac3b9,
                     opacity: 0.0,
                     depthTest: false //:THREE.NeverDepth
 
                 });
+                this.fontMaterial.color.convertSRGBToLinear();
 
                 // scale and position the mesh to get it doing something reasonable
                 this.fontMesh = new THREE.Mesh(this.fontGeometry, this.fontMaterial);
                 this.fontMesh.renderOrder = 0;
-                this.fontMesh.position.set(0.0, 0.0, -3);
-                this.fontMesh.scale.set(0.0025, 0.0025, 0.0025);
+                this.fontMesh.position.set(0.0, 0.0, -2.0);
+                this.fontMesh.scale.set(0.00125, 0.00125, 0.00125);
                 this.fontMesh.rotation.set(3.14, 0, 0);
 
                 this.addSceneObject(this.fontMesh);
@@ -66512,7 +66657,7 @@ class ZoneDefault extends Zone
 
         if (this.lookForExitInput && this.nextExitPromptTime < this.accumulatedTime)
         {
-            this.updateText("Press and hold\nthe right trigger\nto exit.", 1.0, 2.0, 1.0);
+            this.updateText("Press and hold\nboth triggers to exit.", 1.0, 2.0, 1.0);
             this.nextExitPromptTime = this.accumulatedTime + 10.0;
         }
 
@@ -66535,15 +66680,18 @@ class ZoneDefault extends Zone
             this.monolithObject.material.needsUpdate = true;
             this.monolithObject.material.color.set(0xffffff);
 
+            this.sphere.material.color.convertSRGBToLinear();
             this.sphere.material.envMap = this.renderer.envMapCube;
-            this.sphere.material.envMapIntensity = 1.9;
-            this.sphere.material.metalness = 0.6;
+            this.sphere.material.envMapIntensity = 1.0; //1.9;
+            this.sphere.material.metalness = 0.96;
             this.sphere.material.roughness = 0.5;
             this.sphere.material.needsUpdate = true;
 
             this.setMonolithEnvMap = true;
             //this.monolithObject.material.map = this.envMapCube;
         }
+
+        this.flare.update(dt);
     }
 
     updateText(str, fadeInTime, opaqueDuration, fadeOutTime)
@@ -66557,6 +66705,8 @@ class ZoneDefault extends Zone
         this.fontMesh.position.y = (box.max.y - box.min.y) * -0.5;
         this.fontMesh.position.x *= this.fontMesh.scale.x;
         this.fontMesh.position.y *= this.fontMesh.scale.y;
+
+        this.fontMesh.position.y += 0.65;
 
         this.textTweenIn.stop();
         this.textTweenOut.stop();
@@ -66702,6 +66852,19 @@ class ZoneDefault extends Zone
     }
 }
 
+
+function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX, bQuatY, bQuatZ)
+{
+
+    const quaternion = new THREE.Quaternion(bQuatX, bQuatZ, -bQuatY, bQuatW);
+    
+
+    // const kDegToRad = 0.01745329252;
+    // let euler = new THREE.Euler((xDeg) * kDegToRad, (yDeg) * kDegToRad, zDeg * kDegToRad);
+    light.position.set(0.0, 20.0, 0.0);
+    light.position.applyQuaternion(quaternion);
+    console.log("LIGHT POS: " + light.position.x * 20.0 + ", " + light.position.y * 20.0 + ", " + light.position.z * 20.0 );
+}
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 

@@ -11,6 +11,7 @@ var loadFont = require('load-bmfont')
 
 import * as PDAccel from './pdacceleration.js';
 import { SphereGeometry, TextureLoader } from "three";
+import { Flare } from "./flare.js";
 
 export class Zone
 {
@@ -21,6 +22,7 @@ export class Zone
         this.renderer = inRenderer;
         this.focusObjectsGroup = new THREE.Group();
         this.sceneObjectsGroup = new THREE.Group();
+        this.cameraObjectsGroup = new THREE.Group();
         this.currentState = null;
         this.accumulatedTime = 0.0;
 
@@ -40,12 +42,14 @@ export class Zone
         
         this.scene.add(this.focusObjectsGroup);
         this.scene.add(this.sceneObjectsGroup);
+        this.camera.add(this.cameraObjectsGroup);
     }
 
     onEnd()
     {
         this.scene.remove(this.focusObjectsGroup);
         this.scene.remove(this.sceneObjectsGroup);
+        this.camera.remove(this.cameraObjectsGroup);
         this.scene.fog = null;
     }
 
@@ -86,6 +90,11 @@ export class Zone
     {
         this.sceneObjectsGroup.add(object);
     }
+
+    addCameraObject(object)
+    {
+        this.cameraObjectsGroup.add(object);
+    }
 }
 
 export class ZoneIntro extends Zone
@@ -94,8 +103,8 @@ export class ZoneIntro extends Zone
     {
         super.initialize();
 
-
-        let fog = new THREE.Fog(0xfff4ed, 1.0, 85.0); //new THREE.FogExp2(0xfff4ed, 0.035);
+        let fog = new THREE.Fog(0xfffbf8, 1.0, 95.0); //new THREE.FogExp2(0xfff4ed, 0.035);
+        fog.color.convertSRGBToLinear();
         this.scene.fog = fog;
 
 
@@ -103,6 +112,7 @@ export class ZoneIntro extends Zone
 
         const pg = new THREE.PlaneGeometry( 4, 1, 1 );
         const pm = new THREE.MeshBasicMaterial( {color: 0xff9582, transparent:true, map: texture} );
+        pm.color.convertSRGBToLinear();
         const logo = new THREE.Mesh( pg, pm );
 
         logo.position.y = 0.0;
@@ -116,11 +126,13 @@ export class ZoneIntro extends Zone
         this.logo = logo;
         this.addFocusObject(logo);
 
-        const directionalLight = new THREE.DirectionalLight(0xf58789, 1);
+        const directionalLight = new THREE.DirectionalLight(0xf58789, 8);
+        directionalLight.color.convertSRGBToLinear();
         directionalLight.position.set(10.095, 9.2364, 14.453);
         this.addSceneObject(directionalLight);
     
-        const light = new THREE.AmbientLight(0xf58789); // soft white light
+        const light = new THREE.AmbientLight(0xf58789, 2.0); // soft white light
+        light.color.convertSRGBToLinear();
         this.addSceneObject(light);
 
 
@@ -193,7 +205,7 @@ export class ZoneDefault extends Zone
         this.lookForExitInput = false;
         this.repeatingHaptics = [];
 
-        const geometry = new THREE.SphereGeometry( 0.15, 32, 32 );
+        const geometry = new THREE.SphereGeometry( 0.14, 32, 32 );
         const material = new THREE.MeshPhysicalMaterial( {color: 0xeac3b9, metalness:0.125, roughness:0.55}); //{color: 0xfac3b9, metalness:0.2, roughness: 0.5} );
         let sphere = new THREE.Mesh( geometry, material );
     
@@ -214,7 +226,7 @@ export class ZoneDefault extends Zone
         let blackoutMesh = new THREE.Mesh(blackoutQuad, blackoutMaterial);
         blackoutMesh.renderOrder = 1;
         blackoutMesh.position.z = -100;
-        this.addSceneObject(blackoutMesh);
+        this.addCameraObject(blackoutMesh);
 
        // create an AudioListener and add it to the camera
         let listener = new THREE.AudioListener();
@@ -234,31 +246,21 @@ export class ZoneDefault extends Zone
             this.sound.setVolume(0.125);
         });
 
-        this.soundChime = new THREE.PositionalAudio(listener);
-        this.soundChime2 = new THREE.PositionalAudio(listener);
-        audioLoader.load('./content/Mono-Electronic_Chime-KevanGC-495939803.mp3', (buffer) => {
-            this.soundChime.setBuffer(buffer);
-            this.soundChime.setRefDistance(50);
-            this.soundChime.setVolume(0.5);
-
-            this.soundChime2.setBuffer(buffer);
-            this.soundChime2.setRefDistance(10);
-            this.soundChime2.setVolume(1.0);
-        });
+        
 
         this.soundObject = new THREE.Object3D();
         this.soundObject.position.set(0.0, 2.0, -2.0);
         this.soundObject.add(this.sound);
-        this.soundObject.add(this.soundChime);
         this.addSceneObject(this.soundObject);
 
         this.sphere = sphere;
         // this.sphere.add(this.sound);
 
-        sphere.position.z = -2.0;
+        sphere.position.z = -3.0;
         sphere.position.y = 0.75;
         sphere.scale.set(0.0, 0.0, 0.0);
         sphere.initialPosition = sphere.position;
+        sphere.castShadow = true;
         var tweenIntro = new TWEEN.Tween(sphere.scale).to({ x:1.0, y:1.0, z:1.0 }, 2.0).easing(TWEEN.Easing.Cubic.Out);
         var tweenUp = new TWEEN.Tween(sphere.position).to({ y: 1.25 }, 5.0).easing(TWEEN.Easing.Cubic.InOut);
         var tweenDown = new TWEEN.Tween(sphere.position).to({ y: 0.75 }, 5.0).easing(TWEEN.Easing.Cubic.InOut);
@@ -278,21 +280,46 @@ export class ZoneDefault extends Zone
 
         this.addFocusObject(sphere);
 
-        let fog = new THREE.FogExp2(0xfff4ed, 0.0027);
+        let fog = new THREE.FogExp2(0xfff4ed, 0.002527);
+        fog.color.convertSRGBToLinear();
         this.scene.fog = fog;
 
         if (true)
         {
 
-        const directionalLight = new THREE.DirectionalLight(0xfff7fc, 0.55);
-        directionalLight.position.set(10.095, 9.2364, 14.453);
-        this.addSceneObject(directionalLight);
-    
-        // const light = new THREE.AmbientLight(0xf58789); // soft white light
-        // this.addSceneObject(light);
+            const directionalLight = new THREE.DirectionalLight(0xfff7fc, 2.5);
+            directionalLight.color.convertSRGBToLinear();
+            //directionalLight.position.set(10.095, 9.2364, 14.453);
 
-        const hemi = new THREE.HemisphereLight( 0xffffff, 0xf58779, 0.55 );
-        this.addSceneObject(hemi);
+            setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205); //, 0.275, 0.287, 0.487);
+
+            this.addSceneObject(directionalLight);
+
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048; // default
+            directionalLight.shadow.mapSize.height = 2048; // default
+            directionalLight.shadow.camera.near = 0.5; // default
+            directionalLight.shadow.camera.far = 100; // default
+            const kSize = 20;
+            directionalLight.shadow.camera.left = -kSize;
+            directionalLight.shadow.camera.right = kSize;
+            directionalLight.shadow.camera.top = 20; //kSize;
+            directionalLight.shadow.camera.bottom = -2.5; //-kSize;
+            directionalLight.shadow.bias = -0.00055;
+
+        
+            let sunVector = directionalLight.position.clone();
+            sunVector.normalize();
+            sunVector.multiplyScalar(100.0);
+            this.flare = new Flare(sunVector, this, this.camera, this.renderer);
+
+            // const light = new THREE.AmbientLight(0xf58789); // soft white light
+            // this.addSceneObject(light);
+
+            const hemi = new THREE.HemisphereLight( 0x8080aa, 0xf58779, 1.25 );
+            hemi.color.convertSRGBToLinear();
+            hemi.groundColor.convertSRGBToLinear();
+            this.addSceneObject(hemi);
         }
         this.startedEnvMapLoad = false;
         // this.loadEnvMap();
@@ -327,19 +354,23 @@ export class ZoneDefault extends Zone
                                 map: obj.material.map
                             }
                         );
-
-                        break;
                     }
-                    if (obj.name == "Monolith")
+                    else if (obj.name == "Monolith")
                     {
                         this.monolithObject = obj;
                         this.setMonolithEnvMap = false;
+                        obj.castShadow = true;
                     }
-                    // if (obj.name == "Terrain")
-                    // {
-                    //     obj.material.lightMap = obj.material.map;
-                    //     obj.material.map = null;
-                    // }
+                    else if (obj.name == "Terrain")
+                    {
+                        obj.receiveShadow = true;
+                        //obj.castShadow = true;
+                    }
+                    else
+                    {
+                        obj.castShadow = true;
+                        obj.receiveShadow = true;
+                    }
                 }
                 this.addSceneObject(gltf.scene);
             });
@@ -373,17 +404,18 @@ export class ZoneDefault extends Zone
                     map: texture,
                     transparent: true,
                     side: THREE.DoubleSide,
-                    color: 0xfac3b9,
+                    color: 0xfe9789, //0xfac3b9,
                     opacity: 0.0,
                     depthTest: false //:THREE.NeverDepth
 
                 });
+                this.fontMaterial.color.convertSRGBToLinear();
 
                 // scale and position the mesh to get it doing something reasonable
                 this.fontMesh = new THREE.Mesh(this.fontGeometry, this.fontMaterial);
                 this.fontMesh.renderOrder = 0;
-                this.fontMesh.position.set(0.0, 0.0, -3);
-                this.fontMesh.scale.set(0.0025, 0.0025, 0.0025);
+                this.fontMesh.position.set(0.0, 0.0, -2.0);
+                this.fontMesh.scale.set(0.00125, 0.00125, 0.00125);
                 this.fontMesh.rotation.set(3.14, 0, 0);
 
                 this.addSceneObject(this.fontMesh);
@@ -466,7 +498,7 @@ export class ZoneDefault extends Zone
 
         if (this.lookForExitInput && this.nextExitPromptTime < this.accumulatedTime)
         {
-            this.updateText("Press and hold\nthe right trigger\nto exit.", 1.0, 2.0, 1.0);
+            this.updateText("Press and hold\nboth triggers to exit.", 1.0, 2.0, 1.0);
             this.nextExitPromptTime = this.accumulatedTime + 10.0;
         }
 
@@ -489,15 +521,18 @@ export class ZoneDefault extends Zone
             this.monolithObject.material.needsUpdate = true;
             this.monolithObject.material.color.set(0xffffff);
 
+            this.sphere.material.color.convertSRGBToLinear();
             this.sphere.material.envMap = this.renderer.envMapCube;
-            this.sphere.material.envMapIntensity = 1.9;
-            this.sphere.material.metalness = 0.6;
+            this.sphere.material.envMapIntensity = 1.0; //1.9;
+            this.sphere.material.metalness = 0.96;
             this.sphere.material.roughness = 0.5;
             this.sphere.material.needsUpdate = true;
 
             this.setMonolithEnvMap = true;
             //this.monolithObject.material.map = this.envMapCube;
         }
+
+        this.flare.update(dt);
     }
 
     updateText(str, fadeInTime, opaqueDuration, fadeOutTime)
@@ -511,6 +546,8 @@ export class ZoneDefault extends Zone
         this.fontMesh.position.y = (box.max.y - box.min.y) * -0.5;
         this.fontMesh.position.x *= this.fontMesh.scale.x;
         this.fontMesh.position.y *= this.fontMesh.scale.y;
+
+        this.fontMesh.position.y += 0.65;
 
         this.textTweenIn.stop();
         this.textTweenOut.stop();
@@ -656,3 +693,16 @@ export class ZoneDefault extends Zone
     }
 }
 
+
+export function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX, bQuatY, bQuatZ)
+{
+
+    const quaternion = new THREE.Quaternion(bQuatX, bQuatZ, -bQuatY, bQuatW);
+    
+
+    // const kDegToRad = 0.01745329252;
+    // let euler = new THREE.Euler((xDeg) * kDegToRad, (yDeg) * kDegToRad, zDeg * kDegToRad);
+    light.position.set(0.0, 20.0, 0.0);
+    light.position.applyQuaternion(quaternion);
+    //console.log("LIGHT POS: " + light.position.x * 20.0 + ", " + light.position.y * 20.0 + ", " + light.position.z * 20.0 );
+}
