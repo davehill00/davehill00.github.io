@@ -4,13 +4,36 @@
 <head>
     <meta charset="utf-8">
 </head>
-<link href="https://fonts.googleapis.com/css?family=Goldman" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Chivo" rel="stylesheet">
 <style>
 	.example {
-		font-family: 'Goldman', sans-serif;
+		font-family: 'Chivo', sans-serif;
 		font-size: 32px;
         color: #e0e0e0;
 	}
+    .descriptionText {
+        font-family: 'Chivo', sans-serif;
+        font-size: 24px;
+        color: #e0e0e0;
+    }
+    .descriptionBox {
+        background-color: #505050;
+        padding-left: 24px;
+        padding-right: 16px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin: 2vw;
+        border: solid;
+    }
+    .titleBox {
+        background-color: #cc5010;
+        padding-left: 24px;
+        padding-right: 16px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin: 2vw;
+        border: solid;
+    }
     .box {
 		background-color: #505050;
 		padding: 2vw;
@@ -31,10 +54,16 @@
     }
 </style>
 <body>
+    <div class = "titleBox">
+        <p class="example">WebXR Perf Samples</p>
+    </div>
     <div class="box">
         <p class="example"><a href="three-tricount.html">THREE.js Triangle Count Test</a> - How many triangles can we render while maintaining framerate? Measures GPU overhead of rendering.</p>
         <p class="example"><a href="three-objcount.html">THREE.js Object Count Test</a> - How many objects can we render while maintaining framerate? Measures CPU overhead of rendering.</p>
-        <p class="example"><a href="bjs-objcount.html">BabylonJS Object Count Test</a> - How many objects can we render while maintaining framerate? Measures CPU overhead of rendering.</p>
+        <!-- <p class="example"><a href="bjs-objcount.html">BabylonJS Object Count Test</a> - How many objects can we render while maintaining framerate? Measures CPU overhead of rendering.</p> -->
+    </div>
+    <div class="descriptionBox">
+        <p class = "descriptionText">Note: On Oculus Quest hardware, I would recommend installing the <a href="https://developer.oculus.com/downloads/package/ovr-metrics-tool/">OVR Metrics Tool</a> to see real-time performance stats while running these samples.</p>
     </div>
 </body>
 

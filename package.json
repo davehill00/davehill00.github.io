@@ -6,14 +6,14 @@
   "author": "davehill00 <davehill@fb.com>",
   "license": "MIT",
   "devDependencies": {
-    "webpack": "4",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "load-bmfont": "^1.4.1",
     "three": "^0.122.0",
-    "three-bmfont-text": "^3.0.1"
+    "three-bmfont-text": "^3.0.1",
+    "webpack": "4"
   },
   "scripts": {
     "buildobj": "webpack --config webpack-objcount.config.js",

@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js'; //'three/examples/jsm/webxr/XRControllerModelFactory.js';
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
 
 // add camera to scene so that objects attached to the camera get rendered
@@ -46,7 +46,8 @@ for (i = 0; i < kSpread * kSpread; i++) {
     let cube = new THREE.Mesh(boxGeometry, boxMaterials[i%2]);
     let row = i % kSpread;
     let col = Math.floor(i / kSpread);
-    cube.position.set(-kSpread + row * 2.0, -kSpread + col * 2.0, -2 * kSpread);
+    //cube.position.set(-kSpread + row * 2.0, -kSpread + col * 2.0, -2 * kSpread);
+    cube.position.set(-kSpread + row * 2.0, -kSpread + (col + 0.5) * 2.0, -2 * kSpread - 10);
     cube.rotation.x = 0.707;
     cube.rotation.y = 0.707;
     currentGroup.add(cube);
@@ -99,10 +100,24 @@ loadFont('fonts/arial.fnt', function (err, font) {
     // scale and position the mesh to get it doing something reasonable
     fontMesh = new THREE.Mesh(fontGeometry, fontMaterial);
     fontMesh.position.set(0, -0.75, -5);
-    fontMesh.scale.set(0.005, 0.005, 0.005);
+    fontMesh.scale.set(0.0035, 0.0035, 0.0035);
     fontMesh.rotation.set(3.14, 0, 0);
 
     camera.add(fontMesh);
+
+
+    let messageGeo = createGeometry({
+        width: 1000,
+        align: 'center',
+        font: font
+    });
+    messageGeo.update("Use L and R triggers to increase or decrease the number of objects rendered.")
+    let messageMesh = new THREE.Mesh(messageGeo, fontMaterial);
+    messageMesh.position.set(-1.85, 2.0, -4);
+    messageMesh.scale.set(0.0035, 0.0035, 0.0035);
+    messageMesh.rotation.set(3.14, 0.0, 0.0);
+
+    scene.add(messageMesh);
 });
 
 

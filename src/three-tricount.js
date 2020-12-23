@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
 
 // add camera to scene so that objects attached to the camera get rendered
@@ -52,6 +52,8 @@ loader.load('./content/monkey-head-100k.gltf', function (gltf) {
     // monkeyHead.material.metalness = 0.25;
     // monkeyHead.material.roughness = 0.7;
 
+    monkeyHead.material.side = THREE.FrontSide;
+    
     let x, y;
     for (y = 0; y < kRows; y++) {
         for (x = 0; x < kCols; x++) {
@@ -90,6 +92,7 @@ var loadFont = require('load-bmfont')
 var fontGeometry;
 var fontMesh;
 
+
 loadFont('fonts/arial.fnt', function (err, font) {
     // create a geometry of packed bitmap glyphs,
     // word wrapped to 300px and right-aligned
@@ -112,10 +115,24 @@ loadFont('fonts/arial.fnt', function (err, font) {
     // scale and position the mesh to get it doing something reasonable
     fontMesh = new THREE.Mesh(fontGeometry, fontMaterial);
     fontMesh.position.set(0, -0.75, -5);
-    fontMesh.scale.set(0.005, 0.005, 0.005);
+    fontMesh.scale.set(0.0035, 0.0035, 0.0035);
     fontMesh.rotation.set(3.14, 0, 0);
 
     camera.add(fontMesh);
+
+
+    let messageGeo = createGeometry({
+        width: 1000,
+        align: 'center',
+        font: font
+    });
+    messageGeo.update("Use L and R triggers to increase or decrease the number of objects rendered.")
+    let messageMesh = new THREE.Mesh(messageGeo, fontMaterial);
+    messageMesh.position.set(-1.7, 2.0, -4);
+    messageMesh.scale.set(0.0035, 0.0035, 0.0035);
+    messageMesh.rotation.set(3.14, 0.0, 0.0);
+
+    scene.add(messageMesh);
 });
 
 function onSelectEnd(event) {
