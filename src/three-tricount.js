@@ -10,6 +10,9 @@ let cfg_antialias = true;
 let cfg_materialindex = 0; // 0 = simple, 1 = phong, 2 = standard, 3 = standard+normal
 let cfg_lighting = 1;
 
+let moreButton = null;
+let lessButton = null;
+
 parseUrlConfig();
 
 const scene = new THREE.Scene();
@@ -26,6 +29,8 @@ renderer.setClearColor(0x303030);
 
 document.body.appendChild(renderer.domElement);
 document.body.appendChild(VRButton.createButton(renderer));
+
+createMoreAndLessButtons();
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
@@ -63,6 +68,14 @@ var currentGroup = new THREE.Group();
 var groupCounter = 0;
 var firstInvisible = -1;
 var numFaces = 0;
+
+let messageMesh = null;
+
+let startCount = 14;
+if (window.localStorage.getItem("num_objs"))
+{
+    startCount = parseInt(window.localStorage.getItem("num_objs"));
+}
 
 const loader = new GLTFLoader();
 loader.load(cfg_materialindex == 3 ? './content/monkey-head-50k-normalmap.gltf' : './content/monkey-head-50k.gltf',
@@ -105,7 +118,7 @@ loader.load(cfg_materialindex == 3 ? './content/monkey-head-50k-normalmap.gltf' 
             currentGroup.visible = false;
         }
 
-        initVisibility(14);
+        initVisibility(startCount);
 
     }, function (xhr) {
         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
@@ -155,10 +168,11 @@ loadFont('content/arial.fnt', function (err, font) {
         font: font
     });
     messageGeo.update("Use L and R triggers to increase or decrease the number of objects rendered.")
-    let messageMesh = new THREE.Mesh(messageGeo, fontMaterial);
+    messageMesh = new THREE.Mesh(messageGeo, fontMaterial);
     messageMesh.position.set(-1.7, 2.0, -5);
     messageMesh.scale.set(0.0035, 0.0035, 0.0035);
     messageMesh.rotation.set(3.14, 0.0, 0.0);
+    messageMesh.visible = false;
 
     scene.add(messageMesh);
 });
@@ -183,6 +197,8 @@ controller0.addEventListener('selectend', onSelectEnd);
 const controller1 = renderer.xr.getController(1);
 controller1.addEventListener('selectend', onSelectEnd);
 
+renderer.xr.addEventListener( 'sessionstart', onSessionStart);
+renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
 document.onkeydown = function (e) {
     switch (e.key) {
@@ -238,6 +254,7 @@ function initVisibility(numVisible) {
 
         drawGroups[firstInvisible].visible = true;
     }
+    window.localStorage.setItem("num_objs", firstInvisible);
 }
 
 function updateVisibility(increment) {
@@ -246,12 +263,14 @@ function updateVisibility(increment) {
             drawGroups[firstInvisible].visible = true;
             firstInvisible++;
         }
+        window.localStorage.setItem("num_objs", firstInvisible);
     }
     else {
         if (firstInvisible > 0) {
             firstInvisible--;
             drawGroups[firstInvisible].visible = false;
         }
+        window.localStorage.setItem("num_objs", firstInvisible);
     }
 }
 
@@ -298,4 +317,74 @@ function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX,
     const quaternion = new THREE.Quaternion(bQuatX, bQuatZ, -bQuatY, bQuatW);
     light.position.set(0.0, 20.0, 0.0);
     light.position.applyQuaternion(quaternion);
+}
+
+
+
+function createMoreAndLessButtons()
+{
+    lessButton = document.createElement("button");
+    lessButton.onclick = function() { updateVisibility(false); };
+    lessButton.innerHTML = "DRAW LESS";
+
+    lessButton.style.position = 'absolute';
+    lessButton.style.left = '10px';
+    lessButton.style.bottom = '20px';
+    lessButton.style.padding = '12px 6px';
+    lessButton.style.border = '1px solid #fff';
+    lessButton.style.borderRadius = '4px';
+    lessButton.style.background = 'rgba(0,0,0,0.1)';
+    lessButton.style.color = '#fff';
+    lessButton.style.font = 'normal 13px sans-serif';
+    lessButton.style.textAlign = 'center';
+    lessButton.style.opacity = '0.5';
+    lessButton.style.outline = 'none';
+    lessButton.style.zIndex = '999';
+    // lessButton.onmouseenter = function () {
+    //     lessButton.style.opacity = '1.0';
+    // };
+    // lessButton.onmouseleave = function () {
+    //     lessButton.style.opacity = '0.5';
+    // };
+    document.body.appendChild(lessButton);
+
+    moreButton = document.createElement("button");
+    moreButton.onclick = function() { updateVisibility(true); };
+    moreButton.innerHTML = "DRAW MORE";
+
+    moreButton.style.position = 'absolute';
+    moreButton.style.left = '105px';
+    moreButton.style.bottom = '20px';
+    moreButton.style.padding = '12px 6px';
+    moreButton.style.border = '1px solid #fff';
+    moreButton.style.borderRadius = '4px';
+    moreButton.style.background = 'rgba(0,0,0,0.1)';
+    moreButton.style.color = '#fff';
+    moreButton.style.font = 'normal 13px sans-serif';
+    moreButton.style.textAlign = 'center';
+    moreButton.style.opacity = '0.5';
+    moreButton.style.outline = 'none';
+    moreButton.style.zIndex = '999';
+    // moreButton.onmouseenter = function () {
+    //     moreButton.style.opacity = '1.0';
+    // };
+    // moreButton.onmouseleave = function () {
+    //     moreButton.style.opacity = '0.5';
+    // };
+
+    document.body.appendChild(moreButton);
+}
+
+function onSessionStart()
+{
+    document.body.removeChild(moreButton);
+    document.body.removeChild(lessButton);
+    messageMesh.visible = true;
+}
+
+function onSessionEnd()
+{
+    document.body.appendChild(moreButton);
+    document.body.appendChild(lessButton);
+    messageMesh.visible = false;
 }

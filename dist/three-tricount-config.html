@@ -12,9 +12,14 @@
 		font-size: 32px;
         color: #e0e0e0;
 	}
-    .descriptionText {
+    .optionsText {
         font-family: 'Chivo', sans-serif;
         font-size: 24px;
+        color: #e0e0e0;
+    }
+    .descriptionText {
+        font-family: 'Chivo', sans-serif;
+        font-size: 16px;
         color: #e0e0e0;
     }
     .descriptionBox {
@@ -69,6 +74,11 @@
     }
 
     input[type="radio"] {
+        -ms-transform: scale(1.5); /* IE 9 */
+        -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+        transform: scale(1.5);
+    }
+    input[type="checkbox"] {
         -ms-transform: scale(1.5); /* IE 9 */
         -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
         transform: scale(1.5);
@@ -221,7 +231,7 @@
         <p class="example">Three.js Triangle Count Performance Test</p>
     </div>
     <div class="box">
-        <div class="descriptionText">
+        <div class="optionsText">
             Antialiasing: <input type="checkbox" id="antialiasing" onclick="onSetAntialiasing()">
             <p id="text" style="display:none">Checkbox is CHECKED!</p>
             <br>
@@ -263,7 +273,26 @@
         <!-- <p class="example"><a href="bjs-objcount.html">BabylonJS Object Count Test</a> - How many objects can we render while maintaining framerate? Measures CPU overhead of rendering.</p> -->
     </div>
     <!-- <div class="descriptionBox">
-            <p class = "descriptionText">Note: On Oculus Quest hardware, I would recommend installing the <a href="https://developer.oculus.com/downloads/package/ovr-metrics-tool/">OVR Metrics Tool</a> to see real-time performance stats while running these samples.</p>
+            <p class = "descriptionText">
+                I built this sample to better understand the GPU performance of WebXR/Three.js rendering 
+                on Oculus Quest headsets. This is a topic that I don't feel is widely and well understood. 
+                A lot of people assume that any web-based 3D/VR application will automatically be handcuffed
+                by significantly poorer rendering performance. In principle, the GPU performance for web-based 
+                VR applications shouldn't be significantly worse than for native applications. After all, once
+                the rendering commands make it to the GPU, it's the same hardware doing more or less the same 
+                work.
+                <br>
+                <br>
+                The intended workflow for this sample is to choose some options, then launch into the Three.js 
+                scene. From there, add and remove objects to the scene while keeping an eye on the framerate. 
+                Once you drop below 90Hz (or 72Hz, if you're targeting that framerate), you have a rough upper
+                bound on the number of triangles the hardware can push.
+                <br>
+                <br>
+                As demonstrated by playing with the different options here, the triangle throughput is impacted
+                by all the other rendering choices that you make. For any particular experience you're building, 
+                you'll need to figure out the right balance.
+            </p>
         </div> -->
 </body>
 
