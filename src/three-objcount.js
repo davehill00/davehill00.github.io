@@ -12,7 +12,6 @@ scene.add(camera);
 
 const renderer = new THREE.WebGLRenderer( {antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.antialias = false;
 renderer.xr.enabled = true;
 renderer.setClearColor(0x303030);
 

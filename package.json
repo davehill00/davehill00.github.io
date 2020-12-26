@@ -6,6 +6,7 @@
   "author": "davehill00 <davehill@fb.com>",
   "license": "MIT",
   "devDependencies": {
+    "gltfpack": "^0.15.1",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"
   },

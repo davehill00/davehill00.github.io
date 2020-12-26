@@ -5,6 +5,13 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
+
+let cfg_antialias = true;
+let cfg_materialindex = 0; // 0 = simple, 1 = phong, 2 = standard, 3 = standard+normal
+let cfg_lighting = 1;
+
+parseUrlConfig();
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
@@ -12,7 +19,7 @@ camera.position.z = 5;
 // add camera to scene so that objects attached to the camera get rendered
 scene.add(camera);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: cfg_antialias });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.xr.enabled = true;
 renderer.setClearColor(0x303030);
@@ -23,19 +30,32 @@ document.body.appendChild(VRButton.createButton(renderer));
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-directionalLight.position.set(2, 2, 1);
-scene.add(directionalLight);
+if (cfg_materialindex > 0)
+{
+    if (cfg_lighting >= 1)
+    {
+        const directionalLight = new THREE.DirectionalLight(0xFFCCAF, 2.5);
+        directionalLight.position.set(2, 2, 1);
+        setDirectionalLightPositionFromBlenderQuaternion(directionalLight, -0.897, -0.160, -0.407, -0.065);
+        scene.add(directionalLight);
+    }
+    if (cfg_lighting >= 2)
+    {
+        const dl2 = new THREE.DirectionalLight(0xFF696B, 0.3);
+        setDirectionalLightPositionFromBlenderQuaternion(dl2, -0.014, -0.891, -0.408, 0.196);
+        scene.add(dl2);
+    }
 
-const light = new THREE.AmbientLight(0x808080); // soft white light
-scene.add(light);
+    const light = new THREE.AmbientLight(0x302020); // soft white light
+    scene.add(light);
+}
 
 const kSpread = 5;
-const kRows = 4;
-const kCols = 5;
-const kColSpread = 3.0;
+const kRows = 7;
+const kCols = 7;
+const kColSpread = 1.5;
 const kRowMaxHeight = 1.0;
-const kRowSpread = 5.0;
+const kRowSpread = 8.0;
 
 var drawGroups = new Array();
 const groupSize = 1;
@@ -45,45 +65,53 @@ var firstInvisible = -1;
 var numFaces = 0;
 
 const loader = new GLTFLoader();
-loader.load('./content/monkey-head-100k.gltf', function (gltf) {
+loader.load(cfg_materialindex == 3 ? './content/monkey-head-50k-normalmap.gltf' : './content/monkey-head-50k.gltf',
+    function (gltf) {
 
-    let monkeyHead = gltf.scene.children[0];
-    numFaces = monkeyHead.geometry.index.count / 3;
-    // monkeyHead.material.metalness = 0.25;
-    // monkeyHead.material.roughness = 0.7;
+        let monkeyHead = gltf.scene.children[0];
+        numFaces = monkeyHead.geometry.index.count / 3;
 
-    monkeyHead.material.side = THREE.FrontSide;
-    
-    let x, y;
-    for (y = 0; y < kRows; y++) {
-        for (x = 0; x < kCols; x++) {
-            let monkey = new THREE.Mesh(monkeyHead.geometry, monkeyHead.material);
-            monkey.position.set(-kColSpread + x * kColSpread * 0.5, kRowMaxHeight - y * kRowSpread / kRows, -2.0 * kColSpread);
-            monkey.scale.set(0.5, 0.5, 0.5);
-            currentGroup.add(monkey);
-            groupCounter++;
+        monkeyHead.material.side = THREE.FrontSide;
+        let mat = monkeyHead.material;
+        if (cfg_materialindex == 0)
+        {
+            mat = new THREE.MeshBasicMaterial({color:0xc200dc});
+        }
+        else if(cfg_materialindex == 1)
+        {
+            mat = new THREE.MeshPhongMaterial({color: 0x85650f, shininess:30});
+        }
 
-            if (groupCounter == groupSize) {
-                scene.add(currentGroup);
-                currentGroup.visible = false;
-                drawGroups.push(currentGroup);
-                currentGroup = new THREE.Group();
-                groupCounter = 0;
+        let x, y;
+        for (y = 0; y < kRows; y++) {
+            for (x = 0; x < kCols; x++) {
+                let monkey = new THREE.Mesh(monkeyHead.geometry, mat);
+                monkey.position.set(-kColSpread * (kCols - 1) * 0.5 + x * kColSpread, kRowMaxHeight - y * kRowSpread / kRows, -6.0 * kColSpread);
+                monkey.scale.set(0.5, 0.5, 0.5);
+                currentGroup.add(monkey);
+                groupCounter++;
+
+                if (groupCounter == groupSize) {
+                    scene.add(currentGroup);
+                    currentGroup.visible = false;
+                    drawGroups.push(currentGroup);
+                    currentGroup = new THREE.Group();
+                    groupCounter = 0;
+                }
             }
         }
-    }
-    if (currentGroup.children.length != 0) {
-        scene.add(currentGroup);
-        currentGroup.visible = false;
-    }
+        if (currentGroup.children.length != 0) {
+            scene.add(currentGroup);
+            currentGroup.visible = false;
+        }
 
-    initVisibility(5);
+        initVisibility(14);
 
-}, function (xhr) {
-    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-}, function (error) {
-    console.error(error);
-});
+    }, function (xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    }, function (error) {
+        console.error(error);
+    });
 
 
 var createGeometry = require('three-bmfont-text')
@@ -93,7 +121,7 @@ var fontGeometry;
 var fontMesh;
 
 
-loadFont('fonts/arial.fnt', function (err, font) {
+loadFont('content/arial.fnt', function (err, font) {
     // create a geometry of packed bitmap glyphs,
     // word wrapped to 300px and right-aligned
     fontGeometry = createGeometry({
@@ -103,7 +131,7 @@ loadFont('fonts/arial.fnt', function (err, font) {
     })
 
     // the texture atlas containing our glyphs
-    var texture = new THREE.TextureLoader().load('fonts/arial.png');
+    var texture = new THREE.TextureLoader().load('content/arial_0.png');
 
     // we can use a simple ThreeJS material
     var fontMaterial = new THREE.MeshBasicMaterial({
@@ -114,8 +142,8 @@ loadFont('fonts/arial.fnt', function (err, font) {
 
     // scale and position the mesh to get it doing something reasonable
     fontMesh = new THREE.Mesh(fontGeometry, fontMaterial);
-    fontMesh.position.set(0, -0.75, -5);
-    fontMesh.scale.set(0.0035, 0.0035, 0.0035);
+    fontMesh.position.set(0, -0.75, -3);
+    fontMesh.scale.set(0.002, 0.002, 0.002);
     fontMesh.rotation.set(3.14, 0, 0);
 
     camera.add(fontMesh);
@@ -128,7 +156,7 @@ loadFont('fonts/arial.fnt', function (err, font) {
     });
     messageGeo.update("Use L and R triggers to increase or decrease the number of objects rendered.")
     let messageMesh = new THREE.Mesh(messageGeo, fontMaterial);
-    messageMesh.position.set(-1.7, 2.0, -4);
+    messageMesh.position.set(-1.7, 2.0, -5);
     messageMesh.scale.set(0.0035, 0.0035, 0.0035);
     messageMesh.rotation.set(3.14, 0.0, 0.0);
 
@@ -225,4 +253,49 @@ function updateVisibility(increment) {
             drawGroups[firstInvisible].visible = false;
         }
     }
+}
+
+function parseUrlConfig()
+{
+    let queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    if (urlParams.has('AA'))
+    {
+        cfg_antialias = (urlParams.get('AA') == 'true') ? true : false;
+        console.log("set cfg_antialias to: " + cfg_antialias);
+    }
+    if (urlParams.has('MAT'))
+    {
+        let matIndex = urlParams.get('MAT');
+        if (0 <= matIndex && matIndex <= 3)
+        {
+            cfg_materialindex = matIndex;
+            console.log("set cfg_materialindex to: " + cfg_materialindex);
+        }
+        else
+        {
+            console.log("invalid material index: " + matIndex);
+        }
+    }
+    if (urlParams.has("LIGHT"))
+    {
+        let numLights = urlParams.get("LIGHT");
+        if (0 <= numLights && numLights <= 2)
+        {
+            cfg_lighting = numLights;
+            console.log("set cfg_lighting to: " + cfg_lighting);
+        }
+        else
+        {
+            console.log("invalid light value: " + numLights);
+        }
+    }
+}
+
+function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX, bQuatY, bQuatZ)
+{
+    const quaternion = new THREE.Quaternion(bQuatX, bQuatZ, -bQuatY, bQuatW);
+    light.position.set(0.0, 20.0, 0.0);
+    light.position.applyQuaternion(quaternion);
 }

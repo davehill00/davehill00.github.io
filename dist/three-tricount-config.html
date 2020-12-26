@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Three.js Triangle Count Performance Test</title>
+</head>
+<link href="https://fonts.googleapis.com/css?family=Chivo" rel="stylesheet">
+<style>
+	.example {
+		font-family: 'Chivo', sans-serif;
+		font-size: 32px;
+        color: #e0e0e0;
+	}
+    .descriptionText {
+        font-family: 'Chivo', sans-serif;
+        font-size: 24px;
+        color: #e0e0e0;
+    }
+    .descriptionBox {
+        background-color: #505050;
+        padding-left: 24px;
+        padding-right: 16px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin: 2vw;
+        border: solid;
+        border-radius: 8px;
+    }
+    .titleBox {
+        background-color: #cc5010;
+        padding-left: 24px;
+        padding-right: 16px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin: 2vw;
+        border: solid;
+        border-radius: 8px;
+    }
+    .box {
+		background-color: #505050;
+		padding: 2vw;
+		margin: 2vw;
+		border: solid;
+        border-radius: 8px;
+	}
+
+    .materialBox {
+        background-color: #505050;
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin: 1vw;
+        border: none;
+    }
+
+    body {
+        background-color: #404040;
+    }
+    a:link {
+        color: #ff8020;
+    }
+    a:visited {
+        color: #cc5010;
+    }
+    a:hover {
+        color: #ee6010;
+    }
+
+    input[type="radio"] {
+        -ms-transform: scale(1.5); /* IE 9 */
+        -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+        transform: scale(1.5);
+    }
+
+    .launchButton {
+        border-radius: 8px;
+        font-family: 'Chivo', sans-serif;
+        font-size: 32px;
+        padding: 12px;
+        width: 100%;
+        background-color: #cc5010;
+        color: #e0e0e0;
+        border: solid;
+        border-color: #000000;
+    }
+    .launchButton:hover {
+        background-color: #ee6010;
+    }
+
+</style>
+<script>
+    let cfg_antialiasing = true;
+    let cfg_materialindex = 3;
+    let cfg_lighting = 2;
+
+    window.onload = initControls;
+
+    function initControls()
+    {
+        if (!window.localStorage.getItem("first_run"))
+        {
+            window.localStorage.setItem("first_run", "true");
+            window.localStorage.setItem("cfg_antialiasing", cfg_antialiasing);
+            window.localStorage.setItem("cfg_materialindex", cfg_materialindex);
+            window.localStorage.setItem("cfg_lighting", cfg_lighting);
+        }
+        else
+        {
+            cfg_antialiasing = eval(window.localStorage.getItem("cfg_antialiasing"));
+            cfg_materialindex = parseInt(window.localStorage.getItem("cfg_materialindex"));
+            cfg_lighting = parseInt(window.localStorage.getItem("cfg_lighting"));
+        }
+
+        let antialiasingCheckbox = document.getElementById("antialiasing");
+        antialiasingCheckbox.checked = cfg_antialiasing;
+
+        let lightRadio0 = document.getElementById("light0");
+        let lightRadio1 = document.getElementById("light1");
+        let lightRadio2 = document.getElementById("light2");
+        switch(cfg_lighting)
+        {
+            case 0:
+                lightRadio0.checked = true;
+                break;
+            case 1:
+                lightRadio1.checked = true;
+                break;
+            default:
+                lightRadio2.checked = true;
+                break;
+        }
+
+        let material0 = document.getElementById("material0");
+        let material1 = document.getElementById("material1");
+        let material2 = document.getElementById("material2");
+        let material3 = document.getElementById("material3");
+        material0.checked = material1.checked = material2.checked = material3.checked = false;
+        switch(cfg_materialindex)
+        {
+            case 0:
+                material0.checked = true;
+                break;
+            case 1:
+                material1.checked = true;
+                break;
+            case 2:
+                material2.checked = true;
+                break;
+            default:
+                material3.checked = true;
+                break;
+        }
+    }
+    function onSetAntialiasing()
+    {
+        // Get the checkbox
+        let checkBox = document.getElementById("antialiasing");
+        cfg_antialiasing = checkBox.checked;
+        window.localStorage.setItem("cfg_antialiasing", cfg_antialiasing);
+    }
+    function onSetLights()
+    {
+        let lightRadio0 = document.getElementById("light0");
+        let lightRadio1 = document.getElementById("light1");
+        if (lightRadio0.checked)
+        {
+            cfg_lighting = 0;
+        }
+        else if (lightRadio1.checked)
+        {
+            cfg_lighting = 1;
+        }
+        else
+        {
+            cfg_lighting = 2;
+        }
+        window.localStorage.setItem("cfg_lighting", cfg_lighting);
+    }
+    function onSetMaterials()
+    {
+        let materialRadio0 = document.getElementById("material0");
+        let materialRadio1 = document.getElementById("material1");
+        let materialRadio2 = document.getElementById("material2");
+        if (materialRadio0.checked)
+        {
+            cfg_materialindex = 0;
+        }
+        else if (materialRadio1.checked)
+        {
+            cfg_materialindex = 1;
+        }
+        else if (materialRadio2.checked)
+        {
+            cfg_materialindex = 2;
+        }
+        else
+        {
+            cfg_materialindex = 3;
+        }
+        window.localStorage.setItem("cfg_materialindex", cfg_materialindex);
+    }
+    function onLaunch()
+    {
+        let url = "./three-tricount.html";
+        url += "?AA=" + cfg_antialiasing;
+        url += "&MAT=" + cfg_materialindex;
+        url += "&LIGHT=" + cfg_lighting;
+        window.location.assign(url);
+
+    }
+</script>
+<body>
+
+
+
+
+
+    <div class = "titleBox">
+        <p class="example">Three.js Triangle Count Performance Test</p>
+    </div>
+    <div class="box">
+        <div class="descriptionText">
+            Antialiasing: <input type="checkbox" id="antialiasing" onclick="onSetAntialiasing()">
+            <p id="text" style="display:none">Checkbox is CHECKED!</p>
+            <br>
+            <br>
+            Lights:
+            <input type="radio" id="light0" name="lights" value="0" onclick="onSetLights()">
+            <label for="light0">0</label>
+            <input type="radio" id="light1" name="lights" value="1" onclick="onSetLights()">
+            <label for="light1">1</label>
+            <input type="radio" id="light2" name="lights" value="2" onclick="onSetLights()">
+            <label for="light2">2</label>
+            <br>
+            <br>
+            Material:
+            <div class="materialBox">
+                <label>
+                    <input type="radio" id="material0" name="materials" value="0" onclick="onSetMaterials()">
+                    MeshBasicMaterial
+                </label><br>
+                <label>
+                    <input type="radio" id="material1" name="materials" value="1" onclick="onSetMaterials()">
+                    MeshPhongMaterial
+                </label><br>
+                <label>
+                    <input type="radio" id="material2" name="materials" value="2" onclick="onSetMaterials()">
+                    MeshStandardMaterial
+                </label><br>
+                <label>
+                    <input type="radio" id="material3" name="materials" value="3" onclick="onSetMaterials()">
+                    MeshStandardMaterial + NormalMap
+                </label><br>
+            </div>
+        </div>
+        <br>
+        <button class="launchButton" id="launch" onclick="onLaunch()">Launch</button>
+
+        <!-- <p class="example"><a href="three-tricount.html">THREE.js Triangle Count Test</a> - How many triangles can we render while maintaining framerate? Measures GPU overhead of rendering.</p>
+            <p class="example"><a href="three-objcount.html">THREE.js Object Count Test</a> - How many objects can we render while maintaining framerate? Measures CPU overhead of rendering.</p> -->
+        <!-- <p class="example"><a href="bjs-objcount.html">BabylonJS Object Count Test</a> - How many objects can we render while maintaining framerate? Measures CPU overhead of rendering.</p> -->
+    </div>
+    <!-- <div class="descriptionBox">
+            <p class = "descriptionText">Note: On Oculus Quest hardware, I would recommend installing the <a href="https://developer.oculus.com/downloads/package/ovr-metrics-tool/">OVR Metrics Tool</a> to see real-time performance stats while running these samples.</p>
+        </div> -->
+</body>
+
+</html>
