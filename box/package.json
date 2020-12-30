@@ -1,0 +1,27 @@
+{
+  "name": "box",
+  "version": "1.0.0",
+  "main": "box.js",
+  "license": "MIT",
+  "devDependencies": {
+    "file-loader": "^6.2.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "@tweenjs/tween.js": "^18.6.4",
+    "@webxr-input-profiles/assets": "^1.0.5",
+    "@webxr-input-profiles/motion-controllers": "^1.0.0",
+    "@webxr-input-profiles/registry": "^1.0.1",
+    "cannon-es": "^0.15.1",
+    "copy-webpack-plugin": "6.4.0",
+    "load-bmfont": "^1.4.1",
+    "three": "^0.123.0",
+    "three-bmfont-text": "^3.0.1",
+    "webpack": "4"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "serve": "webpack serve --config webpack.config.js "
+  }
+}
