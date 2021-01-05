@@ -86,6 +86,836 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@tweenjs/tween.js/dist/tween.esm.js ***!
+  \**********************************************************/
+/*! exports provided: default, Easing, Group, Interpolation, Sequence, Tween, VERSION, add, getAll, nextId, now, remove, removeAll, update */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Easing", function() { return Easing; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Group", function() { return Group; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Interpolation", function() { return Interpolation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Sequence", function() { return Sequence; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tween", function() { return Tween; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return VERSION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add", function() { return add; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAll", function() { return getAll; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nextId", function() { return nextId; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "now", function() { return now$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "remove", function() { return remove; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeAll", function() { return removeAll; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "update", function() { return update; });
+/**
+ * The Ease class provides a collection of easing functions for use with tween.js.
+ */
+var Easing = {
+    Linear: {
+        None: function (amount) {
+            return amount;
+        },
+    },
+    Quadratic: {
+        In: function (amount) {
+            return amount * amount;
+        },
+        Out: function (amount) {
+            return amount * (2 - amount);
+        },
+        InOut: function (amount) {
+            if ((amount *= 2) < 1) {
+                return 0.5 * amount * amount;
+            }
+            return -0.5 * (--amount * (amount - 2) - 1);
+        },
+    },
+    Cubic: {
+        In: function (amount) {
+            return amount * amount * amount;
+        },
+        Out: function (amount) {
+            return --amount * amount * amount + 1;
+        },
+        InOut: function (amount) {
+            if ((amount *= 2) < 1) {
+                return 0.5 * amount * amount * amount;
+            }
+            return 0.5 * ((amount -= 2) * amount * amount + 2);
+        },
+    },
+    Quartic: {
+        In: function (amount) {
+            return amount * amount * amount * amount;
+        },
+        Out: function (amount) {
+            return 1 - --amount * amount * amount * amount;
+        },
+        InOut: function (amount) {
+            if ((amount *= 2) < 1) {
+                return 0.5 * amount * amount * amount * amount;
+            }
+            return -0.5 * ((amount -= 2) * amount * amount * amount - 2);
+        },
+    },
+    Quintic: {
+        In: function (amount) {
+            return amount * amount * amount * amount * amount;
+        },
+        Out: function (amount) {
+            return --amount * amount * amount * amount * amount + 1;
+        },
+        InOut: function (amount) {
+            if ((amount *= 2) < 1) {
+                return 0.5 * amount * amount * amount * amount * amount;
+            }
+            return 0.5 * ((amount -= 2) * amount * amount * amount * amount + 2);
+        },
+    },
+    Sinusoidal: {
+        In: function (amount) {
+            return 1 - Math.cos((amount * Math.PI) / 2);
+        },
+        Out: function (amount) {
+            return Math.sin((amount * Math.PI) / 2);
+        },
+        InOut: function (amount) {
+            return 0.5 * (1 - Math.cos(Math.PI * amount));
+        },
+    },
+    Exponential: {
+        In: function (amount) {
+            return amount === 0 ? 0 : Math.pow(1024, amount - 1);
+        },
+        Out: function (amount) {
+            return amount === 1 ? 1 : 1 - Math.pow(2, -10 * amount);
+        },
+        InOut: function (amount) {
+            if (amount === 0) {
+                return 0;
+            }
+            if (amount === 1) {
+                return 1;
+            }
+            if ((amount *= 2) < 1) {
+                return 0.5 * Math.pow(1024, amount - 1);
+            }
+            return 0.5 * (-Math.pow(2, -10 * (amount - 1)) + 2);
+        },
+    },
+    Circular: {
+        In: function (amount) {
+            return 1 - Math.sqrt(1 - amount * amount);
+        },
+        Out: function (amount) {
+            return Math.sqrt(1 - --amount * amount);
+        },
+        InOut: function (amount) {
+            if ((amount *= 2) < 1) {
+                return -0.5 * (Math.sqrt(1 - amount * amount) - 1);
+            }
+            return 0.5 * (Math.sqrt(1 - (amount -= 2) * amount) + 1);
+        },
+    },
+    Elastic: {
+        In: function (amount) {
+            if (amount === 0) {
+                return 0;
+            }
+            if (amount === 1) {
+                return 1;
+            }
+            return -Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
+        },
+        Out: function (amount) {
+            if (amount === 0) {
+                return 0;
+            }
+            if (amount === 1) {
+                return 1;
+            }
+            return Math.pow(2, -10 * amount) * Math.sin((amount - 0.1) * 5 * Math.PI) + 1;
+        },
+        InOut: function (amount) {
+            if (amount === 0) {
+                return 0;
+            }
+            if (amount === 1) {
+                return 1;
+            }
+            amount *= 2;
+            if (amount < 1) {
+                return -0.5 * Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
+            }
+            return 0.5 * Math.pow(2, -10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI) + 1;
+        },
+    },
+    Back: {
+        In: function (amount) {
+            var s = 1.70158;
+            return amount * amount * ((s + 1) * amount - s);
+        },
+        Out: function (amount) {
+            var s = 1.70158;
+            return --amount * amount * ((s + 1) * amount + s) + 1;
+        },
+        InOut: function (amount) {
+            var s = 1.70158 * 1.525;
+            if ((amount *= 2) < 1) {
+                return 0.5 * (amount * amount * ((s + 1) * amount - s));
+            }
+            return 0.5 * ((amount -= 2) * amount * ((s + 1) * amount + s) + 2);
+        },
+    },
+    Bounce: {
+        In: function (amount) {
+            return 1 - Easing.Bounce.Out(1 - amount);
+        },
+        Out: function (amount) {
+            if (amount < 1 / 2.75) {
+                return 7.5625 * amount * amount;
+            }
+            else if (amount < 2 / 2.75) {
+                return 7.5625 * (amount -= 1.5 / 2.75) * amount + 0.75;
+            }
+            else if (amount < 2.5 / 2.75) {
+                return 7.5625 * (amount -= 2.25 / 2.75) * amount + 0.9375;
+            }
+            else {
+                return 7.5625 * (amount -= 2.625 / 2.75) * amount + 0.984375;
+            }
+        },
+        InOut: function (amount) {
+            if (amount < 0.5) {
+                return Easing.Bounce.In(amount * 2) * 0.5;
+            }
+            return Easing.Bounce.Out(amount * 2 - 1) * 0.5 + 0.5;
+        },
+    },
+};
+
+var now;
+// Include a performance.now polyfill.
+// In node.js, use process.hrtime.
+// eslint-disable-next-line
+// @ts-ignore
+if (typeof self === 'undefined' && typeof process !== 'undefined' && process.hrtime) {
+    now = function () {
+        // eslint-disable-next-line
+        // @ts-ignore
+        var time = process.hrtime();
+        // Convert [seconds, nanoseconds] to milliseconds.
+        return time[0] * 1000 + time[1] / 1000000;
+    };
+}
+// In a browser, use self.performance.now if it is available.
+else if (typeof self !== 'undefined' && self.performance !== undefined && self.performance.now !== undefined) {
+    // This must be bound, because directly assigning this function
+    // leads to an invocation exception in Chrome.
+    now = self.performance.now.bind(self.performance);
+}
+// Use Date.now if it is available.
+else if (Date.now !== undefined) {
+    now = Date.now;
+}
+// Otherwise, use 'new Date().getTime()'.
+else {
+    now = function () {
+        return new Date().getTime();
+    };
+}
+var now$1 = now;
+
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tween
+ */
+var Group = /** @class */ (function () {
+    function Group() {
+        this._tweens = {};
+        this._tweensAddedDuringUpdate = {};
+    }
+    Group.prototype.getAll = function () {
+        var _this = this;
+        return Object.keys(this._tweens).map(function (tweenId) {
+            return _this._tweens[tweenId];
+        });
+    };
+    Group.prototype.removeAll = function () {
+        this._tweens = {};
+    };
+    Group.prototype.add = function (tween) {
+        this._tweens[tween.getId()] = tween;
+        this._tweensAddedDuringUpdate[tween.getId()] = tween;
+    };
+    Group.prototype.remove = function (tween) {
+        delete this._tweens[tween.getId()];
+        delete this._tweensAddedDuringUpdate[tween.getId()];
+    };
+    Group.prototype.update = function (time, preserve) {
+        if (time === void 0) { time = now$1(); }
+        if (preserve === void 0) { preserve = false; }
+        var tweenIds = Object.keys(this._tweens);
+        if (tweenIds.length === 0) {
+            return false;
+        }
+        // Tweens are updated in "batches". If you add a new tween during an
+        // update, then the new tween will be updated in the next batch.
+        // If you remove a tween during an update, it may or may not be updated.
+        // However, if the removed tween was added during the current batch,
+        // then it will not be updated.
+        while (tweenIds.length > 0) {
+            this._tweensAddedDuringUpdate = {};
+            for (var i = 0; i < tweenIds.length; i++) {
+                var tween = this._tweens[tweenIds[i]];
+                var autoStart = !preserve;
+                if (tween && tween.update(time, autoStart) === false && !preserve) {
+                    delete this._tweens[tweenIds[i]];
+                }
+            }
+            tweenIds = Object.keys(this._tweensAddedDuringUpdate);
+        }
+        return true;
+    };
+    return Group;
+}());
+
+/**
+ *
+ */
+var Interpolation = {
+    Linear: function (v, k) {
+        var m = v.length - 1;
+        var f = m * k;
+        var i = Math.floor(f);
+        var fn = Interpolation.Utils.Linear;
+        if (k < 0) {
+            return fn(v[0], v[1], f);
+        }
+        if (k > 1) {
+            return fn(v[m], v[m - 1], m - f);
+        }
+        return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
+    },
+    Bezier: function (v, k) {
+        var b = 0;
+        var n = v.length - 1;
+        var pw = Math.pow;
+        var bn = Interpolation.Utils.Bernstein;
+        for (var i = 0; i <= n; i++) {
+            b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+        }
+        return b;
+    },
+    CatmullRom: function (v, k) {
+        var m = v.length - 1;
+        var f = m * k;
+        var i = Math.floor(f);
+        var fn = Interpolation.Utils.CatmullRom;
+        if (v[0] === v[m]) {
+            if (k < 0) {
+                i = Math.floor((f = m * (1 + k)));
+            }
+            return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
+        }
+        else {
+            if (k < 0) {
+                return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
+            }
+            if (k > 1) {
+                return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
+            }
+            return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
+        }
+    },
+    Utils: {
+        Linear: function (p0, p1, t) {
+            return (p1 - p0) * t + p0;
+        },
+        Bernstein: function (n, i) {
+            var fc = Interpolation.Utils.Factorial;
+            return fc(n) / fc(i) / fc(n - i);
+        },
+        Factorial: (function () {
+            var a = [1];
+            return function (n) {
+                var s = 1;
+                if (a[n]) {
+                    return a[n];
+                }
+                for (var i = n; i > 1; i--) {
+                    s *= i;
+                }
+                a[n] = s;
+                return s;
+            };
+        })(),
+        CatmullRom: function (p0, p1, p2, p3, t) {
+            var v0 = (p2 - p0) * 0.5;
+            var v1 = (p3 - p1) * 0.5;
+            var t2 = t * t;
+            var t3 = t * t2;
+            return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
+        },
+    },
+};
+
+/**
+ * Utils
+ */
+var Sequence = /** @class */ (function () {
+    function Sequence() {
+    }
+    Sequence.nextId = function () {
+        return Sequence._nextId++;
+    };
+    Sequence._nextId = 0;
+    return Sequence;
+}());
+
+var mainGroup = new Group();
+
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */
+var Tween = /** @class */ (function () {
+    function Tween(_object, _group) {
+        if (_group === void 0) { _group = mainGroup; }
+        this._object = _object;
+        this._group = _group;
+        this._isPaused = false;
+        this._pauseStart = 0;
+        this._valuesStart = {};
+        this._valuesEnd = {};
+        this._valuesStartRepeat = {};
+        this._duration = 1000;
+        this._initialRepeat = 0;
+        this._repeat = 0;
+        this._yoyo = false;
+        this._isPlaying = false;
+        this._reversed = false;
+        this._delayTime = 0;
+        this._startTime = 0;
+        this._easingFunction = Easing.Linear.None;
+        this._interpolationFunction = Interpolation.Linear;
+        this._chainedTweens = [];
+        this._onStartCallbackFired = false;
+        this._id = Sequence.nextId();
+        this._isChainStopped = false;
+        this._goToEnd = false;
+    }
+    Tween.prototype.getId = function () {
+        return this._id;
+    };
+    Tween.prototype.isPlaying = function () {
+        return this._isPlaying;
+    };
+    Tween.prototype.isPaused = function () {
+        return this._isPaused;
+    };
+    Tween.prototype.to = function (properties, duration) {
+        // TODO? restore this, then update the 07_dynamic_to example to set fox
+        // tween's to on each update. That way the behavior is opt-in (there's
+        // currently no opt-out).
+        // for (const prop in properties) this._valuesEnd[prop] = properties[prop]
+        this._valuesEnd = Object.create(properties);
+        if (duration !== undefined) {
+            this._duration = duration;
+        }
+        return this;
+    };
+    Tween.prototype.duration = function (d) {
+        this._duration = d;
+        return this;
+    };
+    Tween.prototype.start = function (time) {
+        if (this._isPlaying) {
+            return this;
+        }
+        // eslint-disable-next-line
+        this._group && this._group.add(this);
+        this._repeat = this._initialRepeat;
+        if (this._reversed) {
+            // If we were reversed (f.e. using the yoyo feature) then we need to
+            // flip the tween direction back to forward.
+            this._reversed = false;
+            for (var property in this._valuesStartRepeat) {
+                this._swapEndStartRepeatValues(property);
+                this._valuesStart[property] = this._valuesStartRepeat[property];
+            }
+        }
+        this._isPlaying = true;
+        this._isPaused = false;
+        this._onStartCallbackFired = false;
+        this._isChainStopped = false;
+        this._startTime = time !== undefined ? (typeof time === 'string' ? now$1() + parseFloat(time) : time) : now$1();
+        this._startTime += this._delayTime;
+        this._setupProperties(this._object, this._valuesStart, this._valuesEnd, this._valuesStartRepeat);
+        return this;
+    };
+    Tween.prototype._setupProperties = function (_object, _valuesStart, _valuesEnd, _valuesStartRepeat) {
+        for (var property in _valuesEnd) {
+            var startValue = _object[property];
+            var startValueIsArray = Array.isArray(startValue);
+            var propType = startValueIsArray ? 'array' : typeof startValue;
+            var isInterpolationList = !startValueIsArray && Array.isArray(_valuesEnd[property]);
+            // If `to()` specifies a property that doesn't exist in the source object,
+            // we should not set that property in the object
+            if (propType === 'undefined' || propType === 'function') {
+                continue;
+            }
+            // Check if an Array was provided as property value
+            if (isInterpolationList) {
+                var endValues = _valuesEnd[property];
+                if (endValues.length === 0) {
+                    continue;
+                }
+                // handle an array of relative values
+                endValues = endValues.map(this._handleRelativeValue.bind(this, startValue));
+                // Create a local copy of the Array with the start value at the front
+                _valuesEnd[property] = [startValue].concat(endValues);
+            }
+            // handle the deepness of the values
+            if ((propType === 'object' || startValueIsArray) && startValue && !isInterpolationList) {
+                _valuesStart[property] = startValueIsArray ? [] : {};
+                // eslint-disable-next-line
+                for (var prop in startValue) {
+                    // eslint-disable-next-line
+                    // @ts-ignore FIXME?
+                    _valuesStart[property][prop] = startValue[prop];
+                }
+                _valuesStartRepeat[property] = startValueIsArray ? [] : {}; // TODO? repeat nested values? And yoyo? And array values?
+                // eslint-disable-next-line
+                // @ts-ignore FIXME?
+                this._setupProperties(startValue, _valuesStart[property], _valuesEnd[property], _valuesStartRepeat[property]);
+            }
+            else {
+                // Save the starting value, but only once.
+                if (typeof _valuesStart[property] === 'undefined') {
+                    _valuesStart[property] = startValue;
+                }
+                if (!startValueIsArray) {
+                    // eslint-disable-next-line
+                    // @ts-ignore FIXME?
+                    _valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
+                }
+                if (isInterpolationList) {
+                    // eslint-disable-next-line
+                    // @ts-ignore FIXME?
+                    _valuesStartRepeat[property] = _valuesEnd[property].slice().reverse();
+                }
+                else {
+                    _valuesStartRepeat[property] = _valuesStart[property] || 0;
+                }
+            }
+        }
+    };
+    Tween.prototype.stop = function () {
+        if (!this._isChainStopped) {
+            this._isChainStopped = true;
+            this.stopChainedTweens();
+        }
+        if (!this._isPlaying) {
+            return this;
+        }
+        // eslint-disable-next-line
+        this._group && this._group.remove(this);
+        this._isPlaying = false;
+        this._isPaused = false;
+        if (this._onStopCallback) {
+            this._onStopCallback(this._object);
+        }
+        return this;
+    };
+    Tween.prototype.end = function () {
+        this._goToEnd = true;
+        this.update(Infinity);
+        return this;
+    };
+    Tween.prototype.pause = function (time) {
+        if (time === void 0) { time = now$1(); }
+        if (this._isPaused || !this._isPlaying) {
+            return this;
+        }
+        this._isPaused = true;
+        this._pauseStart = time;
+        // eslint-disable-next-line
+        this._group && this._group.remove(this);
+        return this;
+    };
+    Tween.prototype.resume = function (time) {
+        if (time === void 0) { time = now$1(); }
+        if (!this._isPaused || !this._isPlaying) {
+            return this;
+        }
+        this._isPaused = false;
+        this._startTime += time - this._pauseStart;
+        this._pauseStart = 0;
+        // eslint-disable-next-line
+        this._group && this._group.add(this);
+        return this;
+    };
+    Tween.prototype.stopChainedTweens = function () {
+        for (var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++) {
+            this._chainedTweens[i].stop();
+        }
+        return this;
+    };
+    Tween.prototype.group = function (group) {
+        this._group = group;
+        return this;
+    };
+    Tween.prototype.delay = function (amount) {
+        this._delayTime = amount;
+        return this;
+    };
+    Tween.prototype.repeat = function (times) {
+        this._initialRepeat = times;
+        this._repeat = times;
+        return this;
+    };
+    Tween.prototype.repeatDelay = function (amount) {
+        this._repeatDelayTime = amount;
+        return this;
+    };
+    Tween.prototype.yoyo = function (yoyo) {
+        this._yoyo = yoyo;
+        return this;
+    };
+    Tween.prototype.easing = function (easingFunction) {
+        this._easingFunction = easingFunction;
+        return this;
+    };
+    Tween.prototype.interpolation = function (interpolationFunction) {
+        this._interpolationFunction = interpolationFunction;
+        return this;
+    };
+    Tween.prototype.chain = function () {
+        var tweens = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            tweens[_i] = arguments[_i];
+        }
+        this._chainedTweens = tweens;
+        return this;
+    };
+    Tween.prototype.onStart = function (callback) {
+        this._onStartCallback = callback;
+        return this;
+    };
+    Tween.prototype.onUpdate = function (callback) {
+        this._onUpdateCallback = callback;
+        return this;
+    };
+    Tween.prototype.onRepeat = function (callback) {
+        this._onRepeatCallback = callback;
+        return this;
+    };
+    Tween.prototype.onComplete = function (callback) {
+        this._onCompleteCallback = callback;
+        return this;
+    };
+    Tween.prototype.onStop = function (callback) {
+        this._onStopCallback = callback;
+        return this;
+    };
+    /**
+     * @returns true if the tween is still playing after the update, false
+     * otherwise (calling update on a paused tween still returns true because
+     * it is still playing, just paused).
+     */
+    Tween.prototype.update = function (time, autoStart) {
+        if (time === void 0) { time = now$1(); }
+        if (autoStart === void 0) { autoStart = true; }
+        if (this._isPaused)
+            return true;
+        var property;
+        var elapsed;
+        var endTime = this._startTime + this._duration;
+        if (!this._goToEnd && !this._isPlaying) {
+            if (time > endTime)
+                return false;
+            if (autoStart)
+                this.start(time);
+        }
+        this._goToEnd = false;
+        if (time < this._startTime) {
+            return true;
+        }
+        if (this._onStartCallbackFired === false) {
+            if (this._onStartCallback) {
+                this._onStartCallback(this._object);
+            }
+            this._onStartCallbackFired = true;
+        }
+        elapsed = (time - this._startTime) / this._duration;
+        elapsed = this._duration === 0 || elapsed > 1 ? 1 : elapsed;
+        var value = this._easingFunction(elapsed);
+        // properties transformations
+        this._updateProperties(this._object, this._valuesStart, this._valuesEnd, value);
+        if (this._onUpdateCallback) {
+            this._onUpdateCallback(this._object, elapsed);
+        }
+        if (elapsed === 1) {
+            if (this._repeat > 0) {
+                if (isFinite(this._repeat)) {
+                    this._repeat--;
+                }
+                // Reassign starting values, restart by making startTime = now
+                for (property in this._valuesStartRepeat) {
+                    if (!this._yoyo && typeof this._valuesEnd[property] === 'string') {
+                        this._valuesStartRepeat[property] =
+                            // eslint-disable-next-line
+                            // @ts-ignore FIXME?
+                            this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property]);
+                    }
+                    if (this._yoyo) {
+                        this._swapEndStartRepeatValues(property);
+                    }
+                    this._valuesStart[property] = this._valuesStartRepeat[property];
+                }
+                if (this._yoyo) {
+                    this._reversed = !this._reversed;
+                }
+                if (this._repeatDelayTime !== undefined) {
+                    this._startTime = time + this._repeatDelayTime;
+                }
+                else {
+                    this._startTime = time + this._delayTime;
+                }
+                if (this._onRepeatCallback) {
+                    this._onRepeatCallback(this._object);
+                }
+                return true;
+            }
+            else {
+                if (this._onCompleteCallback) {
+                    this._onCompleteCallback(this._object);
+                }
+                for (var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++) {
+                    // Make the chained tweens start exactly at the time they should,
+                    // even if the `update()` method was called way past the duration of the tween
+                    this._chainedTweens[i].start(this._startTime + this._duration);
+                }
+                this._isPlaying = false;
+                return false;
+            }
+        }
+        return true;
+    };
+    Tween.prototype._updateProperties = function (_object, _valuesStart, _valuesEnd, value) {
+        for (var property in _valuesEnd) {
+            // Don't update properties that do not exist in the source object
+            if (_valuesStart[property] === undefined) {
+                continue;
+            }
+            var start = _valuesStart[property] || 0;
+            var end = _valuesEnd[property];
+            var startIsArray = Array.isArray(_object[property]);
+            var endIsArray = Array.isArray(end);
+            var isInterpolationList = !startIsArray && endIsArray;
+            if (isInterpolationList) {
+                _object[property] = this._interpolationFunction(end, value);
+            }
+            else if (typeof end === 'object' && end) {
+                // eslint-disable-next-line
+                // @ts-ignore FIXME?
+                this._updateProperties(_object[property], start, end, value);
+            }
+            else {
+                // Parses relative end values with start as base (e.g.: +10, -3)
+                end = this._handleRelativeValue(start, end);
+                // Protect against non numeric properties.
+                if (typeof end === 'number') {
+                    // eslint-disable-next-line
+                    // @ts-ignore FIXME?
+                    _object[property] = start + (end - start) * value;
+                }
+            }
+        }
+    };
+    Tween.prototype._handleRelativeValue = function (start, end) {
+        if (typeof end !== 'string') {
+            return end;
+        }
+        if (end.charAt(0) === '+' || end.charAt(0) === '-') {
+            return start + parseFloat(end);
+        }
+        else {
+            return parseFloat(end);
+        }
+    };
+    Tween.prototype._swapEndStartRepeatValues = function (property) {
+        var tmp = this._valuesStartRepeat[property];
+        var endValue = this._valuesEnd[property];
+        if (typeof endValue === 'string') {
+            this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(endValue);
+        }
+        else {
+            this._valuesStartRepeat[property] = this._valuesEnd[property];
+        }
+        this._valuesEnd[property] = tmp;
+    };
+    return Tween;
+}());
+
+var VERSION = '18.6.4';
+
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */
+var nextId = Sequence.nextId;
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tweens.
+ */
+var TWEEN = mainGroup;
+// This is the best way to export things in a way that's compatible with both ES
+// Modules and CommonJS, without build hacks, and so as not to break the
+// existing API.
+// https://github.com/rollup/rollup/issues/1961#issuecomment-423037881
+var getAll = TWEEN.getAll.bind(TWEEN);
+var removeAll = TWEEN.removeAll.bind(TWEEN);
+var add = TWEEN.add.bind(TWEEN);
+var remove = TWEEN.remove.bind(TWEEN);
+var update = TWEEN.update.bind(TWEEN);
+var exports = {
+    Easing: Easing,
+    Group: Group,
+    Interpolation: Interpolation,
+    now: now$1,
+    Sequence: Sequence,
+    nextId: nextId,
+    Tween: Tween,
+    VERSION: VERSION,
+    getAll: getAll,
+    removeAll: removeAll,
+    add: add,
+    remove: remove,
+    update: update,
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (exports);
+
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
 /***/ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js":
 /*!*************************************************************************************************!*\
   !*** ./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js ***!
@@ -12907,6 +13737,201 @@ World.prototype.emitContactEvents = (() => {
 })();
 
 
+
+
+/***/ }),
+
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
+  !*** ./node_modules/process/browser.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 
 /***/ }),
@@ -69567,6 +70592,148 @@ var XRControllerModelFactory = ( function () {
 
 /***/ }),
 
+/***/ "./src/bag.js":
+/*!********************!*\
+  !*** ./src/bag.js ***!
+  \********************/
+/*! exports provided: Bag */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Bag", function() { return Bag; });
+/* harmony import */ var _pdacceleration_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pdacceleration.js */ "./src/pdacceleration.js");
+/* harmony import */ var _circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./circleCircleIntersection.js */ "./src/circleCircleIntersection.js");
+
+
+
+let desiredPosition = new THREE.Vector3();
+let desiredVelocity = new THREE.Vector3();
+
+let leftHitPoint = new THREE.Vector3();
+let rightHitPoint = new THREE.Vector3();
+
+const kBagRadius = 0.25;
+const kHitSoundDelay = 0.25;
+
+class Bag extends THREE.Group
+{
+    constructor(leftGlove, rightGlove, audioListener)
+    {
+        super();
+        this.velocity = new THREE.Vector3();
+        this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
+        this.targetPosition = new THREE.Vector3(0.0, 1.25, -0.75);
+        this.position.copy(this.targetPosition);
+        this.leftGlove = leftGlove;
+        this.rightGlove = rightGlove;
+        this.radius = kBagRadius;
+        this.accumulatedTime = 0.0;
+
+        let mesh = new THREE.Mesh( 
+            new THREE.CylinderGeometry(kBagRadius, kBagRadius, 1.0, 32, 1), 
+            new THREE.MeshStandardMaterial({color: 0xff8020}));
+
+        this.hitSoundBuffers = [];
+        this.hitSounds = [
+            new THREE.PositionalAudio(audioListener),
+            new THREE.PositionalAudio(audioListener),
+            new THREE.PositionalAudio(audioListener),
+            new THREE.PositionalAudio(audioListener),
+            new THREE.PositionalAudio(audioListener),
+            new THREE.PositionalAudio(audioListener),
+        ];
+        this.nextSoundIndex = 0;
+        this.nextSoundTime = [-999, -1, -1];
+
+        var audioLoader = new THREE.AudioLoader();
+        audioLoader.load('./content/Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
+            this.hitSoundBuffers.push(buffer);
+        });
+        // audioLoader.load('./content/Crunchy-Punch-A-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/Crunchy-Punch-B-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+
+
+        this.add(mesh);
+    }
+
+    update(dt, accumulatedTime)
+    {
+        this.accumulatedTime = accumulatedTime;
+
+        desiredPosition.copy(this.position);
+        desiredVelocity.copy(this.velocity);
+        Object(_pdacceleration_js__WEBPACK_IMPORTED_MODULE_0__["ApplyPDVec3"])(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.0, 0.9, dt);
+
+        let tLeft = 1.0;
+        let tRight = 1.0;
+
+        let hitLeft = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, tLeft);
+        let hitRight = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, tRight)
+
+        if (hitLeft || hitRight)
+        {
+            this.velocity.set(0.0, 0.0, 0.0);
+            if (hitLeft && !hitRight)
+            {
+                this.position.copy(leftHitPoint);
+            }
+            else if (hitRight && !hitLeft)
+            {
+                this.position.copy(rightHitPoint);
+            }
+            else if (hitLeft && hitRight)
+            {
+                if (tLeft < tRight)
+                {
+                    this.position.copy(leftHitPoint);
+                }
+                else
+                {
+                    this.position.copy(rightHitPoint);
+                }
+            }
+        }
+        else
+        {
+            this.position.copy(desiredPosition);
+            this.velocity.copy(desiredVelocity);
+        }
+    }
+
+    processHit(velocity, position, whichHand)
+    {
+        this.velocity.add(velocity);
+
+
+        if (this.nextSoundTime[whichHand] < this.accumulatedTime)
+        {
+            let hitSound = this.hitSounds[this.nextSoundIndex];
+            if (hitSound.isPlaying)
+                hitSound.stop();
+
+            hitSound.position.copy(position);
+            let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
+            hitSound.buffer = this.hitSoundBuffers[whichSound];
+            
+            console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
+            hitSound.play();
+
+            this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
+
+            this.nextSoundTime[whichHand] = this.accumulatedTime + kHitSoundDelay;
+        }
+    }
+
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
 /***/ "./src/box.js":
 /*!********************!*\
   !*** ./src/box.js ***!
@@ -69579,15 +70746,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDirectionalLightPositionFromBlenderQuaternion", function() { return setDirectionalLightPositionFromBlenderQuaternion; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/webxr/VRButton.js */ "./node_modules/three/examples/jsm/webxr/VRButton.js");
-/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
-/* harmony import */ var three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/webxr/XRControllerModelFactory.js */ "./node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/webxr/XRControllerModelFactory.js */ "./node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js");
+/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+/* harmony import */ var _fistTarget_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./fistTarget.js */ "./src/fistTarget.js");
+/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
+/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
 
 
 
 
 
 var inputProfilesList = __webpack_require__( /*! @webxr-input-profiles/registry/dist/profilesList.json */ "./node_modules/@webxr-input-profiles/registry/dist/profilesList.json");
+
+
+
+
+
+
+
+
 
 
 
@@ -69600,12 +70779,12 @@ let camera = null;
 let renderer = null;
 let clock = null;
 let accumulatedTime = 0.0;
-let physicsWorld = null;
-let threeJsObjectsWithPhysics = [];
-let bagPhys = null;
+let bag = null;
 
 let leftHand = {};
 let rightHand = {};
+
+let audioListener = null;
 
 initialize();
 
@@ -69617,6 +70796,9 @@ function initialize()
     camera.position.y = 2.0;
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
+
+    audioListener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
+    camera.add( audioListener );
 
     renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -69644,142 +70826,27 @@ function initialize()
 
 
 
-    const directionalLight = new three__WEBPACK_IMPORTED_MODULE_0__["DirectionalLight"](0xffccaa, 2.5);
+    const directionalLight = new three__WEBPACK_IMPORTED_MODULE_0__["DirectionalLight"](0xffffff, 2.5);
     directionalLight.color.convertSRGBToLinear();
     setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205);
     scene.add(directionalLight);
 
-
-
-    //--------------------------------------
-    // Set up physics
-    physicsWorld = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["World"](
-        {gravity: new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](0.0, -9.8, 0.0),
-        }
-    );
-
-
-    physicsWorld.addEventListener("beginContact", (evt) => {
-        console.log(evt.bodyA + " begin contact with " + evt.bodyB );
-        handlePhysicsContact(evt);
-    });
-
-
-    physicsWorld.addEventListener("endContact", (evt) => {
-        console.log(evt.bodyA + " end contact with " + evt.bodyB );
-        handlePhysicsContact(evt);
-    });
+    const ambient = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xffffff, 0.5);
+    ambient.color.convertSRGBToLinear();
+    scene.add(ambient);
 
 
     let groundMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
         new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](4.0, 0.1, 4.0), 
         new three__WEBPACK_IMPORTED_MODULE_0__["MeshStandardMaterial"]( {color: 0x303030, roughness: 0.7}));
     scene.add(groundMesh);
-    let physGround = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Body"]( {
-        type: cannon_es__WEBPACK_IMPORTED_MODULE_2__["Body"].STATIC,
-    } );
-
-    physGround.addShape(new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Box"](new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](4.0, 0.1, 4.0)));
-    physicsWorld.addBody(physGround);
-    attachPhysicsObjectToThreeJsObject(physGround, groundMesh, false);
-  
   
 
-    // let box = new THREE.BoxGeometry(1, 1, 1);
-    // let boxMat = new THREE.MeshStandardMaterial( {color: 0x808080} );
-    // let boxMesh = new THREE.Mesh(box, boxMat);
-    // boxMesh.position.y = 8.0;
-
-    // scene.add(boxMesh);
-
-    // boxMesh.physicsObj = new CANNON.Body( {
-    //     type: CANNON.Body.DYNAMIC,
-    //     mass: 1.0,
-    // });
-    // boxMesh.physicsObj.addShape(new CANNON.Box( new CANNON.Vec3(0.5, 0.5, 0.5)));
-    // boxMesh.physicsObj.position.copy(boxMesh.position);
-    // boxMesh.physicsObj.quaternion.copy(boxMesh.quaternion);
-    // boxMesh.physicsObj.angularVelocity.set(0.0, 0.3, 0.2);
-    // boxMesh.physicsObj.velocity.set(0.0, -15.0, 0.0);
-    // boxMesh.physicsObj.addEventListener("collide", (evt) => {
-    //     console.log(evt);
-    // });
-    // physicsWorld.addBody(boxMesh.physicsObj);
-    // threeJsObjectsWithPhysics.push(boxMesh);
-
-    if (true)
-    {
-
-    let bagMat = new three__WEBPACK_IMPORTED_MODULE_0__["MeshStandardMaterial"](
-        {
-            color:0x202020,
-            roughness: 0.5,
-            metalness: 0.1
-        }
-    );
-    let bagGeo = new three__WEBPACK_IMPORTED_MODULE_0__["CylinderGeometry"](0.25, 0.25, 1.0, 32);
-    let bagMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](bagGeo, bagMat);
-    bagMesh.position.y = 1.5;
-    bagMesh.position.z = -1.0;
-    scene.add(bagMesh);
-    let bagPhysMat = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Material"]({
-        restitution: 0.1
-    });
-    bagPhys = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Body"]( 
-        {
-            type: cannon_es__WEBPACK_IMPORTED_MODULE_2__["Body"].DYNAMIC, 
-            mass: 1.0,
-            angularDamping: 0.991,
-            material: bagPhysMat,
-            allowSleep: false
-
-            //linearDamping: 0.995
-        }
-    );
-    bagPhys.addShape(new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Cylinder"](0.25, 0.25, 1.0, 12.0));
-    bagPhys.addEventListener("collide", (evt) => {
-        console.log("BAG HIT: " + evt);
-    });
-    attachPhysicsObjectToThreeJsObject(bagPhys, bagMesh);
-    physicsWorld.addBody(bagPhys);
-    
-    let attachMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.1, 0.1, 0.1), bagMat);
-    attachMesh.position.set(0.0, 2.8, -1.0);
-    scene.add(attachMesh);
-    let bagAttachPhys = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Body"](
-        {
-            type: cannon_es__WEBPACK_IMPORTED_MODULE_2__["Body"].STATIC,
-            mass: 0
-        }
-    );
-    attachPhysicsObjectToThreeJsObject(bagAttachPhys, attachMesh, false);
-    physicsWorld.addBody(bagAttachPhys);
-
-    let bagConstraint = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["PointToPointConstraint"](
-        bagPhys, new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](0.0, 1.0, 0.0),
-        bagAttachPhys, new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](0.0, 0.0, 0.0));
-    physicsWorld.addConstraint(bagConstraint);
-    }
-
-   
-    document.onkeydown = function (e) {
-        switch (e.key) {
-            case ",":
-                bagPhys.applyImpulse(new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](50.5, 0.0, 1.5),
-                    new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](0.0, 0.0, 0.25));
-                break;
-            case ".":
-                bagPhys.applyImpulse(new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](-50.5, 0.0, 1.5),
-                    new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](0.0, 0.0, 0.25));
-                break;
-        }
-    };
-
-    const controllerModelFactory = new three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_3__["XRControllerModelFactory"]();
+    const controllerModelFactory = new three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_2__["XRControllerModelFactory"]();
     controllers.push(renderer.xr.getControllerGrip( 0 ));
-    let con0 = renderer.xr.getControllerGrip(0);
-    con0.add(controllerModelFactory.createControllerModel(con0));
-    scene.add(con0);
+    // let con0 = renderer.xr.getControllerGrip(0);
+    // con0.add(controllerModelFactory.createControllerModel(con0));
+    // scene.add(con0);
     scene.add( controllers[0] );
     
     renderer.xr.getControllerGrip(0).addEventListener("connected", (evt) => {
@@ -69788,12 +70855,12 @@ function initialize()
         if (evt.data.handedness == "left")
         {
             leftHand.controller = controllers[0];
-            setupHand(leftHand);
+            setupHand(leftHand, 1);
         }
         else
         {
             rightHand.controller = controllers[0];
-            setupHand(rightHand);
+            setupHand(rightHand, 2);
         }
     });
     renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
@@ -69804,9 +70871,9 @@ function initialize()
 
     controllers.push(renderer.xr.getControllerGrip( 1 ));
     scene.add( controllers[1] );
-    let con1 = renderer.xr.getControllerGrip(1);
-    con1.add(controllerModelFactory.createControllerModel(con1));
-    scene.add(con1);
+    // let con1 = renderer.xr.getControllerGrip(1);
+    // con1.add(controllerModelFactory.createControllerModel(con1));
+    // scene.add(con1);
     //controllers[1].add(controllerModelFactory.createControllerModel(controllers[1]));
    
     renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
@@ -69815,12 +70882,12 @@ function initialize()
         if (evt.data.handedness == "left")
         {
             leftHand.controller = controllers[1];
-            setupHand(leftHand);
+            setupHand(leftHand, 1);
         }
         else
         {
             rightHand.controller = controllers[1];
-            setupHand(rightHand);
+            setupHand(rightHand, 2);
         }
 
     });
@@ -69829,51 +70896,40 @@ function initialize()
         controllers[1].gamepad = null;
     });
 
- 
-
+    initScene(scene);
 
     renderer.setAnimationLoop(render); 
 }
 
 const kPhysTimeStep = 1.0/240.0;
+let _leftHandWorldPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
+let _rightHandWorldPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
+
 function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
-    //TWEEN.update(accumulatedTime);
+    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_4__["update"](accumulatedTime);
 
-    updateHands(dt);
 
-    physicsWorld.step(kPhysTimeStep,dt,100);
-    for(let obj of threeJsObjectsWithPhysics)
+    if (leftHand.isSetUp)
     {
-        obj.position.copy(obj.physicsObj.position);
-        obj.quaternion.copy(obj.physicsObj.quaternion);
-
+        leftHand.mesh.getWorldPosition(_leftHandWorldPos);
     }
+    if (rightHand.isSetUp)
+    {
+        rightHand.mesh.getWorldPosition(_rightHandWorldPos);
+    }
+
+    updateHands(dt, accumulatedTime);
     renderer.render(scene, camera);
 }
 
 function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX, bQuatY, bQuatZ)
 {
-
     const quaternion = new three__WEBPACK_IMPORTED_MODULE_0__["Quaternion"](bQuatX, bQuatZ, -bQuatY, bQuatW);
-    
-
-    // const kDegToRad = 0.01745329252;
-    // let euler = new THREE.Euler((xDeg) * kDegToRad, (yDeg) * kDegToRad, zDeg * kDegToRad);
     light.position.set(0.0, 20.0, 0.0);
     light.position.applyQuaternion(quaternion);
-    //console.log("LIGHT POS: " + light.position.x * 20.0 + ", " + light.position.y * 20.0 + ", " + light.position.z * 20.0 );
-}
-
-function attachPhysicsObjectToThreeJsObject(physicsObject, threeObj, isDynamic = true)
-{
-    threeObj.physicsObj = physicsObject;
-    physicsObject.position.copy(threeObj.position);
-    physicsObject.quaternion.copy(threeObj.quaternion);
-    if (isDynamic)
-        threeJsObjectsWithPhysics.push(threeObj);
 }
 
 function onSessionStart()
@@ -69886,200 +70942,477 @@ function onSessionEnd()
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
 }
 
+function initScene(scene)
+{
+}
 
 
-function setupHand(hand)
+function setupHand(hand, whichHand)
 {
     hand.mesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
-        new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.15, 0.25, 0.15), 
+        new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.1, 0.2, 0.15), 
         new three__WEBPACK_IMPORTED_MODULE_0__["MeshStandardMaterial"](
             {
                 color: 0x802020,
-                //wireframe: true
+                // wireframe: true
             }
         )
     );
-    hand.mesh.rotation.set(0.78, 0.0, 0.0);
+    hand.mesh.rotation.set(0.45, 0.0, 0.0);
+    //hand.mesh.position.x = 0.05;
     hand.controller.add(hand.mesh);
+    hand.which = whichHand;
 
-    // hand.controller.add(new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.02), new THREE.MeshBasicMaterial({color: 0x800080})));
-    // let glovePhysicsShape = new CANNON.Box(new CANNON.Vec3(0.1, 0.1, 0.15));
-    // let glovePhysicsBody = new CANNON.Body( 
-    //     {
-    //         type: CANNON.Body.DYNAMIC, 
-    //         mass: 1,
-    //         //linearDamping: 0.999,
-    //         //angularDamping: 0.999,
-    //         //fixedRotation: true
-    //     }
-    // );
-    // glovePhysicsBody.addShape(glovePhysicsShape);
-    // physicsWorld.addBody(glovePhysicsBody);
-
-    // let debugMesh = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 0.35), new THREE.MeshBasicMaterial(
-    //     {color: 0x800080, wireframe: true}
-    // ));
-    // debugMesh.position.set(0.0, 0.0, 0.0);
-    // scene.add(debugMesh);
-    //
-    // attachPhysicsObjectToThreeJsObject(glovePhysicsBody, debugMesh, true);
-
-    let handAttachShape = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Box"](new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"](0.075, 0.125, 0.075));
-    let handAttachBody = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Body"](
-        {
-            type: cannon_es__WEBPACK_IMPORTED_MODULE_2__["Body"].STATIC,
-            mass: 0,
-            collisionResponse: false,
-        }
-    );
-    handAttachBody.addShape(handAttachShape);
-    handAttachBody.addEventListener("collide", (evt) => {
-        // I want a force that is enough to reverse the velocity of the bag and make it match the hand
-        // Project -ve bag velocity onto hand velocity vector, then add hand velocity vector.
-        console.log(evt);
-
-        let bag = null;
-        let bag_ri = null;
-        let glove = null;
-        let glove_ri = null;
-        let bagContactNormal = null;
-        if (evt.contact.bi.id == 1)
-        {
-            bag = evt.contact.bi;
-            bagContactNormal = evt.contact.ni;
-            bag_ri = evt.contact.ri;
-            glove = evt.contact.bj;
-            glove_ri = evt.contact.rj;
-        }
-        else if (evt.contact.bj.id == 1)
-        {
-            bag = evt.contact.bj;
-            bagContactNormal = evt.contact.ni.negate();
-            bag_ri = evt.contact.rj;
-            glove = evt.contact.bi;
-            glove_ri = evt.contact.ri;
-        }
-
-        if (bag)
-        {
-            let bagVel = bagContactNormal.scale(bag.velocity.dot(bagContactNormal));
-            let contactPoint = bag.position.vadd(bag_ri);
-            let finalVel = new cannon_es__WEBPACK_IMPORTED_MODULE_2__["Vec3"]();
-            bagVel.vadd(glove.velocity.negate(), finalVel);
-            bag.applyImpulse(finalVel, contactPoint); //glove.velocity.negate(), evt.contact.bi.position.vadd(evt.contact.ri));
-        }
-
-            //it's the bag
-            //evt.target.applyImpulse(evt.body.velocity, );
-        //}
-
-
-    })
-    physicsWorld.addBody(handAttachBody);
-
-    
-    // let constraint = new CANNON.LockConstraint(handAttachBody, glovePhysicsBody);
-    // constraint.collideConnected = false;
-    // physicsWorld.addConstraint(constraint);
-
-    hand.physicsBody = handAttachBody;
-    attachPhysicsObjectToThreeJsObject(handAttachBody, hand.mesh, false);
-    
     hand.lastWorldPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
     //@TODO - compute last world pos to initialize properly
 
+    hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_6__["Glove"](hand.controller, scene, whichHand);
+
+
     hand.isSetUp = true;
-
-    //updateHands();
 }
 
-let _handPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
-let _handQuat = new three__WEBPACK_IMPORTED_MODULE_0__["Quaternion"]();
-let _handVel = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
-
-function updateHands(dt)
+function updateHands(dt, accumulatedTime)
 {
-    const kAddVelocity = true;
-
-    const scale = 1.0;
-    let oneOverDt = 1.0 / dt;
-    oneOverDt *= scale;
-
-    if (leftHand.isSetUp)
+    if (leftHand.isSetUp && rightHand.isSetUp)
     {
-        leftHand.mesh.getWorldPosition(_handPos);
-        leftHand.physicsBody.position.copy(_handPos);
-        leftHand.mesh.getWorldQuaternion(_handQuat);
-        leftHand.physicsBody.quaternion.copy(_handQuat);
-
-        if (kAddVelocity)
+        if (bag == null)
         {
-            _handVel.x = (_handPos.x - leftHand.lastWorldPos.x) * oneOverDt;
-            _handVel.y = (_handPos.y - leftHand.lastWorldPos.y) * oneOverDt;
-            _handVel.z = (_handPos.z - leftHand.lastWorldPos.z) * oneOverDt;
-            leftHand.physicsBody.velocity.copy(_handVel);
-            leftHand.lastWorldPos.copy(_handPos);
+            bag = new _bag_js__WEBPACK_IMPORTED_MODULE_7__["Bag"](leftHand.glove, rightHand.glove, audioListener);
+            scene.add(bag);
+
+            leftHand.glove.bag = bag;
+            rightHand.glove.bag = bag;
         }
-    }
-
-    if (rightHand.isSetUp)
-    {
-        rightHand.mesh.getWorldPosition(_handPos);
-        rightHand.physicsBody.position.copy(_handPos);
-        rightHand.mesh.getWorldQuaternion(_handQuat);
-        rightHand.physicsBody.quaternion.copy(_handQuat);
-
-        if (kAddVelocity)
+        else
         {
-            _handVel.x = (_handPos.x - rightHand.lastWorldPos.x) * oneOverDt;
-            _handVel.y = (_handPos.y - rightHand.lastWorldPos.y) * oneOverDt;
-            _handVel.z = (_handPos.z - rightHand.lastWorldPos.z) * oneOverDt;
-            rightHand.physicsBody.velocity.copy(_handVel);
-            rightHand.lastWorldPos.copy(_handPos);
+            leftHand.glove.update(dt);
+            rightHand.glove.update(dt);
+            bag.update(dt, accumulatedTime);
         }
     }
 }
 
-function handlePhysicsContact(event)
+
+
+/***/ }),
+
+/***/ "./src/circleCircleIntersection.js":
+/*!*****************************************!*\
+  !*** ./src/circleCircleIntersection.js ***!
+  \*****************************************/
+/*! exports provided: doesCircleCollideWithOtherCircle */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "doesCircleCollideWithOtherCircle", function() { return doesCircleCollideWithOtherCircle; });
+
+let start = new THREE.Vector3();
+let end = new THREE.Vector3();
+let directionVector = new THREE.Vector3();
+const kEpsilon = 0.00001;
+
+function doesCircleCollideWithOtherCircle(
+    startPos,
+    endPos,
+    movingRadius,
+    stationaryPos,
+    stationaryRadius,
+    hitPoint,
+    hitT
+)
 {
-    let bodyA = event.bodyA;
-    let bodyB = event.bodyB;
-    if (bodyA == leftHand.physicsBody || bodyA == rightHand.physicsBody)
+    //We want to translate stationary circle to origin, so we need to translate start and end pos by the same amount.
+    start.subVectors(startPos, stationaryPos);
+    start.y = 0.0;
+
+    
+
+    end.subVectors(endPos, stationaryPos);
+    end.y = 0.0;
+
+    // Add the two radii together to make a bigger stationary circle that we can raycast against with a line
+    let combinedRadius = stationaryRadius + movingRadius;
+
+    // if startPos is inside radius, return true because we're stuck inside and trying to get out
+    // if (startPos.x*startPos.x + startPos.z*startPos.z < (combinedRadius*combinedRadius))
+    // {
+    //     hitPoint.copy(endPos);
+    //     return false;
+    // }
+
+    directionVector.subVectors(end, start);
+
+    // if directionVector is moving out of the circle, the return true
+
+
+
+    // line = startPos + t * dirVec
+    //      = (startPos.x + t * dirVec.x) + (startPos.y + t * dirVec.y)
+
+    // Solve X^2 + Y^2 = R^2
+    // X = (startPos.x + t * dirVec.x)
+    // X^2 = (startPos.x + t * dirVec.x)(startPos.x + t * dirVec.x)
+    //     = startPos.x^2 + 2 * t * startPos.x * dirVec.x + t^2 * dirVec.x^2
+    // Y = (startPos.y + t * dirVec.y)
+
+    // Quadratic equation is Ax^2 + Bx + C = 0
+    // A = dirVec.x^2 + dirVec.y^2
+    // B = 2 * startPos.x * dirVec.x + 2 * startPos.y * dirVec.y
+    // C = startPos.x^2 + startPos.y^2 + radius^2
+
+    let A = directionVector.x * directionVector.x + directionVector.z * directionVector.z;
+    let B = 2.0 * start.x * directionVector.x + 2.0 * start.z * directionVector.z;
+    let C = start.x * start.x + start.z * start.z - combinedRadius*combinedRadius;
+
+    
+
+    let discriminant = B*B - 4.0 * A * C;
+    if (discriminant < 0.0) 
     {
-        console.log("BODY A is a hand");
+        //no real intersection points ==> no collision
+        hitPoint.copy(endPos);
+        hitT = 1.0;
+        return false;
+    }
+    let plusMinusPart = Math.sqrt(discriminant);
+    let oneOver2A = 1.0 / (2.0 * A);
+    let t0 = (-B - plusMinusPart) * oneOver2A;
+    let t1 = (-B + plusMinusPart) * oneOver2A;
+
+    // if nearer hit point is close to zero, then don't move at all... it means that we're already in contact
+    // if it was significantly negative, it means we're already inside and don't want to register a hit.
+    if (-kEpsilon <= t0 && t0 <= kEpsilon)
+    {
+        hitPoint.copy(startPos);
+        hitT = 0.0;
+        return true;
+    }
+    else if (0.0 <= t0 && t0 <= 1.0)
+    {
+        
+        hitPoint.lerpVectors(startPos, endPos, t0);
+        // console.log("Move from (" + start.x + ", " + start.z + ") to (" + end.x + ", " + end.z + ")");
+        // console.log("HIT @ (" + hitPoint.x + ", " + hitPoint.z + "). t0 = " + t0);
+        hitT = t0;
+        return true;
+    }
+    else if (kEpsilon <= t1 && t1 <= 1.0)
+    {
+        hitPoint.lerpVectors(startPos, endPos, t1);
+        // console.log("Move from (" + start.x + ", " + start.z + ") to (" + end.x + ", " + end.z + ")");
+        // console.log("HIT @ " + hitPoint.x + ", " + hitPoint.z + ". t1 = " + t1);
+        hitT = t1;
+        return true;
+    }
+
+    // console.log("Move from (" + start.x + ", " + start.z + ") to (" + end.x + ", " + end.z + ")");
+    // console.log("NO HIT");
+    hitPoint.copy(endPos);
+    hitT = 1.0;
+    return false;
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
+/***/ "./src/fistTarget.js":
+/*!***************************!*\
+  !*** ./src/fistTarget.js ***!
+  \***************************/
+/*! exports provided: FistTarget */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FistTarget", function() { return FistTarget; });
+
+const kBaseColors = [
+    0x502020,
+    0x80f080,
+    0xf08080
+];
+
+const kBrightColors = [
+    0xf01010,
+    0x20ff20,
+    0xff2020
+]
+
+class FistTarget extends THREE.Group
+{
+    constructor(scene, whichHand = 0, radius = 0.15) // hand: 0 = recognize either hand, 1 = recognize left hand, 2 = recognize right hand
+    {
+        super();
+
+        this.nEntered = 0;
+        this.whichHand = whichHand;
+        this.bActive = true;
+        this.scene = scene;
+        //this.parent = parent;
+        this.radius = radius;
+        this.radiusSquared = radius*radius;
+        this.hitCallbacks = [];
+        this.bDebugDraw = true;
+
+        this.baseColor = new THREE.Color(kBaseColors[whichHand]);
+        this.brightColor = new THREE.Color(kBrightColors[whichHand]);
+        this.colorLerpDecay = 0.0;
+        this.colorLerpInterval = 0.33;
+
+        this.setUpVisual();
+    }
+
+    isEntered()
+    {
+        return this.nEntered != 0;
+    }
+
+    setUpVisual()
+    {
+        this.mesh = new THREE.Mesh(
+            new THREE.BoxGeometry(0.2, 0.24, 0.1),
+            new THREE.MeshStandardMaterial()
+        );
+        this.mesh.material.color.copy(this.baseColor);
+
+        this.add(this.mesh);
+
+        this.debugDrawShape = new THREE.Mesh( new THREE.SphereGeometry(this.radius, 6, 6), new THREE.MeshBasicMaterial({color: 0x808080, wireframe: true}));
+        this.add(this.debugDrawShape);
+        this.debugDrawShape.visible = false;
 
     }
-    else if (bodyB == leftHand.physicsBody || bodyB == rightHand.physicsBody)
+    update(dt)
     {
-        console.log("BODY B is a hand");
+
+        if (this.colorLerpDecay > 0.0)
+        {
+            this.colorLerpDecay -= dt;
+            if (this.colorLerpDecay < 0.0)
+            {
+                this.colorLerpDecay = 0.0;
+            }
+            else
+            {
+                let t = this.colorLerpDecay / this.colorLerpInterval;
+                let color = this.mesh.material.color;
+                color.copy(this.baseColor);
+                color.lerpHSL(this.brightColor, t);
+            }
+        }
+
+        if (this.bDebugDraw)
+        {
+
+            this.debugDrawShape.visible = true;
+            if (this.isEntered())
+            {
+                this.debugDrawShape.material.color.set(0x20f020);
+            }
+            else
+            {
+                this.debugDrawShape.material.color.set(0x808080);
+            }
+        }
+        else
+        {
+            this.debugDrawShape.visible = false;
+        }
+    }
+
+    checkFist(hand, worldPos)
+    {
+        if (!this.bActive)
+            return;
+        if (this.whichHand == 0 || hand.which == this.whichHand)
+        {
+            let dist = this.position.distanceToSquared(worldPos);
+            if (dist < this.radiusSquared)
+            {
+                //hand is inside the region
+                if ((this.nEntered & (1 << hand.which)) == 0)
+                //if (!this.bEntered)
+                {
+                    this.nEntered |= (1 << hand.which);
+                    let evt = {
+                        fist: hand,
+                        target: this
+                    };
+
+                    this.mesh.material.color.copy(this.brightColor);
+                    this.colorLerpDecay = 0.0;
+                    
+                    for (let cb of this.hitCallbacks)
+                    {
+                        cb(evt);
+                    }
+                }
+            }
+            else
+            {
+                
+                if ((this.nEntered & (1 << hand.which)) != 0)
+                {
+                    // hand was in the target but is not any more
+                    this.colorLerpDecay = this.colorLerpInterval;
+                }
+                this.nEntered &= ~(1 << hand.which);
+
+            }
+        }
+    }
+
+
+
+
+    registerHitCallback(func)
+    {
+        this.hitCallbacks.push(func);
     }
 }
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
+/***/ "./src/glove.js":
+/*!**********************!*\
+  !*** ./src/glove.js ***!
+  \**********************/
+/*! exports provided: Glove */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Glove", function() { return Glove; });
+/* harmony import */ var _circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./circleCircleIntersection.js */ "./src/circleCircleIntersection.js");
 
 
+let dest = new THREE.Vector3();
+let hitPoint = new THREE.Vector3();
+let hitNormal = new THREE.Vector3();
 
-// function onInputSourcesChange(event) {
-//     event.added.forEach((xrInputSource) => {
-//         createMotionController(xrInputSource);
-//     });
-// };
+let plane = new THREE.Plane(new THREE.Vector3(0.0, 0.0, 1.0), 1.0);
+let line = new THREE.Line3();
 
-// async function createMotionController(xrInputSource) {
-//     const { profile, assetPath } = await fetchProfile(xrInputSource, uri);
-//     const motionController = new MotionController(xrInputSource, profile, assetPath);
-//     motionControllers[xrInputSource] = motionController;
-//     addMotionControllerToScene(motionController);
-//   }
+let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 
-//   function addMotionControllerToScene(motionController)
-//   {
-//       console.log(motionController);
+const kGloveRadius = 0.1;
 
-//       if(motionController.xrInputSource.handedness == "left")
-//       {
-          
-//       }
+class Glove extends THREE.Group
+{
+    constructor(controller, scene, whichHand)
+    {
+        super();
+        this.controller = controller;
+        
+        //this.controller.getWorldPosition(this.position);
+        this.position.set(0.0, 1.0, 0.0);
+        this.velocity = new THREE.Vector3();
+        this.radius = kGloveRadius;
 
-//   }
+        this.name = "Glove " + whichHand;
+        this.whichHand = whichHand;
+
+        this.scene = scene;
+        scene.add(this);
+
+        if (false)
+        {}
+    }
+
+    update(dt)
+    {
+        // Try to move from current position to controller position
+        this.controller.getWorldPosition(dest);
+        // dest.x = 0.0;
+        // dest.y = 1.0;
+        // dest.z = -2.0;
+
+        // Update velocity (i.e., how fast is controller we're slaved to moving)
+        const oneOverDt = 1.0 / dt;
+        this.velocity.x = (dest.x - this.position.x) * oneOverDt;
+        this.velocity.y = (dest.y - this.position.y) * oneOverDt;
+        this.velocity.z = (dest.z - this.position.z) * oneOverDt;
+
+        
+
+        // Check for collisions from current position to goal position
+
+        let t;
+        if (Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__["doesCircleCollideWithOtherCircle"])(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, t))
+        {
+            this.bag.processHit(this.velocity, hitPoint, this.whichHand);
+            this.position.copy(hitPoint);
+        }
+        else
+        {
+            this.position.copy(dest);
+        }
+    }
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
+/***/ "./src/pdacceleration.js":
+/*!*******************************!*\
+  !*** ./src/pdacceleration.js ***!
+  \*******************************/
+/*! exports provided: ComputePDAcceleration, ApplyPDVec3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComputePDAcceleration", function() { return ComputePDAcceleration; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ApplyPDVec3", function() { return ApplyPDVec3; });
+function ComputePDAcceleration(
+    value,
+    velocity,
+    targetValue,
+    targetVelocity,
+    frequency,
+    damping,
+    dt
+)
+{
+    const ks = frequency * frequency * 36.0;
+    const kd = frequency * damping * 9.0;
+    const scale = 1.0 / ( 1.0 + kd * dt + ks*dt*dt );
+
+    const ksI = ks  *  scale;
+	const kdI = ( kd + ks* dt ) * scale;
+
+    return ksI * (targetValue - value) + kdI * (targetVelocity - velocity);
+}
+
+let _newVelocity = new THREE.Vector3();
+let _newValue = new THREE.Vector3();
+
+function ApplyPDVec3(
+    value, 
+    velocity,
+    targetValue,
+    targetVelocity,
+    frequency,
+    damping,
+    dt
+)
+{
+    let accelX = ComputePDAcceleration(value.x, velocity.x, targetValue.x, targetVelocity.x, frequency, damping, dt);
+    let accelY = ComputePDAcceleration(value.y, velocity.y, targetValue.y, targetVelocity.y, frequency, damping, dt);
+    let accelZ = ComputePDAcceleration(value.z, velocity.z, targetValue.z, targetVelocity.z, frequency, damping, dt);
+    
+    velocity.x += accelX * dt;
+    velocity.y += accelY * dt;
+    velocity.z += accelZ * dt;
+    
+    value.x += velocity.x * dt;
+    value.y += velocity.y * dt;
+    value.z += velocity.z * dt;
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ })
 
