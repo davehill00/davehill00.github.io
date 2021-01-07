@@ -70616,7 +70616,7 @@ let leftHitPoint = new THREE.Vector3();
 let rightHitPoint = new THREE.Vector3();
 
 const kBagRadius = 0.25;
-const kMinPunchSoundVelocitySq = 1.5 * 1.5;
+const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 
 class Bag extends THREE.Group
 {
@@ -70648,8 +70648,8 @@ class Bag extends THREE.Group
                 this.add(gltf.scene);
             });
 
-        let mesh = new THREE.Mesh( 
-            new THREE.CylinderGeometry(kBagRadius, kBagRadius, 1.0, 32, 1), 
+        let mesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(kBagRadius, kBagRadius, 1.0, 32, 1),
             new THREE.MeshStandardMaterial({color: 0xff8020}));
 
         this.hitSoundBuffers = [];
@@ -70750,7 +70750,7 @@ class Bag extends THREE.Group
         this.velocity.add(velocity);
 
 
-        
+
         if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
         {
             let hitSound = this.hitSounds[this.nextSoundIndex];
@@ -70760,9 +70760,9 @@ class Bag extends THREE.Group
             hitSound.position.copy(position);
             let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
             hitSound.buffer = this.hitSoundBuffers[whichSound];
-       
+
             let speed = velocity.length();
-       
+
             let speedBaseVolume = 0.1 + Math.min(speed, 5.0) * 0.3;
             hitSound.setVolume(speedBaseVolume);
 
@@ -70775,6 +70775,7 @@ class Bag extends THREE.Group
     }
 
 }
+
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ }),
