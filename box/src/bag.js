@@ -1,3 +1,4 @@
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {ApplyPDVec3} from "./pdacceleration.js";
 import {doesCircleCollideWithOtherCircle} from "./circleCircleIntersection.js";
 
@@ -8,21 +9,37 @@ let leftHitPoint = new THREE.Vector3();
 let rightHitPoint = new THREE.Vector3();
 
 const kBagRadius = 0.25;
-const kHitSoundDelay = 0.25;
+const kMinPunchSoundVelocitySq = 1.5 * 1.5;
 
 export class Bag extends THREE.Group
 {
-    constructor(leftGlove, rightGlove, audioListener)
+    constructor(audioListener)
     {
         super();
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
-        this.targetPosition = new THREE.Vector3(0.0, 1.25, -0.75);
+        this.targetPosition = new THREE.Vector3(0.0, 1.35, -0.75);
         this.position.copy(this.targetPosition);
-        this.leftGlove = leftGlove;
-        this.rightGlove = rightGlove;
+
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
+
+        this.bHasGloves = false;
+
+        let loaderPromise = new Promise( resolve => {
+            let loader = new GLTFLoader();
+            loader.load('./content/bag.gltf', resolve);
+        });
+        loaderPromise.then(
+            gltf => {
+                for (let i = 0; i < gltf.scene.children.length; i++)
+                {
+                    let obj = gltf.scene.children[i];
+                    obj.castShadow = true;
+                    obj.receiveShadow = true;
+                }
+                this.add(gltf.scene);
+            });
 
         let mesh = new THREE.Mesh( 
             new THREE.CylinderGeometry(kBagRadius, kBagRadius, 1.0, 32, 1), 
@@ -38,7 +55,12 @@ export class Bag extends THREE.Group
             new THREE.PositionalAudio(audioListener),
         ];
         this.nextSoundIndex = 0;
-        this.nextSoundTime = [-999, -1, -1];
+
+        for (let hitSound of this.hitSounds)
+        {
+            hitSound.setRefDistance(40);
+            hitSound.setVolume(1.0);
+        }
 
         var audioLoader = new THREE.AudioLoader();
         audioLoader.load('./content/Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
@@ -52,7 +74,16 @@ export class Bag extends THREE.Group
         // });
 
 
-        this.add(mesh);
+
+
+        //this.add(mesh);
+    }
+
+    setGloves(leftGlove, rightGlove)
+    {
+        this.leftGlove = leftGlove;
+        this.rightGlove = rightGlove;
+        this.bHasGloves = true;
     }
 
     update(dt, accumulatedTime)
@@ -61,7 +92,15 @@ export class Bag extends THREE.Group
 
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
-        ApplyPDVec3(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.0, 0.9, dt);
+        ApplyPDVec3(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 5.0, 0.9, dt);
+
+
+        if (!this.bHasGloves)
+        {
+            this.position.copy(desiredPosition);
+            this.velocity.copy(desiredVelocity);
+            return;
+        }
 
         let tLeft = 1.0;
         let tRight = 1.0;
@@ -99,12 +138,13 @@ export class Bag extends THREE.Group
         }
     }
 
-    processHit(velocity, position, whichHand)
+    processHit(velocity, position, whichHand, isNewHit)
     {
         this.velocity.add(velocity);
 
 
-        if (this.nextSoundTime[whichHand] < this.accumulatedTime)
+        
+        if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
         {
             let hitSound = this.hitSounds[this.nextSoundIndex];
             if (hitSound.isPlaying)
@@ -113,13 +153,17 @@ export class Bag extends THREE.Group
             hitSound.position.copy(position);
             let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
             hitSound.buffer = this.hitSoundBuffers[whichSound];
-            
-            console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
+       
+            let speed = velocity.length();
+       
+            let speedBaseVolume = 0.1 + Math.min(speed, 5.0) * 0.3;
+            hitSound.setVolume(speedBaseVolume);
+
+            // console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
             hitSound.play();
 
             this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
 
-            this.nextSoundTime[whichHand] = this.accumulatedTime + kHitSoundDelay;
         }
     }
 

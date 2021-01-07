@@ -10,6 +10,7 @@ let line = new THREE.Line3();
 let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 
 const kGloveRadius = 0.1;
+const kNewContactDelay = 0.25;
 
 export class Glove extends THREE.Group
 {
@@ -25,6 +26,9 @@ export class Glove extends THREE.Group
 
         this.name = "Glove " + whichHand;
         this.whichHand = whichHand;
+
+        this.inContactWithBag = false;
+        this.nextNewContactTime = -1.0;
 
         this.scene = scene;
         scene.add(this);
@@ -42,7 +46,7 @@ export class Glove extends THREE.Group
         }
     }
 
-    update(dt)
+    update(dt, accumulatedTime)
     {
         // Try to move from current position to controller position
         this.controller.getWorldPosition(dest);
@@ -63,11 +67,21 @@ export class Glove extends THREE.Group
         let t;
         if (doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, t))
         {
-            this.bag.processHit(this.velocity, hitPoint, this.whichHand);
+            this.bag.processHit(this.velocity, hitPoint, this.whichHand, !this.inContactWithBag);
             this.position.copy(hitPoint);
+            if (!this.inContactWithBag)
+            {
+                this.nextNewContactTime = accumulatedTime + kNewContactDelay;
+            }
+            this.inContactWithBag = true;
         }
         else
         {
+            if (accumulatedTime > this.nextNewContactTime)
+            {
+                this.inContactWithBag = false;
+            }
+
             this.position.copy(dest);
         }
     }

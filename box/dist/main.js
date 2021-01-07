@@ -70602,8 +70602,10 @@ var XRControllerModelFactory = ( function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Bag", function() { return Bag; });
-/* harmony import */ var _pdacceleration_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pdacceleration.js */ "./src/pdacceleration.js");
-/* harmony import */ var _circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./circleCircleIntersection.js */ "./src/circleCircleIntersection.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var _pdacceleration_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pdacceleration.js */ "./src/pdacceleration.js");
+/* harmony import */ var _circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./circleCircleIntersection.js */ "./src/circleCircleIntersection.js");
+
 
 
 
@@ -70614,21 +70616,37 @@ let leftHitPoint = new THREE.Vector3();
 let rightHitPoint = new THREE.Vector3();
 
 const kBagRadius = 0.25;
-const kHitSoundDelay = 0.25;
+const kMinPunchSoundVelocitySq = 1.5 * 1.5;
 
 class Bag extends THREE.Group
 {
-    constructor(leftGlove, rightGlove, audioListener)
+    constructor(audioListener)
     {
         super();
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
-        this.targetPosition = new THREE.Vector3(0.0, 1.25, -0.75);
+        this.targetPosition = new THREE.Vector3(0.0, 1.35, -0.75);
         this.position.copy(this.targetPosition);
-        this.leftGlove = leftGlove;
-        this.rightGlove = rightGlove;
+
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
+
+        this.bHasGloves = false;
+
+        let loaderPromise = new Promise( resolve => {
+            let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_0__["GLTFLoader"]();
+            loader.load('./content/bag.gltf', resolve);
+        });
+        loaderPromise.then(
+            gltf => {
+                for (let i = 0; i < gltf.scene.children.length; i++)
+                {
+                    let obj = gltf.scene.children[i];
+                    obj.castShadow = true;
+                    obj.receiveShadow = true;
+                }
+                this.add(gltf.scene);
+            });
 
         let mesh = new THREE.Mesh( 
             new THREE.CylinderGeometry(kBagRadius, kBagRadius, 1.0, 32, 1), 
@@ -70644,7 +70662,12 @@ class Bag extends THREE.Group
             new THREE.PositionalAudio(audioListener),
         ];
         this.nextSoundIndex = 0;
-        this.nextSoundTime = [-999, -1, -1];
+
+        for (let hitSound of this.hitSounds)
+        {
+            hitSound.setRefDistance(40);
+            hitSound.setVolume(1.0);
+        }
 
         var audioLoader = new THREE.AudioLoader();
         audioLoader.load('./content/Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
@@ -70658,7 +70681,16 @@ class Bag extends THREE.Group
         // });
 
 
-        this.add(mesh);
+
+
+        //this.add(mesh);
+    }
+
+    setGloves(leftGlove, rightGlove)
+    {
+        this.leftGlove = leftGlove;
+        this.rightGlove = rightGlove;
+        this.bHasGloves = true;
     }
 
     update(dt, accumulatedTime)
@@ -70667,13 +70699,21 @@ class Bag extends THREE.Group
 
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
-        Object(_pdacceleration_js__WEBPACK_IMPORTED_MODULE_0__["ApplyPDVec3"])(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.0, 0.9, dt);
+        Object(_pdacceleration_js__WEBPACK_IMPORTED_MODULE_1__["ApplyPDVec3"])(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 5.0, 0.9, dt);
+
+
+        if (!this.bHasGloves)
+        {
+            this.position.copy(desiredPosition);
+            this.velocity.copy(desiredVelocity);
+            return;
+        }
 
         let tLeft = 1.0;
         let tRight = 1.0;
 
-        let hitLeft = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, tLeft);
-        let hitRight = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, tRight)
+        let hitLeft = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, tLeft);
+        let hitRight = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, tRight)
 
         if (hitLeft || hitRight)
         {
@@ -70705,12 +70745,13 @@ class Bag extends THREE.Group
         }
     }
 
-    processHit(velocity, position, whichHand)
+    processHit(velocity, position, whichHand, isNewHit)
     {
         this.velocity.add(velocity);
 
 
-        if (this.nextSoundTime[whichHand] < this.accumulatedTime)
+        
+        if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
         {
             let hitSound = this.hitSounds[this.nextSoundIndex];
             if (hitSound.isPlaying)
@@ -70719,13 +70760,17 @@ class Bag extends THREE.Group
             hitSound.position.copy(position);
             let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
             hitSound.buffer = this.hitSoundBuffers[whichSound];
-            
-            console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
+       
+            let speed = velocity.length();
+       
+            let speedBaseVolume = 0.1 + Math.min(speed, 5.0) * 0.3;
+            hitSound.setVolume(speedBaseVolume);
+
+            // console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
             hitSound.play();
 
             this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
 
-            this.nextSoundTime[whichHand] = this.accumulatedTime + kHitSoundDelay;
         }
     }
 
@@ -70747,12 +70792,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/webxr/VRButton.js */ "./node_modules/three/examples/jsm/webxr/VRButton.js");
 /* harmony import */ var three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/webxr/XRControllerModelFactory.js */ "./node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js");
-/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
-/* harmony import */ var _fistTarget_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./fistTarget.js */ "./src/fistTarget.js");
-/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
-/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+/* harmony import */ var _fistTarget_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./fistTarget.js */ "./src/fistTarget.js");
+/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
+/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
 
 
 
@@ -70779,12 +70825,13 @@ let camera = null;
 let renderer = null;
 let clock = null;
 let accumulatedTime = 0.0;
-let bag = null;
 
 let leftHand = {};
 let rightHand = {};
 
 let audioListener = null;
+let bag = null;
+
 
 initialize();
 
@@ -70792,7 +70839,7 @@ function initialize()
 {
     scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
     camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](50, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 10.0;
+    camera.position.z = 5.0;
     camera.position.y = 2.0;
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
@@ -70808,8 +70855,8 @@ function initialize()
     renderer.setClearColor(color);
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_0__["sRGBEncoding"];
-    // renderer.shadowMap.enabled = true;
-    // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = three__WEBPACK_IMPORTED_MODULE_0__["PCFSoftShadowMap"];
 
     renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_0__["ACESFilmicToneMapping"];
     renderer.toneMappingExposure = 1.1;
@@ -70826,20 +70873,74 @@ function initialize()
 
 
 
-    const directionalLight = new three__WEBPACK_IMPORTED_MODULE_0__["DirectionalLight"](0xffffff, 2.5);
-    directionalLight.color.convertSRGBToLinear();
-    setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205);
-    scene.add(directionalLight);
+    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    // directionalLight.color.convertSRGBToLinear();
+    // setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205);
+    // //directionalLight.position.set(0.0, 10.0, 0.0);
+    // scene.add(directionalLight);
 
-    const ambient = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xffffff, 0.5);
+
+
+
+    let pointLight = new three__WEBPACK_IMPORTED_MODULE_0__["PointLight"](0xffeedd, 12.0, 12.0);
+    pointLight.position.set(3.0, 3.0, 1.0);
+
+    const kSize = 5;
+
+    pointLight.castShadow = false;
+    pointLight.shadow.mapSize.width = 1024; // default
+    pointLight.shadow.mapSize.height = 1024; // default
+    pointLight.shadow.camera.near = 0.5; // default
+    pointLight.shadow.camera.far = 100; // default
+    pointLight.shadow.camera.left = -kSize;
+    pointLight.shadow.camera.right = kSize;
+    pointLight.shadow.camera.top = kSize;
+    pointLight.shadow.camera.bottom = -kSize;
+    pointLight.shadow.bias = -0.00055;
+
+    scene.add(pointLight);
+
+    pointLight = new three__WEBPACK_IMPORTED_MODULE_0__["PointLight"](0xffeedd, 12.0, 12.0);
+    pointLight.position.set(-3.0, 3.0, 1.0);
+
+    pointLight.castShadow = false;
+    pointLight.shadow.mapSize.width = 1024; // default
+    pointLight.shadow.mapSize.height = 1024; // default
+    pointLight.shadow.camera.near = 0.5; // default
+    pointLight.shadow.camera.far = 100; // default
+    pointLight.shadow.camera.left = -kSize;
+    pointLight.shadow.camera.right = kSize;
+    pointLight.shadow.camera.top = kSize;
+    pointLight.shadow.camera.bottom = -kSize;
+    pointLight.shadow.bias = -0.00055;
+
+    scene.add(pointLight);
+
+
+    const ambient = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xffffff, 0.75);
     ambient.color.convertSRGBToLinear();
     scene.add(ambient);
 
 
-    let groundMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
-        new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](4.0, 0.1, 4.0), 
-        new three__WEBPACK_IMPORTED_MODULE_0__["MeshStandardMaterial"]( {color: 0x303030, roughness: 0.7}));
-    scene.add(groundMesh);
+    let loaderPromise = new Promise( resolve => {
+        let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"]();
+        loader.load('./content/simple_room.gltf', resolve);
+    });
+    loaderPromise.then(
+        gltf => {
+            for (let i = 0; i < gltf.scene.children.length; i++)
+            {
+                let obj = gltf.scene.children[i];
+                obj.receiveShadow = true;
+            }
+            scene.add(gltf.scene);
+        });
+
+    // let groundMesh = new THREE.Mesh(
+    //     new THREE.BoxGeometry(4.0, 0.1, 4.0), 
+    //     new THREE.MeshStandardMaterial( {color: 0x303030, roughness: 0.7}));
+    // groundMesh.receiveShadow = true;
+    // scene.add(groundMesh);
   
 
     const controllerModelFactory = new three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_2__["XRControllerModelFactory"]();
@@ -70909,7 +71010,7 @@ function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
-    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_4__["update"](accumulatedTime);
+    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__["update"](accumulatedTime);
 
 
     if (leftHand.isSetUp)
@@ -70922,6 +71023,8 @@ function render() {
     }
 
     updateHands(dt, accumulatedTime);
+    bag.update(dt, accumulatedTime);
+
     renderer.render(scene, camera);
 }
 
@@ -70944,6 +71047,8 @@ function onSessionEnd()
 
 function initScene(scene)
 {
+    bag = new _bag_js__WEBPACK_IMPORTED_MODULE_8__["Bag"](audioListener);
+    scene.add(bag);
 }
 
 
@@ -70953,11 +71058,16 @@ function setupHand(hand, whichHand)
         new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.1, 0.2, 0.15), 
         new three__WEBPACK_IMPORTED_MODULE_0__["MeshStandardMaterial"](
             {
-                color: 0x802020,
+                color: 0x552010,
+                roughness: 0.7,
+                metalness: 0.1
                 // wireframe: true
             }
         )
     );
+
+    hand.mesh.material.color.convertSRGBToLinear();
+
     hand.mesh.rotation.set(0.45, 0.0, 0.0);
     //hand.mesh.position.x = 0.05;
     hand.controller.add(hand.mesh);
@@ -70966,7 +71076,7 @@ function setupHand(hand, whichHand)
     hand.lastWorldPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
     //@TODO - compute last world pos to initialize properly
 
-    hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_6__["Glove"](hand.controller, scene, whichHand);
+    hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_7__["Glove"](hand.controller, scene, whichHand);
 
 
     hand.isSetUp = true;
@@ -70976,19 +71086,17 @@ function updateHands(dt, accumulatedTime)
 {
     if (leftHand.isSetUp && rightHand.isSetUp)
     {
-        if (bag == null)
+        if (leftHand.glove.bag == null || rightHand.glove.bag == null)
         {
-            bag = new _bag_js__WEBPACK_IMPORTED_MODULE_7__["Bag"](leftHand.glove, rightHand.glove, audioListener);
-            scene.add(bag);
+            bag.setGloves(leftHand.glove, rightHand.glove);
 
             leftHand.glove.bag = bag;
             rightHand.glove.bag = bag;
         }
         else
         {
-            leftHand.glove.update(dt);
-            rightHand.glove.update(dt);
-            bag.update(dt, accumulatedTime);
+            leftHand.glove.update(dt, accumulatedTime);
+            rightHand.glove.update(dt, accumulatedTime);
         }
     }
 }
@@ -71299,6 +71407,7 @@ let line = new THREE.Line3();
 let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 
 const kGloveRadius = 0.1;
+const kNewContactDelay = 0.25;
 
 class Glove extends THREE.Group
 {
@@ -71315,6 +71424,9 @@ class Glove extends THREE.Group
         this.name = "Glove " + whichHand;
         this.whichHand = whichHand;
 
+        this.inContactWithBag = false;
+        this.nextNewContactTime = -1.0;
+
         this.scene = scene;
         scene.add(this);
 
@@ -71322,7 +71434,7 @@ class Glove extends THREE.Group
         {}
     }
 
-    update(dt)
+    update(dt, accumulatedTime)
     {
         // Try to move from current position to controller position
         this.controller.getWorldPosition(dest);
@@ -71343,11 +71455,21 @@ class Glove extends THREE.Group
         let t;
         if (Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__["doesCircleCollideWithOtherCircle"])(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, t))
         {
-            this.bag.processHit(this.velocity, hitPoint, this.whichHand);
+            this.bag.processHit(this.velocity, hitPoint, this.whichHand, !this.inContactWithBag);
             this.position.copy(hitPoint);
+            if (!this.inContactWithBag)
+            {
+                this.nextNewContactTime = accumulatedTime + kNewContactDelay;
+            }
+            this.inContactWithBag = true;
         }
         else
         {
+            if (accumulatedTime > this.nextNewContactTime)
+            {
+                this.inContactWithBag = false;
+            }
+
             this.position.copy(dest);
         }
     }

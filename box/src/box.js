@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
-
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 var inputProfilesList = require( "@webxr-input-profiles/registry/dist/profilesList.json");
 import * as CANNON from 'cannon-es';
@@ -24,12 +24,13 @@ let camera = null;
 let renderer = null;
 let clock = null;
 let accumulatedTime = 0.0;
-let bag = null;
 
 let leftHand = {};
 let rightHand = {};
 
 let audioListener = null;
+let bag = null;
+
 
 initialize();
 
@@ -37,7 +38,7 @@ function initialize()
 {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 10.0;
+    camera.position.z = 5.0;
     camera.position.y = 2.0;
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
@@ -53,8 +54,8 @@ function initialize()
     renderer.setClearColor(color);
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
-    // renderer.shadowMap.enabled = true;
-    // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
@@ -71,20 +72,74 @@ function initialize()
 
 
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
-    directionalLight.color.convertSRGBToLinear();
-    setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205);
-    scene.add(directionalLight);
+    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    // directionalLight.color.convertSRGBToLinear();
+    // setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205);
+    // //directionalLight.position.set(0.0, 10.0, 0.0);
+    // scene.add(directionalLight);
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+
+
+
+    let pointLight = new THREE.PointLight(0xffeedd, 12.0, 12.0);
+    pointLight.position.set(3.0, 3.0, 1.0);
+
+    const kSize = 5;
+
+    pointLight.castShadow = false;
+    pointLight.shadow.mapSize.width = 1024; // default
+    pointLight.shadow.mapSize.height = 1024; // default
+    pointLight.shadow.camera.near = 0.5; // default
+    pointLight.shadow.camera.far = 100; // default
+    pointLight.shadow.camera.left = -kSize;
+    pointLight.shadow.camera.right = kSize;
+    pointLight.shadow.camera.top = kSize;
+    pointLight.shadow.camera.bottom = -kSize;
+    pointLight.shadow.bias = -0.00055;
+
+    scene.add(pointLight);
+
+    pointLight = new THREE.PointLight(0xffeedd, 12.0, 12.0);
+    pointLight.position.set(-3.0, 3.0, 1.0);
+
+    pointLight.castShadow = false;
+    pointLight.shadow.mapSize.width = 1024; // default
+    pointLight.shadow.mapSize.height = 1024; // default
+    pointLight.shadow.camera.near = 0.5; // default
+    pointLight.shadow.camera.far = 100; // default
+    pointLight.shadow.camera.left = -kSize;
+    pointLight.shadow.camera.right = kSize;
+    pointLight.shadow.camera.top = kSize;
+    pointLight.shadow.camera.bottom = -kSize;
+    pointLight.shadow.bias = -0.00055;
+
+    scene.add(pointLight);
+
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.75);
     ambient.color.convertSRGBToLinear();
     scene.add(ambient);
 
 
-    let groundMesh = new THREE.Mesh(
-        new THREE.BoxGeometry(4.0, 0.1, 4.0), 
-        new THREE.MeshStandardMaterial( {color: 0x303030, roughness: 0.7}));
-    scene.add(groundMesh);
+    let loaderPromise = new Promise( resolve => {
+        let loader = new GLTFLoader();
+        loader.load('./content/simple_room.gltf', resolve);
+    });
+    loaderPromise.then(
+        gltf => {
+            for (let i = 0; i < gltf.scene.children.length; i++)
+            {
+                let obj = gltf.scene.children[i];
+                obj.receiveShadow = true;
+            }
+            scene.add(gltf.scene);
+        });
+
+    // let groundMesh = new THREE.Mesh(
+    //     new THREE.BoxGeometry(4.0, 0.1, 4.0), 
+    //     new THREE.MeshStandardMaterial( {color: 0x303030, roughness: 0.7}));
+    // groundMesh.receiveShadow = true;
+    // scene.add(groundMesh);
   
 
     const controllerModelFactory = new XRControllerModelFactory();
@@ -167,6 +222,8 @@ function render() {
     }
 
     updateHands(dt, accumulatedTime);
+    bag.update(dt, accumulatedTime);
+
     renderer.render(scene, camera);
 }
 
@@ -189,6 +246,8 @@ function onSessionEnd()
 
 function initScene(scene)
 {
+    bag = new Bag(audioListener);
+    scene.add(bag);
 }
 
 
@@ -198,11 +257,16 @@ function setupHand(hand, whichHand)
         new THREE.BoxGeometry(0.1, 0.2, 0.15), 
         new THREE.MeshStandardMaterial(
             {
-                color: 0x802020,
+                color: 0x552010,
+                roughness: 0.7,
+                metalness: 0.1
                 // wireframe: true
             }
         )
     );
+
+    hand.mesh.material.color.convertSRGBToLinear();
+
     hand.mesh.rotation.set(0.45, 0.0, 0.0);
     //hand.mesh.position.x = 0.05;
     hand.controller.add(hand.mesh);
@@ -221,19 +285,17 @@ function updateHands(dt, accumulatedTime)
 {
     if (leftHand.isSetUp && rightHand.isSetUp)
     {
-        if (bag == null)
+        if (leftHand.glove.bag == null || rightHand.glove.bag == null)
         {
-            bag = new Bag(leftHand.glove, rightHand.glove, audioListener);
-            scene.add(bag);
+            bag.setGloves(leftHand.glove, rightHand.glove);
 
             leftHand.glove.bag = bag;
             rightHand.glove.bag = bag;
         }
         else
         {
-            leftHand.glove.update(dt);
-            rightHand.glove.update(dt);
-            bag.update(dt, accumulatedTime);
+            leftHand.glove.update(dt, accumulatedTime);
+            rightHand.glove.update(dt, accumulatedTime);
         }
     }
 }
