@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 let cfg_antialias = true;
 let cfg_materialindex = 0; // 0 = simple, 1 = phong, 2 = standard, 3 = standard+normal
 let cfg_lighting = 1;
+let cfg_culling = true;
 
 let moreButton = null;
 let lessButton = null;
@@ -84,7 +85,15 @@ loader.load(cfg_materialindex == 3 ? './content/monkey-head-50k-normalmap.gltf' 
         let monkeyHead = gltf.scene.children[0];
         numFaces = monkeyHead.geometry.index.count / 3;
 
-        monkeyHead.material.side = THREE.FrontSide;
+        if (cfg_culling)
+        {
+            monkeyHead.material.side = THREE.FrontSide;
+        }
+        else
+        {
+            monkeyHead.material.side = THREE.DoubleSide;
+        }
+
         let mat = monkeyHead.material;
         if (cfg_materialindex == 0)
         {
@@ -309,6 +318,11 @@ function parseUrlConfig()
         {
             console.log("invalid light value: " + numLights);
         }
+    }
+    if (urlParams.has("CULL"))
+    {
+        cfg_culling = (urlParams.get('CULL') == 'true') ? true : false;
+        console.log("set cfg_culling to: " + cfg_culling);
     }
 }
 

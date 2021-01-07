@@ -115,16 +115,21 @@
             window.localStorage.setItem("cfg_antialiasing", cfg_antialiasing);
             window.localStorage.setItem("cfg_materialindex", cfg_materialindex);
             window.localStorage.setItem("cfg_lighting", cfg_lighting);
+            window.localStorage.setItem("cfg_culling", cfg_culling);
         }
         else
         {
             cfg_antialiasing = eval(window.localStorage.getItem("cfg_antialiasing"));
+            cfg_culling = eval(window.localStorage.getItem("cfg_culling"));
             cfg_materialindex = parseInt(window.localStorage.getItem("cfg_materialindex"));
             cfg_lighting = parseInt(window.localStorage.getItem("cfg_lighting"));
         }
 
-        let antialiasingCheckbox = document.getElementById("antialiasing");
+        let antialiasingCheckbox = document.getElementById("antialiasing");     
         antialiasingCheckbox.checked = cfg_antialiasing;
+
+        let cullingCheckbox = document.getElementById("culling");
+        cullingCheckbox.checked = cfg_culling;
 
         let lightRadio0 = document.getElementById("light0");
         let lightRadio1 = document.getElementById("light1");
@@ -170,6 +175,14 @@
         cfg_antialiasing = checkBox.checked;
         window.localStorage.setItem("cfg_antialiasing", cfg_antialiasing);
     }
+    function onSetCulling()
+    {
+        // Get the checkbox
+        let checkBox = document.getElementById("culling");
+        cfg_culling = checkBox.checked;
+        window.localStorage.setItem("cfg_culling", cfg_culling);
+    }
+
     function onSetLights()
     {
         let lightRadio0 = document.getElementById("light0");
@@ -217,6 +230,7 @@
         url += "?AA=" + cfg_antialiasing;
         url += "&MAT=" + cfg_materialindex;
         url += "&LIGHT=" + cfg_lighting;
+        url += "&CULL=" + cfg_culling;
         window.location.assign(url);
 
     }
@@ -233,7 +247,9 @@
     <div class="box">
         <div class="optionsText">
             Antialiasing: <input type="checkbox" id="antialiasing" onclick="onSetAntialiasing()">
-            <p id="text" style="display:none">Checkbox is CHECKED!</p>
+            <br>
+            <br>
+            Backface Culling: <input type="checkbox" id="culling" onclick="onSetCulling()">
             <br>
             <br>
             Lights:
