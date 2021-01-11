@@ -70838,7 +70838,7 @@ initialize();
 function initialize()
 {
     scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
-    camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](50, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 5.0;
     camera.position.y = 2.0;
     // add camera to scene so that objects attached to the camera get rendered
@@ -70850,6 +70850,7 @@ function initialize()
     renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
+    renderer.xr.setFramebufferScaleFactor(0.75);
     let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x808080);
     color.convertSRGBToLinear();
     renderer.setClearColor(color);
@@ -70967,6 +70968,18 @@ function initialize()
     renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 0");
         controllers[0].gamepad = null;
+        if (evt.data.handedness == "left")
+        {
+            leftHand.glove = null;
+            leftHand.controller = null;
+            leftHand.isSetUp = false;
+        }
+        else
+        {
+            rightHand.glove = null;
+            rightHand.controller = null;
+            rightHand.isSetUp = false;
+        }
         
     });
 
@@ -71002,25 +71015,11 @@ function initialize()
     renderer.setAnimationLoop(render); 
 }
 
-const kPhysTimeStep = 1.0/240.0;
-let _leftHandWorldPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
-let _rightHandWorldPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
-
 function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
     _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__["update"](accumulatedTime);
-
-
-    if (leftHand.isSetUp)
-    {
-        leftHand.mesh.getWorldPosition(_leftHandWorldPos);
-    }
-    if (rightHand.isSetUp)
-    {
-        rightHand.mesh.getWorldPosition(_rightHandWorldPos);
-    }
 
     updateHands(dt, accumulatedTime);
     bag.update(dt, accumulatedTime);
@@ -71054,30 +71053,15 @@ function initScene(scene)
 
 function setupHand(hand, whichHand)
 {
-    hand.mesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
-        new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.1, 0.2, 0.15), 
-        new three__WEBPACK_IMPORTED_MODULE_0__["MeshStandardMaterial"](
-            {
-                color: 0x552010,
-                roughness: 0.7,
-                metalness: 0.1
-                // wireframe: true
-            }
-        )
-    );
-
-    hand.mesh.material.color.convertSRGBToLinear();
-
-    hand.mesh.rotation.set(0.45, 0.0, 0.0);
-    //hand.mesh.position.x = 0.05;
-    hand.controller.add(hand.mesh);
+    if (false) 
+    {}
     hand.which = whichHand;
 
     hand.lastWorldPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
     //@TODO - compute last world pos to initialize properly
 
-    hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_7__["Glove"](hand.controller, scene, whichHand);
 
+    hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_7__["Glove"](hand.controller, scene, whichHand);
 
     hand.isSetUp = true;
 }
@@ -71395,6 +71379,8 @@ class FistTarget extends THREE.Group
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Glove", function() { return Glove; });
 /* harmony import */ var _circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./circleCircleIntersection.js */ "./src/circleCircleIntersection.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+
 
 
 let dest = new THREE.Vector3();
@@ -71417,7 +71403,8 @@ class Glove extends THREE.Group
         this.controller = controller;
         
         //this.controller.getWorldPosition(this.position);
-        this.position.set(0.0, 1.0, 0.0);
+        //this.position.set(0.0, 1.0, 0.0);
+        this.rotation.copy(this.controller.rotation);
         this.velocity = new THREE.Vector3();
         this.radius = kGloveRadius;
 
@@ -71432,10 +71419,32 @@ class Glove extends THREE.Group
 
         if (false)
         {}
+
+        let whichMesh = whichHand == 1 ? "./content/glove_v1_left.gltf" : "./content/glove_v1_right.gltf";
+        let loaderPromise = new Promise( resolve => {
+            let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__["GLTFLoader"]();
+            loader.load(whichMesh, resolve);
+        });
+        loaderPromise.then(
+            gltf => {
+                // gltf.scene.scale.set(0.3, 0.3, 0.3);
+                // gltf.scene.rotation.set(-1.57, whichHand == 1 ? -1.57 : 1.57, 0.0);
+                // gltf.scene.position.set(0.0, 0.0, 0.0);
+                // for (let i = 0; i < gltf.scene.children.length; i++)
+                // {
+                //     let obj = gltf.scene.children[i];
+                //     obj.castShadow = true;
+                //     obj.receiveShadow = true;
+                // }
+                this.add(gltf.scene);
+            });
     }
 
     update(dt, accumulatedTime)
     {
+        
+        this.rotation.copy(this.controller.rotation);
+
         // Try to move from current position to controller position
         this.controller.getWorldPosition(dest);
         // dest.x = 0.0;
@@ -71456,6 +71465,17 @@ class Glove extends THREE.Group
         if (Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__["doesCircleCollideWithOtherCircle"])(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, t))
         {
             this.bag.processHit(this.velocity, hitPoint, this.whichHand, !this.inContactWithBag);
+
+            let gamepad = this.controller.gamepad;
+            if (gamepad != null && gamepad.hapticActuators != null)
+            {
+                let kIntensity = 1.0;
+                let kMilliseconds = 10;
+                let hapticActuator = gamepad.hapticActuators[0];
+                if( hapticActuator != null)
+                    hapticActuator.pulse( kIntensity, kMilliseconds );
+            }
+
             this.position.copy(hitPoint);
             if (!this.inContactWithBag)
             {

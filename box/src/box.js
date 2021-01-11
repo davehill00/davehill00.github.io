@@ -37,7 +37,7 @@ initialize();
 function initialize()
 {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 5.0;
     camera.position.y = 2.0;
     // add camera to scene so that objects attached to the camera get rendered
@@ -49,6 +49,7 @@ function initialize()
     renderer = new THREE.WebGLRenderer( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
+    renderer.xr.setFramebufferScaleFactor(0.75);
     let color = new THREE.Color(0x808080);
     color.convertSRGBToLinear();
     renderer.setClearColor(color);
@@ -166,6 +167,18 @@ function initialize()
     renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 0");
         controllers[0].gamepad = null;
+        if (evt.data.handedness == "left")
+        {
+            leftHand.glove = null;
+            leftHand.controller = null;
+            leftHand.isSetUp = false;
+        }
+        else
+        {
+            rightHand.glove = null;
+            rightHand.controller = null;
+            rightHand.isSetUp = false;
+        }
         
     });
 
@@ -201,25 +214,11 @@ function initialize()
     renderer.setAnimationLoop(render); 
 }
 
-const kPhysTimeStep = 1.0/240.0;
-let _leftHandWorldPos = new THREE.Vector3();
-let _rightHandWorldPos = new THREE.Vector3();
-
 function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
     TWEEN.update(accumulatedTime);
-
-
-    if (leftHand.isSetUp)
-    {
-        leftHand.mesh.getWorldPosition(_leftHandWorldPos);
-    }
-    if (rightHand.isSetUp)
-    {
-        rightHand.mesh.getWorldPosition(_rightHandWorldPos);
-    }
 
     updateHands(dt, accumulatedTime);
     bag.update(dt, accumulatedTime);
@@ -253,30 +252,33 @@ function initScene(scene)
 
 function setupHand(hand, whichHand)
 {
-    hand.mesh = new THREE.Mesh(
-        new THREE.BoxGeometry(0.1, 0.2, 0.15), 
-        new THREE.MeshStandardMaterial(
-            {
-                color: 0x552010,
-                roughness: 0.7,
-                metalness: 0.1
-                // wireframe: true
-            }
-        )
-    );
+    if (false) 
+    {
+        hand.mesh = new THREE.Mesh(
+            new THREE.BoxGeometry(0.1, 0.2, 0.15),
+            new THREE.MeshStandardMaterial(
+                {
+                    color: 0x552010,
+                    roughness: 0.7,
+                    metalness: 0.1
+                    // wireframe: true
+                }
+            )
+        );
 
-    hand.mesh.material.color.convertSRGBToLinear();
+        hand.mesh.material.color.convertSRGBToLinear();
 
-    hand.mesh.rotation.set(0.45, 0.0, 0.0);
-    //hand.mesh.position.x = 0.05;
-    hand.controller.add(hand.mesh);
+        hand.mesh.rotation.set(0.45, 0.0, 0.0);
+        //hand.mesh.position.x = 0.05;
+        hand.controller.add(hand.mesh);
+    }
     hand.which = whichHand;
 
     hand.lastWorldPos = new THREE.Vector3();
     //@TODO - compute last world pos to initialize properly
 
-    hand.glove = new Glove(hand.controller, scene, whichHand);
 
+    hand.glove = new Glove(hand.controller, scene, whichHand);
 
     hand.isSetUp = true;
 }
