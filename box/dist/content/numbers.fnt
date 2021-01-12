@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<font>
+  <info face="Bahnschrift" size="256" bold="0" italic="0" charset="" unicode="1" stretchH="100" smooth="1" aa="1" padding="0,0,0,0" spacing="1,1" outline="0"/>
+  <common lineHeight="256" base="212" scaleW="512" scaleH="512" pages="1" packed="0" alphaChnl="0" redChnl="4" greenChnl="4" blueChnl="4"/>
+  <pages>
+    <page id="0" file="numbers_0.png" />
+  </pages>
+  <chars count="11">
+    <char id="48" x="0" y="0" width="86" height="155" xoffset="16" yoffset="59" xadvance="118" page="0" chnl="15" />
+    <char id="49" x="441" y="0" width="43" height="151" xoffset="10" yoffset="61" xadvance="71" page="0" chnl="15" />
+    <char id="50" x="98" y="155" width="87" height="152" xoffset="12" yoffset="60" xadvance="110" page="0" chnl="15" />
+    <char id="51" x="180" y="0" width="89" height="154" xoffset="10" yoffset="60" xadvance="113" page="0" chnl="15" />
+    <char id="52" x="0" y="156" width="97" height="152" xoffset="14" yoffset="61" xadvance="121" page="0" chnl="15" />
+    <char id="53" x="270" y="0" width="85" height="153" xoffset="16" yoffset="61" xadvance="116" page="0" chnl="15" />
+    <char id="54" x="356" y="0" width="84" height="153" xoffset="13" yoffset="61" xadvance="109" page="0" chnl="15" />
+    <char id="55" x="271" y="154" width="82" height="151" xoffset="12" yoffset="61" xadvance="107" page="0" chnl="15" />
+    <char id="56" x="87" y="0" width="92" height="154" xoffset="14" yoffset="60" xadvance="120" page="0" chnl="15" />
+    <char id="57" x="186" y="155" width="84" height="152" xoffset="13" yoffset="60" xadvance="109" page="0" chnl="15" />
+    <char id="58" x="485" y="0" width="23" height="109" xoffset="13" yoffset="103" xadvance="48" page="0" chnl="15" />
+  </chars>
+  <kernings count="11">
+    <kerning first="52" second="49" amount="-5" />
+    <kerning first="50" second="52" amount="-6" />
+    <kerning first="50" second="54" amount="-6" />
+    <kerning first="55" second="52" amount="-8" />
+    <kerning first="55" second="54" amount="-8" />
+    <kerning first="57" second="52" amount="-8" />
+    <kerning first="57" second="54" amount="-8" />
+    <kerning first="48" second="48" amount="-4" />
+    <kerning first="48" second="58" amount="-6" />
+    <kerning first="48" second="51" amount="-1" />
+    <kerning first="58" second="48" amount="-6" />
+  </kernings>
+</font>

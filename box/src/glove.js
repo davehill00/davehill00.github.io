@@ -11,7 +11,7 @@ let line = new THREE.Line3();
 let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 
 const kGloveRadius = 0.1;
-const kNewContactDelay = 0.25;
+const kNewContactDelay = 0.15;
 
 export class Glove extends THREE.Group
 {
@@ -97,7 +97,7 @@ export class Glove extends THREE.Group
             if (gamepad != null && gamepad.hapticActuators != null)
             {
                 let kIntensity = 1.0;
-                let kMilliseconds = 10;
+                let kMilliseconds = 16;
                 let hapticActuator = gamepad.hapticActuators[0];
                 if( hapticActuator != null)
                     hapticActuator.pulse( kIntensity, kMilliseconds );
