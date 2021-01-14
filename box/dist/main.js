@@ -74686,10 +74686,25 @@ class Bag extends THREE.Group
         }
 
         var audioLoader = new THREE.AudioLoader();
-        audioLoader.load('./content/Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
+        audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
             this.hitSoundBuffers.push(buffer);
         });
-        // audioLoader.load('./content/Crunchy-Punch-A-www.fesliyanstudios.com.mp3', (buffer) => {
+        // audioLoader.load('./content/Punch-Kick-A2-outside-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/Punch-Kick-A3-outside-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/Punch-Kick-A4-outside-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/trim-pitch-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/trim-bass-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        //Punch-Kick-A2-outside-www.fesliyanstudios.com.mp3        // audioLoader.load('./content/Crunchy-Punch-A-www.fesliyanstudios.com.mp3', (buffer) => {
         //     this.hitSoundBuffers.push(buffer);
         // });
         // audioLoader.load('./content/Crunchy-Punch-B-www.fesliyanstudios.com.mp3', (buffer) => {
@@ -74779,7 +74794,7 @@ class Bag extends THREE.Group
 
             let speed = velocity.length();
 
-            let speedBaseVolume = 0.1 + Math.min(speed, 5.0) * 0.3;
+            let speedBaseVolume = 1.0; //0.1 + Math.min(speed, 5.0) * 0.3;
             hitSound.setVolume(speedBaseVolume);
 
             // console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
@@ -74815,7 +74830,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fistTarget_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./fistTarget.js */ "./src/fistTarget.js");
 /* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
 /* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
 
 
 
@@ -74829,8 +74845,9 @@ var inputProfilesList = __webpack_require__( /*! @webxr-input-profiles/registry/
 
 
 
-var createGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js")
-var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
+
+
+
 
 
 
@@ -74851,13 +74868,7 @@ let rightHand = {};
 let audioListener = null;
 let bag = null;
 
-let fontMesh = null;
-let fontMaterial = null;
-let fontGeometry = null;
-
-const initialTimerValue = 0;
-let timerValue = initialTimerValue;
-
+let gameLogic = null;
 
 initialize();
 
@@ -74948,7 +74959,7 @@ function initialize()
     ambient.color.convertSRGBToLinear();
     scene.add(ambient);
 
-
+   
     let loaderPromise = new Promise( resolve => {
         let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"]();
         loader.load('./content/simple_room.gltf', resolve);
@@ -74963,54 +74974,9 @@ function initialize()
             scene.add(gltf.scene);
         });
 
-        loadFont('./content/numbers.fnt',
-        (err, font) => {
-            // create a geometry of packed bitmap glyphs,
-            // word wrapped to 300px and right-aligned
-            fontGeometry = createGeometry({
-                align: 'center',
-                font: font,
-                flipY: true,
-                //width: 800
-            })
+    
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__["BoxingSession"](scene, 3, 120, 20);
 
-            // const manager = new THREE.LoadingManager();
-            // manager.addHandler( /\.dds$/i, new DDSLoader() );
-
-            // // the texture atlas containing our glyphs
-            // var texture = new DDSLoader(manager).load('./content/output.dds');
-
-            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/numbers_0.png');
-
-            // we can use a simple ThreeJS material
-            fontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({
-                map: texture,
-                transparent: true,
-                side: three__WEBPACK_IMPORTED_MODULE_0__["FrontSide"],
-                color: 0x404040, //0xfac3b9,
-                opacity: 1.0,
-                depthTest: true //:THREE.NeverDepth
-
-            });
-            fontMaterial.color.convertSRGBToLinear();
-
-            // scale and position the mesh to get it doing something reasonable
-            fontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](fontGeometry, fontMaterial);
-            fontMesh.renderOrder = 0;
-            fontMesh.position.set(-2.0, 2.5, -3.9);
-            let kFontScale = 0.0035;
-            fontMesh.scale.set(kFontScale, kFontScale, kFontScale);
-            fontMesh.rotation.set(3.14, 0, 0);
-
-
-            updateTimerString(timerValue); //"2:00");
-
-
-            scene.add(fontMesh);
-
-
-        });
-  
 
     const controllerModelFactory = new three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_2__["XRControllerModelFactory"]();
     controllers.push(renderer.xr.getControllerGrip( 0 ));
@@ -75092,12 +75058,7 @@ function render() {
     updateHands(dt, accumulatedTime);
     bag.update(dt, accumulatedTime);
 
-    let newTimerValue = Math.ceil(initialTimerValue + accumulatedTime);
-    if (newTimerValue != timerValue)
-    {
-        timerValue = newTimerValue;
-        updateTimerString(timerValue);
-    }
+    gameLogic.update(dt, accumulatedTime);
 
     renderer.render(scene, camera);
 }
@@ -75112,6 +75073,7 @@ function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX,
 function onSessionStart()
 {
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
+    gameLogic.start();
 }
 
 function onSessionEnd()
@@ -75158,27 +75120,6 @@ function updateHands(dt, accumulatedTime)
             rightHand.glove.update(dt, accumulatedTime);
         }
     }
-}
-
-function updateTimerString(in_seconds)
-{
-    if (fontGeometry == null)
-        return;
-
-
-    let hours = Math.floor(in_seconds / 3600);
-    let minutes = Math.floor((in_seconds - (hours * 3600)) / 60);
-    let seconds = in_seconds - (hours * 3600) - (minutes * 60);
-
-    let timeString = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
-
-
-    fontGeometry.update(timeString);
-    fontGeometry.computeBoundingBox();
-    let box = fontGeometry.boundingBox;
-    fontMesh.position.x = (box.max.x - box.min.x) * -0.5;
-    fontMesh.position.x *= fontMesh.scale.x;
-
 }
 
 
@@ -75461,6 +75402,196 @@ class FistTarget extends THREE.Group
     }
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
+/***/ "./src/gamelogic.js":
+/*!**************************!*\
+  !*** ./src/gamelogic.js ***!
+  \**************************/
+/*! exports provided: BoxingSession */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BoxingSession", function() { return BoxingSession; });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+var createGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js")
+var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
+
+
+const kIntroDuration = 3.0;
+const SESSION_NULL = 0;
+const SESSION_INTRO = 1;
+const SESSION_ROUND = 2;
+const SESSION_REST = 3;
+const SESSION_OUTRO = 4;
+
+class BoxingSession
+{
+    constructor(scene, numRounds, roundDuration, restDuration)
+    {
+        this.scene = scene;
+
+
+        //load assets here
+        
+        // sounds
+        // font
+
+        loadFont('./content/numbers.fnt',
+        (err, font) => {
+            // create a geometry of packed bitmap glyphs,
+            // word wrapped to 300px and right-aligned
+            this.timerFontGeometry = createGeometry({
+                align: 'left',
+                font: font,
+                flipY: true,
+                //width: 800
+            })
+
+            // const manager = new THREE.LoadingManager();
+            // manager.addHandler( /\.dds$/i, new DDSLoader() );
+
+            // // the texture atlas containing our glyphs
+            // var texture = new DDSLoader(manager).load('./content/output.dds');
+
+            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/numbers_0.png');
+
+            // we can use a simple ThreeJS material
+            this.timerFontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({
+                map: texture,
+                transparent: true,
+                side: three__WEBPACK_IMPORTED_MODULE_0__["FrontSide"],
+                color: 0xa0a0a0, //0xfac3b9,
+                opacity: 1.0,
+                depthTest: true //:THREE.NeverDepth
+
+            });
+            this.timerFontMaterial.color.convertSRGBToLinear();
+
+            // scale and position the mesh to get it doing something reasonable
+            this.timerFontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.timerFontGeometry, this.timerFontMaterial);
+            this.timerFontMesh.renderOrder = 0;
+            this.timerFontMesh.position.set(0.0, 0.5, -3.0);
+            let kFontScale = 0.0035;
+            this.timerFontMesh.scale.set(kFontScale, kFontScale, kFontScale);
+            this.timerFontMesh.rotation.set(3.14, 0.48, 0.0);
+
+
+            //updateTimerString(timerValue); //"2:00");
+
+
+            this.scene.add(this.timerFontMesh);
+
+            this.currentTimeInWholeSeconds = -1.0;
+
+        });
+
+        // models?
+
+        this.initialize(numRounds, roundDuration, restDuration);
+    }
+
+    initialize(numRounds, roundDuration, restDuration)
+    {
+        this.numRounds = numRounds;
+        this.roundDuration = roundDuration;
+        this.restDuration = restDuration;
+        this.introDuration = kIntroDuration;
+        this.currentRound = 0;
+        this.state = SESSION_NULL;
+    }
+
+    start()
+    {
+        this.state = SESSION_INTRO;
+        this.elapsedTime = 0.0;
+
+        //play "get ready" sound
+    }
+
+    update(dt, accumulatedTime)
+    {
+        switch(this.state)
+        {
+            case SESSION_NULL:
+                break;
+            case SESSION_INTRO:
+                this.elapsedTime += dt;
+                if (this.elapsedTime > this.introDuration)
+                {
+                    this.state = SESSION_ROUND;
+                    this.elapsedTime = 0.0;
+                    // play "starting bell" sound
+                }
+                else
+                {
+                    this.updateTimer(this.introDuration - this.elapsedTime);
+                }
+                break;
+            case SESSION_ROUND:
+                this.elapsedTime += dt;
+                if (this.elapsedTime > this.roundDuration)
+                {
+                    if (this.currentRound < this.numRounds)
+                    {
+                        this.state = SESSION_REST;
+                    }
+                    else
+                    {
+                        this.state = SESSION_OUTRO;
+                    }
+                    this.elapsedTime = 0.0;
+                    //play "end of round" sound
+                }
+                else
+                {
+                    this.updateTimer(this.roundDuration - this.elapsedTime);
+                }
+                break;
+            case SESSION_REST:
+                this.elapsedTime += dt;
+                if (this.elapsedTime > this.restDuration)
+                {
+                    this.state = SESSION_ROUND;
+                    this.elapsedTime = 0.0;
+                    // play "start of round" sound
+                }
+                else
+                {
+                    this.updateTimer(this.restDuration - this.elapsedTime);
+                }
+                break;
+            case SESSION_OUTRO:
+                break;
+        }
+    }
+
+    updateTimer(value)
+    {
+        let newTimeInWholeSeconds = Math.ceil(value);
+        if (newTimeInWholeSeconds != this.currentTimeInWholeSeconds)
+        {
+            this.currentTimeInWholeSeconds = newTimeInWholeSeconds;
+
+
+            let hours = Math.floor(newTimeInWholeSeconds / 3600);
+            let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
+            let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
+
+            let timeString = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+
+            this.timerFontGeometry.update(timeString);
+            this.timerFontGeometry.computeBoundingBox();
+            let box = this.timerFontGeometry.boundingBox;
+            this.timerFontMesh.position.x = box.min.x; //(box.max.x - box.min.x) * -0.5;
+            this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
+            this.timerFontMesh.position.x += 1.75;
+        }
+
+    }
+}
 
 /***/ }),
 
