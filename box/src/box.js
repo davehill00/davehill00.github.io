@@ -10,12 +10,13 @@ import * as TWEEN from '@tweenjs/tween.js';
 import {FistTarget} from './fistTarget.js';
 import {Glove} from './glove.js';
 import {Bag} from './bag.js';
+import {BoxingSession} from './gamelogic.js';
 
-var createGeometry = require('three-bmfont-text')
-var loadFont = require('load-bmfont')
+
 
 import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-controllers';
 import { Fog } from 'three';
+import { Session } from './gamelogic.js';
 
 const uri = './profiles/';
 const motionControllers = {};
@@ -33,13 +34,7 @@ let rightHand = {};
 let audioListener = null;
 let bag = null;
 
-let fontMesh = null;
-let fontMaterial = null;
-let fontGeometry = null;
-
-const initialTimerValue = 0;
-let timerValue = initialTimerValue;
-
+let gameLogic = null;
 
 initialize();
 
@@ -130,7 +125,7 @@ function initialize()
     ambient.color.convertSRGBToLinear();
     scene.add(ambient);
 
-
+   
     let loaderPromise = new Promise( resolve => {
         let loader = new GLTFLoader();
         loader.load('./content/simple_room.gltf', resolve);
@@ -145,54 +140,9 @@ function initialize()
             scene.add(gltf.scene);
         });
 
-        loadFont('./content/numbers.fnt',
-        (err, font) => {
-            // create a geometry of packed bitmap glyphs,
-            // word wrapped to 300px and right-aligned
-            fontGeometry = createGeometry({
-                align: 'center',
-                font: font,
-                flipY: true,
-                //width: 800
-            })
+    
+    gameLogic = new BoxingSession(scene, 3, 120, 20);
 
-            // const manager = new THREE.LoadingManager();
-            // manager.addHandler( /\.dds$/i, new DDSLoader() );
-
-            // // the texture atlas containing our glyphs
-            // var texture = new DDSLoader(manager).load('./content/output.dds');
-
-            var texture = new THREE.TextureLoader().load('./content/numbers_0.png');
-
-            // we can use a simple ThreeJS material
-            fontMaterial = new THREE.MeshBasicMaterial({
-                map: texture,
-                transparent: true,
-                side: THREE.FrontSide,
-                color: 0x404040, //0xfac3b9,
-                opacity: 1.0,
-                depthTest: true //:THREE.NeverDepth
-
-            });
-            fontMaterial.color.convertSRGBToLinear();
-
-            // scale and position the mesh to get it doing something reasonable
-            fontMesh = new THREE.Mesh(fontGeometry, fontMaterial);
-            fontMesh.renderOrder = 0;
-            fontMesh.position.set(-2.0, 2.5, -3.9);
-            let kFontScale = 0.0035;
-            fontMesh.scale.set(kFontScale, kFontScale, kFontScale);
-            fontMesh.rotation.set(3.14, 0, 0);
-
-
-            updateTimerString(timerValue); //"2:00");
-
-
-            scene.add(fontMesh);
-
-
-        });
-  
 
     const controllerModelFactory = new XRControllerModelFactory();
     controllers.push(renderer.xr.getControllerGrip( 0 ));
@@ -274,12 +224,7 @@ function render() {
     updateHands(dt, accumulatedTime);
     bag.update(dt, accumulatedTime);
 
-    let newTimerValue = Math.ceil(initialTimerValue + accumulatedTime);
-    if (newTimerValue != timerValue)
-    {
-        timerValue = newTimerValue;
-        updateTimerString(timerValue);
-    }
+    gameLogic.update(dt, accumulatedTime);
 
     renderer.render(scene, camera);
 }
@@ -294,6 +239,7 @@ export function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, 
 function onSessionStart()
 {
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
+    gameLogic.start();
 }
 
 function onSessionEnd()
@@ -358,26 +304,5 @@ function updateHands(dt, accumulatedTime)
             rightHand.glove.update(dt, accumulatedTime);
         }
     }
-}
-
-function updateTimerString(in_seconds)
-{
-    if (fontGeometry == null)
-        return;
-
-
-    let hours = Math.floor(in_seconds / 3600);
-    let minutes = Math.floor((in_seconds - (hours * 3600)) / 60);
-    let seconds = in_seconds - (hours * 3600) - (minutes * 60);
-
-    let timeString = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
-
-
-    fontGeometry.update(timeString);
-    fontGeometry.computeBoundingBox();
-    let box = fontGeometry.boundingBox;
-    fontMesh.position.x = (box.max.x - box.min.x) * -0.5;
-    fontMesh.position.x *= fontMesh.scale.x;
-
 }
 

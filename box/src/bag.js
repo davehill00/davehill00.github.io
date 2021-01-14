@@ -63,10 +63,25 @@ export class Bag extends THREE.Group
         }
 
         var audioLoader = new THREE.AudioLoader();
-        audioLoader.load('./content/Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
+        audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
             this.hitSoundBuffers.push(buffer);
         });
-        // audioLoader.load('./content/Crunchy-Punch-A-www.fesliyanstudios.com.mp3', (buffer) => {
+        // audioLoader.load('./content/Punch-Kick-A2-outside-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/Punch-Kick-A3-outside-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/Punch-Kick-A4-outside-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/trim-pitch-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        // audioLoader.load('./content/trim-bass-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
+        //     this.hitSoundBuffers.push(buffer);
+        // });
+        //Punch-Kick-A2-outside-www.fesliyanstudios.com.mp3        // audioLoader.load('./content/Crunchy-Punch-A-www.fesliyanstudios.com.mp3', (buffer) => {
         //     this.hitSoundBuffers.push(buffer);
         // });
         // audioLoader.load('./content/Crunchy-Punch-B-www.fesliyanstudios.com.mp3', (buffer) => {
@@ -156,7 +171,7 @@ export class Bag extends THREE.Group
 
             let speed = velocity.length();
 
-            let speedBaseVolume = 0.1 + Math.min(speed, 5.0) * 0.3;
+            let speedBaseVolume = 1.0; //0.1 + Math.min(speed, 5.0) * 0.3;
             hitSound.setVolume(speedBaseVolume);
 
             // console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
