@@ -10,7 +10,7 @@ import * as TWEEN from '@tweenjs/tween.js';
 import {FistTarget} from './fistTarget.js';
 import {Glove} from './glove.js';
 import {Bag} from './bag.js';
-import {BoxingSession} from './gamelogic.js';
+import {BoxingSession, PunchingStats} from './gamelogic.js';
 
 
 
@@ -35,6 +35,7 @@ let audioListener = null;
 let bag = null;
 
 let gameLogic = null;
+let punchingStats = null;
 
 initialize();
 
@@ -141,7 +142,7 @@ function initialize()
         });
 
     
-    gameLogic = new BoxingSession(scene, 3, 120, 20);
+
 
 
     const controllerModelFactory = new XRControllerModelFactory();
@@ -225,6 +226,7 @@ function render() {
     bag.update(dt, accumulatedTime);
 
     gameLogic.update(dt, accumulatedTime);
+    punchingStats.update(dt, accumulatedTime);
 
     renderer.render(scene, camera);
 }
@@ -251,6 +253,9 @@ function initScene(scene)
 {
     bag = new Bag(audioListener);
     scene.add(bag);
+
+    gameLogic = new BoxingSession(scene, 3, 120, 20);
+    punchingStats = new PunchingStats(scene, bag);
 }
 
 

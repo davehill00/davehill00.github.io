@@ -92,6 +92,8 @@ export class Bag extends THREE.Group
 
 
         //this.add(mesh);
+
+        this.punchCallbacks = [];
     }
 
     setGloves(leftGlove, rightGlove)
@@ -178,6 +180,11 @@ export class Bag extends THREE.Group
             hitSound.play();
 
             this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
+
+            for(let cb of this.punchCallbacks)
+            {
+                cb(whichHand, velocity);
+            }
 
         }
     }

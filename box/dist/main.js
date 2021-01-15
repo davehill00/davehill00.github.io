@@ -74715,6 +74715,8 @@ class Bag extends THREE.Group
 
 
         //this.add(mesh);
+
+        this.punchCallbacks = [];
     }
 
     setGloves(leftGlove, rightGlove)
@@ -74802,6 +74804,11 @@ class Bag extends THREE.Group
 
             this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
 
+            for(let cb of this.punchCallbacks)
+            {
+                cb(whichHand, velocity);
+            }
+
         }
     }
 
@@ -74869,6 +74876,7 @@ let audioListener = null;
 let bag = null;
 
 let gameLogic = null;
+let punchingStats = null;
 
 initialize();
 
@@ -74975,7 +74983,7 @@ function initialize()
         });
 
     
-    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__["BoxingSession"](scene, 3, 120, 20);
+
 
 
     const controllerModelFactory = new three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_2__["XRControllerModelFactory"]();
@@ -75059,6 +75067,7 @@ function render() {
     bag.update(dt, accumulatedTime);
 
     gameLogic.update(dt, accumulatedTime);
+    punchingStats.update(dt, accumulatedTime);
 
     renderer.render(scene, camera);
 }
@@ -75085,6 +75094,9 @@ function initScene(scene)
 {
     bag = new _bag_js__WEBPACK_IMPORTED_MODULE_8__["Bag"](audioListener);
     scene.add(bag);
+
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__["BoxingSession"](scene, 3, 120, 20);
+    punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__["PunchingStats"](scene, bag);
 }
 
 
@@ -75409,12 +75421,13 @@ class FistTarget extends THREE.Group
 /*!**************************!*\
   !*** ./src/gamelogic.js ***!
   \**************************/
-/*! exports provided: BoxingSession */
+/*! exports provided: BoxingSession, PunchingStats */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BoxingSession", function() { return BoxingSession; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PunchingStats", function() { return PunchingStats; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 var createGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js")
 var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
@@ -75438,7 +75451,6 @@ class BoxingSession
         
         // sounds
         // font
-
         loadFont('./content/numbers.fnt',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
@@ -75593,6 +75605,109 @@ class BoxingSession
     }
 }
 
+class PunchingStats
+{
+    constructor(scene, bag)
+    {
+
+        this.scene = scene;
+
+        loadFont('./content/small_font.fnt',
+        (err, font) => {
+            // create a geometry of packed bitmap glyphs,
+            // word wrapped to 300px and right-aligned
+            this.fontGeometry = createGeometry({
+                align: 'right',
+                font: font,
+                flipY: true,
+                //width: 800
+            })
+
+            // const manager = new THREE.LoadingManager();
+            // manager.addHandler( /\.dds$/i, new DDSLoader() );
+
+            // // the texture atlas containing our glyphs
+            // var texture = new DDSLoader(manager).load('./content/output.dds');
+
+            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/small_font_0.png');
+
+            // we can use a simple ThreeJS material
+            this.fontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({
+                map: texture,
+                transparent: true,
+                side: three__WEBPACK_IMPORTED_MODULE_0__["DoubleSide"],
+                color: 0x000000, //0xfac3b9,
+                opacity: 1.0,
+                depthTest: true //:THREE.NeverDepth
+
+            });
+            this.fontMaterial.color.convertSRGBToLinear();
+
+            // scale and position the mesh to get it doing something reasonable
+            this.fontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.fontGeometry, this.fontMaterial);
+            this.fontMesh.renderOrder = 0;
+            this.fontMesh.position.set(1.7, 1.25, -3.0);
+            let kStatsFontScale = 0.005;
+            this.fontMesh.scale.set(kStatsFontScale, kStatsFontScale, kStatsFontScale);
+            this.fontMesh.rotation.set(3.14, 0.48, 0.0);
+
+
+            //updateTimerString(timerValue); //"2:00");
+
+
+            this.scene.add(this.fontMesh);
+            this.updateStatsDisplay();
+
+            this.currentTimeInWholeSeconds = -1.0;
+
+        });
+
+        this.punches = 0;
+
+        bag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
+    }
+
+    update(dt, accumulatedTime)
+    {
+
+    }
+
+    onBagHit(whichHand, velocity)
+    {
+        this.punches++;
+        this.updateStatsDisplay();
+    }
+
+    updateStatsDisplay()
+    {
+        this.fontGeometry.update(this.punches.toString().padStart(3, '0') + " PUNCHES");
+        this.fontGeometry.computeBoundingBox();
+        let box = this.fontGeometry.boundingBox;
+        this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;
+        this.fontMesh.position.x += 1.75;
+        // let newTimeInWholeSeconds = Math.ceil(value);
+        // if (newTimeInWholeSeconds != this.currentTimeInWholeSeconds)
+        // {
+        //     this.currentTimeInWholeSeconds = newTimeInWholeSeconds;
+
+
+        //     let hours = Math.floor(newTimeInWholeSeconds / 3600);
+        //     let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
+        //     let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
+
+        //     let timeString = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+
+        //     this.timerFontGeometry.update(timeString);
+        //     this.timerFontGeometry.computeBoundingBox();
+        //     let box = this.timerFontGeometry.boundingBox;
+        //     this.timerFontMesh.position.x = box.min.x; //(box.max.x - box.min.x) * -0.5;
+        //     this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
+        //     this.timerFontMesh.position.x += 1.75;
+        // }
+
+    }
+}
+
 /***/ }),
 
 /***/ "./src/glove.js":
@@ -75619,7 +75734,7 @@ let line = new THREE.Line3();
 
 let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 
-const kGloveRadius = 0.1;
+const kGloveRadius = 0.085;
 const kNewContactDelay = 0.15;
 
 class Glove extends THREE.Group
@@ -75693,20 +75808,22 @@ class Glove extends THREE.Group
         {
             this.bag.processHit(this.velocity, hitPoint, this.whichHand, !this.inContactWithBag);
 
-            let gamepad = this.controller.gamepad;
-            if (gamepad != null && gamepad.hapticActuators != null)
-            {
-                let kIntensity = 1.0;
-                let kMilliseconds = 16;
-                let hapticActuator = gamepad.hapticActuators[0];
-                if( hapticActuator != null)
-                    hapticActuator.pulse( kIntensity, kMilliseconds );
-            }
+ 
 
             this.position.copy(hitPoint);
             if (!this.inContactWithBag)
             {
                 this.nextNewContactTime = accumulatedTime + kNewContactDelay;
+
+                let gamepad = this.controller.gamepad;
+                if (gamepad != null && gamepad.hapticActuators != null)
+                {
+                    let kIntensity = 1.0;
+                    let kMilliseconds = 16;
+                    let hapticActuator = gamepad.hapticActuators[0];
+                    if( hapticActuator != null)
+                        hapticActuator.pulse( kIntensity, kMilliseconds );
+                }
             }
             this.inContactWithBag = true;
         }
