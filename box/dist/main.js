@@ -16347,6 +16347,54 @@ function findChar (array, value, start) {
 
 /***/ }),
 
+/***/ "./node_modules/live-moving-average/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/live-moving-average/index.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const LiveMovingAverage = {
+	push: function (val) {
+		if ('number' !== typeof val) throw new Error('val must be a number.')
+
+		this.sum -= this.data[this.dataI]
+		this.sum += val
+
+		this.data[this.dataI] = val
+		this.dataI = (this.dataI + 1) % this.size
+
+		return this
+	},
+
+	get: function () {
+		return this.sum / this.size
+	}
+}
+
+const createWindow = (size, fill = 0) => {
+    if ('number' !== typeof size) throw new Error('size must be a number.')
+    if ('number' !== typeof fill) throw new Error('fill must be a number.')
+
+	const w = Object.create(LiveMovingAverage)
+
+	w.sum = size * fill
+	w.size = size
+	w.data = new Array(size)
+	w.data.fill(fill)
+	w.dataI = 0
+
+	return w
+}
+
+module.exports = createWindow
+
+
+/***/ }),
+
 /***/ "./node_modules/load-bmfont/browser.js":
 /*!*********************************************!*\
   !*** ./node_modules/load-bmfont/browser.js ***!
@@ -69309,6 +69357,37 @@ if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
 
 /***/ }),
 
+/***/ "./node_modules/three/examples/jsm/libs/inflate.module.min.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/three/examples/jsm/libs/inflate.module.min.js ***!
+  \********************************************************************/
+/*! exports provided: Inflate */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Inflate", function() { return Inflate; });
+/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */var mod={}, l=void 0,aa=mod;function r(c,d){var a=c.split("."),b=aa;!(a[0]in b)&&b.execScript&&b.execScript("var "+a[0]);for(var e;a.length&&(e=a.shift());)!a.length&&d!==l?b[e]=d:b=b[e]?b[e]:b[e]={}};var t="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function v(c){var d=c.length,a=0,b=Number.POSITIVE_INFINITY,e,f,g,h,k,m,n,p,s,x;for(p=0;p<d;++p)c[p]>a&&(a=c[p]),c[p]<b&&(b=c[p]);e=1<<a;f=new (t?Uint32Array:Array)(e);g=1;h=0;for(k=2;g<=a;){for(p=0;p<d;++p)if(c[p]===g){m=0;n=h;for(s=0;s<g;++s)m=m<<1|n&1,n>>=1;x=g<<16|p;for(s=m;s<e;s+=k)f[s]=x;++h}++g;h<<=1;k<<=1}return[f,a,b]};function w(c,d){this.g=[];this.h=32768;this.d=this.f=this.a=this.l=0;this.input=t?new Uint8Array(c):c;this.m=!1;this.i=y;this.r=!1;if(d||!(d={}))d.index&&(this.a=d.index),d.bufferSize&&(this.h=d.bufferSize),d.bufferType&&(this.i=d.bufferType),d.resize&&(this.r=d.resize);switch(this.i){case A:this.b=32768;this.c=new (t?Uint8Array:Array)(32768+this.h+258);break;case y:this.b=0;this.c=new (t?Uint8Array:Array)(this.h);this.e=this.z;this.n=this.v;this.j=this.w;break;default:throw Error("invalid inflate mode");
+}}var A=0,y=1,B={t:A,s:y};
+w.prototype.k=function(){for(;!this.m;){var c=C(this,3);c&1&&(this.m=!0);c>>>=1;switch(c){case 0:var d=this.input,a=this.a,b=this.c,e=this.b,f=d.length,g=l,h=l,k=b.length,m=l;this.d=this.f=0;if(a+1>=f)throw Error("invalid uncompressed block header: LEN");g=d[a++]|d[a++]<<8;if(a+1>=f)throw Error("invalid uncompressed block header: NLEN");h=d[a++]|d[a++]<<8;if(g===~h)throw Error("invalid uncompressed block header: length verify");if(a+g>d.length)throw Error("input buffer is broken");switch(this.i){case A:for(;e+
+g>b.length;){m=k-e;g-=m;if(t)b.set(d.subarray(a,a+m),e),e+=m,a+=m;else for(;m--;)b[e++]=d[a++];this.b=e;b=this.e();e=this.b}break;case y:for(;e+g>b.length;)b=this.e({p:2});break;default:throw Error("invalid inflate mode");}if(t)b.set(d.subarray(a,a+g),e),e+=g,a+=g;else for(;g--;)b[e++]=d[a++];this.a=a;this.b=e;this.c=b;break;case 1:this.j(ba,ca);break;case 2:for(var n=C(this,5)+257,p=C(this,5)+1,s=C(this,4)+4,x=new (t?Uint8Array:Array)(D.length),S=l,T=l,U=l,u=l,M=l,F=l,z=l,q=l,V=l,q=0;q<s;++q)x[D[q]]=
+C(this,3);if(!t){q=s;for(s=x.length;q<s;++q)x[D[q]]=0}S=v(x);u=new (t?Uint8Array:Array)(n+p);q=0;for(V=n+p;q<V;)switch(M=E(this,S),M){case 16:for(z=3+C(this,2);z--;)u[q++]=F;break;case 17:for(z=3+C(this,3);z--;)u[q++]=0;F=0;break;case 18:for(z=11+C(this,7);z--;)u[q++]=0;F=0;break;default:F=u[q++]=M}T=t?v(u.subarray(0,n)):v(u.slice(0,n));U=t?v(u.subarray(n)):v(u.slice(n));this.j(T,U);break;default:throw Error("unknown BTYPE: "+c);}}return this.n()};
+var G=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],D=t?new Uint16Array(G):G,H=[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,258,258],I=t?new Uint16Array(H):H,J=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0],K=t?new Uint8Array(J):J,L=[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577],da=t?new Uint16Array(L):L,ea=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,
+13,13],N=t?new Uint8Array(ea):ea,O=new (t?Uint8Array:Array)(288),P,fa;P=0;for(fa=O.length;P<fa;++P)O[P]=143>=P?8:255>=P?9:279>=P?7:8;var ba=v(O),Q=new (t?Uint8Array:Array)(30),R,ga;R=0;for(ga=Q.length;R<ga;++R)Q[R]=5;var ca=v(Q);function C(c,d){for(var a=c.f,b=c.d,e=c.input,f=c.a,g=e.length,h;b<d;){if(f>=g)throw Error("input buffer is broken");a|=e[f++]<<b;b+=8}h=a&(1<<d)-1;c.f=a>>>d;c.d=b-d;c.a=f;return h}
+function E(c,d){for(var a=c.f,b=c.d,e=c.input,f=c.a,g=e.length,h=d[0],k=d[1],m,n;b<k&&!(f>=g);)a|=e[f++]<<b,b+=8;m=h[a&(1<<k)-1];n=m>>>16;if(n>b)throw Error("invalid code length: "+n);c.f=a>>n;c.d=b-n;c.a=f;return m&65535}
+w.prototype.j=function(c,d){var a=this.c,b=this.b;this.o=c;for(var e=a.length-258,f,g,h,k;256!==(f=E(this,c));)if(256>f)b>=e&&(this.b=b,a=this.e(),b=this.b),a[b++]=f;else{g=f-257;k=I[g];0<K[g]&&(k+=C(this,K[g]));f=E(this,d);h=da[f];0<N[f]&&(h+=C(this,N[f]));b>=e&&(this.b=b,a=this.e(),b=this.b);for(;k--;)a[b]=a[b++-h]}for(;8<=this.d;)this.d-=8,this.a--;this.b=b};
+w.prototype.w=function(c,d){var a=this.c,b=this.b;this.o=c;for(var e=a.length,f,g,h,k;256!==(f=E(this,c));)if(256>f)b>=e&&(a=this.e(),e=a.length),a[b++]=f;else{g=f-257;k=I[g];0<K[g]&&(k+=C(this,K[g]));f=E(this,d);h=da[f];0<N[f]&&(h+=C(this,N[f]));b+k>e&&(a=this.e(),e=a.length);for(;k--;)a[b]=a[b++-h]}for(;8<=this.d;)this.d-=8,this.a--;this.b=b};
+w.prototype.e=function(){var c=new (t?Uint8Array:Array)(this.b-32768),d=this.b-32768,a,b,e=this.c;if(t)c.set(e.subarray(32768,c.length));else{a=0;for(b=c.length;a<b;++a)c[a]=e[a+32768]}this.g.push(c);this.l+=c.length;if(t)e.set(e.subarray(d,d+32768));else for(a=0;32768>a;++a)e[a]=e[d+a];this.b=32768;return e};
+w.prototype.z=function(c){var d,a=this.input.length/this.a+1|0,b,e,f,g=this.input,h=this.c;c&&("number"===typeof c.p&&(a=c.p),"number"===typeof c.u&&(a+=c.u));2>a?(b=(g.length-this.a)/this.o[2],f=258*(b/2)|0,e=f<h.length?h.length+f:h.length<<1):e=h.length*a;t?(d=new Uint8Array(e),d.set(h)):d=h;return this.c=d};
+w.prototype.n=function(){var c=0,d=this.c,a=this.g,b,e=new (t?Uint8Array:Array)(this.l+(this.b-32768)),f,g,h,k;if(0===a.length)return t?this.c.subarray(32768,this.b):this.c.slice(32768,this.b);f=0;for(g=a.length;f<g;++f){b=a[f];h=0;for(k=b.length;h<k;++h)e[c++]=b[h]}f=32768;for(g=this.b;f<g;++f)e[c++]=d[f];this.g=[];return this.buffer=e};
+w.prototype.v=function(){var c,d=this.b;t?this.r?(c=new Uint8Array(d),c.set(this.c.subarray(0,d))):c=this.c.subarray(0,d):(this.c.length>d&&(this.c.length=d),c=this.c);return this.buffer=c};function W(c,d){var a,b;this.input=c;this.a=0;if(d||!(d={}))d.index&&(this.a=d.index),d.verify&&(this.A=d.verify);a=c[this.a++];b=c[this.a++];switch(a&15){case ha:this.method=ha;break;default:throw Error("unsupported compression method");}if(0!==((a<<8)+b)%31)throw Error("invalid fcheck flag:"+((a<<8)+b)%31);if(b&32)throw Error("fdict flag is not supported");this.q=new w(c,{index:this.a,bufferSize:d.bufferSize,bufferType:d.bufferType,resize:d.resize})}
+W.prototype.k=function(){var c=this.input,d,a;d=this.q.k();this.a=this.q.a;if(this.A){a=(c[this.a++]<<24|c[this.a++]<<16|c[this.a++]<<8|c[this.a++])>>>0;var b=d;if("string"===typeof b){var e=b.split(""),f,g;f=0;for(g=e.length;f<g;f++)e[f]=(e[f].charCodeAt(0)&255)>>>0;b=e}for(var h=1,k=0,m=b.length,n,p=0;0<m;){n=1024<m?1024:m;m-=n;do h+=b[p++],k+=h;while(--n);h%=65521;k%=65521}if(a!==(k<<16|h)>>>0)throw Error("invalid adler-32 checksum");}return d};var ha=8;r("Zlib.Inflate",W);r("Zlib.Inflate.prototype.decompress",W.prototype.k);var X={ADAPTIVE:B.s,BLOCK:B.t},Y,Z,$,ia;if(Object.keys)Y=Object.keys(X);else for(Z in Y=[],$=0,X)Y[$++]=Z;$=0;for(ia=Y.length;$<ia;++$)Z=Y[$],r("Zlib.Inflate.BufferType."+Z,X[Z]);
+var Inflate=mod.Zlib.Inflate;
+
+
+
+/***/ }),
+
 /***/ "./node_modules/three/examples/jsm/libs/motion-controllers.module.js":
 /*!***************************************************************************!*\
   !*** ./node_modules/three/examples/jsm/libs/motion-controllers.module.js ***!
@@ -69717,6 +69796,2427 @@ class MotionController {
     });
   }
 }
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/three/examples/jsm/loaders/EXRLoader.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/three/examples/jsm/loaders/EXRLoader.js ***!
+  \**************************************************************/
+/*! exports provided: EXRLoader */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EXRLoader", function() { return EXRLoader; });
+/* harmony import */ var _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../build/three.module.js */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _libs_inflate_module_min_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../libs/inflate.module.min.js */ "./node_modules/three/examples/jsm/libs/inflate.module.min.js");
+
+
+
+/**
+ * OpenEXR loader currently supports uncompressed, ZIP(S), RLE, PIZ and DWA/B compression.
+ * Supports reading as UnsignedByte, HalfFloat and Float type data texture.
+ *
+ * Referred to the original Industrial Light & Magic OpenEXR implementation and the TinyEXR / Syoyo Fujita
+ * implementation, so I have preserved their copyright notices.
+ */
+
+// /*
+// Copyright (c) 2014 - 2017, Syoyo Fujita
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Syoyo Fujita nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// */
+
+// // TinyEXR contains some OpenEXR code, which is licensed under ------------
+
+// ///////////////////////////////////////////////////////////////////////////
+// //
+// // Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
+// // Digital Ltd. LLC
+// //
+// // All rights reserved.
+// //
+// // Redistribution and use in source and binary forms, with or without
+// // modification, are permitted provided that the following conditions are
+// // met:
+// // *       Redistributions of source code must retain the above copyright
+// // notice, this list of conditions and the following disclaimer.
+// // *       Redistributions in binary form must reproduce the above
+// // copyright notice, this list of conditions and the following disclaimer
+// // in the documentation and/or other materials provided with the
+// // distribution.
+// // *       Neither the name of Industrial Light & Magic nor the names of
+// // its contributors may be used to endorse or promote products derived
+// // from this software without specific prior written permission.
+// //
+// // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// // A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// // OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// // LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// //
+// ///////////////////////////////////////////////////////////////////////////
+
+// // End of OpenEXR license -------------------------------------------------
+
+var EXRLoader = function ( manager ) {
+
+	_build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["DataTextureLoader"].call( this, manager );
+
+	this.type = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FloatType"];
+
+};
+
+EXRLoader.prototype = Object.assign( Object.create( _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["DataTextureLoader"].prototype ), {
+
+	constructor: EXRLoader,
+
+	parse: function ( buffer ) {
+
+		const USHORT_RANGE = ( 1 << 16 );
+		const BITMAP_SIZE = ( USHORT_RANGE >> 3 );
+
+		const HUF_ENCBITS = 16; // literal (value) bit length
+		const HUF_DECBITS = 14; // decoding bit size (>= 8)
+
+		const HUF_ENCSIZE = ( 1 << HUF_ENCBITS ) + 1; // encoding table size
+		const HUF_DECSIZE = 1 << HUF_DECBITS; // decoding table size
+		const HUF_DECMASK = HUF_DECSIZE - 1;
+
+		const NBITS = 16;
+		const A_OFFSET = 1 << ( NBITS - 1 );
+		const MOD_MASK = ( 1 << NBITS ) - 1;
+
+		const SHORT_ZEROCODE_RUN = 59;
+		const LONG_ZEROCODE_RUN = 63;
+		const SHORTEST_LONG_RUN = 2 + LONG_ZEROCODE_RUN - SHORT_ZEROCODE_RUN;
+
+		const ULONG_SIZE = 8;
+		const FLOAT32_SIZE = 4;
+		const INT32_SIZE = 4;
+		const INT16_SIZE = 2;
+		const INT8_SIZE = 1;
+
+		const STATIC_HUFFMAN = 0;
+		const DEFLATE = 1;
+
+		const UNKNOWN = 0;
+		const LOSSY_DCT = 1;
+		const RLE = 2;
+
+		const logBase = Math.pow( 2.7182818, 2.2 );
+
+		var tmpDataView = new DataView( new ArrayBuffer( 8 ) );
+
+		function frexp( value ) {
+
+			if ( value === 0 ) return [ value, 0 ];
+
+			tmpDataView.setFloat64( 0, value );
+
+			var bits = ( tmpDataView.getUint32( 0 ) >>> 20 ) & 0x7FF;
+			if ( bits === 0 ) { // denormal
+
+				tmpDataView.setFloat64( 0, value * Math.pow( 2, 64 ) ); // exp + 64
+				bits = ( ( tmpDataView.getUint32( 0 ) >>> 20 ) & 0x7FF ) - 64;
+
+			}
+
+			var exponent = bits - 1022;
+			var mantissa = ldexp( value, - exponent );
+
+			return [ mantissa, exponent ];
+
+		}
+
+		function ldexp( mantissa, exponent ) {
+
+			var steps = Math.min( 3, Math.ceil( Math.abs( exponent ) / 1023 ) );
+			var result = mantissa;
+
+			for ( var i = 0; i < steps; i ++ )
+				result *= Math.pow( 2, Math.floor( ( exponent + i ) / steps ) );
+
+			return result;
+
+		}
+
+		function reverseLutFromBitmap( bitmap, lut ) {
+
+			var k = 0;
+
+			for ( var i = 0; i < USHORT_RANGE; ++ i ) {
+
+				if ( ( i == 0 ) || ( bitmap[ i >> 3 ] & ( 1 << ( i & 7 ) ) ) ) {
+
+					lut[ k ++ ] = i;
+
+				}
+
+			}
+
+			var n = k - 1;
+
+			while ( k < USHORT_RANGE ) lut[ k ++ ] = 0;
+
+			return n;
+
+		}
+
+		function hufClearDecTable( hdec ) {
+
+			for ( var i = 0; i < HUF_DECSIZE; i ++ ) {
+
+				hdec[ i ] = {};
+				hdec[ i ].len = 0;
+				hdec[ i ].lit = 0;
+				hdec[ i ].p = null;
+
+			}
+
+		}
+
+		const getBitsReturn = { l: 0, c: 0, lc: 0 };
+
+		function getBits( nBits, c, lc, uInt8Array, inOffset ) {
+
+			while ( lc < nBits ) {
+
+				c = ( c << 8 ) | parseUint8Array( uInt8Array, inOffset );
+				lc += 8;
+
+			}
+
+			lc -= nBits;
+
+			getBitsReturn.l = ( c >> lc ) & ( ( 1 << nBits ) - 1 );
+			getBitsReturn.c = c;
+			getBitsReturn.lc = lc;
+
+		}
+
+		const hufTableBuffer = new Array( 59 );
+
+		function hufCanonicalCodeTable( hcode ) {
+
+			for ( var i = 0; i <= 58; ++ i ) hufTableBuffer[ i ] = 0;
+			for ( var i = 0; i < HUF_ENCSIZE; ++ i ) hufTableBuffer[ hcode[ i ] ] += 1;
+
+			var c = 0;
+
+			for ( var i = 58; i > 0; -- i ) {
+
+				var nc = ( ( c + hufTableBuffer[ i ] ) >> 1 );
+				hufTableBuffer[ i ] = c;
+				c = nc;
+
+			}
+
+			for ( var i = 0; i < HUF_ENCSIZE; ++ i ) {
+
+				var l = hcode[ i ];
+				if ( l > 0 ) hcode[ i ] = l | ( hufTableBuffer[ l ] ++ << 6 );
+
+			}
+
+		}
+
+		function hufUnpackEncTable( uInt8Array, inDataView, inOffset, ni, im, iM, hcode ) {
+
+			var p = inOffset;
+			var c = 0;
+			var lc = 0;
+
+			for ( ; im <= iM; im ++ ) {
+
+				if ( p.value - inOffset.value > ni ) return false;
+
+				getBits( 6, c, lc, uInt8Array, p );
+
+				var l = getBitsReturn.l;
+				c = getBitsReturn.c;
+				lc = getBitsReturn.lc;
+
+				hcode[ im ] = l;
+
+				if ( l == LONG_ZEROCODE_RUN ) {
+
+					if ( p.value - inOffset.value > ni ) {
+
+						throw 'Something wrong with hufUnpackEncTable';
+
+					}
+
+					getBits( 8, c, lc, uInt8Array, p );
+
+					var zerun = getBitsReturn.l + SHORTEST_LONG_RUN;
+					c = getBitsReturn.c;
+					lc = getBitsReturn.lc;
+
+					if ( im + zerun > iM + 1 ) {
+
+						throw 'Something wrong with hufUnpackEncTable';
+
+					}
+
+					while ( zerun -- ) hcode[ im ++ ] = 0;
+
+					im --;
+
+				} else if ( l >= SHORT_ZEROCODE_RUN ) {
+
+					var zerun = l - SHORT_ZEROCODE_RUN + 2;
+
+					if ( im + zerun > iM + 1 ) {
+
+						throw 'Something wrong with hufUnpackEncTable';
+
+					}
+
+					while ( zerun -- ) hcode[ im ++ ] = 0;
+
+					im --;
+
+				}
+
+			}
+
+			hufCanonicalCodeTable( hcode );
+
+		}
+
+		function hufLength( code ) {
+
+			return code & 63;
+
+		}
+
+		function hufCode( code ) {
+
+			return code >> 6;
+
+		}
+
+		function hufBuildDecTable( hcode, im, iM, hdecod ) {
+
+			for ( ; im <= iM; im ++ ) {
+
+				var c = hufCode( hcode[ im ] );
+				var l = hufLength( hcode[ im ] );
+
+				if ( c >> l ) {
+
+					throw 'Invalid table entry';
+
+				}
+
+				if ( l > HUF_DECBITS ) {
+
+					var pl = hdecod[ ( c >> ( l - HUF_DECBITS ) ) ];
+
+					if ( pl.len ) {
+
+						throw 'Invalid table entry';
+
+					}
+
+					pl.lit ++;
+
+					if ( pl.p ) {
+
+						var p = pl.p;
+						pl.p = new Array( pl.lit );
+
+						for ( var i = 0; i < pl.lit - 1; ++ i ) {
+
+							pl.p[ i ] = p[ i ];
+
+						}
+
+					} else {
+
+						pl.p = new Array( 1 );
+
+					}
+
+					pl.p[ pl.lit - 1 ] = im;
+
+				} else if ( l ) {
+
+					var plOffset = 0;
+
+					for ( var i = 1 << ( HUF_DECBITS - l ); i > 0; i -- ) {
+
+						var pl = hdecod[ ( c << ( HUF_DECBITS - l ) ) + plOffset ];
+
+						if ( pl.len || pl.p ) {
+
+							throw 'Invalid table entry';
+
+						}
+
+						pl.len = l;
+						pl.lit = im;
+
+						plOffset ++;
+
+					}
+
+				}
+
+			}
+
+			return true;
+
+		}
+
+		const getCharReturn = { c: 0, lc: 0 };
+
+		function getChar( c, lc, uInt8Array, inOffset ) {
+
+			c = ( c << 8 ) | parseUint8Array( uInt8Array, inOffset );
+			lc += 8;
+
+			getCharReturn.c = c;
+			getCharReturn.lc = lc;
+
+		}
+
+		const getCodeReturn = { c: 0, lc: 0 };
+
+		function getCode( po, rlc, c, lc, uInt8Array, inDataView, inOffset, outBuffer, outBufferOffset, outBufferEndOffset ) {
+
+			if ( po == rlc ) {
+
+				if ( lc < 8 ) {
+
+					getChar( c, lc, uInt8Array, inOffset );
+					c = getCharReturn.c;
+					lc = getCharReturn.lc;
+
+				}
+
+				lc -= 8;
+
+				var cs = ( c >> lc );
+				var cs = new Uint8Array( [ cs ] )[ 0 ];
+
+				if ( outBufferOffset.value + cs > outBufferEndOffset ) {
+
+					return false;
+
+				}
+
+				var s = outBuffer[ outBufferOffset.value - 1 ];
+
+				while ( cs -- > 0 ) {
+
+					outBuffer[ outBufferOffset.value ++ ] = s;
+
+				}
+
+			} else if ( outBufferOffset.value < outBufferEndOffset ) {
+
+				outBuffer[ outBufferOffset.value ++ ] = po;
+
+			} else {
+
+				return false;
+
+			}
+
+			getCodeReturn.c = c;
+			getCodeReturn.lc = lc;
+
+		}
+
+		function UInt16( value ) {
+
+			return ( value & 0xFFFF );
+
+		}
+
+		function Int16( value ) {
+
+			var ref = UInt16( value );
+			return ( ref > 0x7FFF ) ? ref - 0x10000 : ref;
+
+		}
+
+		const wdec14Return = { a: 0, b: 0 };
+
+		function wdec14( l, h ) {
+
+			var ls = Int16( l );
+			var hs = Int16( h );
+
+			var hi = hs;
+			var ai = ls + ( hi & 1 ) + ( hi >> 1 );
+
+			var as = ai;
+			var bs = ai - hi;
+
+			wdec14Return.a = as;
+			wdec14Return.b = bs;
+
+		}
+
+		function wdec16( l, h ) {
+
+			var m = UInt16( l );
+			var d = UInt16( h );
+
+			var bb = ( m - ( d >> 1 ) ) & MOD_MASK;
+			var aa = ( d + bb - A_OFFSET ) & MOD_MASK;
+
+			wdec14Return.a = aa;
+			wdec14Return.b = bb;
+
+		}
+
+		function wav2Decode( buffer, j, nx, ox, ny, oy, mx ) {
+
+			var w14 = mx < ( 1 << 14 );
+			var n = ( nx > ny ) ? ny : nx;
+			var p = 1;
+			var p2;
+
+			while ( p <= n ) p <<= 1;
+
+			p >>= 1;
+			p2 = p;
+			p >>= 1;
+
+			while ( p >= 1 ) {
+
+				var py = 0;
+				var ey = py + oy * ( ny - p2 );
+				var oy1 = oy * p;
+				var oy2 = oy * p2;
+				var ox1 = ox * p;
+				var ox2 = ox * p2;
+				var i00, i01, i10, i11;
+
+				for ( ; py <= ey; py += oy2 ) {
+
+					var px = py;
+					var ex = py + ox * ( nx - p2 );
+
+					for ( ; px <= ex; px += ox2 ) {
+
+						var p01 = px + ox1;
+						var p10 = px + oy1;
+						var p11 = p10 + ox1;
+
+						if ( w14 ) {
+
+							wdec14( buffer[ px + j ], buffer[ p10 + j ] );
+
+							i00 = wdec14Return.a;
+							i10 = wdec14Return.b;
+
+							wdec14( buffer[ p01 + j ], buffer[ p11 + j ] );
+
+							i01 = wdec14Return.a;
+							i11 = wdec14Return.b;
+
+							wdec14( i00, i01 );
+
+							buffer[ px + j ] = wdec14Return.a;
+							buffer[ p01 + j ] = wdec14Return.b;
+
+							wdec14( i10, i11 );
+
+							buffer[ p10 + j ] = wdec14Return.a;
+							buffer[ p11 + j ] = wdec14Return.b;
+
+						} else {
+
+							wdec16( buffer[ px + j ], buffer[ p10 + j ] );
+
+							i00 = wdec14Return.a;
+							i10 = wdec14Return.b;
+
+							wdec16( buffer[ p01 + j ], buffer[ p11 + j ] );
+
+							i01 = wdec14Return.a;
+							i11 = wdec14Return.b;
+
+							wdec16( i00, i01 );
+
+							buffer[ px + j ] = wdec14Return.a;
+							buffer[ p01 + j ] = wdec14Return.b;
+
+							wdec16( i10, i11 );
+
+							buffer[ p10 + j ] = wdec14Return.a;
+							buffer[ p11 + j ] = wdec14Return.b;
+
+
+						}
+
+					}
+
+					if ( nx & p ) {
+
+						var p10 = px + oy1;
+
+						if ( w14 )
+							wdec14( buffer[ px + j ], buffer[ p10 + j ] );
+						else
+							wdec16( buffer[ px + j ], buffer[ p10 + j ] );
+
+						i00 = wdec14Return.a;
+						buffer[ p10 + j ] = wdec14Return.b;
+
+						buffer[ px + j ] = i00;
+
+					}
+
+				}
+
+				if ( ny & p ) {
+
+					var px = py;
+					var ex = py + ox * ( nx - p2 );
+
+					for ( ; px <= ex; px += ox2 ) {
+
+						var p01 = px + ox1;
+
+						if ( w14 )
+							wdec14( buffer[ px + j ], buffer[ p01 + j ] );
+						else
+							wdec16( buffer[ px + j ], buffer[ p01 + j ] );
+
+						i00 = wdec14Return.a;
+						buffer[ p01 + j ] = wdec14Return.b;
+
+						buffer[ px + j ] = i00;
+
+					}
+
+				}
+
+				p2 = p;
+				p >>= 1;
+
+			}
+
+			return py;
+
+		}
+
+		function hufDecode( encodingTable, decodingTable, uInt8Array, inDataView, inOffset, ni, rlc, no, outBuffer, outOffset ) {
+
+			var c = 0;
+			var lc = 0;
+			var outBufferEndOffset = no;
+			var inOffsetEnd = Math.trunc( inOffset.value + ( ni + 7 ) / 8 );
+
+			while ( inOffset.value < inOffsetEnd ) {
+
+				getChar( c, lc, uInt8Array, inOffset );
+
+				c = getCharReturn.c;
+				lc = getCharReturn.lc;
+
+				while ( lc >= HUF_DECBITS ) {
+
+					var index = ( c >> ( lc - HUF_DECBITS ) ) & HUF_DECMASK;
+					var pl = decodingTable[ index ];
+
+					if ( pl.len ) {
+
+						lc -= pl.len;
+
+						getCode( pl.lit, rlc, c, lc, uInt8Array, inDataView, inOffset, outBuffer, outOffset, outBufferEndOffset );
+
+						c = getCodeReturn.c;
+						lc = getCodeReturn.lc;
+
+					} else {
+
+						if ( ! pl.p ) {
+
+							throw 'hufDecode issues';
+
+						}
+
+						var j;
+
+						for ( j = 0; j < pl.lit; j ++ ) {
+
+							var l = hufLength( encodingTable[ pl.p[ j ] ] );
+
+							while ( lc < l && inOffset.value < inOffsetEnd ) {
+
+								getChar( c, lc, uInt8Array, inOffset );
+
+								c = getCharReturn.c;
+								lc = getCharReturn.lc;
+
+							}
+
+							if ( lc >= l ) {
+
+								if ( hufCode( encodingTable[ pl.p[ j ] ] ) == ( ( c >> ( lc - l ) ) & ( ( 1 << l ) - 1 ) ) ) {
+
+									lc -= l;
+
+									getCode( pl.p[ j ], rlc, c, lc, uInt8Array, inDataView, inOffset, outBuffer, outOffset, outBufferEndOffset );
+
+									c = getCodeReturn.c;
+									lc = getCodeReturn.lc;
+
+									break;
+
+								}
+
+							}
+
+						}
+
+						if ( j == pl.lit ) {
+
+							throw 'hufDecode issues';
+
+						}
+
+					}
+
+				}
+
+			}
+
+			var i = ( 8 - ni ) & 7;
+
+			c >>= i;
+			lc -= i;
+
+			while ( lc > 0 ) {
+
+				var pl = decodingTable[ ( c << ( HUF_DECBITS - lc ) ) & HUF_DECMASK ];
+
+				if ( pl.len ) {
+
+					lc -= pl.len;
+
+					getCode( pl.lit, rlc, c, lc, uInt8Array, inDataView, inOffset, outBuffer, outOffset, outBufferEndOffset );
+
+					c = getCodeReturn.c;
+					lc = getCodeReturn.lc;
+
+				} else {
+
+					throw 'hufDecode issues';
+
+				}
+
+			}
+
+			return true;
+
+		}
+
+		function hufUncompress( uInt8Array, inDataView, inOffset, nCompressed, outBuffer, nRaw ) {
+
+			var outOffset = { value: 0 };
+			var initialInOffset = inOffset.value;
+
+			var im = parseUint32( inDataView, inOffset );
+			var iM = parseUint32( inDataView, inOffset );
+
+			inOffset.value += 4;
+
+			var nBits = parseUint32( inDataView, inOffset );
+
+			inOffset.value += 4;
+
+			if ( im < 0 || im >= HUF_ENCSIZE || iM < 0 || iM >= HUF_ENCSIZE ) {
+
+				throw 'Something wrong with HUF_ENCSIZE';
+
+			}
+
+			var freq = new Array( HUF_ENCSIZE );
+			var hdec = new Array( HUF_DECSIZE );
+
+			hufClearDecTable( hdec );
+
+			var ni = nCompressed - ( inOffset.value - initialInOffset );
+
+			hufUnpackEncTable( uInt8Array, inDataView, inOffset, ni, im, iM, freq );
+
+			if ( nBits > 8 * ( nCompressed - ( inOffset.value - initialInOffset ) ) ) {
+
+				throw 'Something wrong with hufUncompress';
+
+			}
+
+			hufBuildDecTable( freq, im, iM, hdec );
+
+			hufDecode( freq, hdec, uInt8Array, inDataView, inOffset, nBits, iM, nRaw, outBuffer, outOffset );
+
+		}
+
+		function applyLut( lut, data, nData ) {
+
+			for ( var i = 0; i < nData; ++ i ) {
+
+				data[ i ] = lut[ data[ i ] ];
+
+			}
+
+		}
+
+		function predictor( source ) {
+
+			for ( var t = 1; t < source.length; t ++ ) {
+
+				var d = source[ t - 1 ] + source[ t ] - 128;
+				source[ t ] = d;
+
+			}
+
+		}
+
+		function interleaveScalar( source, out ) {
+
+			var t1 = 0;
+			var t2 = Math.floor( ( source.length + 1 ) / 2 );
+			var s = 0;
+			var stop = source.length - 1;
+
+			while ( true ) {
+
+				if ( s > stop ) break;
+				out[ s ++ ] = source[ t1 ++ ];
+
+				if ( s > stop ) break;
+				out[ s ++ ] = source[ t2 ++ ];
+
+			}
+
+		}
+
+		function decodeRunLength( source ) {
+
+			var size = source.byteLength;
+			var out = new Array();
+			var p = 0;
+
+			var reader = new DataView( source );
+
+			while ( size > 0 ) {
+
+				var l = reader.getInt8( p ++ );
+
+				if ( l < 0 ) {
+
+					var count = - l;
+					size -= count + 1;
+
+					for ( var i = 0; i < count; i ++ ) {
+
+						out.push( reader.getUint8( p ++ ) );
+
+					}
+
+
+				} else {
+
+					var count = l;
+					size -= 2;
+
+					var value = reader.getUint8( p ++ );
+
+					for ( var i = 0; i < count + 1; i ++ ) {
+
+						out.push( value );
+
+					}
+
+				}
+
+			}
+
+			return out;
+
+		}
+
+		function lossyDctDecode( cscSet, rowPtrs, channelData, acBuffer, dcBuffer, outBuffer ) {
+
+			var dataView = new DataView( outBuffer.buffer );
+
+			var width = channelData[ cscSet.idx[ 0 ] ].width;
+			var height = channelData[ cscSet.idx[ 0 ] ].height;
+
+			var numComp = 3;
+
+			var numFullBlocksX = Math.floor( width / 8.0 );
+			var numBlocksX = Math.ceil( width / 8.0 );
+			var numBlocksY = Math.ceil( height / 8.0 );
+			var leftoverX = width - ( numBlocksX - 1 ) * 8;
+			var leftoverY = height - ( numBlocksY - 1 ) * 8;
+
+			var currAcComp = { value: 0 };
+			var currDcComp = new Array( numComp );
+			var dctData = new Array( numComp );
+			var halfZigBlock = new Array( numComp );
+			var rowBlock = new Array( numComp );
+			var rowOffsets = new Array( numComp );
+
+			for ( let comp = 0; comp < numComp; ++ comp ) {
+
+				rowOffsets[ comp ] = rowPtrs[ cscSet.idx[ comp ] ];
+				currDcComp[ comp ] = ( comp < 1 ) ? 0 : currDcComp[ comp - 1 ] + numBlocksX * numBlocksY;
+				dctData[ comp ] = new Float32Array( 64 );
+				halfZigBlock[ comp ] = new Uint16Array( 64 );
+				rowBlock[ comp ] = new Uint16Array( numBlocksX * 64 );
+
+			}
+
+			for ( let blocky = 0; blocky < numBlocksY; ++ blocky ) {
+
+				var maxY = 8;
+
+				if ( blocky == numBlocksY - 1 )
+					maxY = leftoverY;
+
+				var maxX = 8;
+
+				for ( let blockx = 0; blockx < numBlocksX; ++ blockx ) {
+
+					if ( blockx == numBlocksX - 1 )
+						maxX = leftoverX;
+
+					for ( let comp = 0; comp < numComp; ++ comp ) {
+
+						halfZigBlock[ comp ].fill( 0 );
+
+						// set block DC component
+						halfZigBlock[ comp ][ 0 ] = dcBuffer[ currDcComp[ comp ] ++ ];
+						// set block AC components
+						unRleAC( currAcComp, acBuffer, halfZigBlock[ comp ] );
+
+						// UnZigZag block to float
+						unZigZag( halfZigBlock[ comp ], dctData[ comp ] );
+						// decode float dct
+						dctInverse( dctData[ comp ] );
+
+					}
+
+					if ( numComp == 3 ) {
+
+						csc709Inverse( dctData );
+
+					}
+
+					for ( let comp = 0; comp < numComp; ++ comp ) {
+
+						convertToHalf( dctData[ comp ], rowBlock[ comp ], blockx * 64 );
+
+					}
+
+				} // blockx
+
+				let offset = 0;
+
+				for ( let comp = 0; comp < numComp; ++ comp ) {
+
+					const type = channelData[ cscSet.idx[ comp ] ].type;
+
+					for ( let y = 8 * blocky; y < 8 * blocky + maxY; ++ y ) {
+
+						offset = rowOffsets[ comp ][ y ];
+
+						for ( let blockx = 0; blockx < numFullBlocksX; ++ blockx ) {
+
+							const src = blockx * 64 + ( ( y & 0x7 ) * 8 );
+
+							dataView.setUint16( offset + 0 * INT16_SIZE * type, rowBlock[ comp ][ src + 0 ], true );
+							dataView.setUint16( offset + 1 * INT16_SIZE * type, rowBlock[ comp ][ src + 1 ], true );
+							dataView.setUint16( offset + 2 * INT16_SIZE * type, rowBlock[ comp ][ src + 2 ], true );
+							dataView.setUint16( offset + 3 * INT16_SIZE * type, rowBlock[ comp ][ src + 3 ], true );
+
+							dataView.setUint16( offset + 4 * INT16_SIZE * type, rowBlock[ comp ][ src + 4 ], true );
+							dataView.setUint16( offset + 5 * INT16_SIZE * type, rowBlock[ comp ][ src + 5 ], true );
+							dataView.setUint16( offset + 6 * INT16_SIZE * type, rowBlock[ comp ][ src + 6 ], true );
+							dataView.setUint16( offset + 7 * INT16_SIZE * type, rowBlock[ comp ][ src + 7 ], true );
+
+							offset += 8 * INT16_SIZE * type;
+
+						}
+
+					}
+
+					// handle partial X blocks
+					if ( numFullBlocksX != numBlocksX ) {
+
+						for ( let y = 8 * blocky; y < 8 * blocky + maxY; ++ y ) {
+
+							const offset = rowOffsets[ comp ][ y ] + 8 * numFullBlocksX * INT16_SIZE * type;
+							const src = numFullBlocksX * 64 + ( ( y & 0x7 ) * 8 );
+
+							for ( let x = 0; x < maxX; ++ x ) {
+
+								dataView.setUint16( offset + x * INT16_SIZE * type, rowBlock[ comp ][ src + x ], true );
+
+							}
+
+						}
+
+					}
+
+				} // comp
+
+			} // blocky
+
+			var halfRow = new Uint16Array( width );
+			var dataView = new DataView( outBuffer.buffer );
+
+			// convert channels back to float, if needed
+			for ( var comp = 0; comp < numComp; ++ comp ) {
+
+				channelData[ cscSet.idx[ comp ] ].decoded = true;
+				var type = channelData[ cscSet.idx[ comp ] ].type;
+
+				if ( channelData[ comp ].type != 2 ) continue;
+
+				for ( var y = 0; y < height; ++ y ) {
+
+					const offset = rowOffsets[ comp ][ y ];
+
+					for ( var x = 0; x < width; ++ x ) {
+
+						halfRow[ x ] = dataView.getUint16( offset + x * INT16_SIZE * type, true );
+
+					}
+
+					for ( var x = 0; x < width; ++ x ) {
+
+						dataView.setFloat32( offset + x * INT16_SIZE * type, decodeFloat16( halfRow[ x ] ), true );
+
+					}
+
+				}
+
+			}
+
+		}
+
+		function unRleAC( currAcComp, acBuffer, halfZigBlock ) {
+
+			var acValue;
+			var dctComp = 1;
+
+			while ( dctComp < 64 ) {
+
+				acValue = acBuffer[ currAcComp.value ];
+
+				if ( acValue == 0xff00 ) {
+
+					dctComp = 64;
+
+				} else if ( acValue >> 8 == 0xff ) {
+
+					dctComp += acValue & 0xff;
+
+				} else {
+
+					halfZigBlock[ dctComp ] = acValue;
+					dctComp ++;
+
+				}
+
+				currAcComp.value ++;
+
+			}
+
+		}
+
+		function unZigZag( src, dst ) {
+
+			dst[ 0 ] = decodeFloat16( src[ 0 ] );
+			dst[ 1 ] = decodeFloat16( src[ 1 ] );
+			dst[ 2 ] = decodeFloat16( src[ 5 ] );
+			dst[ 3 ] = decodeFloat16( src[ 6 ] );
+			dst[ 4 ] = decodeFloat16( src[ 14 ] );
+			dst[ 5 ] = decodeFloat16( src[ 15 ] );
+			dst[ 6 ] = decodeFloat16( src[ 27 ] );
+			dst[ 7 ] = decodeFloat16( src[ 28 ] );
+			dst[ 8 ] = decodeFloat16( src[ 2 ] );
+			dst[ 9 ] = decodeFloat16( src[ 4 ] );
+
+			dst[ 10 ] = decodeFloat16( src[ 7 ] );
+			dst[ 11 ] = decodeFloat16( src[ 13 ] );
+			dst[ 12 ] = decodeFloat16( src[ 16 ] );
+			dst[ 13 ] = decodeFloat16( src[ 26 ] );
+			dst[ 14 ] = decodeFloat16( src[ 29 ] );
+			dst[ 15 ] = decodeFloat16( src[ 42 ] );
+			dst[ 16 ] = decodeFloat16( src[ 3 ] );
+			dst[ 17 ] = decodeFloat16( src[ 8 ] );
+			dst[ 18 ] = decodeFloat16( src[ 12 ] );
+			dst[ 19 ] = decodeFloat16( src[ 17 ] );
+
+			dst[ 20 ] = decodeFloat16( src[ 25 ] );
+			dst[ 21 ] = decodeFloat16( src[ 30 ] );
+			dst[ 22 ] = decodeFloat16( src[ 41 ] );
+			dst[ 23 ] = decodeFloat16( src[ 43 ] );
+			dst[ 24 ] = decodeFloat16( src[ 9 ] );
+			dst[ 25 ] = decodeFloat16( src[ 11 ] );
+			dst[ 26 ] = decodeFloat16( src[ 18 ] );
+			dst[ 27 ] = decodeFloat16( src[ 24 ] );
+			dst[ 28 ] = decodeFloat16( src[ 31 ] );
+			dst[ 29 ] = decodeFloat16( src[ 40 ] );
+
+			dst[ 30 ] = decodeFloat16( src[ 44 ] );
+			dst[ 31 ] = decodeFloat16( src[ 53 ] );
+			dst[ 32 ] = decodeFloat16( src[ 10 ] );
+			dst[ 33 ] = decodeFloat16( src[ 19 ] );
+			dst[ 34 ] = decodeFloat16( src[ 23 ] );
+			dst[ 35 ] = decodeFloat16( src[ 32 ] );
+			dst[ 36 ] = decodeFloat16( src[ 39 ] );
+			dst[ 37 ] = decodeFloat16( src[ 45 ] );
+			dst[ 38 ] = decodeFloat16( src[ 52 ] );
+			dst[ 39 ] = decodeFloat16( src[ 54 ] );
+
+			dst[ 40 ] = decodeFloat16( src[ 20 ] );
+			dst[ 41 ] = decodeFloat16( src[ 22 ] );
+			dst[ 42 ] = decodeFloat16( src[ 33 ] );
+			dst[ 43 ] = decodeFloat16( src[ 38 ] );
+			dst[ 44 ] = decodeFloat16( src[ 46 ] );
+			dst[ 45 ] = decodeFloat16( src[ 51 ] );
+			dst[ 46 ] = decodeFloat16( src[ 55 ] );
+			dst[ 47 ] = decodeFloat16( src[ 60 ] );
+			dst[ 48 ] = decodeFloat16( src[ 21 ] );
+			dst[ 49 ] = decodeFloat16( src[ 34 ] );
+
+			dst[ 50 ] = decodeFloat16( src[ 37 ] );
+			dst[ 51 ] = decodeFloat16( src[ 47 ] );
+			dst[ 52 ] = decodeFloat16( src[ 50 ] );
+			dst[ 53 ] = decodeFloat16( src[ 56 ] );
+			dst[ 54 ] = decodeFloat16( src[ 59 ] );
+			dst[ 55 ] = decodeFloat16( src[ 61 ] );
+			dst[ 56 ] = decodeFloat16( src[ 35 ] );
+			dst[ 57 ] = decodeFloat16( src[ 36 ] );
+			dst[ 58 ] = decodeFloat16( src[ 48 ] );
+			dst[ 59 ] = decodeFloat16( src[ 49 ] );
+
+			dst[ 60 ] = decodeFloat16( src[ 57 ] );
+			dst[ 61 ] = decodeFloat16( src[ 58 ] );
+			dst[ 62 ] = decodeFloat16( src[ 62 ] );
+			dst[ 63 ] = decodeFloat16( src[ 63 ] );
+
+		}
+
+		function dctInverse( data ) {
+
+			const a = 0.5 * Math.cos( 3.14159 / 4.0 );
+			const b = 0.5 * Math.cos( 3.14159 / 16.0 );
+			const c = 0.5 * Math.cos( 3.14159 / 8.0 );
+			const d = 0.5 * Math.cos( 3.0 * 3.14159 / 16.0 );
+			const e = 0.5 * Math.cos( 5.0 * 3.14159 / 16.0 );
+			const f = 0.5 * Math.cos( 3.0 * 3.14159 / 8.0 );
+			const g = 0.5 * Math.cos( 7.0 * 3.14159 / 16.0 );
+
+			var alpha = new Array( 4 );
+			var beta = new Array( 4 );
+			var theta = new Array( 4 );
+			var gamma = new Array( 4 );
+
+			for ( var row = 0; row < 8; ++ row ) {
+
+				var rowPtr = row * 8;
+
+				alpha[ 0 ] = c * data[ rowPtr + 2 ];
+				alpha[ 1 ] = f * data[ rowPtr + 2 ];
+				alpha[ 2 ] = c * data[ rowPtr + 6 ];
+				alpha[ 3 ] = f * data[ rowPtr + 6 ];
+
+				beta[ 0 ] = b * data[ rowPtr + 1 ] + d * data[ rowPtr + 3 ] + e * data[ rowPtr + 5 ] + g * data[ rowPtr + 7 ];
+				beta[ 1 ] = d * data[ rowPtr + 1 ] - g * data[ rowPtr + 3 ] - b * data[ rowPtr + 5 ] - e * data[ rowPtr + 7 ];
+				beta[ 2 ] = e * data[ rowPtr + 1 ] - b * data[ rowPtr + 3 ] + g * data[ rowPtr + 5 ] + d * data[ rowPtr + 7 ];
+				beta[ 3 ] = g * data[ rowPtr + 1 ] - e * data[ rowPtr + 3 ] + d * data[ rowPtr + 5 ] - b * data[ rowPtr + 7 ];
+
+				theta[ 0 ] = a * ( data[ rowPtr + 0 ] + data[ rowPtr + 4 ] );
+				theta[ 3 ] = a * ( data[ rowPtr + 0 ] - data[ rowPtr + 4 ] );
+				theta[ 1 ] = alpha[ 0 ] + alpha[ 3 ];
+				theta[ 2 ] = alpha[ 1 ] - alpha[ 2 ];
+
+				gamma[ 0 ] = theta[ 0 ] + theta[ 1 ];
+				gamma[ 1 ] = theta[ 3 ] + theta[ 2 ];
+				gamma[ 2 ] = theta[ 3 ] - theta[ 2 ];
+				gamma[ 3 ] = theta[ 0 ] - theta[ 1 ];
+
+				data[ rowPtr + 0 ] = gamma[ 0 ] + beta[ 0 ];
+				data[ rowPtr + 1 ] = gamma[ 1 ] + beta[ 1 ];
+				data[ rowPtr + 2 ] = gamma[ 2 ] + beta[ 2 ];
+				data[ rowPtr + 3 ] = gamma[ 3 ] + beta[ 3 ];
+
+				data[ rowPtr + 4 ] = gamma[ 3 ] - beta[ 3 ];
+				data[ rowPtr + 5 ] = gamma[ 2 ] - beta[ 2 ];
+				data[ rowPtr + 6 ] = gamma[ 1 ] - beta[ 1 ];
+				data[ rowPtr + 7 ] = gamma[ 0 ] - beta[ 0 ];
+
+			}
+
+			for ( var column = 0; column < 8; ++ column ) {
+
+				alpha[ 0 ] = c * data[ 16 + column ];
+				alpha[ 1 ] = f * data[ 16 + column ];
+				alpha[ 2 ] = c * data[ 48 + column ];
+				alpha[ 3 ] = f * data[ 48 + column ];
+
+				beta[ 0 ] = b * data[ 8 + column ] + d * data[ 24 + column ] + e * data[ 40 + column ] + g * data[ 56 + column ];
+				beta[ 1 ] = d * data[ 8 + column ] - g * data[ 24 + column ] - b * data[ 40 + column ] - e * data[ 56 + column ];
+				beta[ 2 ] = e * data[ 8 + column ] - b * data[ 24 + column ] + g * data[ 40 + column ] + d * data[ 56 + column ];
+				beta[ 3 ] = g * data[ 8 + column ] - e * data[ 24 + column ] + d * data[ 40 + column ] - b * data[ 56 + column ];
+
+				theta[ 0 ] = a * ( data[ column ] + data[ 32 + column ] );
+				theta[ 3 ] = a * ( data[ column ] - data[ 32 + column ] );
+
+				theta[ 1 ] = alpha[ 0 ] + alpha[ 3 ];
+				theta[ 2 ] = alpha[ 1 ] - alpha[ 2 ];
+
+				gamma[ 0 ] = theta[ 0 ] + theta[ 1 ];
+				gamma[ 1 ] = theta[ 3 ] + theta[ 2 ];
+				gamma[ 2 ] = theta[ 3 ] - theta[ 2 ];
+				gamma[ 3 ] = theta[ 0 ] - theta[ 1 ];
+
+				data[ 0 + column ] = gamma[ 0 ] + beta[ 0 ];
+				data[ 8 + column ] = gamma[ 1 ] + beta[ 1 ];
+				data[ 16 + column ] = gamma[ 2 ] + beta[ 2 ];
+				data[ 24 + column ] = gamma[ 3 ] + beta[ 3 ];
+
+				data[ 32 + column ] = gamma[ 3 ] - beta[ 3 ];
+				data[ 40 + column ] = gamma[ 2 ] - beta[ 2 ];
+				data[ 48 + column ] = gamma[ 1 ] - beta[ 1 ];
+				data[ 56 + column ] = gamma[ 0 ] - beta[ 0 ];
+
+			}
+
+		}
+
+		function csc709Inverse( data ) {
+
+			for ( var i = 0; i < 64; ++ i ) {
+
+				var y = data[ 0 ][ i ];
+				var cb = data[ 1 ][ i ];
+				var cr = data[ 2 ][ i ];
+
+				data[ 0 ][ i ] = y + 1.5747 * cr;
+				data[ 1 ][ i ] = y - 0.1873 * cb - 0.4682 * cr;
+				data[ 2 ][ i ] = y + 1.8556 * cb;
+
+			}
+
+		}
+
+		function convertToHalf( src, dst, idx ) {
+
+			for ( var i = 0; i < 64; ++ i ) {
+
+				dst[ idx + i ] = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["DataUtils"].toHalfFloat( toLinear( src[ i ] ) );
+
+			}
+
+		}
+
+		function toLinear( float ) {
+
+			if ( float <= 1 ) {
+
+				return Math.sign( float ) * Math.pow( Math.abs( float ), 2.2 );
+
+			} else {
+
+				return Math.sign( float ) * Math.pow( logBase, Math.abs( float ) - 1.0 );
+
+			}
+
+		}
+
+		function uncompressRAW( info ) {
+
+			return new DataView( info.array.buffer, info.offset.value, info.size );
+
+		}
+
+		function uncompressRLE( info ) {
+
+			var compressed = info.viewer.buffer.slice( info.offset.value, info.offset.value + info.size );
+
+			var rawBuffer = new Uint8Array( decodeRunLength( compressed ) );
+			var tmpBuffer = new Uint8Array( rawBuffer.length );
+
+			predictor( rawBuffer ); // revert predictor
+
+			interleaveScalar( rawBuffer, tmpBuffer ); // interleave pixels
+
+			return new DataView( tmpBuffer.buffer );
+
+		}
+
+		function uncompressZIP( info ) {
+
+			var compressed = info.array.slice( info.offset.value, info.offset.value + info.size );
+
+			if ( typeof _libs_inflate_module_min_js__WEBPACK_IMPORTED_MODULE_1__["Inflate"] === 'undefined' ) {
+
+				console.error( 'THREE.EXRLoader: External library Inflate.min.js required, obtain or import from https://github.com/imaya/zlib.js' );
+
+			}
+
+			var inflate = new _libs_inflate_module_min_js__WEBPACK_IMPORTED_MODULE_1__["Inflate"]( compressed, { resize: true, verify: true } ); // eslint-disable-line no-undef
+
+			var rawBuffer = new Uint8Array( inflate.decompress().buffer );
+			var tmpBuffer = new Uint8Array( rawBuffer.length );
+
+			predictor( rawBuffer ); // revert predictor
+
+			interleaveScalar( rawBuffer, tmpBuffer ); // interleave pixels
+
+			return new DataView( tmpBuffer.buffer );
+
+		}
+
+		function uncompressPIZ( info ) {
+
+			var inDataView = info.viewer;
+			var inOffset = { value: info.offset.value };
+
+			var tmpBufSize = info.width * scanlineBlockSize * ( EXRHeader.channels.length * info.type );
+			var outBuffer = new Uint16Array( tmpBufSize );
+			var bitmap = new Uint8Array( BITMAP_SIZE );
+
+			// Setup channel info
+			var outBufferEnd = 0;
+			var pizChannelData = new Array( info.channels );
+			for ( var i = 0; i < info.channels; i ++ ) {
+
+				pizChannelData[ i ] = {};
+				pizChannelData[ i ][ 'start' ] = outBufferEnd;
+				pizChannelData[ i ][ 'end' ] = pizChannelData[ i ][ 'start' ];
+				pizChannelData[ i ][ 'nx' ] = info.width;
+				pizChannelData[ i ][ 'ny' ] = info.lines;
+				pizChannelData[ i ][ 'size' ] = info.type;
+
+				outBufferEnd += pizChannelData[ i ].nx * pizChannelData[ i ].ny * pizChannelData[ i ].size;
+
+			}
+
+			// Read range compression data
+			var minNonZero = parseUint16( inDataView, inOffset );
+			var maxNonZero = parseUint16( inDataView, inOffset );
+
+			if ( maxNonZero >= BITMAP_SIZE ) {
+
+				throw 'Something is wrong with PIZ_COMPRESSION BITMAP_SIZE';
+
+			}
+
+			if ( minNonZero <= maxNonZero ) {
+
+				for ( var i = 0; i < maxNonZero - minNonZero + 1; i ++ ) {
+
+					bitmap[ i + minNonZero ] = parseUint8( inDataView, inOffset );
+
+				}
+
+			}
+
+			// Reverse LUT
+			var lut = new Uint16Array( USHORT_RANGE );
+			var maxValue = reverseLutFromBitmap( bitmap, lut );
+
+			var length = parseUint32( inDataView, inOffset );
+
+			// Huffman decoding
+			hufUncompress( info.array, inDataView, inOffset, length, outBuffer, outBufferEnd );
+
+			// Wavelet decoding
+			for ( var i = 0; i < info.channels; ++ i ) {
+
+				var cd = pizChannelData[ i ];
+
+				for ( var j = 0; j < pizChannelData[ i ].size; ++ j ) {
+
+					wav2Decode(
+						outBuffer,
+						cd.start + j,
+						cd.nx,
+						cd.size,
+						cd.ny,
+						cd.nx * cd.size,
+						maxValue
+					);
+
+				}
+
+			}
+
+			// Expand the pixel data to their original range
+			applyLut( lut, outBuffer, outBufferEnd );
+
+			// Rearrange the pixel data into the format expected by the caller.
+			var tmpOffset = 0;
+			var tmpBuffer = new Uint8Array( outBuffer.buffer.byteLength );
+			for ( var y = 0; y < info.lines; y ++ ) {
+
+				for ( var c = 0; c < info.channels; c ++ ) {
+
+					var cd = pizChannelData[ c ];
+
+					var n = cd.nx * cd.size;
+					var cp = new Uint8Array( outBuffer.buffer, cd.end * INT16_SIZE, n * INT16_SIZE );
+
+					tmpBuffer.set( cp, tmpOffset );
+					tmpOffset += n * INT16_SIZE;
+					cd.end += n;
+
+				}
+
+			}
+
+			return new DataView( tmpBuffer.buffer );
+
+		}
+
+		function uncompressPXR( info ) {
+
+			var compressed = info.array.slice( info.offset.value, info.offset.value + info.size );
+
+			if ( typeof _libs_inflate_module_min_js__WEBPACK_IMPORTED_MODULE_1__["Inflate"] === 'undefined' ) {
+
+				console.error( 'THREE.EXRLoader: External library Inflate.min.js required, obtain or import from https://github.com/imaya/zlib.js' );
+
+			}
+
+			const inflate = new _libs_inflate_module_min_js__WEBPACK_IMPORTED_MODULE_1__["Inflate"]( compressed, { resize: true, verify: true } ); // eslint-disable-line no-undef
+			const rawBuffer = new Uint8Array( inflate.decompress().buffer );
+
+			const sz = info.lines * info.channels * info.width;
+			const tmpBuffer = ( info.type == 1 ) ? new Uint16Array( sz ) : new Uint32Array( sz );
+
+			let tmpBufferEnd = 0;
+			let writePtr = 0;
+			const ptr = new Array( 4 );
+
+			for ( let y = 0; y < info.lines; y ++ ) {
+
+				for ( let c = 0; c < info.channels; c ++ ) {
+
+					let pixel = 0;
+
+					switch ( info.type ) {
+
+						case 1:
+
+							ptr[ 0 ] = tmpBufferEnd;
+							ptr[ 1 ] = ptr[ 0 ] + info.width;
+							tmpBufferEnd = ptr[ 1 ] + info.width;
+
+							for ( let j = 0; j < info.width; ++ j ) {
+
+								const diff = ( rawBuffer[ ptr[ 0 ] ++ ] << 8 ) | rawBuffer[ ptr[ 1 ] ++ ];
+
+								pixel += diff;
+
+								tmpBuffer[ writePtr ] = pixel;
+								writePtr ++;
+
+							}
+
+							break;
+
+						case 2:
+
+							ptr[ 0 ] = tmpBufferEnd;
+							ptr[ 1 ] = ptr[ 0 ] + info.width;
+							ptr[ 2 ] = ptr[ 1 ] + info.width;
+							tmpBufferEnd = ptr[ 2 ] + info.width;
+
+							for ( let j = 0; j < info.width; ++ j ) {
+
+								const diff = ( rawBuffer[ ptr[ 0 ] ++ ] << 24 ) | ( rawBuffer[ ptr[ 1 ] ++ ] << 16 ) | ( rawBuffer[ ptr[ 2 ] ++ ] << 8 );
+
+								pixel += diff;
+
+								tmpBuffer[ writePtr ] = pixel;
+								writePtr ++;
+
+							}
+
+							break;
+
+					}
+
+				}
+
+			}
+
+			return new DataView( tmpBuffer.buffer );
+
+		}
+
+		function uncompressDWA( info ) {
+
+			var inDataView = info.viewer;
+			var inOffset = { value: info.offset.value };
+			var outBuffer = new Uint8Array( info.width * info.lines * ( EXRHeader.channels.length * info.type * INT16_SIZE ) );
+
+			// Read compression header information
+			var dwaHeader = {
+
+				version: parseInt64( inDataView, inOffset ),
+				unknownUncompressedSize: parseInt64( inDataView, inOffset ),
+				unknownCompressedSize: parseInt64( inDataView, inOffset ),
+				acCompressedSize: parseInt64( inDataView, inOffset ),
+				dcCompressedSize: parseInt64( inDataView, inOffset ),
+				rleCompressedSize: parseInt64( inDataView, inOffset ),
+				rleUncompressedSize: parseInt64( inDataView, inOffset ),
+				rleRawSize: parseInt64( inDataView, inOffset ),
+				totalAcUncompressedCount: parseInt64( inDataView, inOffset ),
+				totalDcUncompressedCount: parseInt64( inDataView, inOffset ),
+				acCompression: parseInt64( inDataView, inOffset )
+
+			};
+
+			if ( dwaHeader.version < 2 )
+				throw 'EXRLoader.parse: ' + EXRHeader.compression + ' version ' + dwaHeader.version + ' is unsupported';
+
+			// Read channel ruleset information
+			var channelRules = new Array();
+			var ruleSize = parseUint16( inDataView, inOffset ) - INT16_SIZE;
+
+			while ( ruleSize > 0 ) {
+
+				var name = parseNullTerminatedString( inDataView.buffer, inOffset );
+				var value = parseUint8( inDataView, inOffset );
+				var compression = ( value >> 2 ) & 3;
+				var csc = ( value >> 4 ) - 1;
+				var index = new Int8Array( [ csc ] )[ 0 ];
+				var type = parseUint8( inDataView, inOffset );
+
+				channelRules.push( {
+					name: name,
+					index: index,
+					type: type,
+					compression: compression,
+				} );
+
+				ruleSize -= name.length + 3;
+
+			}
+
+			// Classify channels
+			var channels = EXRHeader.channels;
+			var channelData = new Array( info.channels );
+
+			for ( var i = 0; i < info.channels; ++ i ) {
+
+				var cd = channelData[ i ] = {};
+				var channel = channels[ i ];
+
+				cd.name = channel.name;
+				cd.compression = UNKNOWN;
+				cd.decoded = false;
+				cd.type = channel.pixelType;
+				cd.pLinear = channel.pLinear;
+				cd.width = info.width;
+				cd.height = info.lines;
+
+			}
+
+			var cscSet = {
+				idx: new Array( 3 )
+			};
+
+			for ( var offset = 0; offset < info.channels; ++ offset ) {
+
+				var cd = channelData[ offset ];
+
+				for ( var i = 0; i < channelRules.length; ++ i ) {
+
+					var rule = channelRules[ i ];
+
+					if ( cd.name == rule.name ) {
+
+						cd.compression = rule.compression;
+
+						if ( rule.index >= 0 ) {
+
+							cscSet.idx[ rule.index ] = offset;
+
+						}
+
+						cd.offset = offset;
+
+					}
+
+				}
+
+			}
+
+			// Read DCT - AC component data
+			if ( dwaHeader.acCompressedSize > 0 ) {
+
+				switch ( dwaHeader.acCompression ) {
+
+					case STATIC_HUFFMAN:
+
+						var acBuffer = new Uint16Array( dwaHeader.totalAcUncompressedCount );
+						hufUncompress( info.array, inDataView, inOffset, dwaHeader.acCompressedSize, acBuffer, dwaHeader.totalAcUncompressedCount );
+						break;
+
+					case DEFLATE:
+
+						var compressed = info.array.slice( inOffset.value, inOffset.value + dwaHeader.totalAcUncompressedCount );
+						var inflate = new _libs_inflate_module_min_js__WEBPACK_IMPORTED_MODULE_1__["Inflate"]( compressed, { resize: true, verify: true } ); // eslint-disable-line no-undef
+						var acBuffer = new Uint16Array( inflate.decompress().buffer );
+						inOffset.value += dwaHeader.totalAcUncompressedCount;
+						break;
+
+				}
+
+
+			}
+
+			// Read DCT - DC component data
+			if ( dwaHeader.dcCompressedSize > 0 ) {
+
+				var zlibInfo = {
+					array: info.array,
+					offset: inOffset,
+					size: dwaHeader.dcCompressedSize
+				};
+				var dcBuffer = new Uint16Array( uncompressZIP( zlibInfo ).buffer );
+				inOffset.value += dwaHeader.dcCompressedSize;
+
+			}
+
+			// Read RLE compressed data
+			if ( dwaHeader.rleRawSize > 0 ) {
+
+				var compressed = info.array.slice( inOffset.value, inOffset.value + dwaHeader.rleCompressedSize );
+				var inflate = new _libs_inflate_module_min_js__WEBPACK_IMPORTED_MODULE_1__["Inflate"]( compressed, { resize: true, verify: true } ); // eslint-disable-line no-undef
+				var rleBuffer = decodeRunLength( inflate.decompress().buffer );
+
+				inOffset.value += dwaHeader.rleCompressedSize;
+
+			}
+
+			// Prepare outbuffer data offset
+			var outBufferEnd = 0;
+			var rowOffsets = new Array( channelData.length );
+			for ( var i = 0; i < rowOffsets.length; ++ i ) {
+
+				rowOffsets[ i ] = new Array();
+
+			}
+
+			for ( var y = 0; y < info.lines; ++ y ) {
+
+				for ( var chan = 0; chan < channelData.length; ++ chan ) {
+
+					rowOffsets[ chan ].push( outBufferEnd );
+					outBufferEnd += channelData[ chan ].width * info.type * INT16_SIZE;
+
+				}
+
+			}
+
+			// Lossy DCT decode RGB channels
+			lossyDctDecode( cscSet, rowOffsets, channelData, acBuffer, dcBuffer, outBuffer );
+
+			// Decode other channels
+			for ( var i = 0; i < channelData.length; ++ i ) {
+
+				var cd = channelData[ i ];
+
+				if ( cd.decoded ) continue;
+
+				switch ( cd.compression ) {
+
+					case RLE:
+
+						var row = 0;
+						var rleOffset = 0;
+
+						for ( var y = 0; y < info.lines; ++ y ) {
+
+							var rowOffsetBytes = rowOffsets[ i ][ row ];
+
+							for ( var x = 0; x < cd.width; ++ x ) {
+
+								for ( var byte = 0; byte < INT16_SIZE * cd.type; ++ byte ) {
+
+									outBuffer[ rowOffsetBytes ++ ] = rleBuffer[ rleOffset + byte * cd.width * cd.height ];
+
+								}
+
+								rleOffset ++;
+
+							}
+
+							row ++;
+
+						}
+
+						break;
+
+					case LOSSY_DCT: // skip
+
+					default:
+						throw 'EXRLoader.parse: unsupported channel compression';
+
+				}
+
+			}
+
+			return new DataView( outBuffer.buffer );
+
+		}
+
+		function parseNullTerminatedString( buffer, offset ) {
+
+			var uintBuffer = new Uint8Array( buffer );
+			var endOffset = 0;
+
+			while ( uintBuffer[ offset.value + endOffset ] != 0 ) {
+
+				endOffset += 1;
+
+			}
+
+			var stringValue = new TextDecoder().decode(
+				uintBuffer.slice( offset.value, offset.value + endOffset )
+			);
+
+			offset.value = offset.value + endOffset + 1;
+
+			return stringValue;
+
+		}
+
+		function parseFixedLengthString( buffer, offset, size ) {
+
+			var stringValue = new TextDecoder().decode(
+				new Uint8Array( buffer ).slice( offset.value, offset.value + size )
+			);
+
+			offset.value = offset.value + size;
+
+			return stringValue;
+
+		}
+
+		function parseUlong( dataView, offset ) {
+
+			var uLong = dataView.getUint32( 0, true );
+
+			offset.value = offset.value + ULONG_SIZE;
+
+			return uLong;
+
+		}
+
+		function parseRational( dataView, offset ) {
+
+			var x = parseInt32( dataView, offset );
+			var y = parseUint32( dataView, offset );
+
+			return [ x, y ];
+
+		}
+
+		function parseTimecode( dataView, offset ) {
+
+			var x = parseUint32( dataView, offset );
+			var y = parseUint32( dataView, offset );
+
+			return [ x, y ];
+
+		}
+
+		function parseInt32( dataView, offset ) {
+
+			var Int32 = dataView.getInt32( offset.value, true );
+
+			offset.value = offset.value + INT32_SIZE;
+
+			return Int32;
+
+		}
+
+		function parseUint32( dataView, offset ) {
+
+			var Uint32 = dataView.getUint32( offset.value, true );
+
+			offset.value = offset.value + INT32_SIZE;
+
+			return Uint32;
+
+		}
+
+		function parseUint8Array( uInt8Array, offset ) {
+
+			var Uint8 = uInt8Array[ offset.value ];
+
+			offset.value = offset.value + INT8_SIZE;
+
+			return Uint8;
+
+		}
+
+		function parseUint8( dataView, offset ) {
+
+			var Uint8 = dataView.getUint8( offset.value );
+
+			offset.value = offset.value + INT8_SIZE;
+
+			return Uint8;
+
+		}
+
+		function parseInt64( dataView, offset ) {
+
+			var int = Number( dataView.getBigInt64( offset.value, true ) );
+
+			offset.value += ULONG_SIZE;
+
+			return int;
+
+		}
+
+		function parseFloat32( dataView, offset ) {
+
+			var float = dataView.getFloat32( offset.value, true );
+
+			offset.value += FLOAT32_SIZE;
+
+			return float;
+
+		}
+
+		function decodeFloat32( dataView, offset ) {
+
+			return _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["DataUtils"].toHalfFloat( parseFloat32( dataView, offset ) );
+
+		}
+
+		// https://stackoverflow.com/questions/5678432/decompressing-half-precision-floats-in-javascript
+		function decodeFloat16( binary ) {
+
+			var exponent = ( binary & 0x7C00 ) >> 10,
+				fraction = binary & 0x03FF;
+
+			return ( binary >> 15 ? - 1 : 1 ) * (
+				exponent ?
+					(
+						exponent === 0x1F ?
+							fraction ? NaN : Infinity :
+							Math.pow( 2, exponent - 15 ) * ( 1 + fraction / 0x400 )
+					) :
+					6.103515625e-5 * ( fraction / 0x400 )
+			);
+
+		}
+
+		function parseUint16( dataView, offset ) {
+
+			var Uint16 = dataView.getUint16( offset.value, true );
+
+			offset.value += INT16_SIZE;
+
+			return Uint16;
+
+		}
+
+		function parseFloat16( buffer, offset ) {
+
+			return decodeFloat16( parseUint16( buffer, offset ) );
+
+		}
+
+		function parseChlist( dataView, buffer, offset, size ) {
+
+			var startOffset = offset.value;
+			var channels = [];
+
+			while ( offset.value < ( startOffset + size - 1 ) ) {
+
+				var name = parseNullTerminatedString( buffer, offset );
+				var pixelType = parseInt32( dataView, offset );
+				var pLinear = parseUint8( dataView, offset );
+				offset.value += 3; // reserved, three chars
+				var xSampling = parseInt32( dataView, offset );
+				var ySampling = parseInt32( dataView, offset );
+
+				channels.push( {
+					name: name,
+					pixelType: pixelType,
+					pLinear: pLinear,
+					xSampling: xSampling,
+					ySampling: ySampling
+				} );
+
+			}
+
+			offset.value += 1;
+
+			return channels;
+
+		}
+
+		function parseChromaticities( dataView, offset ) {
+
+			var redX = parseFloat32( dataView, offset );
+			var redY = parseFloat32( dataView, offset );
+			var greenX = parseFloat32( dataView, offset );
+			var greenY = parseFloat32( dataView, offset );
+			var blueX = parseFloat32( dataView, offset );
+			var blueY = parseFloat32( dataView, offset );
+			var whiteX = parseFloat32( dataView, offset );
+			var whiteY = parseFloat32( dataView, offset );
+
+			return { redX: redX, redY: redY, greenX: greenX, greenY: greenY, blueX: blueX, blueY: blueY, whiteX: whiteX, whiteY: whiteY };
+
+		}
+
+		function parseCompression( dataView, offset ) {
+
+			var compressionCodes = [
+				'NO_COMPRESSION',
+				'RLE_COMPRESSION',
+				'ZIPS_COMPRESSION',
+				'ZIP_COMPRESSION',
+				'PIZ_COMPRESSION',
+				'PXR24_COMPRESSION',
+				'B44_COMPRESSION',
+				'B44A_COMPRESSION',
+				'DWAA_COMPRESSION',
+				'DWAB_COMPRESSION'
+			];
+
+			var compression = parseUint8( dataView, offset );
+
+			return compressionCodes[ compression ];
+
+		}
+
+		function parseBox2i( dataView, offset ) {
+
+			var xMin = parseUint32( dataView, offset );
+			var yMin = parseUint32( dataView, offset );
+			var xMax = parseUint32( dataView, offset );
+			var yMax = parseUint32( dataView, offset );
+
+			return { xMin: xMin, yMin: yMin, xMax: xMax, yMax: yMax };
+
+		}
+
+		function parseLineOrder( dataView, offset ) {
+
+			var lineOrders = [
+				'INCREASING_Y'
+			];
+
+			var lineOrder = parseUint8( dataView, offset );
+
+			return lineOrders[ lineOrder ];
+
+		}
+
+		function parseV2f( dataView, offset ) {
+
+			var x = parseFloat32( dataView, offset );
+			var y = parseFloat32( dataView, offset );
+
+			return [ x, y ];
+
+		}
+
+		function parseV3f( dataView, offset ) {
+
+			var x = parseFloat32( dataView, offset );
+			var y = parseFloat32( dataView, offset );
+			var z = parseFloat32( dataView, offset );
+
+			return [ x, y, z ];
+
+		}
+
+		function parseValue( dataView, buffer, offset, type, size ) {
+
+			if ( type === 'string' || type === 'stringvector' || type === 'iccProfile' ) {
+
+				return parseFixedLengthString( buffer, offset, size );
+
+			} else if ( type === 'chlist' ) {
+
+				return parseChlist( dataView, buffer, offset, size );
+
+			} else if ( type === 'chromaticities' ) {
+
+				return parseChromaticities( dataView, offset );
+
+			} else if ( type === 'compression' ) {
+
+				return parseCompression( dataView, offset );
+
+			} else if ( type === 'box2i' ) {
+
+				return parseBox2i( dataView, offset );
+
+			} else if ( type === 'lineOrder' ) {
+
+				return parseLineOrder( dataView, offset );
+
+			} else if ( type === 'float' ) {
+
+				return parseFloat32( dataView, offset );
+
+			} else if ( type === 'v2f' ) {
+
+				return parseV2f( dataView, offset );
+
+			} else if ( type === 'v3f' ) {
+
+				return parseV3f( dataView, offset );
+
+			} else if ( type === 'int' ) {
+
+				return parseInt32( dataView, offset );
+
+			} else if ( type === 'rational' ) {
+
+				return parseRational( dataView, offset );
+
+			} else if ( type === 'timecode' ) {
+
+				return parseTimecode( dataView, offset );
+
+			} else if ( type === 'preview' ) {
+
+				offset.value += size;
+				return 'skipped';
+
+			} else {
+
+				offset.value += size;
+				return undefined;
+
+			}
+
+		}
+
+		var bufferDataView = new DataView( buffer );
+		var uInt8Array = new Uint8Array( buffer );
+
+		var EXRHeader = {};
+
+		bufferDataView.getUint32( 0, true ); // magic
+		bufferDataView.getUint8( 4, true ); // versionByteZero
+		bufferDataView.getUint8( 5, true ); // fullMask
+
+		// start of header
+
+		var offset = { value: 8 }; // start at 8, after magic stuff
+
+		var keepReading = true;
+
+		while ( keepReading ) {
+
+			var attributeName = parseNullTerminatedString( buffer, offset );
+
+			if ( attributeName == 0 ) {
+
+				keepReading = false;
+
+			} else {
+
+				var attributeType = parseNullTerminatedString( buffer, offset );
+				var attributeSize = parseUint32( bufferDataView, offset );
+				var attributeValue = parseValue( bufferDataView, buffer, offset, attributeType, attributeSize );
+
+				if ( attributeValue === undefined ) {
+
+					console.warn( `EXRLoader.parse: skipped unknown header attribute type \'${ attributeType }\'.` );
+
+				} else {
+
+					EXRHeader[ attributeName ] = attributeValue;
+
+				}
+
+			}
+
+		}
+
+		// offsets
+		var dataWindowHeight = EXRHeader.dataWindow.yMax + 1;
+
+		var uncompress;
+		var scanlineBlockSize;
+
+		switch ( EXRHeader.compression ) {
+
+			case 'NO_COMPRESSION':
+
+				scanlineBlockSize = 1;
+				uncompress = uncompressRAW;
+				break;
+
+			case 'RLE_COMPRESSION':
+
+				scanlineBlockSize = 1;
+				uncompress = uncompressRLE;
+				break;
+
+			case 'ZIPS_COMPRESSION':
+
+				scanlineBlockSize = 1;
+				uncompress = uncompressZIP;
+				break;
+
+			case 'ZIP_COMPRESSION':
+
+				scanlineBlockSize = 16;
+				uncompress = uncompressZIP;
+				break;
+
+			case 'PIZ_COMPRESSION':
+
+				scanlineBlockSize = 32;
+				uncompress = uncompressPIZ;
+				break;
+
+			case 'PXR24_COMPRESSION':
+
+				scanlineBlockSize = 16;
+				uncompress = uncompressPXR;
+				break;
+
+			case 'DWAA_COMPRESSION':
+
+				scanlineBlockSize = 32;
+				uncompress = uncompressDWA;
+				break;
+
+			case 'DWAB_COMPRESSION':
+
+				scanlineBlockSize = 256;
+				uncompress = uncompressDWA;
+				break;
+
+			default:
+
+				throw 'EXRLoader.parse: ' + EXRHeader.compression + ' is unsupported';
+
+		}
+
+		var size_t;
+		var getValue;
+
+		// mixed pixelType not supported
+		var pixelType = EXRHeader.channels[ 0 ].pixelType;
+
+		if ( pixelType === 1 ) { // half
+
+			switch ( this.type ) {
+
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["UnsignedByteType"]:
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FloatType"]:
+
+					getValue = parseFloat16;
+					size_t = INT16_SIZE;
+					break;
+
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["HalfFloatType"]:
+
+					getValue = parseUint16;
+					size_t = INT16_SIZE;
+					break;
+
+			}
+
+		} else if ( pixelType === 2 ) { // float
+
+			switch ( this.type ) {
+
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["UnsignedByteType"]:
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FloatType"]:
+
+					getValue = parseFloat32;
+					size_t = FLOAT32_SIZE;
+					break;
+
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["HalfFloatType"]:
+
+					getValue = decodeFloat32;
+					size_t = FLOAT32_SIZE;
+
+			}
+
+		} else {
+
+			throw 'EXRLoader.parse: unsupported pixelType ' + pixelType + ' for ' + EXRHeader.compression + '.';
+
+		}
+
+		var numBlocks = dataWindowHeight / scanlineBlockSize;
+
+		for ( var i = 0; i < numBlocks; i ++ ) {
+
+			parseUlong( bufferDataView, offset ); // scanlineOffset
+
+		}
+
+		// we should be passed the scanline offset table, start reading pixel data
+
+		var width = EXRHeader.dataWindow.xMax - EXRHeader.dataWindow.xMin + 1;
+		var height = EXRHeader.dataWindow.yMax - EXRHeader.dataWindow.yMin + 1;
+		// Firefox only supports RGBA (half) float textures
+		// var numChannels = EXRHeader.channels.length;
+		var numChannels = 4;
+		var size = width * height * numChannels;
+
+		// Fill initially with 1s for the alpha value if the texture is not RGBA, RGB values will be overwritten
+		switch ( this.type ) {
+
+			case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["UnsignedByteType"]:
+			case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FloatType"]:
+
+				var byteArray = new Float32Array( size );
+
+				if ( EXRHeader.channels.length < numChannels ) {
+
+					byteArray.fill( 1, 0, size );
+
+				}
+
+				break;
+
+			case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["HalfFloatType"]:
+
+				var byteArray = new Uint16Array( size );
+
+				if ( EXRHeader.channels.length < numChannels ) {
+
+					byteArray.fill( 0x3C00, 0, size ); // Uint16Array holds half float data, 0x3C00 is 1
+
+				}
+
+				break;
+
+			default:
+
+				console.error( 'THREE.EXRLoader: unsupported type: ', this.type );
+				break;
+
+		}
+
+		var channelOffsets = {
+			R: 0,
+			G: 1,
+			B: 2,
+			A: 3
+		};
+
+		var compressionInfo = {
+
+			size: 0,
+			width: width,
+			lines: scanlineBlockSize,
+
+			offset: offset,
+			array: uInt8Array,
+			viewer: bufferDataView,
+
+			type: pixelType,
+			channels: EXRHeader.channels.length,
+
+		};
+
+		var line;
+		var size;
+		var viewer;
+		var tmpOffset = { value: 0 };
+
+		for ( var scanlineBlockIdx = 0; scanlineBlockIdx < height / scanlineBlockSize; scanlineBlockIdx ++ ) {
+
+			line = parseUint32( bufferDataView, offset ); // line_no
+			size = parseUint32( bufferDataView, offset ); // data_len
+
+			compressionInfo.lines = ( line + scanlineBlockSize > height ) ? height - line : scanlineBlockSize;
+			compressionInfo.offset = offset;
+			compressionInfo.size = size;
+
+			viewer = uncompress( compressionInfo );
+
+			offset.value += size;
+
+			for ( var line_y = 0; line_y < scanlineBlockSize; line_y ++ ) {
+
+				var true_y = line_y + ( scanlineBlockIdx * scanlineBlockSize );
+
+				if ( true_y >= height ) break;
+
+				for ( var channelID = 0; channelID < EXRHeader.channels.length; channelID ++ ) {
+
+					var cOff = channelOffsets[ EXRHeader.channels[ channelID ].name ];
+
+					for ( var x = 0; x < width; x ++ ) {
+
+						var idx = ( line_y * ( EXRHeader.channels.length * width ) ) + ( channelID * width ) + x;
+						tmpOffset.value = idx * size_t;
+
+						var val = getValue( viewer, tmpOffset );
+
+						byteArray[ ( ( ( height - 1 - true_y ) * ( width * numChannels ) ) + ( x * numChannels ) ) + cOff ] = val;
+
+					}
+
+				}
+
+			}
+
+		}
+
+		if ( this.type === _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["UnsignedByteType"] ) {
+
+			let v, i;
+			const size = byteArray.length;
+			const RGBEArray = new Uint8Array( size );
+
+			for ( let h = 0; h < height; ++ h ) {
+
+				for ( let w = 0; w < width; ++ w ) {
+
+					i = h * width * 4 + w * 4;
+
+					const red = byteArray[ i ];
+					const green = byteArray[ i + 1 ];
+					const blue = byteArray[ i + 2 ];
+
+					v = ( red > green ) ? red : green;
+					v = ( blue > v ) ? blue : v;
+
+					if ( v < 1e-32 ) {
+
+						RGBEArray[ i ] = RGBEArray[ i + 1 ] = RGBEArray[ i + 2 ] = RGBEArray[ i + 3 ] = 0;
+
+					} else {
+
+						const res = frexp( v );
+						v = res[ 0 ] * 256 / v;
+
+						RGBEArray[ i ] = red * v;
+						RGBEArray[ i + 1 ] = green * v;
+						RGBEArray[ i + 2 ] = blue * v;
+						RGBEArray[ i + 3 ] = res[ 1 ] + 128;
+
+					}
+
+				}
+
+			}
+
+			byteArray = RGBEArray;
+
+		}
+
+		const format = ( this.type === _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["UnsignedByteType"] ) ? _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBEFormat"] : ( numChannels === 4 ) ? _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBAFormat"] : _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBFormat"];
+
+		return {
+			header: EXRHeader,
+			width: width,
+			height: height,
+			data: byteArray,
+			format: format,
+			type: this.type
+		};
+
+	},
+
+	setDataType: function ( value ) {
+
+		this.type = value;
+		return this;
+
+	},
+
+	load: function ( url, onLoad, onProgress, onError ) {
+
+		function onLoadCallback( texture, texData ) {
+
+			switch ( texture.type ) {
+
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["UnsignedByteType"]:
+
+					texture.encoding = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBEEncoding"];
+					texture.minFilter = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["NearestFilter"];
+					texture.magFilter = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["NearestFilter"];
+					texture.generateMipmaps = false;
+					texture.flipY = false;
+					break;
+
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FloatType"]:
+				case _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["HalfFloatType"]:
+
+					texture.encoding = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["LinearEncoding"];
+					texture.minFilter = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["LinearFilter"];
+					texture.magFilter = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["LinearFilter"];
+					texture.generateMipmaps = false;
+					texture.flipY = false;
+					break;
+
+			}
+
+			if ( onLoad ) onLoad( texture, texData );
+
+		}
+
+		return _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["DataTextureLoader"].prototype.load.call( this, url, onLoadCallback, onProgress, onError );
+
+	}
+
+} );
 
 
 
@@ -74608,6 +77108,107 @@ function extend() {
 
 /***/ }),
 
+/***/ "./src/StatsHud.js":
+/*!*************************!*\
+  !*** ./src/StatsHud.js ***!
+  \*************************/
+/*! exports provided: StatsHud */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StatsHud", function() { return StatsHud; });
+//import { DDSLoader } from 'three/examples/jsm/loaders/DDSLoader.js';
+
+// var createGeometry = require('three-bmfont-text')
+// var loadFont = require('load-bmfont')
+
+const kFpsSmoothing = 0.10;
+const kMaxPersist = 2000.0;
+
+class StatsHud {
+    constructor(camera)
+    {
+        this.initialize(camera);
+    }
+
+    initialize(camera)
+    {
+        var self = this;
+        loadFont('./content/small_font.fnt',
+            function (err, font) {
+                // create a geometry of packed bitmap glyphs,
+                // word wrapped to 300px and right-aligned
+                self.fontGeometry = createGeometry({
+                    width: 800,
+                    align: 'left',
+                    font: font
+                })
+
+                const manager = new THREE.LoadingManager();
+				//manager.addHandler( /\.dds$/i, new DDSLoader() );
+
+                // the texture atlas containing our glyphs
+                var texture = new DDSLoader(manager).load('./content/small_font_0.png');
+
+                // we can use a simple ThreeJS material
+                var fontMaterial = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    color: 0xf58789,
+                    depthTest: false //:THREE.NeverDepth
+
+                });
+
+                // scale and position the mesh to get it doing something reasonable
+                self.fontMesh = new THREE.Mesh(self.fontGeometry, fontMaterial);
+                self.fontMesh.renderOrder = 1;
+                self.fontMesh.position.set(-1.5, -0.75, -5);
+                self.fontMesh.scale.set(0.0025, 0.0025, 0.0025);
+                self.fontMesh.rotation.set(3.14, 0, 0);
+
+                camera.add(self.fontMesh);
+            });  
+
+
+        this.endOfLastFrame = 0.0;
+        this.startOfCurrentFrame = 0.0;
+        this.averageDelta = 0.0;
+        this.curMaxDelta = 0.0;
+        this.expiryMaxDelta = performance.now();
+        this.curMinHertz = 90.0;
+        this.expiryMinHertz = performance.now();
+    }
+
+    update()
+    {
+        this.endOfLastFrame = performance.now();
+
+        let delta = this.endOfLastFrame - this.startOfCurrentFrame;
+        if (delta > this.curMaxDelta || this.endOfLastFrame > this.expiryMaxDelta) {
+            this.curMaxDelta = delta;
+            this.expiryMaxDelta = this.endOfLastFrame + kMaxPersist;
+        }
+        this.averageDelta = (delta * kFpsSmoothing) + (this.averageDelta * (1.0 - kFpsSmoothing));
+        let hertz = 1000.0 / this.averageDelta;
+        if (hertz < this.curMinHertz || this.endOfLastFrame > this.expiryMinHertz) {
+            this.curMinHertz = hertz;
+            this.expiryMinHertz = this.endOfLastFrame + kMaxPersist;
+        }
+
+        this.startOfCurrentFrame = performance.now();
+
+        if (this.fontGeometry) {
+            this.fontGeometry.update(
+                delta.toFixed(1) + "(" + this.curMaxDelta.toFixed(1) + ") ms " +
+                (1000.0 / this.averageDelta).toFixed(0) + "(" + this.curMinHertz.toFixed(0) + ") Hz");
+        }
+    }
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
 /***/ "./src/bag.js":
 /*!********************!*\
   !*** ./src/bag.js ***!
@@ -74636,13 +77237,15 @@ const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 
 class Bag extends THREE.Group
 {
-    constructor(audioListener)
+    constructor(audioListener, scene)
     {
         super();
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
-        this.targetPosition = new THREE.Vector3(0.0, 1.35, -0.75);
+        this.targetPosition = new THREE.Vector3(0.0, 1.3, -0.75);
         this.position.copy(this.targetPosition);
+
+        this.scene = scene;
 
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
@@ -74658,15 +77261,18 @@ class Bag extends THREE.Group
                 for (let i = 0; i < gltf.scene.children.length; i++)
                 {
                     let obj = gltf.scene.children[i];
-                    obj.castShadow = true;
-                    obj.receiveShadow = true;
+                    //obj.castShadow = true;
+                    //obj.receiveShadow = true;
+                    this.mesh = obj;
+                    obj.name = "BAG " + i;
+                    obj.material.roughness = 0.3;
+                    obj.material.envMapIntensity = 1.0;
                 }
                 this.add(gltf.scene);
             });
 
-        let mesh = new THREE.Mesh(
-            new THREE.CylinderGeometry(kBagRadius, kBagRadius, 1.0, 32, 1),
-            new THREE.MeshStandardMaterial({color: 0xff8020}));
+
+
 
         this.hitSoundBuffers = [];
         this.hitSounds = [
@@ -74689,28 +77295,6 @@ class Bag extends THREE.Group
         audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
             this.hitSoundBuffers.push(buffer);
         });
-        // audioLoader.load('./content/Punch-Kick-A2-outside-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/Punch-Kick-A3-outside-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/Punch-Kick-A4-outside-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/trim-pitch-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/trim-bass-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        //Punch-Kick-A2-outside-www.fesliyanstudios.com.mp3        // audioLoader.load('./content/Crunchy-Punch-A-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/Crunchy-Punch-B-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-
 
 
 
@@ -74728,6 +77312,11 @@ class Bag extends THREE.Group
 
     update(dt, accumulatedTime)
     {
+
+        if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
+        {
+            this.mesh.material.envMap = this.scene.envMap;
+        }
         this.accumulatedTime = accumulatedTime;
 
         desiredPosition.copy(this.position);
@@ -74832,19 +77421,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/webxr/VRButton.js */ "./node_modules/three/examples/jsm/webxr/VRButton.js");
 /* harmony import */ var three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/webxr/XRControllerModelFactory.js */ "./node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js");
 /* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
-/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
-/* harmony import */ var _fistTarget_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./fistTarget.js */ "./src/fistTarget.js");
+/* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
+/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
 /* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
 /* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
 /* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
 /* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
+
 
 
 
 
 
 var inputProfilesList = __webpack_require__( /*! @webxr-input-profiles/registry/dist/profilesList.json */ "./node_modules/@webxr-input-profiles/registry/dist/profilesList.json");
+
 
 
 
@@ -74878,6 +77470,15 @@ let bag = null;
 let gameLogic = null;
 let punchingStats = null;
 
+let pmremGenerator = null;
+let roomMaterial = null;
+let lightmap = null;
+let lightmaps = {};
+let accentMesh = null;
+
+let envMapObjects = {}
+let hud = null;
+
 initialize();
 
 function initialize()
@@ -74889,6 +77490,8 @@ function initialize()
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
 
+    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_11__["StatsHud"](camera);
+
     audioListener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
     camera.add( audioListener );
 
@@ -74896,16 +77499,16 @@ function initialize()
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
     renderer.xr.setFramebufferScaleFactor(0.75);
-    let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x808080);
+    let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0xffeedd);
     color.convertSRGBToLinear();
     renderer.setClearColor(color);
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_0__["sRGBEncoding"];
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = three__WEBPACK_IMPORTED_MODULE_0__["PCFSoftShadowMap"];
+    // renderer.shadowMap.enabled = true;
+    // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_0__["ACESFilmicToneMapping"];
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.75;
 
     document.body.appendChild(renderer.domElement);
     let button = three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_1__["VRButton"].createButton(renderer);
@@ -74917,72 +77520,70 @@ function initialize()
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
+    let pointLight = new three__WEBPACK_IMPORTED_MODULE_0__["PointLight"](0xffeedd, 23, 32.0);
+    pointLight.position.set(0.0, 3.5, 0.0);
 
-
-    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    // directionalLight.color.convertSRGBToLinear();
-    // setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205);
-    // //directionalLight.position.set(0.0, 10.0, 0.0);
-    // scene.add(directionalLight);
-
-
-
-
-    let pointLight = new three__WEBPACK_IMPORTED_MODULE_0__["PointLight"](0xffeedd, 12.0, 12.0);
-    pointLight.position.set(3.0, 3.0, 1.0);
-
-    const kSize = 5;
-
-    pointLight.castShadow = false;
-    pointLight.shadow.mapSize.width = 1024; // default
-    pointLight.shadow.mapSize.height = 1024; // default
-    pointLight.shadow.camera.near = 0.5; // default
-    pointLight.shadow.camera.far = 100; // default
-    pointLight.shadow.camera.left = -kSize;
-    pointLight.shadow.camera.right = kSize;
-    pointLight.shadow.camera.top = kSize;
-    pointLight.shadow.camera.bottom = -kSize;
-    pointLight.shadow.bias = -0.00055;
-
-    scene.add(pointLight);
+    //scene.add(pointLight);
 
     pointLight = new three__WEBPACK_IMPORTED_MODULE_0__["PointLight"](0xffeedd, 12.0, 12.0);
     pointLight.position.set(-3.0, 3.0, 1.0);
 
-    pointLight.castShadow = false;
-    pointLight.shadow.mapSize.width = 1024; // default
-    pointLight.shadow.mapSize.height = 1024; // default
-    pointLight.shadow.camera.near = 0.5; // default
-    pointLight.shadow.camera.far = 100; // default
-    pointLight.shadow.camera.left = -kSize;
-    pointLight.shadow.camera.right = kSize;
-    pointLight.shadow.camera.top = kSize;
-    pointLight.shadow.camera.bottom = -kSize;
-    pointLight.shadow.bias = -0.00055;
+    //scene.add(pointLight);
 
-    scene.add(pointLight);
+    // let dirLight = new THREE.DirectionalLight(0xffffff, 5.0);
+    // dirLight.position.set(0.0, 6.0, 10.0);
+    // scene.add(dirLight);
 
 
-    const ambient = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xffffff, 0.75);
+    const ambient = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xffffff, 0.35);
     ambient.color.convertSRGBToLinear();
-    scene.add(ambient);
+    //scene.add(ambient);
 
-   
+
+
+    lightmaps['Floor'] = LoadLightmap("./content/Lightmaps_V8/", "Floor_denoised.png");
+    lightmaps['AccentWall'] = LoadLightmap("./content/Lightmaps_V8/", "Accent.Wall_denoised.png");
+    lightmaps['Room'] = LoadLightmap("./content/Lightmaps_V8/", "Room_denoised.png");
+    lightmaps['Ceiling'] = LoadLightmap("./content/Lightmaps_V8/", "Ceiling_denoised.png");
+    lightmaps['Baseboard'] = LoadLightmap("./content/Lightmaps_V8/", "Baseboard_denoised.png");
+    lightmaps['TV'] = LoadLightmap("./content/Lightmaps_V8/", "TV_denoised.png");
+
+    //envMapObjects['Floor'] = { intensity: 0.3, roughness: 0.6};
+    //envMapObjects['Room'] = { intensity: 0.2, roughness: 0.3};
+    //envMapObjects['TV'] = { intensity: 0.2, roughness: 0.2};
+    envMapObjects['AccentWall'] = { intensity: 0.5, roughness: 0.2};
+    
     let loaderPromise = new Promise( resolve => {
         let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"]();
-        loader.load('./content/simple_room.gltf', resolve);
+        loader.load('./content/gym_v8.gltf', resolve);
     });
     loaderPromise.then(
         gltf => {
+            loadEnvMap();
+
             for (let i = 0; i < gltf.scene.children.length; i++)
-            {
-                let obj = gltf.scene.children[i];
-                obj.receiveShadow = true;
+            {                
+                let obj = gltf.scene.children[i];       
+                obj.traverse(function (node) {
+                    let nodeLightmap = lightmaps[node.name];
+                    if (node.material && nodeLightmap && 'lightMap' in node.material) {
+                        //console.log("Set lightmap: " + nodeLightmap.name);
+                        node.material.lightMap = nodeLightmap;
+                        node.material.lightMapIntensity = 1.0;
+                        node.material.needsUpdate = true;
+                    }
+                });
+
+                if (obj.name == "Screen")
+                {
+                   obj.material.emissiveIntensity = 1.25;
+                }
+
             }
             scene.add(gltf.scene);
         });
 
-    
+
 
 
 
@@ -75058,11 +77659,20 @@ function initialize()
 }
 
 function render() {
+
+    hud.update();
+
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
-    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__["update"](accumulatedTime);
+    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["update"](accumulatedTime);
 
+
+    if (scene.envMap && accentMesh && accentMesh.material.envMap == null)
+    {
+        accentMesh.material.envMap = scene.envMap;
+        console.log("Setting envmap on accent mesh")
+    }
     updateHands(dt, accumulatedTime);
     bag.update(dt, accumulatedTime);
 
@@ -75092,7 +77702,7 @@ function onSessionEnd()
 
 function initScene(scene)
 {
-    bag = new _bag_js__WEBPACK_IMPORTED_MODULE_8__["Bag"](audioListener);
+    bag = new _bag_js__WEBPACK_IMPORTED_MODULE_8__["Bag"](audioListener, scene);
     scene.add(bag);
 
     gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__["BoxingSession"](scene, 3, 120, 20);
@@ -75134,7 +77744,73 @@ function updateHands(dt, accumulatedTime)
     }
 }
 
+function loadEnvMap()
+{
+    pmremGenerator = new three__WEBPACK_IMPORTED_MODULE_0__["PMREMGenerator"]( renderer );
+    pmremGenerator.compileEquirectangularShader();
 
+    // THREE.DefaultLoadingManager.onLoad = function ( ) {
+
+    //     this.pmremGenerator.dispose();
+    //     this.pmremGenerator = null;
+
+    // };
+
+    new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_4__["EXRLoader"]()
+        .setDataType( three__WEBPACK_IMPORTED_MODULE_0__["HalfFloatType"] )
+        .load( './content/gym_v8_envmap.exr',  ( texture ) => {
+
+            let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
+            //renderer.exrCube = exrCubeRenderTarget.texture;
+            scene.envMap = exrCubeRenderTarget.texture;
+            texture.dispose();
+
+            scene.traverse(function(node)
+                {
+                    let emo = envMapObjects[node.name];
+                    
+                    if (emo)
+                    {
+                        console.log("Setting EM on " + node.name);
+
+                        node.material.envMap = scene.envMap;
+                        node.material.envMapIntensity = emo.intensity;
+                        node.material.roughness = emo.roughness;
+                    }
+                });
+
+
+        } );
+
+    // new THREE.TextureLoader().load( './content/envmap.png', ( texture ) => {
+
+    //     texture.encoding = THREE.sRGBEncoding;
+
+    //     renderer.envMapRT = pmremGenerator.fromEquirectangular( texture );
+
+    //     scene.envMap = renderer.envMapRT.texture;
+
+    //     //renderer.envMapCube = renderer.envMapRT.texture;
+
+    //     //renderer.envMapFromDisk = texture;
+    //     //texture.dispose();
+
+    // } );
+
+
+
+}
+
+function LoadLightmap(folder, file)
+{
+    //console.log("LOADING: " + folder + file)
+    let result = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load(folder + file);
+    result.name = file;
+    result.flipY = false;
+    result.encoding = three__WEBPACK_IMPORTED_MODULE_0__["RGBDEncoding"];
+
+    return result;
+}
 
 /***/ }),
 
@@ -75258,165 +77934,6 @@ function doesCircleCollideWithOtherCircle(
 
 /***/ }),
 
-/***/ "./src/fistTarget.js":
-/*!***************************!*\
-  !*** ./src/fistTarget.js ***!
-  \***************************/
-/*! exports provided: FistTarget */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FistTarget", function() { return FistTarget; });
-
-const kBaseColors = [
-    0x502020,
-    0x80f080,
-    0xf08080
-];
-
-const kBrightColors = [
-    0xf01010,
-    0x20ff20,
-    0xff2020
-]
-
-class FistTarget extends THREE.Group
-{
-    constructor(scene, whichHand = 0, radius = 0.15) // hand: 0 = recognize either hand, 1 = recognize left hand, 2 = recognize right hand
-    {
-        super();
-
-        this.nEntered = 0;
-        this.whichHand = whichHand;
-        this.bActive = true;
-        this.scene = scene;
-        //this.parent = parent;
-        this.radius = radius;
-        this.radiusSquared = radius*radius;
-        this.hitCallbacks = [];
-        this.bDebugDraw = true;
-
-        this.baseColor = new THREE.Color(kBaseColors[whichHand]);
-        this.brightColor = new THREE.Color(kBrightColors[whichHand]);
-        this.colorLerpDecay = 0.0;
-        this.colorLerpInterval = 0.33;
-
-        this.setUpVisual();
-    }
-
-    isEntered()
-    {
-        return this.nEntered != 0;
-    }
-
-    setUpVisual()
-    {
-        this.mesh = new THREE.Mesh(
-            new THREE.BoxGeometry(0.2, 0.24, 0.1),
-            new THREE.MeshStandardMaterial()
-        );
-        this.mesh.material.color.copy(this.baseColor);
-
-        this.add(this.mesh);
-
-        this.debugDrawShape = new THREE.Mesh( new THREE.SphereGeometry(this.radius, 6, 6), new THREE.MeshBasicMaterial({color: 0x808080, wireframe: true}));
-        this.add(this.debugDrawShape);
-        this.debugDrawShape.visible = false;
-
-    }
-    update(dt)
-    {
-
-        if (this.colorLerpDecay > 0.0)
-        {
-            this.colorLerpDecay -= dt;
-            if (this.colorLerpDecay < 0.0)
-            {
-                this.colorLerpDecay = 0.0;
-            }
-            else
-            {
-                let t = this.colorLerpDecay / this.colorLerpInterval;
-                let color = this.mesh.material.color;
-                color.copy(this.baseColor);
-                color.lerpHSL(this.brightColor, t);
-            }
-        }
-
-        if (this.bDebugDraw)
-        {
-
-            this.debugDrawShape.visible = true;
-            if (this.isEntered())
-            {
-                this.debugDrawShape.material.color.set(0x20f020);
-            }
-            else
-            {
-                this.debugDrawShape.material.color.set(0x808080);
-            }
-        }
-        else
-        {
-            this.debugDrawShape.visible = false;
-        }
-    }
-
-    checkFist(hand, worldPos)
-    {
-        if (!this.bActive)
-            return;
-        if (this.whichHand == 0 || hand.which == this.whichHand)
-        {
-            let dist = this.position.distanceToSquared(worldPos);
-            if (dist < this.radiusSquared)
-            {
-                //hand is inside the region
-                if ((this.nEntered & (1 << hand.which)) == 0)
-                //if (!this.bEntered)
-                {
-                    this.nEntered |= (1 << hand.which);
-                    let evt = {
-                        fist: hand,
-                        target: this
-                    };
-
-                    this.mesh.material.color.copy(this.brightColor);
-                    this.colorLerpDecay = 0.0;
-                    
-                    for (let cb of this.hitCallbacks)
-                    {
-                        cb(evt);
-                    }
-                }
-            }
-            else
-            {
-                
-                if ((this.nEntered & (1 << hand.which)) != 0)
-                {
-                    // hand was in the target but is not any more
-                    this.colorLerpDecay = this.colorLerpInterval;
-                }
-                this.nEntered &= ~(1 << hand.which);
-
-            }
-        }
-    }
-
-
-
-
-    registerHitCallback(func)
-    {
-        this.hitCallbacks.push(func);
-    }
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
-
-/***/ }),
-
 /***/ "./src/gamelogic.js":
 /*!**************************!*\
   !*** ./src/gamelogic.js ***!
@@ -75433,6 +77950,9 @@ var createGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_module
 var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
 
 
+
+const createWindow = __webpack_require__(/*! live-moving-average */ "./node_modules/live-moving-average/index.js")
+
 const kIntroDuration = 3.0;
 const SESSION_NULL = 0;
 const SESSION_INTRO = 1;
@@ -75445,6 +77965,9 @@ class BoxingSession
     constructor(scene, numRounds, roundDuration, restDuration)
     {
         this.scene = scene;
+        this.TV = null;
+
+
 
 
         //load assets here
@@ -75475,9 +77998,10 @@ class BoxingSession
                 map: texture,
                 transparent: true,
                 side: three__WEBPACK_IMPORTED_MODULE_0__["FrontSide"],
-                color: 0xa0a0a0, //0xfac3b9,
+                color: 0x000000, //0xfac3b9,
                 opacity: 1.0,
-                depthTest: true //:THREE.NeverDepth
+                depthTest: true, //:THREE.NeverDepth
+                side: three__WEBPACK_IMPORTED_MODULE_0__["DoubleSide"]
 
             });
             this.timerFontMaterial.color.convertSRGBToLinear();
@@ -75485,18 +78009,16 @@ class BoxingSession
             // scale and position the mesh to get it doing something reasonable
             this.timerFontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.timerFontGeometry, this.timerFontMaterial);
             this.timerFontMesh.renderOrder = 0;
-            this.timerFontMesh.position.set(0.0, 0.5, -3.0);
-            let kFontScale = 0.0035;
+            //this.timerFontMesh.position.set(0.0, 0.5, -3.0);
+            let kFontScale = 0.002;
             this.timerFontMesh.scale.set(kFontScale, kFontScale, kFontScale);
-            this.timerFontMesh.rotation.set(3.14, 0.48, 0.0);
-
+            this.timerFontMesh.rotation.set(3.14, 0.0, 0.0);
+            this.timerFontMesh.position.set(0.0, 0.09, 0.0);
 
             //updateTimerString(timerValue); //"2:00");
 
-
-            this.scene.add(this.timerFontMesh);
-
             this.currentTimeInWholeSeconds = -1.0;
+
 
         });
 
@@ -75525,6 +78047,26 @@ class BoxingSession
 
     update(dt, accumulatedTime)
     {
+
+        if (this.TV == null)
+        {
+            let TV;
+            this.scene.traverse(function (node) {
+                if (node.name == "Screen")
+                {
+                    TV = node;
+                    console.log("FOUND TV");
+                }
+            });
+
+            if (TV)
+            {
+                this.TV = TV;
+
+                this.TV.add(this.timerFontMesh);
+            }
+        }
+
         switch(this.state)
         {
             case SESSION_NULL:
@@ -75599,7 +78141,7 @@ class BoxingSession
             let box = this.timerFontGeometry.boundingBox;
             this.timerFontMesh.position.x = box.min.x; //(box.max.x - box.min.x) * -0.5;
             this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
-            this.timerFontMesh.position.x += 1.75;
+            this.timerFontMesh.position.x -= 0.75;
         }
 
     }
@@ -75611,7 +78153,8 @@ class PunchingStats
     {
 
         this.scene = scene;
-
+        this.TV = null;
+      
         loadFont('./content/small_font.fnt',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
@@ -75646,10 +78189,10 @@ class PunchingStats
             // scale and position the mesh to get it doing something reasonable
             this.fontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.fontGeometry, this.fontMaterial);
             this.fontMesh.renderOrder = 0;
-            this.fontMesh.position.set(1.7, 1.25, -3.0);
-            let kStatsFontScale = 0.005;
+            this.fontMesh.position.set(0.0, -0.45, 0.0);
+            let kStatsFontScale = 0.0025;
             this.fontMesh.scale.set(kStatsFontScale, kStatsFontScale, kStatsFontScale);
-            this.fontMesh.rotation.set(3.14, 0.48, 0.0);
+            this.fontMesh.rotation.set(3.14, 0.0, 0.0);
 
 
             //updateTimerString(timerValue); //"2:00");
@@ -75663,48 +78206,191 @@ class PunchingStats
         });
 
         this.punches = 0;
+        this.lastPunchTime = -1.0;
+        this.averagePunchRate = 1.0;
+        this.punchRateAverageWindow = createWindow(16); // = new CircularBuffer(32);
+  
+        this.punchRateNew = new MovingAverage(32, 4.0); //, 1.0);
+
+        this.smoothAvgPPM = 0;
+        this.nextStatsUpdate = 0;
 
         bag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
     }
 
     update(dt, accumulatedTime)
     {
+        this.punchRateNew.update(accumulatedTime);
+        if(this.nextStatsUpdate < accumulatedTime)
+        {
+            this.updateStatsDisplay();
+            this.nextStatsUpdate = this.accumulatedTime + 0.5;
 
+        }
+        
+        // if (this.lastPunchTime < 0.0)
+        // {
+        //     this.lastPunchTime = accumulatedTime;
+        // }
+        // else if ((accumulatedTime - this.lastPunchTime) > 2.0)
+        // {
+        //     this.lastPunchTime = accumulatedTime - 1.0;
+        //     this.updateStatsDisplay();
+        // }
+        this.accumulatedTime = accumulatedTime;
     }
 
     onBagHit(whichHand, velocity)
     {
         this.punches++;
-        this.updateStatsDisplay();
+        this.lastPunchTime = this.accumulatedTime;
+        this.punchRateNew.recordPunch(this.accumulatedTime);
+
+        this.lastPunchSpeed = velocity.length();
+        this.updateStatsDisplay(true);
     }
 
-    updateStatsDisplay()
+
+    updateStatsDisplay(isPunch=false)
     {
-        this.fontGeometry.update(this.punches.toString().padStart(3, '0') + " PUNCHES");
+        if (!this.fontGeometry)
+            return;
+
+
+        if (this.TV == null)
+        {
+            let TV;
+            this.scene.traverse(function (node) {
+                if (node.name == "Screen")
+                {
+                    TV = node;
+                    console.log("FOUND TV");
+                }
+            });
+
+            if (TV)
+            {
+                this.TV = TV;
+
+                this.TV.add(this.fontMesh);
+            }
+            else
+            {
+                return;
+            }
+        }
+        
+        //let avgPPM = this.punchRateAverageWindow.get();
+        let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
+
+    //     const kSmoothPPM = 0.005;
+    //     this.smoothAvgPPM = ppm * kSmoothPPM + (this.smoothAvgPPM * (1.0 - kSmoothPPM));
+
+        this.fontGeometry.update(
+            this.punches.toString().padStart(3, '0') + " PUNCHES\n" + 
+            ppm.toFixed(0).toString().padStart(3, '0') + " PPM\n" + 
+            (isPunch ? + this.lastPunchSpeed.toFixed(1) : "---") + "M/S");
         this.fontGeometry.computeBoundingBox();
         let box = this.fontGeometry.boundingBox;
         this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;
-        this.fontMesh.position.x += 1.75;
-        // let newTimeInWholeSeconds = Math.ceil(value);
-        // if (newTimeInWholeSeconds != this.currentTimeInWholeSeconds)
-        // {
-        //     this.currentTimeInWholeSeconds = newTimeInWholeSeconds;
+        this.fontMesh.position.x -= 0.05;
+        
+        this.nextStatsUpdate = this.accumulatedTime + 1.5;
+    }
+}
+
+class MovingAverage
+{
+    constructor(size, timeWindow)
+    {
+        this.data = new Array(size);
+        for(let i = 0; i < size; i++)
+        {
+            this.data[i] = {value: -1, timestamp: -1};
+        }
+        this.size = size;
+        this.timeWindow = timeWindow;
+        this.numSamples = 0;
+        this.indexOfNextSample = 0;
+        this.indexOfOldestSample = 0;
+    }
+    recordPunch(timestamp)
+    {
+        //if full, remove the old one -- descrement sum
+        if (this.numSamples == this.size)
+        {
+            this.remove(this.indexOfOldestSample);
+        }
+
+        //write the new one
+        this.numSamples++;
+
+        let newEntry = this.data[this.indexOfNextSample];
+        newEntry.timestamp = timestamp;
+
+        // update index -- I don't think I need to update the "oldest" index because it
+        // should already be correct
+        this.indexOfNextSample = (this.indexOfNextSample + 1) % this.size;
+    }
+
+    remove(index)
+    {
+        let entry = this.data[index];
+        this.numSamples--;
+
+        if (index == this.indexOfOldestSample)
+        {
+            this.indexOfOldestSample = (this.indexOfOldestSample + 1) % this.size;
+        }
+    }
+    update(accumulatedTime)
+    {
+        let result = false;
+        while(this.numSamples > 0)
+        {
+            let lifetime = accumulatedTime - this.data[this.indexOfOldestSample].timestamp;
+            if (lifetime > this.timeWindow)
+            {
+                //console.log("Retiring punch from " + lifetime + " seconds ago: " + accumulatedTime + " - " + this.data[this.indexOfOldestSample].timestamp);
+                this.indexOfOldestSample = (this.indexOfOldestSample + 1) % this.size;
+                this.numSamples--;
+                result = true;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return result;
+    }
+    // update(accumulatedTime)
+    // {
+    //     this.accumulatedTime = accumulatedTime;
+    //     while(this.numSamples > 0 && this.nextExpirationTime < accumulatedTime)
+    //     {
+    //         // remove oldest sample
+    //         this.remove(this.indexOfOldestSample);
+
+    //     }
+    // }
+    getAverage(timestamp)
+    {
+        if (this.numSamples == 0) 
+            return 0;
 
 
-        //     let hours = Math.floor(newTimeInWholeSeconds / 3600);
-        //     let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
-        //     let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
+        let totalTime = timestamp - this.data[this.indexOfOldestSample].timestamp;
 
-        //     let timeString = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+        if (totalTime == 0)
+            return 0;
 
-        //     this.timerFontGeometry.update(timeString);
-        //     this.timerFontGeometry.computeBoundingBox();
-        //     let box = this.timerFontGeometry.boundingBox;
-        //     this.timerFontMesh.position.x = box.min.x; //(box.max.x - box.min.x) * -0.5;
-        //     this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
-        //     this.timerFontMesh.position.x += 1.75;
-        // }
+        let rate = this.numSamples / totalTime * 60.0;
 
+        //console.log(this.numSamples + " PUNCHES, " + totalTime.toFixed(1) + " SECONDS => " + rate.toFixed(1));
+
+        // 16 punches in 4 seconds ==> 60/4 * 16 ->
+
+        return rate; //this.numSamples / totalTime;
     }
 }
 
@@ -75772,19 +78458,29 @@ class Glove extends THREE.Group
                 // gltf.scene.scale.set(0.3, 0.3, 0.3);
                 // gltf.scene.rotation.set(-1.57, whichHand == 1 ? -1.57 : 1.57, 0.0);
                 // gltf.scene.position.set(0.0, 0.0, 0.0);
-                // for (let i = 0; i < gltf.scene.children.length; i++)
-                // {
-                //     let obj = gltf.scene.children[i];
-                //     obj.castShadow = true;
-                //     obj.receiveShadow = true;
-                // }
+                for (let i = 0; i < gltf.scene.children.length; i++)
+                {
+                    let obj = gltf.scene.children[i];
+                    // obj.castShadow = true;
+                    // obj.receiveShadow = true;
+                    this.mesh = obj;
+                    obj.name = "GLOVE " + (whichHand == 1? "LEFT " : "RIGHT " + i )
+                    obj.material.roughness = 0.4;
+                    obj.material.envMapIntensity = 0.7;
+                }
                 this.add(gltf.scene);
+                this.mesh = gltf.scene.children[0];
             });
     }
 
     update(dt, accumulatedTime)
     {
         
+        if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
+        {
+            this.mesh.material.envMap = this.scene.envMap;
+        }
+
         this.rotation.copy(this.controller.rotation);
 
         // Try to move from current position to controller position

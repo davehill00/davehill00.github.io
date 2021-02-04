@@ -2,12 +2,13 @@ import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 
 var inputProfilesList = require( "@webxr-input-profiles/registry/dist/profilesList.json");
 import * as CANNON from 'cannon-es';
 import * as TWEEN from '@tweenjs/tween.js';
 
-import {FistTarget} from './fistTarget.js';
+
 import {Glove} from './glove.js';
 import {Bag} from './bag.js';
 import {BoxingSession, PunchingStats} from './gamelogic.js';
@@ -17,6 +18,7 @@ import {BoxingSession, PunchingStats} from './gamelogic.js';
 import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-controllers';
 import { Fog } from 'three';
 import { Session } from './gamelogic.js';
+import * as HUD from './StatsHud.js';
 
 const uri = './profiles/';
 const motionControllers = {};
@@ -37,6 +39,15 @@ let bag = null;
 let gameLogic = null;
 let punchingStats = null;
 
+let pmremGenerator = null;
+let roomMaterial = null;
+let lightmap = null;
+let lightmaps = {};
+let accentMesh = null;
+
+let envMapObjects = {}
+let hud = null;
+
 initialize();
 
 function initialize()
@@ -48,6 +59,8 @@ function initialize()
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
 
+    hud = new HUD.StatsHud(camera);
+
     audioListener = new THREE.AudioListener();
     camera.add( audioListener );
 
@@ -55,16 +68,16 @@ function initialize()
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
     renderer.xr.setFramebufferScaleFactor(0.75);
-    let color = new THREE.Color(0x808080);
+    let color = new THREE.Color(0xffeedd);
     color.convertSRGBToLinear();
     renderer.setClearColor(color);
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // renderer.shadowMap.enabled = true;
+    // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.75;
 
     document.body.appendChild(renderer.domElement);
     let button = VRButton.createButton(renderer);
@@ -76,72 +89,70 @@ function initialize()
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
+    let pointLight = new THREE.PointLight(0xffeedd, 23, 32.0);
+    pointLight.position.set(0.0, 3.5, 0.0);
 
-
-    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    // directionalLight.color.convertSRGBToLinear();
-    // setDirectionalLightPositionFromBlenderQuaternion(directionalLight, 0.923, 0.320, 0.060, -0.205);
-    // //directionalLight.position.set(0.0, 10.0, 0.0);
-    // scene.add(directionalLight);
-
-
-
-
-    let pointLight = new THREE.PointLight(0xffeedd, 12.0, 12.0);
-    pointLight.position.set(3.0, 3.0, 1.0);
-
-    const kSize = 5;
-
-    pointLight.castShadow = false;
-    pointLight.shadow.mapSize.width = 1024; // default
-    pointLight.shadow.mapSize.height = 1024; // default
-    pointLight.shadow.camera.near = 0.5; // default
-    pointLight.shadow.camera.far = 100; // default
-    pointLight.shadow.camera.left = -kSize;
-    pointLight.shadow.camera.right = kSize;
-    pointLight.shadow.camera.top = kSize;
-    pointLight.shadow.camera.bottom = -kSize;
-    pointLight.shadow.bias = -0.00055;
-
-    scene.add(pointLight);
+    //scene.add(pointLight);
 
     pointLight = new THREE.PointLight(0xffeedd, 12.0, 12.0);
     pointLight.position.set(-3.0, 3.0, 1.0);
 
-    pointLight.castShadow = false;
-    pointLight.shadow.mapSize.width = 1024; // default
-    pointLight.shadow.mapSize.height = 1024; // default
-    pointLight.shadow.camera.near = 0.5; // default
-    pointLight.shadow.camera.far = 100; // default
-    pointLight.shadow.camera.left = -kSize;
-    pointLight.shadow.camera.right = kSize;
-    pointLight.shadow.camera.top = kSize;
-    pointLight.shadow.camera.bottom = -kSize;
-    pointLight.shadow.bias = -0.00055;
+    //scene.add(pointLight);
 
-    scene.add(pointLight);
+    // let dirLight = new THREE.DirectionalLight(0xffffff, 5.0);
+    // dirLight.position.set(0.0, 6.0, 10.0);
+    // scene.add(dirLight);
 
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.75);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.35);
     ambient.color.convertSRGBToLinear();
-    scene.add(ambient);
+    //scene.add(ambient);
 
-   
+
+
+    lightmaps['Floor'] = LoadLightmap("./content/Lightmaps_V8/", "Floor_denoised.png");
+    lightmaps['AccentWall'] = LoadLightmap("./content/Lightmaps_V8/", "Accent.Wall_denoised.png");
+    lightmaps['Room'] = LoadLightmap("./content/Lightmaps_V8/", "Room_denoised.png");
+    lightmaps['Ceiling'] = LoadLightmap("./content/Lightmaps_V8/", "Ceiling_denoised.png");
+    lightmaps['Baseboard'] = LoadLightmap("./content/Lightmaps_V8/", "Baseboard_denoised.png");
+    lightmaps['TV'] = LoadLightmap("./content/Lightmaps_V8/", "TV_denoised.png");
+
+    //envMapObjects['Floor'] = { intensity: 0.3, roughness: 0.6};
+    //envMapObjects['Room'] = { intensity: 0.2, roughness: 0.3};
+    //envMapObjects['TV'] = { intensity: 0.2, roughness: 0.2};
+    envMapObjects['AccentWall'] = { intensity: 0.5, roughness: 0.2};
+    
     let loaderPromise = new Promise( resolve => {
         let loader = new GLTFLoader();
-        loader.load('./content/simple_room.gltf', resolve);
+        loader.load('./content/gym_v8.gltf', resolve);
     });
     loaderPromise.then(
         gltf => {
+            loadEnvMap();
+
             for (let i = 0; i < gltf.scene.children.length; i++)
-            {
-                let obj = gltf.scene.children[i];
-                obj.receiveShadow = true;
+            {                
+                let obj = gltf.scene.children[i];       
+                obj.traverse(function (node) {
+                    let nodeLightmap = lightmaps[node.name];
+                    if (node.material && nodeLightmap && 'lightMap' in node.material) {
+                        //console.log("Set lightmap: " + nodeLightmap.name);
+                        node.material.lightMap = nodeLightmap;
+                        node.material.lightMapIntensity = 1.0;
+                        node.material.needsUpdate = true;
+                    }
+                });
+
+                if (obj.name == "Screen")
+                {
+                   obj.material.emissiveIntensity = 1.25;
+                }
+
             }
             scene.add(gltf.scene);
         });
 
-    
+
 
 
 
@@ -217,11 +228,20 @@ function initialize()
 }
 
 function render() {
+
+    //hud.update();
+
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
     TWEEN.update(accumulatedTime);
 
+
+    if (scene.envMap && accentMesh && accentMesh.material.envMap == null)
+    {
+        accentMesh.material.envMap = scene.envMap;
+        console.log("Setting envmap on accent mesh")
+    }
     updateHands(dt, accumulatedTime);
     bag.update(dt, accumulatedTime);
 
@@ -251,7 +271,7 @@ function onSessionEnd()
 
 function initScene(scene)
 {
-    bag = new Bag(audioListener);
+    bag = new Bag(audioListener, scene);
     scene.add(bag);
 
     gameLogic = new BoxingSession(scene, 3, 120, 20);
@@ -311,3 +331,70 @@ function updateHands(dt, accumulatedTime)
     }
 }
 
+function loadEnvMap()
+{
+    pmremGenerator = new THREE.PMREMGenerator( renderer );
+    pmremGenerator.compileEquirectangularShader();
+
+    // THREE.DefaultLoadingManager.onLoad = function ( ) {
+
+    //     this.pmremGenerator.dispose();
+    //     this.pmremGenerator = null;
+
+    // };
+
+    new EXRLoader()
+        .setDataType( THREE.HalfFloatType )
+        .load( './content/gym_v8_envmap.exr',  ( texture ) => {
+
+            let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
+            //renderer.exrCube = exrCubeRenderTarget.texture;
+            scene.envMap = exrCubeRenderTarget.texture;
+            texture.dispose();
+
+            scene.traverse(function(node)
+                {
+                    let emo = envMapObjects[node.name];
+                    
+                    if (emo)
+                    {
+                        console.log("Setting EM on " + node.name);
+
+                        node.material.envMap = scene.envMap;
+                        node.material.envMapIntensity = emo.intensity;
+                        node.material.roughness = emo.roughness;
+                    }
+                });
+
+
+        } );
+
+    // new THREE.TextureLoader().load( './content/envmap.png', ( texture ) => {
+
+    //     texture.encoding = THREE.sRGBEncoding;
+
+    //     renderer.envMapRT = pmremGenerator.fromEquirectangular( texture );
+
+    //     scene.envMap = renderer.envMapRT.texture;
+
+    //     //renderer.envMapCube = renderer.envMapRT.texture;
+
+    //     //renderer.envMapFromDisk = texture;
+    //     //texture.dispose();
+
+    // } );
+
+
+
+}
+
+function LoadLightmap(folder, file)
+{
+    //console.log("LOADING: " + folder + file)
+    let result = new THREE.TextureLoader().load(folder + file);
+    result.name = file;
+    result.flipY = false;
+    result.encoding = THREE.RGBDEncoding;
+
+    return result;
+}

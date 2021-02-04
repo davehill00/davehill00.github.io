@@ -2491,6 +2491,11 @@ leven@^3.1.0:
   resolved "https://registry.yarnpkg.com/leven/-/leven-3.1.0.tgz#77891de834064cccba82ae7842bb6b14a13ed7f2"
   integrity sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==
 
+live-moving-average@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/live-moving-average/-/live-moving-average-1.1.0.tgz#1bd196e2e0b3df297c5e2e495a73fa53aacb9aed"
+  integrity sha512-YZPIXlj7Jo8Ecc7jlBzj/+IRLG+Koz9O3HRsy0cvwv8u/qb0oG3RnY7Yzgk1jL9acUA+K7SoQCGxHJ+GqrgOCA==
+
 load-bmfont@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/load-bmfont/-/load-bmfont-1.4.1.tgz#c0f5f4711a1e2ccff725a7b6078087ccfcddd3e9"

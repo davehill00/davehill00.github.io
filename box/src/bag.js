@@ -13,13 +13,15 @@ const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 
 export class Bag extends THREE.Group
 {
-    constructor(audioListener)
+    constructor(audioListener, scene)
     {
         super();
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
-        this.targetPosition = new THREE.Vector3(0.0, 1.35, -0.75);
+        this.targetPosition = new THREE.Vector3(0.0, 1.3, -0.75);
         this.position.copy(this.targetPosition);
+
+        this.scene = scene;
 
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
@@ -35,15 +37,18 @@ export class Bag extends THREE.Group
                 for (let i = 0; i < gltf.scene.children.length; i++)
                 {
                     let obj = gltf.scene.children[i];
-                    obj.castShadow = true;
-                    obj.receiveShadow = true;
+                    //obj.castShadow = true;
+                    //obj.receiveShadow = true;
+                    this.mesh = obj;
+                    obj.name = "BAG " + i;
+                    obj.material.roughness = 0.3;
+                    obj.material.envMapIntensity = 1.0;
                 }
                 this.add(gltf.scene);
             });
 
-        let mesh = new THREE.Mesh(
-            new THREE.CylinderGeometry(kBagRadius, kBagRadius, 1.0, 32, 1),
-            new THREE.MeshStandardMaterial({color: 0xff8020}));
+
+
 
         this.hitSoundBuffers = [];
         this.hitSounds = [
@@ -66,28 +71,6 @@ export class Bag extends THREE.Group
         audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
             this.hitSoundBuffers.push(buffer);
         });
-        // audioLoader.load('./content/Punch-Kick-A2-outside-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/Punch-Kick-A3-outside-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/Punch-Kick-A4-outside-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/trim-pitch-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/trim-bass-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        //Punch-Kick-A2-outside-www.fesliyanstudios.com.mp3        // audioLoader.load('./content/Crunchy-Punch-A-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-        // audioLoader.load('./content/Crunchy-Punch-B-www.fesliyanstudios.com.mp3', (buffer) => {
-        //     this.hitSoundBuffers.push(buffer);
-        // });
-
 
 
 
@@ -105,6 +88,11 @@ export class Bag extends THREE.Group
 
     update(dt, accumulatedTime)
     {
+
+        if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
+        {
+            this.mesh.material.envMap = this.scene.envMap;
+        }
         this.accumulatedTime = accumulatedTime;
 
         desiredPosition.copy(this.position);

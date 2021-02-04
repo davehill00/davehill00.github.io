@@ -57,19 +57,29 @@ export class Glove extends THREE.Group
                 // gltf.scene.scale.set(0.3, 0.3, 0.3);
                 // gltf.scene.rotation.set(-1.57, whichHand == 1 ? -1.57 : 1.57, 0.0);
                 // gltf.scene.position.set(0.0, 0.0, 0.0);
-                // for (let i = 0; i < gltf.scene.children.length; i++)
-                // {
-                //     let obj = gltf.scene.children[i];
-                //     obj.castShadow = true;
-                //     obj.receiveShadow = true;
-                // }
+                for (let i = 0; i < gltf.scene.children.length; i++)
+                {
+                    let obj = gltf.scene.children[i];
+                    // obj.castShadow = true;
+                    // obj.receiveShadow = true;
+                    this.mesh = obj;
+                    obj.name = "GLOVE " + (whichHand == 1? "LEFT " : "RIGHT " + i )
+                    obj.material.roughness = 0.4;
+                    obj.material.envMapIntensity = 0.7;
+                }
                 this.add(gltf.scene);
+                this.mesh = gltf.scene.children[0];
             });
     }
 
     update(dt, accumulatedTime)
     {
         
+        if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
+        {
+            this.mesh.material.envMap = this.scene.envMap;
+        }
+
         this.rotation.copy(this.controller.rotation);
 
         // Try to move from current position to controller position
