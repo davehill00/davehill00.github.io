@@ -77120,8 +77120,8 @@ __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StatsHud", function() { return StatsHud; });
 //import { DDSLoader } from 'three/examples/jsm/loaders/DDSLoader.js';
 
-// var createGeometry = require('three-bmfont-text')
-// var loadFont = require('load-bmfont')
+var createGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js")
+var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
 
 const kFpsSmoothing = 0.10;
 const kMaxPersist = 2000.0;
@@ -77149,7 +77149,7 @@ class StatsHud {
 				//manager.addHandler( /\.dds$/i, new DDSLoader() );
 
                 // the texture atlas containing our glyphs
-                var texture = new DDSLoader(manager).load('./content/small_font_0.png');
+                var texture = new THREE.TextureLoader().load('./content/small_font_0.png');
 
                 // we can use a simple ThreeJS material
                 var fontMaterial = new THREE.MeshBasicMaterial({
@@ -77200,8 +77200,8 @@ class StatsHud {
 
         if (this.fontGeometry) {
             this.fontGeometry.update(
-                delta.toFixed(1) + "(" + this.curMaxDelta.toFixed(1) + ") ms " +
-                (1000.0 / this.averageDelta).toFixed(0) + "(" + this.curMinHertz.toFixed(0) + ") Hz");
+                delta.toFixed(1) + " -" + this.curMaxDelta.toFixed(1) + "- MS\n" +
+                (1000.0 / this.averageDelta).toFixed(0) + " -" + this.curMinHertz.toFixed(0) + "- HZ");
         }
     }
 }
@@ -77660,7 +77660,7 @@ function initialize()
 
 function render() {
 
-    hud.update();
+    //hud.update();
 
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
