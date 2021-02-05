@@ -18,7 +18,7 @@ export class Bag extends THREE.Group
         super();
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
-        this.targetPosition = new THREE.Vector3(0.0, 1.3, -0.75);
+        this.targetPosition = new THREE.Vector3(0.0, 1.55, -0.75);
         this.position.copy(this.targetPosition);
 
         this.scene = scene;
