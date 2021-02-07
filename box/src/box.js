@@ -77,7 +77,7 @@ function initialize()
     // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.75;
+    renderer.toneMappingExposure = 1.25;
 
     document.body.appendChild(renderer.domElement);
     let button = VRButton.createButton(renderer);
@@ -117,7 +117,7 @@ function initialize()
     lightmaps['Baseboard'] = LoadLightmap("./content/Lightmaps_V8/", "Baseboard_denoised.png");
     lightmaps['TV'] = LoadLightmap("./content/Lightmaps_V8/", "TV_denoised.png");
 
-    //envMapObjects['Floor'] = { intensity: 0.3, roughness: 0.6};
+    envMapObjects['Floor'] = { intensity: 0.2, roughness: 0.2};
     //envMapObjects['Room'] = { intensity: 0.2, roughness: 0.3};
     //envMapObjects['TV'] = { intensity: 0.2, roughness: 0.2};
     envMapObjects['AccentWall'] = { intensity: 0.5, roughness: 0.2};
@@ -222,14 +222,14 @@ function initialize()
         controllers[1].gamepad = null;
     });
 
-    initScene(scene);
+    initScene(scene, camera, renderer);
 
     renderer.setAnimationLoop(render); 
 }
 
 function render() {
 
-    //hud.update();
+    hud.update();
 
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
@@ -269,9 +269,9 @@ function onSessionEnd()
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
 }
 
-function initScene(scene)
+function initScene(scene, camera, renderer)
 {
-    bag = new Bag(audioListener, scene);
+    bag = new Bag(audioListener, scene, camera, renderer);
     scene.add(bag);
 
     gameLogic = new BoxingSession(scene, 3, 120, 20);
