@@ -78174,8 +78174,8 @@ function initialize()
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
     renderer.xr.setFramebufferScaleFactor(0.75);
-    let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0xffeedd);
-    color.convertSRGBToLinear();
+    let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
+    //color.convertSRGBToLinear();
     renderer.setClearColor(color);
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_0__["sRGBEncoding"];
@@ -78215,23 +78215,6 @@ function initialize()
 
     lightmapPromises.push(LoadEnvMapPromise());
 
-    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "Floor_denoised.png").then(
-    //     (texture) => {lightmaps['Floor'] = texture}));
-    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "Accent.Wall_denoised.png").then(
-    //     (texture) => {lightmaps['AccentWall'] = texture}));
-    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "Ceiling_denoised.png").then(
-    //     (texture) => {lightmaps['Ceiling'] = texture}));
-    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "Baseboard_denoised.png").then(
-    //     (texture) => {lightmaps['Baseboard'] = texture}));
-    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "TV_denoised.png").then(
-    //     (texture) => {lightmaps['TV'] = texture}));
-
-    // lightmaps['AccentWall'] = LoadLightmap("./content/Lightmaps_V8/", "Accent.Wall_denoised.png");
-    // lightmaps['Ceiling'] = LoadLightmap("./content/Lightmaps_V8/", "Ceiling_denoised.png");
-    // lightmaps['Baseboard'] = LoadLightmap("./content/Lightmaps_V8/", "Baseboard_denoised.png");
-    // lightmaps['TV'] = LoadLightmap("./content/Lightmaps_V8/", "TV_denoised.png");
-    
-    // })
 
     envMapObjects['Floor'] = { intensity: 0.2, roughness: 0.35};
     envMapObjects['AccentWall'] = { intensity: 0.5, roughness: 0.2};
@@ -78264,10 +78247,10 @@ function initialize()
                     let obj = gltf.scene.children[i];       
                     obj.traverse(function (node) {
 
-                        console.log("NODE: " + node.name);
+                        //console.log("NODE: " + node.name);
                         let nodeLightmap = lightmaps[node.name];
                         if (node.material && nodeLightmap && 'lightMap' in node.material) {
-                            console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                            //console.log("--> LIGHTMAP: " + nodeLightmap.name);
                             node.material.lightMap = nodeLightmap;
                             node.material.lightMapIntensity = 1.0;
                             node.material.needsUpdate = true;
@@ -78277,7 +78260,7 @@ function initialize()
                             
                         if (emo)
                         {
-                            console.log("Setting EM on " + node.name);
+                            //console.log("Setting EM on " + node.name);
 
                             node.material.envMap = scene.envMap;
                             node.material.envMapIntensity = emo.intensity;
@@ -78326,13 +78309,19 @@ function initialize()
         controllers[0].gamepad = null;
         if (evt.data.handedness == "left")
         {
-            leftHand.glove = null;
+            if (leftHand.glove != null)
+            {
+                leftHand.glove.hide();
+            }
             leftHand.controller = null;
             leftHand.isSetUp = false;
         }
         else
         {
-            rightHand.glove = null;
+            if (rightHand.glove != null)
+            {
+                rightHand.glove.hide();
+            }
             rightHand.controller = null;
             rightHand.isSetUp = false;
         }
@@ -78364,6 +78353,25 @@ function initialize()
     renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 1");
         controllers[1].gamepad = null;
+
+        if (evt.data.handedness == "left")
+        {
+            if (leftHand.glove != null)
+            {
+                leftHand.glove.hide();
+            }
+            leftHand.controller = null;
+            leftHand.isSetUp = false;
+        }
+        else
+        {
+            if (rightHand.glove != null)
+            {
+                rightHand.glove.hide();
+            }
+            rightHand.controller = null;
+            rightHand.isSetUp = false;
+        }
     });
 
 
@@ -78428,8 +78436,14 @@ function setupHand(hand, whichHand)
     //@TODO - compute last world pos to initialize properly
 
 
-    hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_8__["Glove"](hand.controller, scene, whichHand);
-
+    if (hand.glove)
+    {
+        hand.glove.show();
+    }
+    else
+    {
+        hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_8__["Glove"](hand.controller, scene, whichHand);
+    }
     hand.isSetUp = true;
 }
 
@@ -79166,6 +79180,16 @@ class Glove extends THREE.Group
                 this.add(gltf.scene);
                 this.mesh = gltf.scene.children[0];
             });
+    }
+    show()
+    {
+        console.assert(this.mesh);
+        this.mesh.visible = true;
+    }
+    hide()
+    {
+        console.assert(this.mesh);
+        this.mesh.visible = false;
     }
 
     update(dt, accumulatedTime)

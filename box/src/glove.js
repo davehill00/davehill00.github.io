@@ -71,6 +71,16 @@ export class Glove extends THREE.Group
                 this.mesh = gltf.scene.children[0];
             });
     }
+    show()
+    {
+        console.assert(this.mesh);
+        this.mesh.visible = true;
+    }
+    hide()
+    {
+        console.assert(this.mesh);
+        this.mesh.visible = false;
+    }
 
     update(dt, accumulatedTime)
     {
