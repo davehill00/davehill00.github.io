@@ -72,6 +72,14 @@ export class BoxingSession
             this.currentTimeInWholeSeconds = -1.0;
 
 
+            this.scene.traverse((node) => {
+                if (node.name == "Screen")
+                {
+                    this.TV = node;
+                    this.TV.add(this.timerFontMesh);
+                    console.log("FOUND TV");
+                }
+            });
         });
 
         // models?
@@ -100,24 +108,7 @@ export class BoxingSession
     update(dt, accumulatedTime)
     {
 
-        if (this.TV == null)
-        {
-            let TV;
-            this.scene.traverse(function (node) {
-                if (node.name == "Screen")
-                {
-                    TV = node;
-                    console.log("FOUND TV");
-                }
-            });
 
-            if (TV)
-            {
-                this.TV = TV;
-
-                this.TV.add(this.timerFontMesh);
-            }
-        }
 
         switch(this.state)
         {

@@ -1,6 +1,6 @@
 export function ComputePDAcceleration(
-    value,
-    velocity,
+    currentValue,
+    currentVelocity,
     targetValue,
     targetVelocity,
     frequency,
@@ -15,15 +15,15 @@ export function ComputePDAcceleration(
     const ksI = ks  *  scale;
 	const kdI = ( kd + ks* dt ) * scale;
 
-    return ksI * (targetValue - value) + kdI * (targetVelocity - velocity);
+    return ksI * (targetValue - currentValue) + kdI * (targetVelocity - currentVelocity);
 }
 
 let _newVelocity = new THREE.Vector3();
 let _newValue = new THREE.Vector3();
 
 export function ApplyPDVec3(
-    value, 
-    velocity,
+    currentValue, 
+    currentVelocity,
     targetValue,
     targetVelocity,
     frequency,
@@ -31,15 +31,15 @@ export function ApplyPDVec3(
     dt
 )
 {
-    let accelX = ComputePDAcceleration(value.x, velocity.x, targetValue.x, targetVelocity.x, frequency, damping, dt);
-    let accelY = ComputePDAcceleration(value.y, velocity.y, targetValue.y, targetVelocity.y, frequency, damping, dt);
-    let accelZ = ComputePDAcceleration(value.z, velocity.z, targetValue.z, targetVelocity.z, frequency, damping, dt);
+    let accelX = ComputePDAcceleration(currentValue.x, currentVelocity.x, targetValue.x, targetVelocity.x, frequency, damping, dt);
+    let accelY = ComputePDAcceleration(currentValue.y, currentVelocity.y, targetValue.y, targetVelocity.y, frequency, damping, dt);
+    let accelZ = ComputePDAcceleration(currentValue.z, currentVelocity.z, targetValue.z, targetVelocity.z, frequency, damping, dt);
     
-    velocity.x += accelX * dt;
-    velocity.y += accelY * dt;
-    velocity.z += accelZ * dt;
+    currentVelocity.x += accelX * dt;
+    currentVelocity.y += accelY * dt;
+    currentVelocity.z += accelZ * dt;
     
-    value.x += velocity.x * dt;
-    value.y += velocity.y * dt;
-    value.z += velocity.z * dt;
+    currentValue.x += currentVelocity.x * dt;
+    currentValue.y += currentVelocity.y * dt;
+    currentValue.z += currentVelocity.z * dt;
 }

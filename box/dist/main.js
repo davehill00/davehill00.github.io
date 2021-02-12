@@ -69802,6 +69802,556 @@ class MotionController {
 
 /***/ }),
 
+/***/ "./node_modules/three/examples/jsm/loaders/BasisTextureLoader.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/three/examples/jsm/loaders/BasisTextureLoader.js ***!
+  \***********************************************************************/
+/*! exports provided: BasisTextureLoader */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BasisTextureLoader", function() { return BasisTextureLoader; });
+/* harmony import */ var _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../build/three.module.js */ "./node_modules/three/build/three.module.js");
+
+
+/**
+ * Loader for Basis Universal GPU Texture Codec.
+ *
+ * Basis Universal is a "supercompressed" GPU texture and texture video
+ * compression system that outputs a highly compressed intermediate file format
+ * (.basis) that can be quickly transcoded to a wide variety of GPU texture
+ * compression formats.
+ *
+ * This loader parallelizes the transcoding process across a configurable number
+ * of web workers, before transferring the transcoded compressed texture back
+ * to the main thread.
+ */
+var BasisTextureLoader = function ( manager ) {
+
+	_build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["Loader"].call( this, manager );
+
+	this.transcoderPath = '';
+	this.transcoderBinary = null;
+	this.transcoderPending = null;
+
+	this.workerLimit = 4;
+	this.workerPool = [];
+	this.workerNextTaskID = 1;
+	this.workerSourceURL = '';
+	this.workerConfig = {
+		format: null,
+		astcSupported: false,
+		bptcSupported: false,
+		etcSupported: false,
+		dxtSupported: false,
+		pvrtcSupported: false,
+	};
+
+};
+
+BasisTextureLoader.taskCache = new WeakMap();
+
+BasisTextureLoader.prototype = Object.assign( Object.create( _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["Loader"].prototype ), {
+
+	constructor: BasisTextureLoader,
+
+	setTranscoderPath: function ( path ) {
+
+		this.transcoderPath = path;
+
+		return this;
+
+	},
+
+	setWorkerLimit: function ( workerLimit ) {
+
+		this.workerLimit = workerLimit;
+
+		return this;
+
+	},
+
+	detectSupport: function ( renderer ) {
+
+		var config = this.workerConfig;
+
+		config.astcSupported = renderer.extensions.has( 'WEBGL_compressed_texture_astc' );
+		config.bptcSupported = renderer.extensions.has( 'EXT_texture_compression_bptc' );
+		config.etcSupported = renderer.extensions.has( 'WEBGL_compressed_texture_etc1' );
+		config.dxtSupported = renderer.extensions.has( 'WEBGL_compressed_texture_s3tc' );
+		config.pvrtcSupported = renderer.extensions.has( 'WEBGL_compressed_texture_pvrtc' )
+			|| renderer.extensions.has( 'WEBKIT_WEBGL_compressed_texture_pvrtc' );
+
+		if ( config.astcSupported ) {
+
+			config.format = BasisTextureLoader.BASIS_FORMAT.cTFASTC_4x4;
+
+		} else if ( config.bptcSupported ) {
+
+			config.format = BasisTextureLoader.BASIS_FORMAT.cTFBC7_M5;
+
+		} else if ( config.dxtSupported ) {
+
+			config.format = BasisTextureLoader.BASIS_FORMAT.cTFBC3;
+
+		} else if ( config.pvrtcSupported ) {
+
+			config.format = BasisTextureLoader.BASIS_FORMAT.cTFPVRTC1_4_RGBA;
+
+		} else if ( config.etcSupported ) {
+
+			config.format = BasisTextureLoader.BASIS_FORMAT.cTFETC1;
+
+		} else {
+
+			throw new Error( 'THREE.BasisTextureLoader: No suitable compressed texture format found.' );
+
+		}
+
+		return this;
+
+	},
+
+	load: function ( url, onLoad, onProgress, onError ) {
+
+		var loader = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FileLoader"]( this.manager );
+
+		loader.setResponseType( 'arraybuffer' );
+		loader.setWithCredentials( this.withCredentials );
+
+		loader.load( url, ( buffer ) => {
+
+			// Check for an existing task using this buffer. A transferred buffer cannot be transferred
+			// again from this thread.
+			if ( BasisTextureLoader.taskCache.has( buffer ) ) {
+
+				var cachedTask = BasisTextureLoader.taskCache.get( buffer );
+
+				return cachedTask.promise.then( onLoad ).catch( onError );
+
+			}
+
+			this._createTexture( buffer, url )
+				.then( onLoad )
+				.catch( onError );
+
+		}, onProgress, onError );
+
+	},
+
+	/**
+	 * @param	{ArrayBuffer} buffer
+	 * @param	{string} url
+	 * @return {Promise<CompressedTexture>}
+	 */
+	_createTexture: function ( buffer, url ) {
+
+		var worker;
+		var taskID;
+
+		var taskCost = buffer.byteLength;
+
+		var texturePending = this._allocateWorker( taskCost )
+			.then( ( _worker ) => {
+
+				worker = _worker;
+				taskID = this.workerNextTaskID ++;
+
+				return new Promise( ( resolve, reject ) => {
+
+					worker._callbacks[ taskID ] = { resolve, reject };
+
+					worker.postMessage( { type: 'transcode', id: taskID, buffer }, [ buffer ] );
+
+				} );
+
+			} )
+			.then( ( message ) => {
+
+				var config = this.workerConfig;
+
+				var { width, height, mipmaps, format } = message;
+
+				var texture;
+
+				switch ( format ) {
+
+					case BasisTextureLoader.BASIS_FORMAT.cTFASTC_4x4:
+						texture = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["CompressedTexture"]( mipmaps, width, height, _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBA_ASTC_4x4_Format"] );
+						break;
+					case BasisTextureLoader.BASIS_FORMAT.cTFBC7_M5:
+						texture = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["CompressedTexture"]( mipmaps, width, height, _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBA_BPTC_Format"] );
+						break;
+					case BasisTextureLoader.BASIS_FORMAT.cTFBC1:
+					case BasisTextureLoader.BASIS_FORMAT.cTFBC3:
+						texture = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["CompressedTexture"]( mipmaps, width, height, BasisTextureLoader.DXT_FORMAT_MAP[ config.format ], _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["UnsignedByteType"] );
+						break;
+					case BasisTextureLoader.BASIS_FORMAT.cTFETC1:
+						texture = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["CompressedTexture"]( mipmaps, width, height, _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGB_ETC1_Format"] );
+						break;
+					case BasisTextureLoader.BASIS_FORMAT.cTFPVRTC1_4_RGB:
+						texture = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["CompressedTexture"]( mipmaps, width, height, _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGB_PVRTC_4BPPV1_Format"] );
+						break;
+					case BasisTextureLoader.BASIS_FORMAT.cTFPVRTC1_4_RGBA:
+						texture = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["CompressedTexture"]( mipmaps, width, height, _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["RGBA_PVRTC_4BPPV1_Format"] );
+						break;
+					default:
+						throw new Error( 'THREE.BasisTextureLoader: No supported format available.' );
+
+				}
+
+				texture.minFilter = mipmaps.length === 1 ? _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["LinearFilter"] : _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["LinearMipmapLinearFilter"];
+				texture.magFilter = _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["LinearFilter"];
+				texture.generateMipmaps = false;
+				texture.needsUpdate = true;
+
+				return texture;
+
+			} );
+
+		// Note: replaced '.finally()' with '.catch().then()' block - iOS 11 support (#19416)
+		texturePending
+			.catch( () => true )
+			.then( () => {
+
+				if ( worker && taskID ) {
+
+					worker._taskLoad -= taskCost;
+					delete worker._callbacks[ taskID ];
+
+				}
+
+			} );
+
+		// Cache the task result.
+		BasisTextureLoader.taskCache.set( buffer, {
+
+			url: url,
+			promise: texturePending
+
+		} );
+
+		return texturePending;
+
+	},
+
+	_initTranscoder: function () {
+
+		if ( ! this.transcoderPending ) {
+
+			// Load transcoder wrapper.
+			var jsLoader = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FileLoader"]( this.manager );
+			jsLoader.setPath( this.transcoderPath );
+			jsLoader.setWithCredentials( this.withCredentials );
+			var jsContent = new Promise( ( resolve, reject ) => {
+
+				jsLoader.load( 'basis_transcoder.js', resolve, undefined, reject );
+
+			} );
+
+			// Load transcoder WASM binary.
+			var binaryLoader = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FileLoader"]( this.manager );
+			binaryLoader.setPath( this.transcoderPath );
+			binaryLoader.setResponseType( 'arraybuffer' );
+			binaryLoader.setWithCredentials( this.withCredentials );
+			var binaryContent = new Promise( ( resolve, reject ) => {
+
+				binaryLoader.load( 'basis_transcoder.wasm', resolve, undefined, reject );
+
+			} );
+
+			this.transcoderPending = Promise.all( [ jsContent, binaryContent ] )
+				.then( ( [ jsContent, binaryContent ] ) => {
+
+					var fn = BasisTextureLoader.BasisWorker.toString();
+
+					var body = [
+						'/* basis_transcoder.js */',
+						jsContent,
+						'/* worker */',
+						fn.substring( fn.indexOf( '{' ) + 1, fn.lastIndexOf( '}' ) )
+					].join( '\n' );
+
+					this.workerSourceURL = URL.createObjectURL( new Blob( [ body ] ) );
+					this.transcoderBinary = binaryContent;
+
+				} );
+
+		}
+
+		return this.transcoderPending;
+
+	},
+
+	_allocateWorker: function ( taskCost ) {
+
+		return this._initTranscoder().then( () => {
+
+			if ( this.workerPool.length < this.workerLimit ) {
+
+				var worker = new Worker( this.workerSourceURL );
+
+				worker._callbacks = {};
+				worker._taskLoad = 0;
+
+				worker.postMessage( {
+					type: 'init',
+					config: this.workerConfig,
+					transcoderBinary: this.transcoderBinary,
+				} );
+
+				worker.onmessage = function ( e ) {
+
+					var message = e.data;
+
+					switch ( message.type ) {
+
+						case 'transcode':
+							worker._callbacks[ message.id ].resolve( message );
+							break;
+
+						case 'error':
+							worker._callbacks[ message.id ].reject( message );
+							break;
+
+						default:
+							console.error( 'THREE.BasisTextureLoader: Unexpected message, "' + message.type + '"' );
+
+					}
+
+				};
+
+				this.workerPool.push( worker );
+
+			} else {
+
+				this.workerPool.sort( function ( a, b ) {
+
+					return a._taskLoad > b._taskLoad ? - 1 : 1;
+
+				} );
+
+			}
+
+			var worker = this.workerPool[ this.workerPool.length - 1 ];
+
+			worker._taskLoad += taskCost;
+
+			return worker;
+
+		} );
+
+	},
+
+	dispose: function () {
+
+		for ( var i = 0; i < this.workerPool.length; i ++ ) {
+
+			this.workerPool[ i ].terminate();
+
+		}
+
+		this.workerPool.length = 0;
+
+		return this;
+
+	}
+
+} );
+
+/* CONSTANTS */
+
+BasisTextureLoader.BASIS_FORMAT = {
+	cTFETC1: 0,
+	cTFETC2: 1,
+	cTFBC1: 2,
+	cTFBC3: 3,
+	cTFBC4: 4,
+	cTFBC5: 5,
+	cTFBC7_M6_OPAQUE_ONLY: 6,
+	cTFBC7_M5: 7,
+	cTFPVRTC1_4_RGB: 8,
+	cTFPVRTC1_4_RGBA: 9,
+	cTFASTC_4x4: 10,
+	cTFATC_RGB: 11,
+	cTFATC_RGBA_INTERPOLATED_ALPHA: 12,
+	cTFRGBA32: 13,
+	cTFRGB565: 14,
+	cTFBGR565: 15,
+	cTFRGBA4444: 16,
+};
+
+// DXT formats, from:
+// http://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc/
+BasisTextureLoader.DXT_FORMAT = {
+	COMPRESSED_RGB_S3TC_DXT1_EXT: 0x83F0,
+	COMPRESSED_RGBA_S3TC_DXT1_EXT: 0x83F1,
+	COMPRESSED_RGBA_S3TC_DXT3_EXT: 0x83F2,
+	COMPRESSED_RGBA_S3TC_DXT5_EXT: 0x83F3,
+};
+BasisTextureLoader.DXT_FORMAT_MAP = {};
+BasisTextureLoader.DXT_FORMAT_MAP[ BasisTextureLoader.BASIS_FORMAT.cTFBC1 ] =
+	BasisTextureLoader.DXT_FORMAT.COMPRESSED_RGB_S3TC_DXT1_EXT;
+BasisTextureLoader.DXT_FORMAT_MAP[ BasisTextureLoader.BASIS_FORMAT.cTFBC3 ] =
+	BasisTextureLoader.DXT_FORMAT.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+
+/* WEB WORKER */
+
+BasisTextureLoader.BasisWorker = function () {
+
+	var config;
+	var transcoderPending;
+	var _BasisFile;
+
+	onmessage = function ( e ) {
+
+		var message = e.data;
+
+		switch ( message.type ) {
+
+			case 'init':
+				config = message.config;
+				init( message.transcoderBinary );
+				break;
+
+			case 'transcode':
+				transcoderPending.then( () => {
+
+					try {
+
+						var { width, height, hasAlpha, mipmaps, format } = transcode( message.buffer );
+
+						var buffers = [];
+
+						for ( var i = 0; i < mipmaps.length; ++ i ) {
+
+							buffers.push( mipmaps[ i ].data.buffer );
+
+						}
+
+						self.postMessage( { type: 'transcode', id: message.id, width, height, hasAlpha, mipmaps, format }, buffers );
+
+					} catch ( error ) {
+
+						console.error( error );
+
+						self.postMessage( { type: 'error', id: message.id, error: error.message } );
+
+					}
+
+				} );
+				break;
+
+		}
+
+	};
+
+	function init( wasmBinary ) {
+
+		var BasisModule;
+		transcoderPending = new Promise( ( resolve ) => {
+
+			BasisModule = { wasmBinary, onRuntimeInitialized: resolve };
+			BASIS( BasisModule ); // eslint-disable-line no-undef
+
+		} ).then( () => {
+
+			var { BasisFile, initializeBasis } = BasisModule;
+
+			_BasisFile = BasisFile;
+
+			initializeBasis();
+
+		} );
+
+	}
+
+	function transcode( buffer ) {
+
+		var basisFile = new _BasisFile( new Uint8Array( buffer ) );
+
+		var width = basisFile.getImageWidth( 0, 0 );
+		var height = basisFile.getImageHeight( 0, 0 );
+		var levels = basisFile.getNumLevels( 0 );
+		var hasAlpha = basisFile.getHasAlpha();
+
+		function cleanup() {
+
+			basisFile.close();
+			basisFile.delete();
+
+		}
+
+		if ( ! hasAlpha ) {
+
+			switch ( config.format ) {
+
+				case 9: // Hardcoded: BasisTextureLoader.BASIS_FORMAT.cTFPVRTC1_4_RGBA
+					config.format = 8; // Hardcoded: BasisTextureLoader.BASIS_FORMAT.cTFPVRTC1_4_RGB;
+					break;
+				default:
+					break;
+
+			}
+
+		}
+
+		if ( ! width || ! height || ! levels ) {
+
+			cleanup();
+			throw new Error( 'THREE.BasisTextureLoader:	Invalid .basis file' );
+
+		}
+
+		if ( ! basisFile.startTranscoding() ) {
+
+			cleanup();
+			throw new Error( 'THREE.BasisTextureLoader: .startTranscoding failed' );
+
+		}
+
+		var mipmaps = [];
+
+		for ( var mip = 0; mip < levels; mip ++ ) {
+
+			var mipWidth = basisFile.getImageWidth( 0, mip );
+			var mipHeight = basisFile.getImageHeight( 0, mip );
+			var dst = new Uint8Array( basisFile.getImageTranscodedSizeInBytes( 0, mip, config.format ) );
+
+			var status = basisFile.transcodeImage(
+				dst,
+				0,
+				mip,
+				config.format,
+				0,
+				hasAlpha
+			);
+
+			if ( ! status ) {
+
+				cleanup();
+				throw new Error( 'THREE.BasisTextureLoader: .transcodeImage failed.' );
+
+			}
+
+			mipmaps.push( { data: dst, width: mipWidth, height: mipHeight } );
+
+		}
+
+		cleanup();
+
+		return { width, height, hasAlpha, mipmaps, format: config.format };
+
+	}
+
+};
+
+
+
+
+/***/ }),
+
 /***/ "./node_modules/three/examples/jsm/loaders/EXRLoader.js":
 /*!**************************************************************!*\
   !*** ./node_modules/three/examples/jsm/loaders/EXRLoader.js ***!
@@ -77289,8 +77839,9 @@ class Bag extends THREE.Group
                         //obj.receiveShadow = true;
                         this.mesh = obj;
                         obj.name = "BAG " + i;
-                        obj.material.roughness = 0.3;
+                        obj.material.roughness = 0.25;
                         obj.material.envMapIntensity = 1.0;
+                        obj.material.envMap = this.scene.envMap;
                     }
                     else if (obj.name == "PunchEffectMesh")
                     {
@@ -77371,11 +77922,11 @@ class Bag extends THREE.Group
     update(dt, accumulatedTime)
     {
 
-        if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
-        {
-            this.mesh.material.envMap = this.scene.envMap;
-            console.log("SET BAG ENVMAP");
-        }
+        // if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
+        // {
+        //     this.mesh.material.envMap = this.scene.envMap;
+        //     console.log("SET BAG ENVMAP");
+        // }
         this.accumulatedTime = accumulatedTime;
 
         if (this.renderer && this.renderer.xr && this.renderer.xr.isPresenting)
@@ -77543,18 +78094,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/webxr/XRControllerModelFactory.js */ "./node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js");
 /* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
 /* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
-/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
-/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
-/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
-/* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
-/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
+/* harmony import */ var three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three/examples/jsm/loaders/BasisTextureLoader.js */ "./node_modules/three/examples/jsm/loaders/BasisTextureLoader.js");
+/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
+/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
+/* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
 
 
 
 
 
+
+//import * as BASIS from 'three/exmaples/js/libs/basis/basis_transcoder.js'
 
 var inputProfilesList = __webpack_require__( /*! @webxr-input-profiles/registry/dist/profilesList.json */ "./node_modules/@webxr-input-profiles/registry/dist/profilesList.json");
 
@@ -77592,10 +78146,10 @@ let gameLogic = null;
 let punchingStats = null;
 
 let pmremGenerator = null;
-let roomMaterial = null;
-let lightmap = null;
 let lightmaps = {};
-let accentMesh = null;
+let basisLoader = null;
+
+
 
 let envMapObjects = {}
 let hud = null;
@@ -77611,7 +78165,7 @@ function initialize()
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
 
-    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_11__["StatsHud"](camera);
+    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_12__["StatsHud"](camera);
 
     audioListener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
     camera.add( audioListener );
@@ -77641,67 +78195,105 @@ function initialize()
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
-    let pointLight = new three__WEBPACK_IMPORTED_MODULE_0__["PointLight"](0xffeedd, 23, 32.0);
-    pointLight.position.set(0.0, 3.5, 0.0);
-
-    //scene.add(pointLight);
-
-    pointLight = new three__WEBPACK_IMPORTED_MODULE_0__["PointLight"](0xffeedd, 12.0, 12.0);
-    pointLight.position.set(-3.0, 3.0, 1.0);
-
-    //scene.add(pointLight);
-
-    // let dirLight = new THREE.DirectionalLight(0xffffff, 5.0);
-    // dirLight.position.set(0.0, 6.0, 10.0);
-    // scene.add(dirLight);
 
 
-    const ambient = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xffffff, 0.35);
-    ambient.color.convertSRGBToLinear();
-    //scene.add(ambient);
+    InitBasisLoader();
+    //lightmaps['Room'] = LoadLightmapBasis("./content/Lightmaps_V8/", "Room_denoised.basis");
 
+    let lightmapPromises = [];
+    lightmapPromises.push(LoadBasisLightmapPromise('Room', "./content/Lightmaps_V8/Room_denoised.basis"));
 
+    lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
 
-    lightmaps['Floor'] = LoadLightmap("./content/Lightmaps_V8/", "Floor_denoised.png");
-    lightmaps['AccentWall'] = LoadLightmap("./content/Lightmaps_V8/", "Accent.Wall_denoised.png");
-    lightmaps['Room'] = LoadLightmap("./content/Lightmaps_V8/", "Room_denoised.png");
-    lightmaps['Ceiling'] = LoadLightmap("./content/Lightmaps_V8/", "Ceiling_denoised.png");
-    lightmaps['Baseboard'] = LoadLightmap("./content/Lightmaps_V8/", "Baseboard_denoised.png");
-    lightmaps['TV'] = LoadLightmap("./content/Lightmaps_V8/", "TV_denoised.png");
+    lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
 
-    envMapObjects['Floor'] = { intensity: 0.2, roughness: 0.2};
-    //envMapObjects['Room'] = { intensity: 0.2, roughness: 0.3};
-    //envMapObjects['TV'] = { intensity: 0.2, roughness: 0.2};
+    lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
+
+    lightmapPromises.push(LoadBasisLightmapPromise('Baseboard', "./content/Lightmaps_V8/Baseboard_denoised.basis"));
+
+    lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
+
+    lightmapPromises.push(LoadEnvMapPromise());
+
+    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "Floor_denoised.png").then(
+    //     (texture) => {lightmaps['Floor'] = texture}));
+    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "Accent.Wall_denoised.png").then(
+    //     (texture) => {lightmaps['AccentWall'] = texture}));
+    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "Ceiling_denoised.png").then(
+    //     (texture) => {lightmaps['Ceiling'] = texture}));
+    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "Baseboard_denoised.png").then(
+    //     (texture) => {lightmaps['Baseboard'] = texture}));
+    // lightmapPromises.push(LoadLightmap("./content/Lightmaps_V8/", "TV_denoised.png").then(
+    //     (texture) => {lightmaps['TV'] = texture}));
+
+    // lightmaps['AccentWall'] = LoadLightmap("./content/Lightmaps_V8/", "Accent.Wall_denoised.png");
+    // lightmaps['Ceiling'] = LoadLightmap("./content/Lightmaps_V8/", "Ceiling_denoised.png");
+    // lightmaps['Baseboard'] = LoadLightmap("./content/Lightmaps_V8/", "Baseboard_denoised.png");
+    // lightmaps['TV'] = LoadLightmap("./content/Lightmaps_V8/", "TV_denoised.png");
+    
+    // })
+
+    envMapObjects['Floor'] = { intensity: 0.2, roughness: 0.35};
     envMapObjects['AccentWall'] = { intensity: 0.5, roughness: 0.2};
     
-    let loaderPromise = new Promise( resolve => {
-        let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"]();
+    // What do I want to have happen for loading?
+    // Load enviornment map
+    // Load lightmaps
+    // Load environment and apply lightmaps and envmap
+    // Load bag and apply envmap
+    // Load gloves
+    // all done loading
+    // post-load fixups
+
+    
+    const loadingManager = new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]();
+    loadingManager.addHandler(/\.basis$/i, basisLoader);
+
+    let loaderPromise = new Promise( (resolve) => {
+        let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"](loadingManager);
         loader.load('./content/gym_v8.gltf', resolve);
     });
-    loaderPromise.then(
-        gltf => {
-            loadEnvMap();
 
-            for (let i = 0; i < gltf.scene.children.length; i++)
-            {                
-                let obj = gltf.scene.children[i];       
-                obj.traverse(function (node) {
-                    let nodeLightmap = lightmaps[node.name];
-                    if (node.material && nodeLightmap && 'lightMap' in node.material) {
-                        //console.log("Set lightmap: " + nodeLightmap.name);
-                        node.material.lightMap = nodeLightmap;
-                        node.material.lightMapIntensity = 1.0;
-                        node.material.needsUpdate = true;
+    Promise.all(lightmapPromises).then(
+        () => {
+        loaderPromise.then(
+            (gltf) => {
+
+                for (let i = 0; i < gltf.scene.children.length; i++)
+                {                
+                    let obj = gltf.scene.children[i];       
+                    obj.traverse(function (node) {
+
+                        console.log("NODE: " + node.name);
+                        let nodeLightmap = lightmaps[node.name];
+                        if (node.material && nodeLightmap && 'lightMap' in node.material) {
+                            console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                            node.material.lightMap = nodeLightmap;
+                            node.material.lightMapIntensity = 1.0;
+                            node.material.needsUpdate = true;
+                        }
+
+                        let emo = envMapObjects[node.name];
+                            
+                        if (emo)
+                        {
+                            console.log("Setting EM on " + node.name);
+
+                            node.material.envMap = scene.envMap;
+                            node.material.envMapIntensity = emo.intensity;
+                            node.material.roughness = emo.roughness;
+                        }
+                    });
+
+                    if (obj.name == "Screen")
+                    {
+                        obj.material.emissiveIntensity = 1.25;
                     }
-                });
-
-                if (obj.name == "Screen")
-                {
-                   obj.material.emissiveIntensity = 1.25;
                 }
+                scene.add(gltf.scene);
+                initScene(scene, camera, renderer);
 
-            }
-            scene.add(gltf.scene);
+            });
         });
 
 
@@ -77774,31 +78366,26 @@ function initialize()
         controllers[1].gamepad = null;
     });
 
-    initScene(scene, camera, renderer);
 
     renderer.setAnimationLoop(render); 
 }
 
 function render() {
 
-    hud.update();
+    //hud.update();
 
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
-    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["update"](accumulatedTime);
+    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__["update"](accumulatedTime);
 
-
-    if (scene.envMap && accentMesh && accentMesh.material.envMap == null)
-    {
-        accentMesh.material.envMap = scene.envMap;
-        console.log("Setting envmap on accent mesh")
-    }
     updateHands(dt, accumulatedTime);
-    bag.update(dt, accumulatedTime);
-
-    gameLogic.update(dt, accumulatedTime);
-    punchingStats.update(dt, accumulatedTime);
+    if (bag && gameLogic && punchingStats)
+    {
+        bag.update(dt, accumulatedTime);
+        gameLogic.update(dt, accumulatedTime);
+        punchingStats.update(dt, accumulatedTime);
+    }
 
     renderer.render(scene, camera);
 }
@@ -77823,11 +78410,11 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
-    bag = new _bag_js__WEBPACK_IMPORTED_MODULE_8__["Bag"](audioListener, scene, camera, renderer);
+    bag = new _bag_js__WEBPACK_IMPORTED_MODULE_9__["Bag"](audioListener, scene, camera, renderer);
     scene.add(bag);
 
-    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__["BoxingSession"](scene, 3, 120, 20);
-    punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_9__["PunchingStats"](scene, bag);
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_10__["BoxingSession"](scene, 3, 120, 20);
+    punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_10__["PunchingStats"](scene, bag);
 }
 
 
@@ -77841,7 +78428,7 @@ function setupHand(hand, whichHand)
     //@TODO - compute last world pos to initialize properly
 
 
-    hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_7__["Glove"](hand.controller, scene, whichHand);
+    hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_8__["Glove"](hand.controller, scene, whichHand);
 
     hand.isSetUp = true;
 }
@@ -77865,7 +78452,7 @@ function updateHands(dt, accumulatedTime)
     }
 }
 
-function loadEnvMap()
+function LoadEnvMapPromise()
 {
     pmremGenerator = new three__WEBPACK_IMPORTED_MODULE_0__["PMREMGenerator"]( renderer );
     pmremGenerator.compileEquirectangularShader();
@@ -77877,60 +78464,56 @@ function loadEnvMap()
 
     // };
 
-    new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_4__["EXRLoader"]()
-        .setDataType( three__WEBPACK_IMPORTED_MODULE_0__["HalfFloatType"] )
-        .load( './content/gym_v8_envmap.exr',  ( texture ) => {
+    return new Promise( (resolve, reject) => {
+        
+        new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_4__["EXRLoader"]()
+            .setDataType( three__WEBPACK_IMPORTED_MODULE_0__["HalfFloatType"] )
+            .load( './content/gym_v8_envmap.exr',  ( texture ) => {
 
-            let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
-            //renderer.exrCube = exrCubeRenderTarget.texture;
-            scene.envMap = exrCubeRenderTarget.texture;
-            texture.dispose();
+                let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
+                scene.envMap = exrCubeRenderTarget.texture;
 
-            scene.traverse(function(node)
-                {
-                    let emo = envMapObjects[node.name];
-                    
-                    if (emo)
-                    {
-                        console.log("Setting EM on " + node.name);
+                resolve();
 
-                        node.material.envMap = scene.envMap;
-                        node.material.envMapIntensity = emo.intensity;
-                        node.material.roughness = emo.roughness;
-                    }
-                });
-
-
-        } );
-
-    // new THREE.TextureLoader().load( './content/envmap.png', ( texture ) => {
-
-    //     texture.encoding = THREE.sRGBEncoding;
-
-    //     renderer.envMapRT = pmremGenerator.fromEquirectangular( texture );
-
-    //     scene.envMap = renderer.envMapRT.texture;
-
-    //     //renderer.envMapCube = renderer.envMapRT.texture;
-
-    //     //renderer.envMapFromDisk = texture;
-    //     //texture.dispose();
-
-    // } );
-
-
-
+            } );
+        });
 }
 
-function LoadLightmap(folder, file)
-{
-    //console.log("LOADING: " + folder + file)
-    let result = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load(folder + file);
-    result.name = file;
-    result.flipY = false;
-    result.encoding = three__WEBPACK_IMPORTED_MODULE_0__["RGBDEncoding"];
 
-    return result;
+function InitBasisLoader()
+{
+    basisLoader = new three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_5__["BasisTextureLoader"]();
+    basisLoader.setTranscoderPath( './basis/' );
+    basisLoader.detectSupport( renderer );
+}
+
+function LoadLightmapPromise(meshName, filepath)
+{
+    return new Promise( (resolve, reject) => {
+        new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load(filepath, (texture) => 
+        {
+            texture.name = filepath;
+            texture.flipY = false;
+            texture.encoding = three__WEBPACK_IMPORTED_MODULE_0__["RGBDEncoding"];
+            lightmaps[meshName] = texture;
+            resolve();
+        });
+    });
+}
+
+
+
+function LoadBasisLightmapPromise(meshName, filepath)
+{
+    return new Promise( (resolve, reject) => {
+        basisLoader.load(filepath, (texture) => {
+            texture.name = filepath;
+            texture.flipY = false;
+            texture.encoding = three__WEBPACK_IMPORTED_MODULE_0__["RGBDEncoding"];
+            lightmaps[meshName] = texture;
+            resolve();
+        });
+    });
 }
 
 /***/ }),
@@ -78141,6 +78724,14 @@ class BoxingSession
             this.currentTimeInWholeSeconds = -1.0;
 
 
+            this.scene.traverse((node) => {
+                if (node.name == "Screen")
+                {
+                    this.TV = node;
+                    this.TV.add(this.timerFontMesh);
+                    console.log("FOUND TV");
+                }
+            });
         });
 
         // models?
@@ -78169,24 +78760,7 @@ class BoxingSession
     update(dt, accumulatedTime)
     {
 
-        if (this.TV == null)
-        {
-            let TV;
-            this.scene.traverse(function (node) {
-                if (node.name == "Screen")
-                {
-                    TV = node;
-                    console.log("FOUND TV");
-                }
-            });
 
-            if (TV)
-            {
-                this.TV = TV;
-
-                this.TV.add(this.timerFontMesh);
-            }
-        }
 
         switch(this.state)
         {
@@ -78671,8 +79245,8 @@ __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ComputePDAcceleration", function() { return ComputePDAcceleration; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ApplyPDVec3", function() { return ApplyPDVec3; });
 function ComputePDAcceleration(
-    value,
-    velocity,
+    currentValue,
+    currentVelocity,
     targetValue,
     targetVelocity,
     frequency,
@@ -78687,15 +79261,15 @@ function ComputePDAcceleration(
     const ksI = ks  *  scale;
 	const kdI = ( kd + ks* dt ) * scale;
 
-    return ksI * (targetValue - value) + kdI * (targetVelocity - velocity);
+    return ksI * (targetValue - currentValue) + kdI * (targetVelocity - currentVelocity);
 }
 
 let _newVelocity = new THREE.Vector3();
 let _newValue = new THREE.Vector3();
 
 function ApplyPDVec3(
-    value, 
-    velocity,
+    currentValue, 
+    currentVelocity,
     targetValue,
     targetVelocity,
     frequency,
@@ -78703,17 +79277,17 @@ function ApplyPDVec3(
     dt
 )
 {
-    let accelX = ComputePDAcceleration(value.x, velocity.x, targetValue.x, targetVelocity.x, frequency, damping, dt);
-    let accelY = ComputePDAcceleration(value.y, velocity.y, targetValue.y, targetVelocity.y, frequency, damping, dt);
-    let accelZ = ComputePDAcceleration(value.z, velocity.z, targetValue.z, targetVelocity.z, frequency, damping, dt);
+    let accelX = ComputePDAcceleration(currentValue.x, currentVelocity.x, targetValue.x, targetVelocity.x, frequency, damping, dt);
+    let accelY = ComputePDAcceleration(currentValue.y, currentVelocity.y, targetValue.y, targetVelocity.y, frequency, damping, dt);
+    let accelZ = ComputePDAcceleration(currentValue.z, currentVelocity.z, targetValue.z, targetVelocity.z, frequency, damping, dt);
     
-    velocity.x += accelX * dt;
-    velocity.y += accelY * dt;
-    velocity.z += accelZ * dt;
+    currentVelocity.x += accelX * dt;
+    currentVelocity.y += accelY * dt;
+    currentVelocity.z += accelZ * dt;
     
-    value.x += velocity.x * dt;
-    value.y += velocity.y * dt;
-    value.z += velocity.z * dt;
+    currentValue.x += currentVelocity.x * dt;
+    currentValue.y += currentVelocity.y * dt;
+    currentValue.z += currentVelocity.z * dt;
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 

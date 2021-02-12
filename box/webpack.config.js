@@ -36,6 +36,13 @@ module.exports = {
     new webpack.ProvidePlugin({
       THREE: 'three'
     }),
+    new CopyPlugin(
+      {
+        patterns: [
+          {from :"node_modules/three/examples/js/libs/basis/", to:"basis"}
+        ]
+      }
+    ),
     // new CopyPlugin({
     //   patterns: [
     //     { from: "node_modules/@webxr-input-profiles/assets/dist/profiles", to: "profiles" }

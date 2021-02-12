@@ -64,8 +64,9 @@ export class Bag extends THREE.Group
                         //obj.receiveShadow = true;
                         this.mesh = obj;
                         obj.name = "BAG " + i;
-                        obj.material.roughness = 0.3;
+                        obj.material.roughness = 0.25;
                         obj.material.envMapIntensity = 1.0;
+                        obj.material.envMap = this.scene.envMap;
                     }
                     else if (obj.name == "PunchEffectMesh")
                     {
@@ -146,11 +147,11 @@ export class Bag extends THREE.Group
     update(dt, accumulatedTime)
     {
 
-        if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
-        {
-            this.mesh.material.envMap = this.scene.envMap;
-            console.log("SET BAG ENVMAP");
-        }
+        // if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
+        // {
+        //     this.mesh.material.envMap = this.scene.envMap;
+        //     console.log("SET BAG ENVMAP");
+        // }
         this.accumulatedTime = accumulatedTime;
 
         if (this.renderer && this.renderer.xr && this.renderer.xr.isPresenting)
