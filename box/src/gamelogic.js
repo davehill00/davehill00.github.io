@@ -1,9 +1,6 @@
 var createGeometry = require('three-bmfont-text')
 var loadFont = require('load-bmfont')
 import * as THREE from 'three';
-import { NotEqualDepth } from 'three';
-
-const createWindow = require('live-moving-average')
 
 const kIntroDuration = 3.0;
 const SESSION_NULL = 0;
@@ -14,17 +11,26 @@ const SESSION_OUTRO = 4;
 
 export class BoxingSession
 {
-    constructor(scene, numRounds, roundDuration, restDuration)
+    constructor(scene, audioListener, numRounds, roundDuration, restDuration)
     {
         this.scene = scene;
+        this.audioListener = audioListener;
+
         this.TV = null;
-
-
-
 
         //load assets here
         
         // sounds
+        this.sound321 = new THREE.PositionalAudio(audioListener);
+        this.sound321.setRefDistance(40.0);
+        this.sound321.setVolume(1.0);
+        new THREE.AudioLoader().load(
+            "./content/simple_bell.mp3", 
+            (buffer) => 
+            {
+                this.sound321.buffer = buffer;
+            });
+        
         // font
         loadFont('./content/numbers.fnt',
         (err, font) => {
@@ -72,12 +78,15 @@ export class BoxingSession
             this.currentTimeInWholeSeconds = -1.0;
 
 
+
+
             this.scene.traverse((node) => {
                 if (node.name == "Screen")
                 {
                     this.TV = node;
                     this.TV.add(this.timerFontMesh);
                     console.log("FOUND TV");
+                    this.TV.add(this.sound321);
                 }
             });
         });
@@ -102,6 +111,7 @@ export class BoxingSession
         this.state = SESSION_INTRO;
         this.elapsedTime = 0.0;
 
+
         //play "get ready" sound
     }
 
@@ -121,6 +131,9 @@ export class BoxingSession
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
                     // play "starting bell" sound
+                    this.sound321.play();
+
+                    this.currentRound = 1;
                 }
                 else
                 {
@@ -141,6 +154,7 @@ export class BoxingSession
                     }
                     this.elapsedTime = 0.0;
                     //play "end of round" sound
+                    this.sound321.play();
                 }
                 else
                 {
@@ -154,6 +168,8 @@ export class BoxingSession
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
                     // play "start of round" sound
+                    this.sound321.play();
+                    this.currentRound++;
                 }
                 else
                 {
@@ -161,6 +177,7 @@ export class BoxingSession
                 }
                 break;
             case SESSION_OUTRO:
+                this.blankTimer();
                 break;
         }
     }
@@ -187,6 +204,10 @@ export class BoxingSession
             this.timerFontMesh.position.x -= 0.75;
         }
 
+    }
+    blankTimer()
+    {
+        this.timerFontMesh.visible = false;
     }
 }
 
@@ -251,7 +272,6 @@ export class PunchingStats
         this.punches = 0;
         this.lastPunchTime = -1.0;
         this.averagePunchRate = 1.0;
-        this.punchRateAverageWindow = createWindow(16); // = new CircularBuffer(32);
   
         this.punchRateNew = new MovingAverage(32, 4.0); //, 1.0);
 
@@ -323,7 +343,6 @@ export class PunchingStats
             }
         }
         
-        //let avgPPM = this.punchRateAverageWindow.get();
         let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
 
     //     const kSmoothPPM = 0.005;

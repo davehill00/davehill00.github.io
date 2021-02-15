@@ -419,12 +419,12 @@
         {
             "mimeType" : "image/basis",
             "name" : "WoodFloor041_1K_Color",
-            "uri" : "WoodFloor041_2K_Color.basis"
+            "uri" : "WoodFloor041_1K_Color.basis"
         },
         {
             "mimeType" : "image/basis",
             "name" : "WoodFloor041_1K_Roughness",
-            "uri" : "WoodFloor041_2K_Roughness.basis"
+            "uri" : "WoodFloor041_1K_Roughness.basis"
         }
     ],
     "accessors" : [

@@ -21,6 +21,9 @@ import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-con
 import { Fog } from 'three';
 import { Session } from './gamelogic.js';
 import * as HUD from './StatsHud.js';
+import {PageUI} from './pageUI.js';
+
+import css from './styles.css';
 
 const uri = './profiles/';
 const motionControllers = {};
@@ -49,15 +52,17 @@ let basisLoader = null;
 
 let envMapObjects = {}
 let hud = null;
+let pageUI = null;
 
 initialize();
 
 function initialize()
 {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 30);
     camera.position.z = 5.0;
     camera.position.y = 2.0;
+    //camera.rotation.x = -0.17;
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
 
@@ -81,9 +86,25 @@ function initialize()
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.25;
 
+    pageUI = new PageUI(renderer);
+
+
     document.body.appendChild(renderer.domElement);
-    let button = VRButton.createButton(renderer);
-    document.body.appendChild(button);
+
+
+
+    // let button = VRButton.createButton(renderer);
+    // document.body.appendChild(button);
+
+    // let para = document.createElement( 'p' );
+    // para.innerHTML = "TESTING 123";
+    // para.style.position = 'absolute';
+    // para.style.bottom = "40px";
+    // para.style.color = "#FF00FF";
+
+    // document.body.appendChild(para);
+
+
 
     clock = new THREE.Clock();
 
@@ -276,7 +297,7 @@ function initialize()
 
 function render() {
 
-    //hud.update();
+    // hud.update();
 
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
@@ -304,6 +325,7 @@ export function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, 
 function onSessionStart()
 {
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
+    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime);
     gameLogic.start();
 }
 
@@ -317,7 +339,7 @@ function initScene(scene, camera, renderer)
     bag = new Bag(audioListener, scene, camera, renderer);
     scene.add(bag);
 
-    gameLogic = new BoxingSession(scene, 3, 120, 20);
+    gameLogic = new BoxingSession(scene, audioListener, 3, 120, 20);
     punchingStats = new PunchingStats(scene, bag);
 }
 
@@ -441,5 +463,18 @@ function LoadBasisLightmapPromise(meshName, filepath)
             lightmaps[meshName] = texture;
             resolve();
         });
+    });
+}
+
+export function OnStartButton()
+{
+    
+    const sessionInit = { optionalFeatures: [ 
+        'local-floor', 
+        'bounded-floor', 
+        'hand-tracking'
+    ]};
+    navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( (session) => {
+        renderer.xr.setSession(session);
     });
 }
