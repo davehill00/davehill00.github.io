@@ -15785,7 +15785,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()(_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default.a);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, ".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: white;\r\n    opacity: 20%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 3vw;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":[".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: white;\r\n    opacity: 20%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 3vw;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, ".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":[".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
@@ -78545,9 +78545,9 @@ initialize();
 function initialize()
 {
     scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
-    camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](50, window.innerWidth / window.innerHeight, 0.01, 30);
-    camera.position.z = 5.0;
-    camera.position.y = 2.0;
+    camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](30, window.innerWidth / window.innerHeight, 0.01, 30);
+    camera.position.z = 0.0;
+    camera.position.y = 1.3;
     //camera.rotation.x = -0.17;
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
@@ -78576,21 +78576,6 @@ function initialize()
 
 
     document.body.appendChild(renderer.domElement);
-
-
-
-    // let button = VRButton.createButton(renderer);
-    // document.body.appendChild(button);
-
-    // let para = document.createElement( 'p' );
-    // para.innerHTML = "TESTING 123";
-    // para.style.position = 'absolute';
-    // para.style.bottom = "40px";
-    // para.style.color = "#FF00FF";
-
-    // document.body.appendChild(para);
-
-
 
     clock = new three__WEBPACK_IMPORTED_MODULE_0__["Clock"]();
 
@@ -78818,6 +78803,7 @@ function onSessionStart()
 function onSessionEnd()
 {
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
+    gameLogic.pause();
 }
 
 function initScene(scene, camera, renderer)
@@ -79091,6 +79077,7 @@ const SESSION_INTRO = 1;
 const SESSION_ROUND = 2;
 const SESSION_REST = 3;
 const SESSION_OUTRO = 4;
+const SESSION_PAUSED = 5;
 
 class BoxingSession
 {
@@ -79115,7 +79102,7 @@ class BoxingSession
             });
         
         // font
-        loadFont('./content/numbers.fnt',
+        loadFont('./content/dico_mono_slab.fnt',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
             // word wrapped to 300px and right-aligned
@@ -79126,13 +79113,19 @@ class BoxingSession
                 //width: 800
             })
 
+            this.roundsFontGeometry = createGeometry({
+                align: 'center',
+                font: font,
+                flipY: true,
+            });
+
             // const manager = new THREE.LoadingManager();
             // manager.addHandler( /\.dds$/i, new DDSLoader() );
 
             // // the texture atlas containing our glyphs
             // var texture = new DDSLoader(manager).load('./content/output.dds');
 
-            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/numbers_0.png');
+            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/dico_mono_slab_0.png');
 
             // we can use a simple ThreeJS material
             this.timerFontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({
@@ -79151,10 +79144,18 @@ class BoxingSession
             this.timerFontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.timerFontGeometry, this.timerFontMaterial);
             this.timerFontMesh.renderOrder = 0;
             //this.timerFontMesh.position.set(0.0, 0.5, -3.0);
-            let kFontScale = 0.002;
+            let kFontScale = 0.0022;
             this.timerFontMesh.scale.set(kFontScale, kFontScale, kFontScale);
             this.timerFontMesh.rotation.set(3.14, 0.0, 0.0);
-            this.timerFontMesh.position.set(0.0, 0.09, 0.0);
+            this.timerFontMesh.position.set(0.0, 0.085, 0.0);
+
+
+            this.roundsFontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.roundsFontGeometry, this.timerFontMaterial);
+            let kRoundsFontScale = 0.0005;
+            this.roundsFontMesh.scale.set(kRoundsFontScale, kRoundsFontScale, kRoundsFontScale);
+            this.roundsFontMesh.rotation.set(3.14, 0.0, 0.0);
+            this.roundsFontMesh.position.set(0.0, -0.02, 0.0);
+
 
             //updateTimerString(timerValue); //"2:00");
 
@@ -79168,8 +79169,12 @@ class BoxingSession
                 {
                     this.TV = node;
                     this.TV.add(this.timerFontMesh);
-                    console.log("FOUND TV");
+                    this.TV.add(this.roundsFontMesh);
+                    // console.log("FOUND TV");
                     this.TV.add(this.sound321);
+
+                    this.updateTimer();
+                    this.updateRoundsMessage();
                 }
             });
         });
@@ -79193,16 +79198,28 @@ class BoxingSession
     {
         this.state = SESSION_INTRO;
         this.elapsedTime = 0.0;
+        this.currentRound = 1;
+        this.updateRoundsMessage();
 
 
         //play "get ready" sound
     }
 
+    pause()
+    {
+        this.prevState = this.state;
+        this.state = SESSION_PAUSED;
+        this.updateRoundsMessage();
+    }
+
+    resume()
+    {
+        this.state = this.prevState;
+        this.updateRoundsMessage();
+    }
+
     update(dt, accumulatedTime)
     {
-
-
-
         switch(this.state)
         {
             case SESSION_NULL:
@@ -79215,8 +79232,7 @@ class BoxingSession
                     this.elapsedTime = 0.0;
                     // play "starting bell" sound
                     this.sound321.play();
-
-                    this.currentRound = 1;
+                    this.updateRoundsMessage();
                 }
                 else
                 {
@@ -79238,6 +79254,7 @@ class BoxingSession
                     this.elapsedTime = 0.0;
                     //play "end of round" sound
                     this.sound321.play();
+                    this.updateRoundsMessage();
                 }
                 else
                 {
@@ -79253,6 +79270,7 @@ class BoxingSession
                     // play "start of round" sound
                     this.sound321.play();
                     this.currentRound++;
+                    this.updateRoundsMessage();
                 }
                 else
                 {
@@ -79267,9 +79285,18 @@ class BoxingSession
 
     updateTimer(value)
     {
-        let newTimeInWholeSeconds = Math.ceil(value);
-        if (newTimeInWholeSeconds != this.currentTimeInWholeSeconds)
+        let message;
+        if (this.state == SESSION_NULL)
         {
+            message = "--:--";
+        }
+        else
+        {
+            let newTimeInWholeSeconds = Math.ceil(value);
+            if (newTimeInWholeSeconds == this.currentTimeInWholeSeconds)
+            {
+                return;
+            }
             this.currentTimeInWholeSeconds = newTimeInWholeSeconds;
 
 
@@ -79277,15 +79304,43 @@ class BoxingSession
             let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
             let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
 
-            let timeString = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
-
-            this.timerFontGeometry.update(timeString);
-            this.timerFontGeometry.computeBoundingBox();
-            let box = this.timerFontGeometry.boundingBox;
-            this.timerFontMesh.position.x = box.min.x; //(box.max.x - box.min.x) * -0.5;
-            this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
-            this.timerFontMesh.position.x -= 0.75;
+            message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
         }
+
+        this.timerFontGeometry.update(message);
+        this.timerFontGeometry.computeBoundingBox();
+        let box = this.timerFontGeometry.boundingBox;
+        this.timerFontMesh.position.x = box.min.x;
+        this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
+        let quantizedMaxX = Math.floor(box.max.x * this.timerFontMesh.scale.x * 10.0) * 0.1;
+        this.timerFontMesh.position.x += quantizedMaxX * -0.5;
+    }
+    updateRoundsMessage()
+    {
+        let message;
+        if (this.state == SESSION_NULL || this.state == SESSION_PAUSED)
+        {
+            message = "ROUND"+ ("-/-").padStart(6, ' ') 
+            + "\n\n\n\n"
+            + (this.state == SESSION_PAUSED ? "PAUSED" : "IDLE");
+
+        }
+        else
+        {
+            message = "ROUND"+ (this.currentRound.toString() + "/" + this.numRounds.toString()).padStart(6, ' ') 
+            + "\n\n\n\n" 
+            + (this.state == SESSION_INTRO ? "GET READY" : 
+            (this.state == SESSION_ROUND) ? "FIGHT" :
+            (this.state == SESSION_REST) ? "REST" : "");
+        }
+        this.roundsFontGeometry.update(message);
+        this.roundsFontGeometry.computeBoundingBox();
+        let box = this.roundsFontGeometry.boundingBox;
+
+        this.roundsFontMesh.position.x = box.min.x;
+        this.roundsFontMesh.position.x *= this.roundsFontMesh.scale.x;
+        let quantizedMaxX = Math.floor(box.max.x * this.roundsFontMesh.scale.x * 10.0) * 0.1;
+        this.roundsFontMesh.position.x += quantizedMaxX * -0.5;
 
     }
     blankTimer()
@@ -79302,16 +79357,15 @@ class PunchingStats
         this.scene = scene;
         this.TV = null;
       
-        loadFont('./content/small_font.fnt',
+        loadFont('./content/dico_mono_slab.fnt',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
             // word wrapped to 300px and right-aligned
             this.fontGeometry = createGeometry({
-                align: 'right',
+                align: 'center',
                 font: font,
                 flipY: true,
-                //width: 800
-            })
+            });
 
             // const manager = new THREE.LoadingManager();
             // manager.addHandler( /\.dds$/i, new DDSLoader() );
@@ -79319,7 +79373,7 @@ class PunchingStats
             // // the texture atlas containing our glyphs
             // var texture = new DDSLoader(manager).load('./content/output.dds');
 
-            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/small_font_0.png');
+            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/dico_mono_slab_0.png');
 
             // we can use a simple ThreeJS material
             this.fontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({
@@ -79336,16 +79390,25 @@ class PunchingStats
             // scale and position the mesh to get it doing something reasonable
             this.fontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.fontGeometry, this.fontMaterial);
             this.fontMesh.renderOrder = 0;
-            this.fontMesh.position.set(0.0, -0.45, 0.0);
-            let kStatsFontScale = 0.0025;
+            this.fontMesh.position.set(0.0, -0.45, 0.02);
+            let kStatsFontScale = 0.0007; //25;
             this.fontMesh.scale.set(kStatsFontScale, kStatsFontScale, kStatsFontScale);
             this.fontMesh.rotation.set(3.14, 0.0, 0.0);
 
 
             //updateTimerString(timerValue); //"2:00");
 
+            this.scene.traverse((node) => {
+                if (node.name == "Screen")
+                {
+                    this.TV = node;
+                    this.TV.add(this.fontMesh);
+                    // console.log("FOUND TV");
+                    //this.TV.add(this.sound321);
+                }
+            });
 
-            this.scene.add(this.fontMesh);
+            //this.scene.add(this.fontMesh);
             this.updateStatsDisplay();
 
             this.currentTimeInWholeSeconds = -1.0;
@@ -79374,15 +79437,6 @@ class PunchingStats
 
         }
         
-        // if (this.lastPunchTime < 0.0)
-        // {
-        //     this.lastPunchTime = accumulatedTime;
-        // }
-        // else if ((accumulatedTime - this.lastPunchTime) > 2.0)
-        // {
-        //     this.lastPunchTime = accumulatedTime - 1.0;
-        //     this.updateStatsDisplay();
-        // }
         this.accumulatedTime = accumulatedTime;
     }
 
@@ -79403,42 +79457,46 @@ class PunchingStats
             return;
 
 
-        if (this.TV == null)
-        {
-            let TV;
-            this.scene.traverse(function (node) {
-                if (node.name == "Screen")
-                {
-                    TV = node;
-                    console.log("FOUND TV");
-                }
-            });
+        // if (this.TV == null)
+        // {
+        //     let TV;
+        //     this.scene.traverse(function (node) {
+        //         if (node.name == "Screen")
+        //         {
+        //             TV = node;
+        //             console.log("FOUND TV");
+        //         }
+        //     });
 
-            if (TV)
-            {
-                this.TV = TV;
+        //     if (TV)
+        //     {
+        //         this.TV = TV;
 
-                this.TV.add(this.fontMesh);
-            }
-            else
-            {
-                return;
-            }
-        }
+        //         this.TV.add(this.fontMesh);
+        //     }
+        //     else
+        //     {
+        //         return;
+        //     }
+        // }
         
         let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
 
     //     const kSmoothPPM = 0.005;
     //     this.smoothAvgPPM = ppm * kSmoothPPM + (this.smoothAvgPPM * (1.0 - kSmoothPPM));
 
+        const kPadStart = 15;
         this.fontGeometry.update(
-            this.punches.toString().padStart(3, '0') + " PUNCHES\n" + 
-            ppm.toFixed(0).toString().padStart(3, '0') + " PPM\n" + 
-            (isPunch ? + this.lastPunchSpeed.toFixed(1) : "---") + "M/S");
+            // "ROUND:    3/8\n\n\n" + "FIGHT\n" +
+            "PUNCHES:" + this.punches.toString().padStart(3, '0').padStart(kPadStart - 8, ' ') + "\n" + 
+            "PPM:" + ppm.toFixed(0).toString().padStart(3, '0').padStart(kPadStart - 4, ' ') + "\n" + 
+            "SPEED:" + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---").padStart(kPadStart - 6, ' '));
         this.fontGeometry.computeBoundingBox();
         let box = this.fontGeometry.boundingBox;
         this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;
-        this.fontMesh.position.x -= 0.05;
+
+        let quantizedMaxX = Math.floor(box.max.x * this.fontMesh.scale.x * 10.0) * 0.1;
+        this.fontMesh.position.x += quantizedMaxX * -0.5;
         
         this.nextStatsUpdate = this.accumulatedTime + 1.5;
     }
@@ -79748,9 +79806,9 @@ class PageUI
 
     createUIElements()
     {
-        // this.uiBackplate = document.createElement("div");
-        // this.uiBackplate.className = "ui_backplate";
-        // document.body.appendChild(this.uiBackplate);
+        this.uiBackplate = document.createElement("div");
+        this.uiBackplate.className = "ui_backplate";
+        document.body.appendChild(this.uiBackplate);
 
         this.uiContainer = document.createElement("div");
         this.uiContainer.className = "ui_container";
@@ -79781,7 +79839,9 @@ class PageUI
 
         
         this.uiConfigureButton = document.createElement("button");
-        this.uiConfigureButton.innerHTML = "SETUP";
+        this.uiConfigureButton.style.fontSize = "2.25vw"
+        this.uiConfigureButton.style.borderWidth = "0.4vw";
+        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
         this.uiConfigureButton.disabled = true;
         this.uiConfigureButton.onclick = () => {this.onConfigureClicked()};
         this.uiButtonGroup.appendChild(this.uiConfigureButton);
@@ -80061,6 +80121,16 @@ class PageUI
 
         this.uiConfigurationContainer.style.height = "0%";
         this.uiConfigurationGroup.style.visibility = "hidden";
+
+        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
+    }
+
+    getMatchConfigString()
+    {
+        let roundOrRounds = (this.roundCount > 1) ? 
+            (" Rounds,<br>" + this.formatTime(this.restTime) + " Rest") : " Round";
+
+        return this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
     }
 }
 

@@ -59,9 +59,9 @@ initialize();
 function initialize()
 {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 30);
-    camera.position.z = 5.0;
-    camera.position.y = 2.0;
+    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 30);
+    camera.position.z = 0.0;
+    camera.position.y = 1.3;
     //camera.rotation.x = -0.17;
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
@@ -90,21 +90,6 @@ function initialize()
 
 
     document.body.appendChild(renderer.domElement);
-
-
-
-    // let button = VRButton.createButton(renderer);
-    // document.body.appendChild(button);
-
-    // let para = document.createElement( 'p' );
-    // para.innerHTML = "TESTING 123";
-    // para.style.position = 'absolute';
-    // para.style.bottom = "40px";
-    // para.style.color = "#FF00FF";
-
-    // document.body.appendChild(para);
-
-
 
     clock = new THREE.Clock();
 
@@ -332,6 +317,7 @@ function onSessionStart()
 function onSessionEnd()
 {
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
+    gameLogic.pause();
 }
 
 function initScene(scene, camera, renderer)

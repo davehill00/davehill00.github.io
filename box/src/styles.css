@@ -80,8 +80,8 @@ a:hover {
 }
 .ui_backplate
 {
-    background-color: white;
-    opacity: 20%;
+    background-color: #5D1719;
+    opacity: 100%;
     position: absolute;
     /* top: 2.5%;
     left: 2.5%;
@@ -110,7 +110,7 @@ a:hover {
 .configuration_label
 {
     font-family: 'Kameron', sans-serif;
-    font-size: 3vw;
+    font-size: 32px;
     /* 32px; */
     color:#9f7909;
     background-color: #000000;

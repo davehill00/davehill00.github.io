@@ -42,9 +42,9 @@ export class PageUI
 
     createUIElements()
     {
-        // this.uiBackplate = document.createElement("div");
-        // this.uiBackplate.className = "ui_backplate";
-        // document.body.appendChild(this.uiBackplate);
+        this.uiBackplate = document.createElement("div");
+        this.uiBackplate.className = "ui_backplate";
+        document.body.appendChild(this.uiBackplate);
 
         this.uiContainer = document.createElement("div");
         this.uiContainer.className = "ui_container";
@@ -75,7 +75,9 @@ export class PageUI
 
         
         this.uiConfigureButton = document.createElement("button");
-        this.uiConfigureButton.innerHTML = "SETUP";
+        this.uiConfigureButton.style.fontSize = "2.25vw"
+        this.uiConfigureButton.style.borderWidth = "0.4vw";
+        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
         this.uiConfigureButton.disabled = true;
         this.uiConfigureButton.onclick = () => {this.onConfigureClicked()};
         this.uiButtonGroup.appendChild(this.uiConfigureButton);
@@ -355,5 +357,15 @@ export class PageUI
 
         this.uiConfigurationContainer.style.height = "0%";
         this.uiConfigurationGroup.style.visibility = "hidden";
+
+        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
+    }
+
+    getMatchConfigString()
+    {
+        let roundOrRounds = (this.roundCount > 1) ? 
+            (" Rounds,<br>" + this.formatTime(this.restTime) + " Rest") : " Round";
+
+        return this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
     }
 }

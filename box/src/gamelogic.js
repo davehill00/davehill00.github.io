@@ -8,6 +8,7 @@ const SESSION_INTRO = 1;
 const SESSION_ROUND = 2;
 const SESSION_REST = 3;
 const SESSION_OUTRO = 4;
+const SESSION_PAUSED = 5;
 
 export class BoxingSession
 {
@@ -32,7 +33,7 @@ export class BoxingSession
             });
         
         // font
-        loadFont('./content/numbers.fnt',
+        loadFont('./content/dico_mono_slab.fnt',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
             // word wrapped to 300px and right-aligned
@@ -43,13 +44,19 @@ export class BoxingSession
                 //width: 800
             })
 
+            this.roundsFontGeometry = createGeometry({
+                align: 'center',
+                font: font,
+                flipY: true,
+            });
+
             // const manager = new THREE.LoadingManager();
             // manager.addHandler( /\.dds$/i, new DDSLoader() );
 
             // // the texture atlas containing our glyphs
             // var texture = new DDSLoader(manager).load('./content/output.dds');
 
-            var texture = new THREE.TextureLoader().load('./content/numbers_0.png');
+            var texture = new THREE.TextureLoader().load('./content/dico_mono_slab_0.png');
 
             // we can use a simple ThreeJS material
             this.timerFontMaterial = new THREE.MeshBasicMaterial({
@@ -68,10 +75,18 @@ export class BoxingSession
             this.timerFontMesh = new THREE.Mesh(this.timerFontGeometry, this.timerFontMaterial);
             this.timerFontMesh.renderOrder = 0;
             //this.timerFontMesh.position.set(0.0, 0.5, -3.0);
-            let kFontScale = 0.002;
+            let kFontScale = 0.0022;
             this.timerFontMesh.scale.set(kFontScale, kFontScale, kFontScale);
             this.timerFontMesh.rotation.set(3.14, 0.0, 0.0);
-            this.timerFontMesh.position.set(0.0, 0.09, 0.0);
+            this.timerFontMesh.position.set(0.0, 0.085, 0.0);
+
+
+            this.roundsFontMesh = new THREE.Mesh(this.roundsFontGeometry, this.timerFontMaterial);
+            let kRoundsFontScale = 0.0005;
+            this.roundsFontMesh.scale.set(kRoundsFontScale, kRoundsFontScale, kRoundsFontScale);
+            this.roundsFontMesh.rotation.set(3.14, 0.0, 0.0);
+            this.roundsFontMesh.position.set(0.0, -0.02, 0.0);
+
 
             //updateTimerString(timerValue); //"2:00");
 
@@ -85,8 +100,12 @@ export class BoxingSession
                 {
                     this.TV = node;
                     this.TV.add(this.timerFontMesh);
-                    console.log("FOUND TV");
+                    this.TV.add(this.roundsFontMesh);
+                    // console.log("FOUND TV");
                     this.TV.add(this.sound321);
+
+                    this.updateTimer();
+                    this.updateRoundsMessage();
                 }
             });
         });
@@ -110,16 +129,28 @@ export class BoxingSession
     {
         this.state = SESSION_INTRO;
         this.elapsedTime = 0.0;
+        this.currentRound = 1;
+        this.updateRoundsMessage();
 
 
         //play "get ready" sound
     }
 
+    pause()
+    {
+        this.prevState = this.state;
+        this.state = SESSION_PAUSED;
+        this.updateRoundsMessage();
+    }
+
+    resume()
+    {
+        this.state = this.prevState;
+        this.updateRoundsMessage();
+    }
+
     update(dt, accumulatedTime)
     {
-
-
-
         switch(this.state)
         {
             case SESSION_NULL:
@@ -132,8 +163,7 @@ export class BoxingSession
                     this.elapsedTime = 0.0;
                     // play "starting bell" sound
                     this.sound321.play();
-
-                    this.currentRound = 1;
+                    this.updateRoundsMessage();
                 }
                 else
                 {
@@ -155,6 +185,7 @@ export class BoxingSession
                     this.elapsedTime = 0.0;
                     //play "end of round" sound
                     this.sound321.play();
+                    this.updateRoundsMessage();
                 }
                 else
                 {
@@ -170,6 +201,7 @@ export class BoxingSession
                     // play "start of round" sound
                     this.sound321.play();
                     this.currentRound++;
+                    this.updateRoundsMessage();
                 }
                 else
                 {
@@ -184,9 +216,18 @@ export class BoxingSession
 
     updateTimer(value)
     {
-        let newTimeInWholeSeconds = Math.ceil(value);
-        if (newTimeInWholeSeconds != this.currentTimeInWholeSeconds)
+        let message;
+        if (this.state == SESSION_NULL)
         {
+            message = "--:--";
+        }
+        else
+        {
+            let newTimeInWholeSeconds = Math.ceil(value);
+            if (newTimeInWholeSeconds == this.currentTimeInWholeSeconds)
+            {
+                return;
+            }
             this.currentTimeInWholeSeconds = newTimeInWholeSeconds;
 
 
@@ -194,15 +235,43 @@ export class BoxingSession
             let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
             let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
 
-            let timeString = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
-
-            this.timerFontGeometry.update(timeString);
-            this.timerFontGeometry.computeBoundingBox();
-            let box = this.timerFontGeometry.boundingBox;
-            this.timerFontMesh.position.x = box.min.x; //(box.max.x - box.min.x) * -0.5;
-            this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
-            this.timerFontMesh.position.x -= 0.75;
+            message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
         }
+
+        this.timerFontGeometry.update(message);
+        this.timerFontGeometry.computeBoundingBox();
+        let box = this.timerFontGeometry.boundingBox;
+        this.timerFontMesh.position.x = box.min.x;
+        this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
+        let quantizedMaxX = Math.floor(box.max.x * this.timerFontMesh.scale.x * 10.0) * 0.1;
+        this.timerFontMesh.position.x += quantizedMaxX * -0.5;
+    }
+    updateRoundsMessage()
+    {
+        let message;
+        if (this.state == SESSION_NULL || this.state == SESSION_PAUSED)
+        {
+            message = "ROUND"+ ("-/-").padStart(6, ' ') 
+            + "\n\n\n\n"
+            + (this.state == SESSION_PAUSED ? "PAUSED" : "IDLE");
+
+        }
+        else
+        {
+            message = "ROUND"+ (this.currentRound.toString() + "/" + this.numRounds.toString()).padStart(6, ' ') 
+            + "\n\n\n\n" 
+            + (this.state == SESSION_INTRO ? "GET READY" : 
+            (this.state == SESSION_ROUND) ? "FIGHT" :
+            (this.state == SESSION_REST) ? "REST" : "");
+        }
+        this.roundsFontGeometry.update(message);
+        this.roundsFontGeometry.computeBoundingBox();
+        let box = this.roundsFontGeometry.boundingBox;
+
+        this.roundsFontMesh.position.x = box.min.x;
+        this.roundsFontMesh.position.x *= this.roundsFontMesh.scale.x;
+        let quantizedMaxX = Math.floor(box.max.x * this.roundsFontMesh.scale.x * 10.0) * 0.1;
+        this.roundsFontMesh.position.x += quantizedMaxX * -0.5;
 
     }
     blankTimer()
@@ -219,16 +288,15 @@ export class PunchingStats
         this.scene = scene;
         this.TV = null;
       
-        loadFont('./content/small_font.fnt',
+        loadFont('./content/dico_mono_slab.fnt',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
             // word wrapped to 300px and right-aligned
             this.fontGeometry = createGeometry({
-                align: 'right',
+                align: 'center',
                 font: font,
                 flipY: true,
-                //width: 800
-            })
+            });
 
             // const manager = new THREE.LoadingManager();
             // manager.addHandler( /\.dds$/i, new DDSLoader() );
@@ -236,7 +304,7 @@ export class PunchingStats
             // // the texture atlas containing our glyphs
             // var texture = new DDSLoader(manager).load('./content/output.dds');
 
-            var texture = new THREE.TextureLoader().load('./content/small_font_0.png');
+            var texture = new THREE.TextureLoader().load('./content/dico_mono_slab_0.png');
 
             // we can use a simple ThreeJS material
             this.fontMaterial = new THREE.MeshBasicMaterial({
@@ -253,16 +321,25 @@ export class PunchingStats
             // scale and position the mesh to get it doing something reasonable
             this.fontMesh = new THREE.Mesh(this.fontGeometry, this.fontMaterial);
             this.fontMesh.renderOrder = 0;
-            this.fontMesh.position.set(0.0, -0.45, 0.0);
-            let kStatsFontScale = 0.0025;
+            this.fontMesh.position.set(0.0, -0.45, 0.02);
+            let kStatsFontScale = 0.0007; //25;
             this.fontMesh.scale.set(kStatsFontScale, kStatsFontScale, kStatsFontScale);
             this.fontMesh.rotation.set(3.14, 0.0, 0.0);
 
 
             //updateTimerString(timerValue); //"2:00");
 
+            this.scene.traverse((node) => {
+                if (node.name == "Screen")
+                {
+                    this.TV = node;
+                    this.TV.add(this.fontMesh);
+                    // console.log("FOUND TV");
+                    //this.TV.add(this.sound321);
+                }
+            });
 
-            this.scene.add(this.fontMesh);
+            //this.scene.add(this.fontMesh);
             this.updateStatsDisplay();
 
             this.currentTimeInWholeSeconds = -1.0;
@@ -291,15 +368,6 @@ export class PunchingStats
 
         }
         
-        // if (this.lastPunchTime < 0.0)
-        // {
-        //     this.lastPunchTime = accumulatedTime;
-        // }
-        // else if ((accumulatedTime - this.lastPunchTime) > 2.0)
-        // {
-        //     this.lastPunchTime = accumulatedTime - 1.0;
-        //     this.updateStatsDisplay();
-        // }
         this.accumulatedTime = accumulatedTime;
     }
 
@@ -320,42 +388,46 @@ export class PunchingStats
             return;
 
 
-        if (this.TV == null)
-        {
-            let TV;
-            this.scene.traverse(function (node) {
-                if (node.name == "Screen")
-                {
-                    TV = node;
-                    console.log("FOUND TV");
-                }
-            });
+        // if (this.TV == null)
+        // {
+        //     let TV;
+        //     this.scene.traverse(function (node) {
+        //         if (node.name == "Screen")
+        //         {
+        //             TV = node;
+        //             console.log("FOUND TV");
+        //         }
+        //     });
 
-            if (TV)
-            {
-                this.TV = TV;
+        //     if (TV)
+        //     {
+        //         this.TV = TV;
 
-                this.TV.add(this.fontMesh);
-            }
-            else
-            {
-                return;
-            }
-        }
+        //         this.TV.add(this.fontMesh);
+        //     }
+        //     else
+        //     {
+        //         return;
+        //     }
+        // }
         
         let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
 
     //     const kSmoothPPM = 0.005;
     //     this.smoothAvgPPM = ppm * kSmoothPPM + (this.smoothAvgPPM * (1.0 - kSmoothPPM));
 
+        const kPadStart = 15;
         this.fontGeometry.update(
-            this.punches.toString().padStart(3, '0') + " PUNCHES\n" + 
-            ppm.toFixed(0).toString().padStart(3, '0') + " PPM\n" + 
-            (isPunch ? + this.lastPunchSpeed.toFixed(1) : "---") + "M/S");
+            // "ROUND:    3/8\n\n\n" + "FIGHT\n" +
+            "PUNCHES:" + this.punches.toString().padStart(3, '0').padStart(kPadStart - 8, ' ') + "\n" + 
+            "PPM:" + ppm.toFixed(0).toString().padStart(3, '0').padStart(kPadStart - 4, ' ') + "\n" + 
+            "SPEED:" + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---").padStart(kPadStart - 6, ' '));
         this.fontGeometry.computeBoundingBox();
         let box = this.fontGeometry.boundingBox;
         this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;
-        this.fontMesh.position.x -= 0.05;
+
+        let quantizedMaxX = Math.floor(box.max.x * this.fontMesh.scale.x * 10.0) * 0.1;
+        this.fontMesh.position.x += quantizedMaxX * -0.5;
         
         this.nextStatsUpdate = this.accumulatedTime + 1.5;
     }
