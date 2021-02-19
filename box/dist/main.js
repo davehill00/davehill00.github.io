@@ -15785,7 +15785,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()(_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default.a);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, ".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"AAAA;IACI,kCAAkC;IAClC,eAAe;IACf,aAAa;AACjB;AACA;IACI,kCAAkC;IAClC,eAAe;IACf,cAAc;AAClB;AACA;IACI,yBAAyB;IACzB,aAAa;IACb,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;IAChB,mBAAmB;IACnB,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,QAAQ;AACZ;AACA;IACI,yBAAyB;IACzB,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;IAChB,mBAAmB;IACnB,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,aAAa;AACjB;AACA;IACI,yBAAyB;IACzB,aAAa;IACb,YAAY;IACZ,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,QAAQ;AACZ;AACA;IACI,yBAAyB;IACzB,WAAW;AACf;;AAEA;;IAEI,6BAA6B;IAC7B,eAAe;IACf,aAAa;IACb,qBAAqB;IACrB,iBAAiB;IACjB,UAAU;IACV,WAAW;IACX,kBAAkB;IAClB,YAAY;AAChB;;AAEA;IACI,cAAc;AAClB;AACA;IACI,cAAc;AAClB;AACA;IACI,cAAc;AAClB;AACA;;IAEI,kBAAkB;IAClB,OAAO;IACP,UAAU;IACV,YAAY;IACZ,UAAU;AACd;AACA;;IAEI,yBAAyB;IACzB,aAAa;IACb,kBAAkB;IAClB;;;iBAGa;IACb,QAAQ;IACR,SAAS;IACT,YAAY;IACZ,WAAW;IACX;yBACqB;AACzB;AACA;IACI,eAAe;IACf,cAAc;IACd,iBAAiB;IACjB,kBAAkB;IAClB,uBAAuB;IACvB,iBAAiB;IACjB,UAAU;IACV,YAAY;IACZ,mCAAmC;IACnC,uCAAuC;IACvC,4EAA4E;AAChF;AACA;;IAEI,kCAAkC;IAClC,eAAe;IACf,UAAU;IACV,aAAa;IACb,yBAAyB;;IAEzB,YAAY;IACZ,gBAAgB;IAChB,mBAAmB;IACnB,cAAc;AAClB;AACA;;IAEI,aAAa;IACb,uBAAuB;IACvB,mBAAmB;IACnB,iBAAiB;IACjB,WAAW;IACX,iBAAiB;IACjB,6BAA6B;AACjC;AACA;;IAEI,cAAc;IACd,UAAU;IACV,sBAAsB;IACtB,yBAAyB;IACzB,qBAAqB;IACrB,mBAAmB;IACnB,mBAAmB;IACnB,YAAY;IACZ,4EAA4E;IAC5E,iBAAiB;AACrB;AACA;;IAEI,kCAAkC;IAClC,eAAe;IACf,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,iBAAiB;IACjB,mBAAmB;IACnB,iBAAiB;IACjB,UAAU;IACV,iBAAiB;AACrB;AACA;;IAEI,aAAa;IACb,uBAAuB;IACvB,mBAAmB;IACnB,UAAU;IACV,gBAAgB;IAChB,gBAAgB;IAChB,6BAA6B;AACjC;AACA;;IAEI,UAAU;IACV,cAAc;IACd,2BAA2B;AAC/B;AACA;;IAEI,kCAAkC;IAClC,qBAAqB;IACrB,cAAc;IACd,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,mBAAmB;IACnB,SAAS;IACT,mBAAmB;IACnB,WAAW;IACX,WAAW;IACX,WAAW;IACX,4EAA4E;AAChF;AACA;;IAEI,aAAa;IACb,qBAAqB;AACzB;AACA;;IAEI,aAAa;IACb,qBAAqB;AACzB;;AAEA;;IAEI,kCAAkC;IAClC,eAAe;IACf,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,iBAAiB;IACjB,mBAAmB;IACnB,kBAAkB;IAClB,iBAAiB;IACjB,WAAW;IACX,YAAY;AAChB;;AAEA;;IAEI,aAAa;IACb,2BAA2B;IAC3B,UAAU;IACV,eAAe;IACf,2BAA2B;AAC/B;AACA;;IAEI,yBAAyB;AAC7B;AACA;;IAEI,iBAAiB;AACrB","sourcesContent":[".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, ".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":[".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
@@ -16617,6 +16617,108 @@ module.exports = function(buf) {
   return buf.length > 4 && equal(buf.slice(0, 4), HEADER)
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../buffer/index.js */ "./node_modules/buffer/index.js").Buffer))
+
+/***/ }),
+
+/***/ "./node_modules/object-assign/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/object-assign/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
 
 /***/ }),
 
@@ -17879,6 +17981,157 @@ module.exports.positions = function positions (glyphs) {
   return positions
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/three-bmfont-text/shaders/msdf.js":
+/*!********************************************************!*\
+  !*** ./node_modules/three-bmfont-text/shaders/msdf.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(THREE) {var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
+
+module.exports = function createMSDFShader (opt) {
+  opt = opt || {};
+  var opacity = typeof opt.opacity === 'number' ? opt.opacity : 1;
+  var alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001;
+  var precision = opt.precision || 'highp';
+  var color = opt.color;
+  var map = opt.map;
+  var negate = typeof opt.negate === 'boolean' ? opt.negate : true;
+
+  // remove to satisfy r73
+  delete opt.map;
+  delete opt.color;
+  delete opt.precision;
+  delete opt.opacity;
+  delete opt.negate;
+
+  return assign({
+    uniforms: {
+      opacity: { type: 'f', value: opacity },
+      map: { type: 't', value: map || new THREE.Texture() },
+      color: { type: 'c', value: new THREE.Color(color) }
+    },
+    vertexShader: [
+      '#version 300 es',
+      'in vec2 uv;',
+      'in vec4 position;',
+      'uniform mat4 projectionMatrix;',
+      'uniform mat4 modelViewMatrix;',
+      'out vec2 vUv;',
+      'void main() {',
+      'vUv = uv;',
+      'gl_Position = projectionMatrix * modelViewMatrix * position;',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      '#version 300 es',
+      // '#ifdef GL_OES_standard_derivatives',
+      // '#extension GL_OES_standard_derivatives : enable',
+      // '#endif',
+      'precision ' + precision + ' float;',
+      'uniform float opacity;',
+      'uniform vec3 color;',
+      'uniform sampler2D map;',
+      'in vec2 vUv;',
+      'out vec4 myOutputColor;',
+
+      'float median(float r, float g, float b) {',
+      '  return max(min(r, g), min(max(r, g), b));',
+      '}',
+
+      'void main() {',
+      '  vec3 texdata = ' + (negate ? '1.0 - ' : '') + 'texture(map, vUv).rgb;',
+      '  float sigDist = median(texdata.r, texdata.g, texdata.b) - 0.5;',
+      '  float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);',
+      '  myOutputColor = vec4(color.xyz, alpha * opacity);',
+      alphaTest === 0
+        ? ''
+        : '  if (myOutputColor.a < ' + alphaTest + ') discard;',
+      '}'
+    ].join('\n')
+  }, opt);
+};
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
+/***/ "./node_modules/three-bmfont-text/shaders/sdf.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/three-bmfont-text/shaders/sdf.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(THREE) {var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js")
+
+module.exports = function createSDFShader (opt) {
+  opt = opt || {}
+  var opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
+  var alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001
+  var precision = opt.precision || 'highp'
+  var color = opt.color
+  var map = opt.map
+
+  // remove to satisfy r73
+  delete opt.map
+  delete opt.color
+  delete opt.precision
+  delete opt.opacity
+
+  return assign({
+    uniforms: {
+      opacity: { type: 'f', value: opacity },
+      map: { type: 't', value: map || new THREE.Texture() },
+      color: { type: 'c', value: new THREE.Color(color) }
+    },
+    vertexShader: [
+      'attribute vec2 uv;',
+      'attribute vec4 position;',
+      'uniform mat4 projectionMatrix;',
+      'uniform mat4 modelViewMatrix;',
+      'varying vec2 vUv;',
+      'void main() {',
+      'vUv = uv;',
+      'gl_Position = projectionMatrix * modelViewMatrix * position;',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      '#ifdef GL_OES_standard_derivatives',
+      '#extension GL_OES_standard_derivatives : enable',
+      '#endif',
+      'precision ' + precision + ' float;',
+      'uniform float opacity;',
+      'uniform vec3 color;',
+      'uniform sampler2D map;',
+      'varying vec2 vUv;',
+
+      'float aastep(float value) {',
+      '  #ifdef GL_OES_standard_derivatives',
+      '    float afwidth = length(vec2(dFdx(value), dFdy(value))) * 0.70710678118654757;',
+      '  #else',
+      '    float afwidth = (1.0 / 32.0) * (1.4142135623730951 / (2.0 * gl_FragCoord.w));',
+      '  #endif',
+      '  return smoothstep(0.5 - afwidth, 0.5 + afwidth, value);',
+      '}',
+
+      'void main() {',
+      '  vec4 texColor = texture2D(map, vUv);',
+      '  float alpha = aastep(texColor.a);',
+      '  gl_FragColor = vec4(color, opacity * alpha);',
+      alphaTest === 0
+        ? ''
+        : '  if (gl_FragColor.a < ' + alphaTest + ') discard;',
+      '}'
+    ].join('\n')
+  }, opt)
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ }),
 
@@ -79079,6 +79332,9 @@ const SESSION_REST = 3;
 const SESSION_OUTRO = 4;
 const SESSION_PAUSED = 5;
 
+var MSDFShader = __webpack_require__(/*! three-bmfont-text/shaders/msdf */ "./node_modules/three-bmfont-text/shaders/msdf.js")
+var SDFShader = __webpack_require__(/*! three-bmfont-text/shaders/sdf */ "./node_modules/three-bmfont-text/shaders/sdf.js")
+
 class BoxingSession
 {
     constructor(scene, audioListener, numRounds, roundDuration, restDuration)
@@ -79102,7 +79358,7 @@ class BoxingSession
             });
         
         // font
-        loadFont('./content/dico_mono_slab.fnt',
+        loadFont('./content/ROCKB.TTF-msdf.json',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
             // word wrapped to 300px and right-aligned
@@ -79125,36 +79381,50 @@ class BoxingSession
             // // the texture atlas containing our glyphs
             // var texture = new DDSLoader(manager).load('./content/output.dds');
 
-            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/dico_mono_slab_0.png');
+            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/ROCKBTTF.png');
 
             // we can use a simple ThreeJS material
-            this.timerFontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({
-                map: texture,
-                transparent: true,
-                side: three__WEBPACK_IMPORTED_MODULE_0__["FrontSide"],
-                color: 0x000000, //0xfac3b9,
-                opacity: 1.0,
-                depthTest: true, //:THREE.NeverDepth
-                side: three__WEBPACK_IMPORTED_MODULE_0__["DoubleSide"]
+            // this.timerFontMaterial = new THREE.MeshBasicMaterial({
+            //     map: texture,
+            //     transparent: true,
+            //     side: THREE.FrontSide,
+            //     color: 0x000000, //0xfac3b9,
+            //     opacity: 1.0,
+            //     depthTest: true, //:THREE.NeverDepth
+            //     side: THREE.DoubleSide
 
-            });
-            this.timerFontMaterial.color.convertSRGBToLinear();
+            // });
+
+            
+            this.timerFontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["RawShaderMaterial"](MSDFShader({
+                map: texture,
+                side: three__WEBPACK_IMPORTED_MODULE_0__["DoubleSide"],
+                transparent: true,
+                color: 0x000000,
+                opacity: 1.0,
+                alphaTest: 0.1,
+                negate: false,
+            }))
+
+            
+            //this.timerFontMaterial.color.convertSRGBToLinear();
 
             // scale and position the mesh to get it doing something reasonable
             this.timerFontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.timerFontGeometry, this.timerFontMaterial);
+            this.timerFontMesh.frustumCulled = false;
             this.timerFontMesh.renderOrder = 0;
             //this.timerFontMesh.position.set(0.0, 0.5, -3.0);
-            let kFontScale = 0.0022;
+            let kFontScale = 0.01;
             this.timerFontMesh.scale.set(kFontScale, kFontScale, kFontScale);
             this.timerFontMesh.rotation.set(3.14, 0.0, 0.0);
             this.timerFontMesh.position.set(0.0, 0.085, 0.0);
 
 
             this.roundsFontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.roundsFontGeometry, this.timerFontMaterial);
-            let kRoundsFontScale = 0.0005;
+            let kRoundsFontScale = 0.0025;
             this.roundsFontMesh.scale.set(kRoundsFontScale, kRoundsFontScale, kRoundsFontScale);
             this.roundsFontMesh.rotation.set(3.14, 0.0, 0.0);
-            this.roundsFontMesh.position.set(0.0, -0.02, 0.0);
+            this.roundsFontMesh.position.set(0.0, -0.05, 0.0);
 
 
             //updateTimerString(timerValue); //"2:00");
@@ -79357,12 +79627,12 @@ class PunchingStats
         this.scene = scene;
         this.TV = null;
       
-        loadFont('./content/dico_mono_slab.fnt',
+        loadFont('./content/ROCKB.TTF-msdf.json',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
             // word wrapped to 300px and right-aligned
             this.fontGeometry = createGeometry({
-                align: 'center',
+                align: 'left',
                 font: font,
                 flipY: true,
             });
@@ -79373,25 +79643,35 @@ class PunchingStats
             // // the texture atlas containing our glyphs
             // var texture = new DDSLoader(manager).load('./content/output.dds');
 
-            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/dico_mono_slab_0.png');
+            var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/ROCKBTTF.png');
 
             // we can use a simple ThreeJS material
-            this.fontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({
-                map: texture,
-                transparent: true,
-                side: three__WEBPACK_IMPORTED_MODULE_0__["DoubleSide"],
-                color: 0x000000, //0xfac3b9,
-                opacity: 1.0,
-                depthTest: true //:THREE.NeverDepth
+            // this.fontMaterial = new THREE.MeshBasicMaterial({
+            //     map: texture,
+            //     transparent: true,
+            //     side: THREE.DoubleSide,
+            //     color: 0x000000, //0xfac3b9,
+            //     opacity: 1.0,
+            //     depthTest: true //:THREE.NeverDepth
 
-            });
-            this.fontMaterial.color.convertSRGBToLinear();
+            // });
+            // this.fontMaterial.color.convertSRGBToLinear();
+
+            this.fontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["RawShaderMaterial"](MSDFShader({
+                map: texture,
+                side: three__WEBPACK_IMPORTED_MODULE_0__["DoubleSide"],
+                transparent: true,
+                color: 0x000000,
+                opacity: 1.0,
+                alphaTest: 0.1,
+                negate: false,
+            }))
 
             // scale and position the mesh to get it doing something reasonable
             this.fontMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](this.fontGeometry, this.fontMaterial);
             this.fontMesh.renderOrder = 0;
             this.fontMesh.position.set(0.0, -0.45, 0.02);
-            let kStatsFontScale = 0.0007; //25;
+            let kStatsFontScale = 0.0025; //25;
             this.fontMesh.scale.set(kStatsFontScale, kStatsFontScale, kStatsFontScale);
             this.fontMesh.rotation.set(3.14, 0.0, 0.0);
 
@@ -79488,9 +79768,9 @@ class PunchingStats
         const kPadStart = 15;
         this.fontGeometry.update(
             // "ROUND:    3/8\n\n\n" + "FIGHT\n" +
-            "PUNCHES:" + this.punches.toString().padStart(3, '0').padStart(kPadStart - 8, ' ') + "\n" + 
-            "PPM:" + ppm.toFixed(0).toString().padStart(3, '0').padStart(kPadStart - 4, ' ') + "\n" + 
-            "SPEED:" + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---").padStart(kPadStart - 6, ' '));
+            "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 
+            "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
+            "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---"));
         this.fontGeometry.computeBoundingBox();
         let box = this.fontGeometry.boundingBox;
         this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;
@@ -79972,6 +80252,7 @@ class PageUI
         let cancelButton = document.createElement("button");
         cancelButton.className = "ok_cancel_button";
         cancelButton.innerHTML = "Cancel";
+        cancelButton.style.boxShadow = "";
         cancelButton.onclick = () => { this.onCancelClicked(); }
         div.appendChild(cancelButton);
 
@@ -79979,6 +80260,7 @@ class PageUI
         okButton.className = "ok_cancel_button";
         okButton.innerHTML = "Accept";
         okButton.style.marginLeft = "auto";
+        okButton.style.boxShadow = "";
         okButton.onclick = () => { this.onOkClicked(); }
         div.appendChild(okButton);
 
@@ -80031,9 +80313,9 @@ class PageUI
                 'local-floor', 
             ],
             optionalFeatures: [ 
-            'bounded-floor', 
+            //'bounded-floor', 
             // 'hand-tracking',
-            // 'high-fixed-foveation-level',
+            'high-fixed-foveation-level',
             // 'low-refresh-rate'
         ] };
         navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( 
