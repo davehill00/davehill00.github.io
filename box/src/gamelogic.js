@@ -10,6 +10,9 @@ const SESSION_REST = 3;
 const SESSION_OUTRO = 4;
 const SESSION_PAUSED = 5;
 
+var MSDFShader = require('three-bmfont-text/shaders/msdf')
+var SDFShader = require('three-bmfont-text/shaders/sdf')
+
 export class BoxingSession
 {
     constructor(scene, audioListener, numRounds, roundDuration, restDuration)
@@ -33,7 +36,7 @@ export class BoxingSession
             });
         
         // font
-        loadFont('./content/dico_mono_slab.fnt',
+        loadFont('./content/ROCKB.TTF-msdf.json',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
             // word wrapped to 300px and right-aligned
@@ -56,36 +59,50 @@ export class BoxingSession
             // // the texture atlas containing our glyphs
             // var texture = new DDSLoader(manager).load('./content/output.dds');
 
-            var texture = new THREE.TextureLoader().load('./content/dico_mono_slab_0.png');
+            var texture = new THREE.TextureLoader().load('./content/ROCKBTTF.png');
 
             // we can use a simple ThreeJS material
-            this.timerFontMaterial = new THREE.MeshBasicMaterial({
-                map: texture,
-                transparent: true,
-                side: THREE.FrontSide,
-                color: 0x000000, //0xfac3b9,
-                opacity: 1.0,
-                depthTest: true, //:THREE.NeverDepth
-                side: THREE.DoubleSide
+            // this.timerFontMaterial = new THREE.MeshBasicMaterial({
+            //     map: texture,
+            //     transparent: true,
+            //     side: THREE.FrontSide,
+            //     color: 0x000000, //0xfac3b9,
+            //     opacity: 1.0,
+            //     depthTest: true, //:THREE.NeverDepth
+            //     side: THREE.DoubleSide
 
-            });
-            this.timerFontMaterial.color.convertSRGBToLinear();
+            // });
+
+            
+            this.timerFontMaterial = new THREE.RawShaderMaterial(MSDFShader({
+                map: texture,
+                side: THREE.DoubleSide,
+                transparent: true,
+                color: 0x000000,
+                opacity: 1.0,
+                alphaTest: 0.1,
+                negate: false,
+            }))
+
+            
+            //this.timerFontMaterial.color.convertSRGBToLinear();
 
             // scale and position the mesh to get it doing something reasonable
             this.timerFontMesh = new THREE.Mesh(this.timerFontGeometry, this.timerFontMaterial);
+            this.timerFontMesh.frustumCulled = false;
             this.timerFontMesh.renderOrder = 0;
             //this.timerFontMesh.position.set(0.0, 0.5, -3.0);
-            let kFontScale = 0.0022;
+            let kFontScale = 0.01;
             this.timerFontMesh.scale.set(kFontScale, kFontScale, kFontScale);
             this.timerFontMesh.rotation.set(3.14, 0.0, 0.0);
             this.timerFontMesh.position.set(0.0, 0.085, 0.0);
 
 
             this.roundsFontMesh = new THREE.Mesh(this.roundsFontGeometry, this.timerFontMaterial);
-            let kRoundsFontScale = 0.0005;
+            let kRoundsFontScale = 0.0025;
             this.roundsFontMesh.scale.set(kRoundsFontScale, kRoundsFontScale, kRoundsFontScale);
             this.roundsFontMesh.rotation.set(3.14, 0.0, 0.0);
-            this.roundsFontMesh.position.set(0.0, -0.02, 0.0);
+            this.roundsFontMesh.position.set(0.0, -0.05, 0.0);
 
 
             //updateTimerString(timerValue); //"2:00");
@@ -288,12 +305,12 @@ export class PunchingStats
         this.scene = scene;
         this.TV = null;
       
-        loadFont('./content/dico_mono_slab.fnt',
+        loadFont('./content/ROCKB.TTF-msdf.json',
         (err, font) => {
             // create a geometry of packed bitmap glyphs,
             // word wrapped to 300px and right-aligned
             this.fontGeometry = createGeometry({
-                align: 'center',
+                align: 'left',
                 font: font,
                 flipY: true,
             });
@@ -304,25 +321,35 @@ export class PunchingStats
             // // the texture atlas containing our glyphs
             // var texture = new DDSLoader(manager).load('./content/output.dds');
 
-            var texture = new THREE.TextureLoader().load('./content/dico_mono_slab_0.png');
+            var texture = new THREE.TextureLoader().load('./content/ROCKBTTF.png');
 
             // we can use a simple ThreeJS material
-            this.fontMaterial = new THREE.MeshBasicMaterial({
-                map: texture,
-                transparent: true,
-                side: THREE.DoubleSide,
-                color: 0x000000, //0xfac3b9,
-                opacity: 1.0,
-                depthTest: true //:THREE.NeverDepth
+            // this.fontMaterial = new THREE.MeshBasicMaterial({
+            //     map: texture,
+            //     transparent: true,
+            //     side: THREE.DoubleSide,
+            //     color: 0x000000, //0xfac3b9,
+            //     opacity: 1.0,
+            //     depthTest: true //:THREE.NeverDepth
 
-            });
-            this.fontMaterial.color.convertSRGBToLinear();
+            // });
+            // this.fontMaterial.color.convertSRGBToLinear();
+
+            this.fontMaterial = new THREE.RawShaderMaterial(MSDFShader({
+                map: texture,
+                side: THREE.DoubleSide,
+                transparent: true,
+                color: 0x000000,
+                opacity: 1.0,
+                alphaTest: 0.1,
+                negate: false,
+            }))
 
             // scale and position the mesh to get it doing something reasonable
             this.fontMesh = new THREE.Mesh(this.fontGeometry, this.fontMaterial);
             this.fontMesh.renderOrder = 0;
             this.fontMesh.position.set(0.0, -0.45, 0.02);
-            let kStatsFontScale = 0.0007; //25;
+            let kStatsFontScale = 0.0025; //25;
             this.fontMesh.scale.set(kStatsFontScale, kStatsFontScale, kStatsFontScale);
             this.fontMesh.rotation.set(3.14, 0.0, 0.0);
 
@@ -419,9 +446,9 @@ export class PunchingStats
         const kPadStart = 15;
         this.fontGeometry.update(
             // "ROUND:    3/8\n\n\n" + "FIGHT\n" +
-            "PUNCHES:" + this.punches.toString().padStart(3, '0').padStart(kPadStart - 8, ' ') + "\n" + 
-            "PPM:" + ppm.toFixed(0).toString().padStart(3, '0').padStart(kPadStart - 4, ' ') + "\n" + 
-            "SPEED:" + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---").padStart(kPadStart - 6, ' '));
+            "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 
+            "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
+            "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---"));
         this.fontGeometry.computeBoundingBox();
         let box = this.fontGeometry.boundingBox;
         this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;

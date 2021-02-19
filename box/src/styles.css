@@ -134,6 +134,7 @@ a:hover {
 {
     display: block;
     width: 60%;
+    max-width: 800px;
     /* min-width: 400px; */
     background-color: #000000;
     border-color: #9f7909;

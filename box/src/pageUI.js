@@ -208,6 +208,7 @@ export class PageUI
         let cancelButton = document.createElement("button");
         cancelButton.className = "ok_cancel_button";
         cancelButton.innerHTML = "Cancel";
+        cancelButton.style.boxShadow = "";
         cancelButton.onclick = () => { this.onCancelClicked(); }
         div.appendChild(cancelButton);
 
@@ -215,6 +216,7 @@ export class PageUI
         okButton.className = "ok_cancel_button";
         okButton.innerHTML = "Accept";
         okButton.style.marginLeft = "auto";
+        okButton.style.boxShadow = "";
         okButton.onclick = () => { this.onOkClicked(); }
         div.appendChild(okButton);
 
@@ -267,9 +269,9 @@ export class PageUI
                 'local-floor', 
             ],
             optionalFeatures: [ 
-            'bounded-floor', 
+            //'bounded-floor', 
             // 'hand-tracking',
-            // 'high-fixed-foveation-level',
+            'high-fixed-foveation-level',
             // 'low-refresh-rate'
         ] };
         navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( 
