@@ -147,6 +147,7 @@ function initialize()
     envMapObjects['DumbellHandle'] = { intensity: 0.55, roughness: 0.1};
     envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
     envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
+    envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
     
     
     // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};

@@ -19,7 +19,8 @@
                 8,
                 9,
                 10,
-                12
+                12,
+                13
             ]
         }
     ],
@@ -176,6 +177,15 @@
                 -2.342996835708618,
                 0.604648232460022,
                 5.56435489654541
+            ]
+        },
+        {
+            "mesh" : 11,
+            "name" : "Ring",
+            "translation" : [
+                0,
+                -0.04500000178813934,
+                -0.75
             ]
         }
     ],
@@ -378,6 +388,25 @@
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0
             }
+        },
+        {
+            "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "FloorMarkings",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.41093674302101135,
+                    0.2717149555683136,
+                    0.004487240687012672,
+                    1
+                ],
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
         }
     ],
     "meshes" : [
@@ -551,6 +580,21 @@
                     },
                     "indices" : 62,
                     "material" : 10
+                }
+            ]
+        },
+        {
+            "name" : "Cylinder.001",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 63,
+                        "NORMAL" : 64,
+                        "TANGENT" : 65,
+                        "TEXCOORD_0" : 66
+                    },
+                    "indices" : 67,
+                    "material" : 11
                 }
             ]
         }
@@ -1071,6 +1115,46 @@
             "componentType" : 5123,
             "count" : 300,
             "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 63,
+            "componentType" : 5126,
+            "count" : 24,
+            "max" : [
+                1.3859988451004028,
+                0.05000000074505806,
+                1.3859988451004028
+            ],
+            "min" : [
+                -1.385999083518982,
+                0.05000000074505806,
+                -1.3859989643096924
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 64,
+            "componentType" : 5126,
+            "count" : 24,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 65,
+            "componentType" : 5126,
+            "count" : 24,
+            "type" : "VEC4"
+        },
+        {
+            "bufferView" : 66,
+            "componentType" : 5126,
+            "count" : 24,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 67,
+            "componentType" : 5123,
+            "count" : 48,
+            "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
@@ -1388,11 +1472,36 @@
             "buffer" : 0,
             "byteLength" : 600,
             "byteOffset" : 124708
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 288,
+            "byteOffset" : 125308
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 288,
+            "byteOffset" : 125596
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 384,
+            "byteOffset" : 125884
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 192,
+            "byteOffset" : 126268
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 96,
+            "byteOffset" : 126460
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 125308,
+            "byteLength" : 126556,
             "uri" : "gym_v8.bin"
         }
     ]
