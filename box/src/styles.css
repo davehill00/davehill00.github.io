@@ -198,6 +198,7 @@ button:disabled
 {
     color:#cc1010;
     border-color: #cc1010;
+    font-size: 3vw;
 }
 
 .plus_minus_button
