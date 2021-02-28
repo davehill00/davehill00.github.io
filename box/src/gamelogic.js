@@ -11,7 +11,6 @@ const SESSION_OUTRO = 4;
 const SESSION_PAUSED = 5;
 
 var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
-//var SDFShader = require('./thirdparty/three-bmfont-text/shaders/sdf')
 
 export class BoxingSession
 {
@@ -75,8 +74,6 @@ export class BoxingSession
                 negate: false,
             }))
 
-            
-            //this.timerFontMaterial.color.convertSRGBToLinear();
 
             // scale and position the mesh to get it doing something reasonable
             this.timerFontMesh = new THREE.Mesh(this.timerFontGeometry, this.timerFontMaterial);
@@ -94,9 +91,6 @@ export class BoxingSession
             this.roundsFontMesh.scale.set(kRoundsFontScale, kRoundsFontScale, kRoundsFontScale);
             this.roundsFontMesh.rotation.set(3.14, 0.0, 0.0);
             this.roundsFontMesh.position.set(0.0, -0.05, 0.0);
-
-
-            //updateTimerString(timerValue); //"2:00");
 
             this.currentTimeInWholeSeconds = -1.0;
 
@@ -315,25 +309,7 @@ export class PunchingStats
                 flipY: true,
             });
 
-            // const manager = new THREE.LoadingManager();
-            // manager.addHandler( /\.dds$/i, new DDSLoader() );
-
-            // // the texture atlas containing our glyphs
-            // var texture = new DDSLoader(manager).load('./content/output.dds');
-
             var texture = new THREE.TextureLoader().load('./content/ROCKBTTF.png');
-
-            // we can use a simple ThreeJS material
-            // this.fontMaterial = new THREE.MeshBasicMaterial({
-            //     map: texture,
-            //     transparent: true,
-            //     side: THREE.DoubleSide,
-            //     color: 0x000000, //0xfac3b9,
-            //     opacity: 1.0,
-            //     depthTest: true //:THREE.NeverDepth
-
-            // });
-            // this.fontMaterial.color.convertSRGBToLinear();
 
             this.fontMaterial = new THREE.RawShaderMaterial(MSDFShader({
                 map: texture,
@@ -353,20 +329,14 @@ export class PunchingStats
             this.fontMesh.scale.set(kStatsFontScale, kStatsFontScale, kStatsFontScale);
             this.fontMesh.rotation.set(3.14, 0.0, 0.0);
 
-
-            //updateTimerString(timerValue); //"2:00");
-
             this.scene.traverse((node) => {
                 if (node.name == "Screen")
                 {
                     this.TV = node;
                     this.TV.add(this.fontMesh);
-                    // console.log("FOUND TV");
-                    //this.TV.add(this.sound321);
                 }
             });
 
-            //this.scene.add(this.fontMesh);
             this.updateStatsDisplay();
 
             this.currentTimeInWholeSeconds = -1.0;
@@ -413,38 +383,11 @@ export class PunchingStats
     {
         if (!this.fontGeometry)
             return;
-
-
-        // if (this.TV == null)
-        // {
-        //     let TV;
-        //     this.scene.traverse(function (node) {
-        //         if (node.name == "Screen")
-        //         {
-        //             TV = node;
-        //             console.log("FOUND TV");
-        //         }
-        //     });
-
-        //     if (TV)
-        //     {
-        //         this.TV = TV;
-
-        //         this.TV.add(this.fontMesh);
-        //     }
-        //     else
-        //     {
-        //         return;
-        //     }
-        // }
         
         let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
 
-    //     const kSmoothPPM = 0.005;
-    //     this.smoothAvgPPM = ppm * kSmoothPPM + (this.smoothAvgPPM * (1.0 - kSmoothPPM));
 
         this.fontGeometry.update(
-            // "ROUND:    3/8\n\n\n" + "FIGHT\n" +
             "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 
             "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
             "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---"));
@@ -511,7 +454,6 @@ class MovingAverage
             let lifetime = accumulatedTime - this.data[this.indexOfOldestSample].timestamp;
             if (lifetime > this.timeWindow)
             {
-                //console.log("Retiring punch from " + lifetime + " seconds ago: " + accumulatedTime + " - " + this.data[this.indexOfOldestSample].timestamp);
                 this.indexOfOldestSample = (this.indexOfOldestSample + 1) % this.size;
                 this.numSamples--;
                 result = true;
@@ -523,16 +465,7 @@ class MovingAverage
         }
         return result;
     }
-    // update(accumulatedTime)
-    // {
-    //     this.accumulatedTime = accumulatedTime;
-    //     while(this.numSamples > 0 && this.nextExpirationTime < accumulatedTime)
-    //     {
-    //         // remove oldest sample
-    //         this.remove(this.indexOfOldestSample);
 
-    //     }
-    // }
     getAverage(timestamp)
     {
         if (this.numSamples == 0) 
@@ -545,11 +478,6 @@ class MovingAverage
             return 0;
 
         let rate = this.numSamples / totalTime * 60.0;
-
-        //console.log(this.numSamples + " PUNCHES, " + totalTime.toFixed(1) + " SECONDS => " + rate.toFixed(1));
-
-        // 16 punches in 4 seconds ==> 60/4 * 16 ->
-
-        return rate; //this.numSamples / totalTime;
+        return rate; 
     }
 }

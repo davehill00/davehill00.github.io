@@ -11,7 +11,7 @@ let rightHitPoint = new THREE.Vector3();
 
 const kBagRadius = 0.25;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
-const kPunchEffectFadeRate = 6.0; //
+const kPunchEffectFadeRate = 4.0;
 
 let tVec0 = new THREE.Vector3();
 
@@ -60,8 +60,6 @@ export class Bag extends THREE.Group
 
                     if (obj.name == "Bag")
                     {
-                        //obj.castShadow = true;
-                        //obj.receiveShadow = true;
                         this.mesh = obj;
                         obj.name = "BAG " + i;
                         obj.material.roughness = 0.2;
@@ -273,14 +271,21 @@ export class Bag extends THREE.Group
 
             //enable this hit effect and set opacity based on punch speed
             pe.visible = true;
-            pe.material.opacity = Math.min((speed-1.5)*0.4, 2.0);
+            pe.material.opacity = Math.min((speed-1.0)*0.8, 2.0);
 
             // get the position -- use getWorldPosition because the bag is parented into a scene
             // and "position" just gives the local position relative to parent
             this.mesh.getWorldPosition(tVec0);
             //set the position of the punch effect, plus a slight tweak to make it appear
             //more directly under the glove
-            pe.position.setY( position.y - 0.05 - tVec0.y );
+
+            let kAdjust = -0.05;
+            if (velocity.y > 1.0)
+            {
+                kAdjust = 0.0;
+            }
+
+            pe.position.setY( position.y - tVec0.y + kAdjust);
             
             // Figure out rotation of the hit -- using X/-Z, because we're rotating around the Y=Up Axis
 
