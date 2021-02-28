@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<link href="https://fonts.googleapis.com/css?family=Kameron" rel="stylesheet">
+    <style>
+        p
+        {
+            font-family: 'Kameron', sans-serif;
+            font-size: 24px;
+            /* 32px; */
+            color:#9f7909;
+            /* background-color: #000000; */
+            
+            /* height: 40px; */
+            /* margin-top: auto;
+            margin-bottom: auto;    
+            display:inline; */
+
+        }
+        h1 
+        {
+            font-family: 'Kameron', sans-serif;
+            font-size: 32px;
+            /* 32px; */
+            color:#9f7909;
+        }
+        a 
+        {
+            font-family: 'Kameron', sans-serif;
+            font-size: 24px;
+            /* 32px; */
+            color:#9f7909;
+            /* background-color: #000000; */
+            
+            /* height: 40px;
+            margin-top: auto;
+            margin-bottom: auto;    
+            display:inline; */
+
+        }
+        body
+        {
+            background-color: #5d1719;
+        }
+        li
+        {
+            font-family: 'Kameron', sans-serif;
+            font-size: 24px;
+            color:#9f7909;
+        }
+        .descriptionBox {
+            background-color: black;
+            opacity: 100%;
+            padding: 4vh;
+            margin: 10%;
+            margin-top: 1%;
+
+            border:#9f7909;
+            border-style: solid;
+            border-width: 12px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
+        }
+        .title_image
+        {
+            padding-top: 8px;
+            width: 40%;
+            margin-left: 25%;
+            height: auto;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
+        }
+    </style>
+    <body>
+        <img src="./content/heavy_bag_trainer_logo.png" class="title_image"/>
+        <div class="descriptionBox">
+        <h1>About the experience</h1>
+        <p>Prior to COVID, I had started doing a bit of boxing for cardio and exercise. Once the gym closed down, I really missed the workout and eventually decided to create a VR experience that would help fill the gap. 
+            
+            <br>
+            If you're new to boxing workouts, I'd recommend 
+            <a href="https://www.youtube.com/watch?v=fF-Xg62jf98&list=PL0EVvN39_Qt6ocSMP_y4fmFbTWJtrjL4s" target="_blank">
+                this YouTube playlist</a> as a great place to start. Not everything there is relevant to this VR experience, 
+                but the videos cover all the basic things like stance, the different punches that you'll throws, footwork, etc. 
+                and has suggestions for different routines you can work through.
+        </p>
+            <h1>Developer notes</h1>
+        <p>
+            Building VR experiences on the web has its challenges, but there are a lot of great tools, libraries, and assets out there if you know where to look. Here are some of the things I used to build this experience:
+            <ul>
+                <li><a href=https://threejs.org target="_blank">THREE.js</a> - a feature-rich 3D renderer and pretty much the de facto standard for 3D on the web.</li>
+                <li><a href=https://github.com/Jam3/three-bmfont-text target=_blank>three-bmfont-text</a> - a nice little library for rendering bitmap-based fonts (including support for signed distance field (SDF, MSDF) textures, which creates much sharper text outlines in VR. Note: I had to fix the MSDF shader to make it work with WebGL2.</li>
+                <li><a href=https://msdf-bmfont.donmccurdy.com/ target=_blank>MSDF Font Generator</a> - a web-based tool for generated Multi-channel Signed Distance Field bitmap fonts.</li>
+                <li><a href=https://github.com/BinomialLLC/basis_universal target=_blank>Basis Universal Texture Compression</a> - a texture compression tool that gives much smaller texture file sizes while still maintaining good quality. Not so great for compressing normal maps, but works great for diffuse textures and lightmaps.</li>
+                <li><a href=https://blender.org target=_blank>Blender</a> - a fantastic and free 3D modeling and rendering tool. I avoided Blender for years because the UI in early versions of it (from 10 years ago) traumatized me, but it's gotten so much better. I'm really glad I gave it another try!</li>
+                <li><a href="https://www.fesliyanstudios.com/royalty-free-sound-effects-download" target=_blank>Fesliyan Studios Free Sound Effects</a> - lots of great sound effects here, including a bunch of punching and hitting sounds (which were particularly relevant for this experience).</li>
+                <li><a href=https://cc0textures.com/ target=_blank>CC0 Textures</a> - a great source for high-quality PBR materials. The floor textures (diffuse, normal map, roughness map) I used came from here.
+                <li><a href=https://developer.oculus.com/downloads/package/ovr-metrics-tool/ target=_blank>Oculus OVR Metrics Tools</a> - I work at Oculus, so I'm probably a bit biased towards VR on Quest headsets. If you're developing for Quest, this tool provides a great heads-up display of framerate, memory, etc. and is helpful when debugging performance issues or just to validate that you're maintaining a steady framerate.</li>
+            </ul>
+        </p>
+        </div>
+    </body>
+</html>

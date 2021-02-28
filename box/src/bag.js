@@ -64,8 +64,8 @@ export class Bag extends THREE.Group
                         //obj.receiveShadow = true;
                         this.mesh = obj;
                         obj.name = "BAG " + i;
-                        obj.material.roughness = 0.25;
-                        obj.material.envMapIntensity = 1.0;
+                        obj.material.roughness = 0.2;
+                        obj.material.envMapIntensity = 0.8;
                         obj.material.envMap = this.scene.envMap;
                     }
                     else if (obj.name == "PunchEffectMesh")
@@ -177,7 +177,7 @@ export class Bag extends THREE.Group
 
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
-        ApplyPDVec3(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 5.0, 0.9, dt);
+        ApplyPDVec3(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.3, 0.9, dt);
 
 
         if (!this.bHasGloves)
@@ -255,10 +255,9 @@ export class Bag extends THREE.Group
 
             let speed = velocity.length();
 
-            let speedBaseVolume = 1.0; //0.1 + Math.min(speed, 5.0) * 0.3;
+            let speedBaseVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
             hitSound.setVolume(speedBaseVolume);
 
-            // console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
             hitSound.play();
 
             this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
@@ -292,9 +291,6 @@ export class Bag extends THREE.Group
             // atan2 gives the rotation in radius from the +X axis
             let rot = Math.atan2(z, position.x);
             pe.rotation.set(0.0, rot, 0.0);
-
-            this.hitMeshDebug.position.set(position.x, position.y, position.z);
-
         }
     }
 

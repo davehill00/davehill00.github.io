@@ -1,4 +1,4 @@
-var createGeometry = require('three-bmfont-text')
+var createGeometry = require('./thirdparty/three-bmfont-text/')
 var loadFont = require('load-bmfont')
 import * as THREE from 'three';
 
@@ -10,8 +10,8 @@ const SESSION_REST = 3;
 const SESSION_OUTRO = 4;
 const SESSION_PAUSED = 5;
 
-var MSDFShader = require('three-bmfont-text/shaders/msdf')
-var SDFShader = require('three-bmfont-text/shaders/sdf')
+var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
+//var SDFShader = require('./thirdparty/three-bmfont-text/shaders/sdf')
 
 export class BoxingSession
 {
@@ -35,6 +35,16 @@ export class BoxingSession
                 this.sound321.buffer = buffer;
             });
         
+        this.soundEndOfRound = new THREE.PositionalAudio(audioListener);
+        this.soundEndOfRound.setVolume(1.0);
+        this.soundEndOfRound.setRefDistance(40.0);
+        new THREE.AudioLoader().load(
+            "./content/endOfRound.mp3",
+            (buffer) => 
+            {
+                this.soundEndOfRound.buffer = buffer;
+            });
+        
         // font
         loadFont('./content/ROCKB.TTF-msdf.json',
         (err, font) => {
@@ -53,27 +63,8 @@ export class BoxingSession
                 flipY: true,
             });
 
-            // const manager = new THREE.LoadingManager();
-            // manager.addHandler( /\.dds$/i, new DDSLoader() );
-
-            // // the texture atlas containing our glyphs
-            // var texture = new DDSLoader(manager).load('./content/output.dds');
-
             var texture = new THREE.TextureLoader().load('./content/ROCKBTTF.png');
-
-            // we can use a simple ThreeJS material
-            // this.timerFontMaterial = new THREE.MeshBasicMaterial({
-            //     map: texture,
-            //     transparent: true,
-            //     side: THREE.FrontSide,
-            //     color: 0x000000, //0xfac3b9,
-            //     opacity: 1.0,
-            //     depthTest: true, //:THREE.NeverDepth
-            //     side: THREE.DoubleSide
-
-            // });
-
-            
+          
             this.timerFontMaterial = new THREE.RawShaderMaterial(MSDFShader({
                 map: texture,
                 side: THREE.DoubleSide,
@@ -120,6 +111,7 @@ export class BoxingSession
                     this.TV.add(this.roundsFontMesh);
                     // console.log("FOUND TV");
                     this.TV.add(this.sound321);
+                    this.TV.add(this.soundEndOfRound);
 
                     this.updateTimer();
                     this.updateRoundsMessage();
@@ -201,7 +193,7 @@ export class BoxingSession
                     }
                     this.elapsedTime = 0.0;
                     //play "end of round" sound
-                    this.sound321.play();
+                    this.soundEndOfRound.play();
                     this.updateRoundsMessage();
                 }
                 else
@@ -226,7 +218,9 @@ export class BoxingSession
                 }
                 break;
             case SESSION_OUTRO:
-                this.blankTimer();
+                //this.blankTimer();
+                this.updateTimer(0);
+                this.updateRoundsMessage();
                 break;
         }
     }
@@ -234,9 +228,11 @@ export class BoxingSession
     updateTimer(value)
     {
         let message;
-        if (this.state == SESSION_NULL)
+        let colonIndex = 1;
+        if (this.state == SESSION_NULL || this.state == SESSION_OUTRO)
         {
-            message = "--:--";
+            message = "0:00";
+            colonIndex = 1;
         }
         else
         {
@@ -252,16 +248,20 @@ export class BoxingSession
             let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
             let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
 
+            if (minutes > 9) colonIndex = 2;
+
             message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
         }
 
         this.timerFontGeometry.update(message);
         this.timerFontGeometry.computeBoundingBox();
         let box = this.timerFontGeometry.boundingBox;
-        this.timerFontMesh.position.x = box.min.x;
+
+        let pos = this.timerFontGeometry.getTopLeftCornerXOfCharAt(colonIndex);
+        this.timerFontMesh.position.x = pos;
         this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
-        let quantizedMaxX = Math.floor(box.max.x * this.timerFontMesh.scale.x * 10.0) * 0.1;
-        this.timerFontMesh.position.x += quantizedMaxX * -0.5;
+        this.timerFontMesh.position.x -= 0.65;
+
     }
     updateRoundsMessage()
     {
@@ -271,7 +271,6 @@ export class BoxingSession
             message = "ROUND"+ ("-/-").padStart(6, ' ') 
             + "\n\n\n\n"
             + (this.state == SESSION_PAUSED ? "PAUSED" : "IDLE");
-
         }
         else
         {
@@ -279,7 +278,8 @@ export class BoxingSession
             + "\n\n\n\n" 
             + (this.state == SESSION_INTRO ? "GET READY" : 
             (this.state == SESSION_ROUND) ? "FIGHT" :
-            (this.state == SESSION_REST) ? "REST" : "");
+            (this.state == SESSION_REST) ? "REST" : 
+            (this.state == SESSION_OUTRO) ? "GREAT JOB!" : "");
         }
         this.roundsFontGeometry.update(message);
         this.roundsFontGeometry.computeBoundingBox();
@@ -443,7 +443,6 @@ export class PunchingStats
     //     const kSmoothPPM = 0.005;
     //     this.smoothAvgPPM = ppm * kSmoothPPM + (this.smoothAvgPPM * (1.0 - kSmoothPPM));
 
-        const kPadStart = 15;
         this.fontGeometry.update(
             // "ROUND:    3/8\n\n\n" + "FIGHT\n" +
             "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 

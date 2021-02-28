@@ -10,7 +10,7 @@ let line = new THREE.Line3();
 
 let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 
-const kGloveRadius = 0.085;
+const kGloveRadius = 0.08;
 const kNewContactDelay = 0.15;
 
 export class Glove extends THREE.Group

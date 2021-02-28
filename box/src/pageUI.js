@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+const kMaxLogo = "40%";
+const kMinLogo = "20%";
 export class PageUI
 {
 
@@ -52,6 +54,7 @@ export class PageUI
 
         this.uiLogo = document.createElement("img");
         this.uiLogo.className = "title_image";
+        this.uiLogo.style.width = kMaxLogo;
         this.uiLogo.src = "./content/heavy_bag_trainer_logo.png";
 
 
@@ -83,6 +86,14 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiConfigureButton);
 
 
+        this.uiAboutButton = document.createElement("button");
+        this.uiAboutButton.style.fontSize = "2.25vw";
+        this.uiAboutButton.style.borderWidth = "0.4vw";
+        this.uiAboutButton.innerHTML = "About";
+        this.uiAboutButton.onclick = () => {this.onAboutClicked()};
+        this.uiButtonGroup.appendChild(this.uiAboutButton);
+
+
         this.uiConfigurationContainer = document.createElement("div");
         this.uiConfigurationContainer.className = "configuration_container";
         this.uiConfigurationContainer.style.height = "0%";
@@ -93,6 +104,7 @@ export class PageUI
         this.uiConfigurationGroup.style.visibility = "hidden";
 
         this.uiConfigurationContainer.appendChild(this.uiConfigurationGroup);
+        
 
         //
         // ROUND TIME
@@ -219,9 +231,6 @@ export class PageUI
         okButton.style.boxShadow = "";
         okButton.onclick = () => { this.onOkClicked(); }
         div.appendChild(okButton);
-
-
-
     }
 
     checkForXR()
@@ -297,7 +306,7 @@ export class PageUI
         this.uiRoundTimeDisplay.innerHTML = this.formatTime(this.roundTime);
         this.uiRestTimeDisplay.innerHTML = this.formatTime(this.restTime);
 
-        this.uiLogo.style.width = "25%";
+        this.uiLogo.style.width = kMinLogo;
 
         this.uiButtonContainer.style.height = "0%";
         this.uiButtonGroup.style.visibility = "hidden";
@@ -305,6 +314,11 @@ export class PageUI
         this.uiConfigurationContainer.style.height = "auto";
         this.uiConfigurationGroup.style.visibility = "visible";
 
+    }
+
+    onAboutClicked()
+    {
+        location.href="about.html";
     }
 
     formatTime(value)
@@ -352,7 +366,7 @@ export class PageUI
 
     hideConfigurationUI()
     {
-        this.uiLogo.style.width = "50%";
+        this.uiLogo.style.width = kMaxLogo;
 
         this.uiButtonContainer.style.height = "auto";
         this.uiButtonGroup.style.visibility = "visible";

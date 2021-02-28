@@ -15785,7 +15785,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()(_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default.a);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, ".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"AAAA;IACI,kCAAkC;IAClC,eAAe;IACf,aAAa;AACjB;AACA;IACI,kCAAkC;IAClC,eAAe;IACf,cAAc;AAClB;AACA;IACI,yBAAyB;IACzB,aAAa;IACb,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;IAChB,mBAAmB;IACnB,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,QAAQ;AACZ;AACA;IACI,yBAAyB;IACzB,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;IAChB,mBAAmB;IACnB,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,aAAa;AACjB;AACA;IACI,yBAAyB;IACzB,aAAa;IACb,YAAY;IACZ,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,QAAQ;AACZ;AACA;IACI,yBAAyB;IACzB,WAAW;AACf;;AAEA;;IAEI,6BAA6B;IAC7B,eAAe;IACf,aAAa;IACb,qBAAqB;IACrB,iBAAiB;IACjB,UAAU;IACV,WAAW;IACX,kBAAkB;IAClB,YAAY;AAChB;;AAEA;IACI,cAAc;AAClB;AACA;IACI,cAAc;AAClB;AACA;IACI,cAAc;AAClB;AACA;;IAEI,kBAAkB;IAClB,OAAO;IACP,UAAU;IACV,YAAY;IACZ,UAAU;AACd;AACA;;IAEI,yBAAyB;IACzB,aAAa;IACb,kBAAkB;IAClB;;;iBAGa;IACb,QAAQ;IACR,SAAS;IACT,YAAY;IACZ,WAAW;IACX;yBACqB;AACzB;AACA;IACI,eAAe;IACf,cAAc;IACd,iBAAiB;IACjB,kBAAkB;IAClB,uBAAuB;IACvB,iBAAiB;IACjB,UAAU;IACV,YAAY;IACZ,mCAAmC;IACnC,uCAAuC;IACvC,4EAA4E;AAChF;AACA;;IAEI,kCAAkC;IAClC,eAAe;IACf,UAAU;IACV,aAAa;IACb,yBAAyB;;IAEzB,YAAY;IACZ,gBAAgB;IAChB,mBAAmB;IACnB,cAAc;AAClB;AACA;;IAEI,aAAa;IACb,uBAAuB;IACvB,mBAAmB;IACnB,iBAAiB;IACjB,WAAW;IACX,iBAAiB;IACjB,6BAA6B;AACjC;AACA;;IAEI,cAAc;IACd,UAAU;IACV,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,qBAAqB;IACrB,mBAAmB;IACnB,mBAAmB;IACnB,YAAY;IACZ,4EAA4E;IAC5E,iBAAiB;AACrB;AACA;;IAEI,kCAAkC;IAClC,eAAe;IACf,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,iBAAiB;IACjB,mBAAmB;IACnB,iBAAiB;IACjB,UAAU;IACV,iBAAiB;AACrB;AACA;;IAEI,aAAa;IACb,uBAAuB;IACvB,mBAAmB;IACnB,UAAU;IACV,gBAAgB;IAChB,gBAAgB;IAChB,6BAA6B;AACjC;AACA;;IAEI,UAAU;IACV,cAAc;IACd,2BAA2B;AAC/B;AACA;;IAEI,kCAAkC;IAClC,qBAAqB;IACrB,cAAc;IACd,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,mBAAmB;IACnB,SAAS;IACT,mBAAmB;IACnB,WAAW;IACX,WAAW;IACX,WAAW;IACX,4EAA4E;AAChF;AACA;;IAEI,aAAa;IACb,qBAAqB;AACzB;AACA;;IAEI,aAAa;IACb,qBAAqB;AACzB;;AAEA;;IAEI,kCAAkC;IAClC,eAAe;IACf,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,iBAAiB;IACjB,mBAAmB;IACnB,kBAAkB;IAClB,iBAAiB;IACjB,WAAW;IACX,YAAY;AAChB;;AAEA;;IAEI,aAAa;IACb,2BAA2B;IAC3B,UAAU;IACV,eAAe;IACf,2BAA2B;AAC/B;AACA;;IAEI,yBAAyB;AAC7B;AACA;;IAEI,iBAAiB;AACrB","sourcesContent":[".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, ".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":[".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
@@ -17843,6 +17843,15 @@ TextGeometry.prototype.computeBoundingBox = function () {
   utils.computeBox(positions, bbox)
 }
 
+TextGeometry.prototype.getTopLeftCornerXOfCharAt = function(index) {
+  let positions = this.attributes.position.array;
+  let offset = index * 8 + 2;
+
+  console.assert(offset < positions.length);
+
+  return positions[offset];
+} 
+
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ }),
@@ -17981,157 +17990,6 @@ module.exports.positions = function positions (glyphs) {
   return positions
 }
 
-
-/***/ }),
-
-/***/ "./node_modules/three-bmfont-text/shaders/msdf.js":
-/*!********************************************************!*\
-  !*** ./node_modules/three-bmfont-text/shaders/msdf.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(THREE) {var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
-
-module.exports = function createMSDFShader (opt) {
-  opt = opt || {};
-  var opacity = typeof opt.opacity === 'number' ? opt.opacity : 1;
-  var alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001;
-  var precision = opt.precision || 'highp';
-  var color = opt.color;
-  var map = opt.map;
-  var negate = typeof opt.negate === 'boolean' ? opt.negate : true;
-
-  // remove to satisfy r73
-  delete opt.map;
-  delete opt.color;
-  delete opt.precision;
-  delete opt.opacity;
-  delete opt.negate;
-
-  return assign({
-    uniforms: {
-      opacity: { type: 'f', value: opacity },
-      map: { type: 't', value: map || new THREE.Texture() },
-      color: { type: 'c', value: new THREE.Color(color) }
-    },
-    vertexShader: [
-      '#version 300 es',
-      'in vec2 uv;',
-      'in vec4 position;',
-      'uniform mat4 projectionMatrix;',
-      'uniform mat4 modelViewMatrix;',
-      'out vec2 vUv;',
-      'void main() {',
-      'vUv = uv;',
-      'gl_Position = projectionMatrix * modelViewMatrix * position;',
-      '}'
-    ].join('\n'),
-    fragmentShader: [
-      '#version 300 es',
-      // '#ifdef GL_OES_standard_derivatives',
-      // '#extension GL_OES_standard_derivatives : enable',
-      // '#endif',
-      'precision ' + precision + ' float;',
-      'uniform float opacity;',
-      'uniform vec3 color;',
-      'uniform sampler2D map;',
-      'in vec2 vUv;',
-      'out vec4 myOutputColor;',
-
-      'float median(float r, float g, float b) {',
-      '  return max(min(r, g), min(max(r, g), b));',
-      '}',
-
-      'void main() {',
-      '  vec3 texdata = ' + (negate ? '1.0 - ' : '') + 'texture(map, vUv).rgb;',
-      '  float sigDist = median(texdata.r, texdata.g, texdata.b) - 0.5;',
-      '  float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);',
-      '  myOutputColor = vec4(color.xyz, alpha * opacity);',
-      alphaTest === 0
-        ? ''
-        : '  if (myOutputColor.a < ' + alphaTest + ') discard;',
-      '}'
-    ].join('\n')
-  }, opt);
-};
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
-
-/***/ }),
-
-/***/ "./node_modules/three-bmfont-text/shaders/sdf.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/three-bmfont-text/shaders/sdf.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(THREE) {var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js")
-
-module.exports = function createSDFShader (opt) {
-  opt = opt || {}
-  var opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
-  var alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001
-  var precision = opt.precision || 'highp'
-  var color = opt.color
-  var map = opt.map
-
-  // remove to satisfy r73
-  delete opt.map
-  delete opt.color
-  delete opt.precision
-  delete opt.opacity
-
-  return assign({
-    uniforms: {
-      opacity: { type: 'f', value: opacity },
-      map: { type: 't', value: map || new THREE.Texture() },
-      color: { type: 'c', value: new THREE.Color(color) }
-    },
-    vertexShader: [
-      'attribute vec2 uv;',
-      'attribute vec4 position;',
-      'uniform mat4 projectionMatrix;',
-      'uniform mat4 modelViewMatrix;',
-      'varying vec2 vUv;',
-      'void main() {',
-      'vUv = uv;',
-      'gl_Position = projectionMatrix * modelViewMatrix * position;',
-      '}'
-    ].join('\n'),
-    fragmentShader: [
-      '#ifdef GL_OES_standard_derivatives',
-      '#extension GL_OES_standard_derivatives : enable',
-      '#endif',
-      'precision ' + precision + ' float;',
-      'uniform float opacity;',
-      'uniform vec3 color;',
-      'uniform sampler2D map;',
-      'varying vec2 vUv;',
-
-      'float aastep(float value) {',
-      '  #ifdef GL_OES_standard_derivatives',
-      '    float afwidth = length(vec2(dFdx(value), dFdy(value))) * 0.70710678118654757;',
-      '  #else',
-      '    float afwidth = (1.0 / 32.0) * (1.4142135623730951 / (2.0 * gl_FragCoord.w));',
-      '  #endif',
-      '  return smoothstep(0.5 - afwidth, 0.5 + afwidth, value);',
-      '}',
-
-      'void main() {',
-      '  vec4 texColor = texture2D(map, vUv);',
-      '  float alpha = aastep(texColor.a);',
-      '  gl_FragColor = vec4(color, opacity * alpha);',
-      alphaTest === 0
-        ? ''
-        : '  if (gl_FragColor.a < ' + alphaTest + ') discard;',
-      '}'
-    ].join('\n')
-  }, opt)
-}
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ }),
 
@@ -77292,6 +77150,567 @@ var GLTFLoader = ( function () {
 
 /***/ }),
 
+/***/ "./node_modules/three/examples/jsm/loaders/TGALoader.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/three/examples/jsm/loaders/TGALoader.js ***!
+  \**************************************************************/
+/*! exports provided: TGALoader */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TGALoader", function() { return TGALoader; });
+/* harmony import */ var _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../build/three.module.js */ "./node_modules/three/build/three.module.js");
+
+
+var TGALoader = function ( manager ) {
+
+	_build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["Loader"].call( this, manager );
+
+};
+
+TGALoader.prototype = Object.assign( Object.create( _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["Loader"].prototype ), {
+
+	constructor: TGALoader,
+
+	load: function ( url, onLoad, onProgress, onError ) {
+
+		var scope = this;
+
+		var texture = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["Texture"]();
+
+		var loader = new _build_three_module_js__WEBPACK_IMPORTED_MODULE_0__["FileLoader"]( this.manager );
+		loader.setResponseType( 'arraybuffer' );
+		loader.setPath( this.path );
+		loader.setWithCredentials( this.withCredentials );
+
+		loader.load( url, function ( buffer ) {
+
+			texture.image = scope.parse( buffer );
+			texture.needsUpdate = true;
+
+			if ( onLoad !== undefined ) {
+
+				onLoad( texture );
+
+			}
+
+		}, onProgress, onError );
+
+		return texture;
+
+	},
+
+	parse: function ( buffer ) {
+
+		// reference from vthibault, https://github.com/vthibault/roBrowser/blob/master/src/Loaders/Targa.js
+
+		function tgaCheckHeader( header ) {
+
+			switch ( header.image_type ) {
+
+				// check indexed type
+
+				case TGA_TYPE_INDEXED:
+				case TGA_TYPE_RLE_INDEXED:
+					if ( header.colormap_length > 256 || header.colormap_size !== 24 || header.colormap_type !== 1 ) {
+
+						console.error( 'THREE.TGALoader: Invalid type colormap data for indexed type.' );
+
+					}
+
+					break;
+
+					// check colormap type
+
+				case TGA_TYPE_RGB:
+				case TGA_TYPE_GREY:
+				case TGA_TYPE_RLE_RGB:
+				case TGA_TYPE_RLE_GREY:
+					if ( header.colormap_type ) {
+
+						console.error( 'THREE.TGALoader: Invalid type colormap data for colormap type.' );
+
+					}
+
+					break;
+
+					// What the need of a file without data ?
+
+				case TGA_TYPE_NO_DATA:
+					console.error( 'THREE.TGALoader: No data.' );
+
+					// Invalid type ?
+
+				default:
+					console.error( 'THREE.TGALoader: Invalid type "%s".', header.image_type );
+
+			}
+
+			// check image width and height
+
+			if ( header.width <= 0 || header.height <= 0 ) {
+
+				console.error( 'THREE.TGALoader: Invalid image size.' );
+
+			}
+
+			// check image pixel size
+
+			if ( header.pixel_size !== 8 && header.pixel_size !== 16 &&
+				header.pixel_size !== 24 && header.pixel_size !== 32 ) {
+
+				console.error( 'THREE.TGALoader: Invalid pixel size "%s".', header.pixel_size );
+
+			}
+
+		}
+
+		// parse tga image buffer
+
+		function tgaParse( use_rle, use_pal, header, offset, data ) {
+
+			var pixel_data,
+				pixel_size,
+				pixel_total,
+				palettes;
+
+			pixel_size = header.pixel_size >> 3;
+			pixel_total = header.width * header.height * pixel_size;
+
+			 // read palettes
+
+			 if ( use_pal ) {
+
+				 palettes = data.subarray( offset, offset += header.colormap_length * ( header.colormap_size >> 3 ) );
+
+			 }
+
+			 // read RLE
+
+			 if ( use_rle ) {
+
+				 pixel_data = new Uint8Array( pixel_total );
+
+				var c, count, i;
+				var shift = 0;
+				var pixels = new Uint8Array( pixel_size );
+
+				while ( shift < pixel_total ) {
+
+					c = data[ offset ++ ];
+					count = ( c & 0x7f ) + 1;
+
+					// RLE pixels
+
+					if ( c & 0x80 ) {
+
+						// bind pixel tmp array
+
+						for ( i = 0; i < pixel_size; ++ i ) {
+
+							pixels[ i ] = data[ offset ++ ];
+
+						}
+
+						// copy pixel array
+
+						for ( i = 0; i < count; ++ i ) {
+
+							pixel_data.set( pixels, shift + i * pixel_size );
+
+						}
+
+						shift += pixel_size * count;
+
+					} else {
+
+						// raw pixels
+
+						count *= pixel_size;
+
+						for ( i = 0; i < count; ++ i ) {
+
+							pixel_data[ shift + i ] = data[ offset ++ ];
+
+						}
+
+						shift += count;
+
+					}
+
+				}
+
+			 } else {
+
+				// raw pixels
+
+				pixel_data = data.subarray(
+					 offset, offset += ( use_pal ? header.width * header.height : pixel_total )
+				);
+
+			 }
+
+			 return {
+				pixel_data: pixel_data,
+				palettes: palettes
+			 };
+
+		}
+
+		function tgaGetImageData8bits( imageData, y_start, y_step, y_end, x_start, x_step, x_end, image, palettes ) {
+
+			var colormap = palettes;
+			var color, i = 0, x, y;
+			var width = header.width;
+
+			for ( y = y_start; y !== y_end; y += y_step ) {
+
+				for ( x = x_start; x !== x_end; x += x_step, i ++ ) {
+
+					color = image[ i ];
+					imageData[ ( x + width * y ) * 4 + 3 ] = 255;
+					imageData[ ( x + width * y ) * 4 + 2 ] = colormap[ ( color * 3 ) + 0 ];
+					imageData[ ( x + width * y ) * 4 + 1 ] = colormap[ ( color * 3 ) + 1 ];
+					imageData[ ( x + width * y ) * 4 + 0 ] = colormap[ ( color * 3 ) + 2 ];
+
+				}
+
+			}
+
+			return imageData;
+
+		}
+
+		function tgaGetImageData16bits( imageData, y_start, y_step, y_end, x_start, x_step, x_end, image ) {
+
+			var color, i = 0, x, y;
+			var width = header.width;
+
+			for ( y = y_start; y !== y_end; y += y_step ) {
+
+				for ( x = x_start; x !== x_end; x += x_step, i += 2 ) {
+
+					color = image[ i + 0 ] + ( image[ i + 1 ] << 8 ); // Inversed ?
+					imageData[ ( x + width * y ) * 4 + 0 ] = ( color & 0x7C00 ) >> 7;
+					imageData[ ( x + width * y ) * 4 + 1 ] = ( color & 0x03E0 ) >> 2;
+					imageData[ ( x + width * y ) * 4 + 2 ] = ( color & 0x001F ) >> 3;
+					imageData[ ( x + width * y ) * 4 + 3 ] = ( color & 0x8000 ) ? 0 : 255;
+
+				}
+
+			}
+
+			return imageData;
+
+		}
+
+		function tgaGetImageData24bits( imageData, y_start, y_step, y_end, x_start, x_step, x_end, image ) {
+
+			var i = 0, x, y;
+			var width = header.width;
+
+			for ( y = y_start; y !== y_end; y += y_step ) {
+
+				for ( x = x_start; x !== x_end; x += x_step, i += 3 ) {
+
+					imageData[ ( x + width * y ) * 4 + 3 ] = 255;
+					imageData[ ( x + width * y ) * 4 + 2 ] = image[ i + 0 ];
+					imageData[ ( x + width * y ) * 4 + 1 ] = image[ i + 1 ];
+					imageData[ ( x + width * y ) * 4 + 0 ] = image[ i + 2 ];
+
+				}
+
+			}
+
+			return imageData;
+
+		}
+
+		function tgaGetImageData32bits( imageData, y_start, y_step, y_end, x_start, x_step, x_end, image ) {
+
+			var i = 0, x, y;
+			var width = header.width;
+
+			for ( y = y_start; y !== y_end; y += y_step ) {
+
+				for ( x = x_start; x !== x_end; x += x_step, i += 4 ) {
+
+					imageData[ ( x + width * y ) * 4 + 2 ] = image[ i + 0 ];
+					imageData[ ( x + width * y ) * 4 + 1 ] = image[ i + 1 ];
+					imageData[ ( x + width * y ) * 4 + 0 ] = image[ i + 2 ];
+					imageData[ ( x + width * y ) * 4 + 3 ] = image[ i + 3 ];
+
+				}
+
+			}
+
+			return imageData;
+
+		}
+
+		function tgaGetImageDataGrey8bits( imageData, y_start, y_step, y_end, x_start, x_step, x_end, image ) {
+
+			var color, i = 0, x, y;
+			var width = header.width;
+
+			for ( y = y_start; y !== y_end; y += y_step ) {
+
+				for ( x = x_start; x !== x_end; x += x_step, i ++ ) {
+
+					color = image[ i ];
+					imageData[ ( x + width * y ) * 4 + 0 ] = color;
+					imageData[ ( x + width * y ) * 4 + 1 ] = color;
+					imageData[ ( x + width * y ) * 4 + 2 ] = color;
+					imageData[ ( x + width * y ) * 4 + 3 ] = 255;
+
+				}
+
+			}
+
+			return imageData;
+
+		}
+
+		function tgaGetImageDataGrey16bits( imageData, y_start, y_step, y_end, x_start, x_step, x_end, image ) {
+
+			var i = 0, x, y;
+			var width = header.width;
+
+			for ( y = y_start; y !== y_end; y += y_step ) {
+
+				for ( x = x_start; x !== x_end; x += x_step, i += 2 ) {
+
+					imageData[ ( x + width * y ) * 4 + 0 ] = image[ i + 0 ];
+					imageData[ ( x + width * y ) * 4 + 1 ] = image[ i + 0 ];
+					imageData[ ( x + width * y ) * 4 + 2 ] = image[ i + 0 ];
+					imageData[ ( x + width * y ) * 4 + 3 ] = image[ i + 1 ];
+
+				}
+
+			}
+
+			return imageData;
+
+		}
+
+		function getTgaRGBA( data, width, height, image, palette ) {
+
+			var x_start,
+				y_start,
+				x_step,
+				y_step,
+				x_end,
+				y_end;
+
+			switch ( ( header.flags & TGA_ORIGIN_MASK ) >> TGA_ORIGIN_SHIFT ) {
+
+				default:
+				case TGA_ORIGIN_UL:
+					x_start = 0;
+					x_step = 1;
+					x_end = width;
+					y_start = 0;
+					y_step = 1;
+					y_end = height;
+					break;
+
+				case TGA_ORIGIN_BL:
+					x_start = 0;
+					x_step = 1;
+					x_end = width;
+					y_start = height - 1;
+					y_step = - 1;
+					y_end = - 1;
+					break;
+
+				case TGA_ORIGIN_UR:
+					x_start = width - 1;
+					x_step = - 1;
+					x_end = - 1;
+					y_start = 0;
+					y_step = 1;
+					y_end = height;
+					break;
+
+				case TGA_ORIGIN_BR:
+					x_start = width - 1;
+					x_step = - 1;
+					x_end = - 1;
+					y_start = height - 1;
+					y_step = - 1;
+					y_end = - 1;
+					break;
+
+			}
+
+			if ( use_grey ) {
+
+				switch ( header.pixel_size ) {
+
+					case 8:
+						tgaGetImageDataGrey8bits( data, y_start, y_step, y_end, x_start, x_step, x_end, image );
+						break;
+
+					case 16:
+						tgaGetImageDataGrey16bits( data, y_start, y_step, y_end, x_start, x_step, x_end, image );
+						break;
+
+					default:
+						console.error( 'THREE.TGALoader: Format not supported.' );
+						break;
+
+				}
+
+			} else {
+
+				switch ( header.pixel_size ) {
+
+					case 8:
+						tgaGetImageData8bits( data, y_start, y_step, y_end, x_start, x_step, x_end, image, palette );
+						break;
+
+					case 16:
+						tgaGetImageData16bits( data, y_start, y_step, y_end, x_start, x_step, x_end, image );
+						break;
+
+					case 24:
+						tgaGetImageData24bits( data, y_start, y_step, y_end, x_start, x_step, x_end, image );
+						break;
+
+					case 32:
+						tgaGetImageData32bits( data, y_start, y_step, y_end, x_start, x_step, x_end, image );
+						break;
+
+					default:
+						console.error( 'THREE.TGALoader: Format not supported.' );
+						break;
+
+				}
+
+			}
+
+			// Load image data according to specific method
+			// var func = 'tgaGetImageData' + (use_grey ? 'Grey' : '') + (header.pixel_size) + 'bits';
+			// func(data, y_start, y_step, y_end, x_start, x_step, x_end, width, image, palette );
+			return data;
+
+		}
+
+		// TGA constants
+
+		var TGA_TYPE_NO_DATA = 0,
+			TGA_TYPE_INDEXED = 1,
+			TGA_TYPE_RGB = 2,
+			TGA_TYPE_GREY = 3,
+			TGA_TYPE_RLE_INDEXED = 9,
+			TGA_TYPE_RLE_RGB = 10,
+			TGA_TYPE_RLE_GREY = 11,
+
+			TGA_ORIGIN_MASK = 0x30,
+			TGA_ORIGIN_SHIFT = 0x04,
+			TGA_ORIGIN_BL = 0x00,
+			TGA_ORIGIN_BR = 0x01,
+			TGA_ORIGIN_UL = 0x02,
+			TGA_ORIGIN_UR = 0x03;
+
+		if ( buffer.length < 19 ) console.error( 'THREE.TGALoader: Not enough data to contain header.' );
+
+		var content = new Uint8Array( buffer ),
+			offset = 0,
+			header = {
+				id_length: content[ offset ++ ],
+				colormap_type: content[ offset ++ ],
+				image_type: content[ offset ++ ],
+				colormap_index: content[ offset ++ ] | content[ offset ++ ] << 8,
+				colormap_length: content[ offset ++ ] | content[ offset ++ ] << 8,
+				colormap_size: content[ offset ++ ],
+				origin: [
+					content[ offset ++ ] | content[ offset ++ ] << 8,
+					content[ offset ++ ] | content[ offset ++ ] << 8
+				],
+				width: content[ offset ++ ] | content[ offset ++ ] << 8,
+				height: content[ offset ++ ] | content[ offset ++ ] << 8,
+				pixel_size: content[ offset ++ ],
+				flags: content[ offset ++ ]
+			};
+
+		// check tga if it is valid format
+
+		tgaCheckHeader( header );
+
+		if ( header.id_length + offset > buffer.length ) {
+
+			console.error( 'THREE.TGALoader: No data.' );
+
+		}
+
+		// skip the needn't data
+
+		offset += header.id_length;
+
+		// get targa information about RLE compression and palette
+
+		var use_rle = false,
+			use_pal = false,
+			use_grey = false;
+
+		switch ( header.image_type ) {
+
+			case TGA_TYPE_RLE_INDEXED:
+				use_rle = true;
+				use_pal = true;
+				break;
+
+			case TGA_TYPE_INDEXED:
+				use_pal = true;
+				break;
+
+			case TGA_TYPE_RLE_RGB:
+				use_rle = true;
+				break;
+
+			case TGA_TYPE_RGB:
+				break;
+
+			case TGA_TYPE_RLE_GREY:
+				use_rle = true;
+				use_grey = true;
+				break;
+
+			case TGA_TYPE_GREY:
+				use_grey = true;
+				break;
+
+		}
+
+		//
+
+		var useOffscreen = typeof OffscreenCanvas !== 'undefined';
+
+		var canvas = useOffscreen ? new OffscreenCanvas( header.width, header.height ) : document.createElement( 'canvas' );
+		canvas.width = header.width;
+		canvas.height = header.height;
+
+		var context = canvas.getContext( '2d' );
+		var imageData = context.createImageData( header.width, header.height );
+
+		var result = tgaParse( use_rle, use_pal, header, offset, content );
+		getTgaRGBA( imageData.data, header.width, header.height, result.pixel_data, result.palettes );
+
+		context.putImageData( imageData, 0, 0 );
+
+		return canvas;
+
+	}
+
+} );
+
+
+
+
+/***/ }),
+
 /***/ "./node_modules/three/examples/jsm/webxr/VRButton.js":
 /*!***********************************************************!*\
   !*** ./node_modules/three/examples/jsm/webxr/VRButton.js ***!
@@ -78471,8 +78890,8 @@ class Bag extends THREE.Group
                         //obj.receiveShadow = true;
                         this.mesh = obj;
                         obj.name = "BAG " + i;
-                        obj.material.roughness = 0.25;
-                        obj.material.envMapIntensity = 1.0;
+                        obj.material.roughness = 0.2;
+                        obj.material.envMapIntensity = 0.8;
                         obj.material.envMap = this.scene.envMap;
                     }
                     else if (obj.name == "PunchEffectMesh")
@@ -78584,7 +79003,7 @@ class Bag extends THREE.Group
 
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
-        Object(_pdacceleration_js__WEBPACK_IMPORTED_MODULE_1__["ApplyPDVec3"])(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 5.0, 0.9, dt);
+        Object(_pdacceleration_js__WEBPACK_IMPORTED_MODULE_1__["ApplyPDVec3"])(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.3, 0.9, dt);
 
 
         if (!this.bHasGloves)
@@ -78662,10 +79081,9 @@ class Bag extends THREE.Group
 
             let speed = velocity.length();
 
-            let speedBaseVolume = 1.0; //0.1 + Math.min(speed, 5.0) * 0.3;
+            let speedBaseVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
             hitSound.setVolume(speedBaseVolume);
 
-            // console.log("play buffer (" + whichSound + ") in sound (" + this.nextSoundIndex + ")");
             hitSound.play();
 
             this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
@@ -78699,9 +79117,6 @@ class Bag extends THREE.Group
             // atan2 gives the rotation in radius from the +X axis
             let rot = Math.atan2(z, position.x);
             pe.rotation.set(0.0, rot, 0.0);
-
-            this.hitMeshDebug.position.set(position.x, position.y, position.z);
-
         }
     }
 
@@ -78728,15 +79143,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
 /* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
 /* harmony import */ var three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three/examples/jsm/loaders/BasisTextureLoader.js */ "./node_modules/three/examples/jsm/loaders/BasisTextureLoader.js");
-/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
-/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
-/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
-/* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
-/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
-/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
-/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
+/* harmony import */ var three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three/examples/jsm/loaders/TGALoader.js */ "./node_modules/three/examples/jsm/loaders/TGALoader.js");
+/* harmony import */ var cannon_es__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! cannon-es */ "./node_modules/cannon-es/dist/cannon-es.js");
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
+/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
+/* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
+/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
+/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
+
+
+
 
 
 
@@ -78792,7 +79211,6 @@ let basisLoader = null;
 let envMapObjects = {}
 let hud = null;
 let pageUI = null;
-
 initialize();
 
 function initialize()
@@ -78805,7 +79223,7 @@ function initialize()
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
 
-    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_12__["StatsHud"](camera);
+    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_13__["StatsHud"](camera);
 
     audioListener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
     camera.add( audioListener );
@@ -78813,7 +79231,7 @@ function initialize()
     renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    renderer.xr.setFramebufferScaleFactor(0.75);
+    renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
     let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
     //color.convertSRGBToLinear();
     renderer.setClearColor(color);
@@ -78825,7 +79243,7 @@ function initialize()
     renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_0__["ACESFilmicToneMapping"];
     renderer.toneMappingExposure = 1.25;
 
-    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_13__["PageUI"](renderer);
+    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_14__["PageUI"](renderer);
 
 
     document.body.appendChild(renderer.domElement);
@@ -78842,23 +79260,39 @@ function initialize()
     //lightmaps['Room'] = LoadLightmapBasis("./content/Lightmaps_V8/", "Room_denoised.basis");
 
     let lightmapPromises = [];
-    lightmapPromises.push(LoadBasisLightmapPromise('Room', "./content/Lightmaps_V8/Room_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('Baseboard', "./content/Lightmaps_V8/Baseboard_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
+    if (true)
+    {
+        lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.basis"));
+    }
+    else
+    {}
+    // lightmapPromises.push(LoadBasisLightmapPromise('Kettlebell', "./content/Lightmaps_V8/Kettlebell_denoised.basis"));
+    // lightmapPromises.push(LoadBasisLightmapPromise('Legs', "./content/Lightmaps_V8/Legs_denoised.basis"));
+    // lightmapPromises.push(LoadBasisLightmapPromise('Seat', "./content/Lightmaps_V8/Seat_denoised.basis"));
 
     lightmapPromises.push(LoadEnvMapPromise());
 
 
-    envMapObjects['Floor'] = { intensity: 0.2, roughness: 0.35};
-    envMapObjects['AccentWall'] = { intensity: 0.5, roughness: 0.2};
+    envMapObjects['Floor'] = { intensity: 0.03, roughness: 0.36};
+    envMapObjects['AccentWall'] = { intensity: 0.35, roughness: 0.2};
+    envMapObjects['Dumbell'] = { intensity: 0.25, roughness: 0.7};
+    envMapObjects['Shelf'] = { intensity: 0.15, roughness: 0.2};
+    envMapObjects['DumbellHandle'] = { intensity: 0.55, roughness: 0.1};
+    envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
+    envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
+    
+    
+    // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};
+    // envMapObjects['Legs'] = {intensity: 0.5, roughness: 0.5};
+    // envMapObjects['Kettlebell'] = {intensity: 0.75, roughness: 0.5};
     
     // What do I want to have happen for loading?
     // Load enviornment map
@@ -78872,6 +79306,7 @@ function initialize()
     
     const loadingManager = new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]();
     loadingManager.addHandler(/\.basis$/i, basisLoader);
+    loadingManager.addHandler( /\.tga$/i, new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_6__["TGALoader"]() );
 
     let loaderPromise = new Promise( (resolve) => {
         let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"](loadingManager);
@@ -78888,10 +79323,18 @@ function initialize()
                     let obj = gltf.scene.children[i];       
                     obj.traverse(function (node) {
 
-                        //console.log("NODE: " + node.name);
+                        if (node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
+                        {
+                            let simpleMat = new three__WEBPACK_IMPORTED_MODULE_0__["MeshLambertMaterial"]();
+                            simpleMat.color = node.material.color;
+                            simpleMat.emissive = node.material.emissive;
+                            node.material = simpleMat;
+                        }
+
+                        // console.log("NODE: " + node.name);
                         let nodeLightmap = lightmaps[node.name];
                         if (node.material && nodeLightmap && 'lightMap' in node.material) {
-                            //console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                            // console.log("--> LIGHTMAP: " + nodeLightmap.name);
                             node.material.lightMap = nodeLightmap;
                             node.material.lightMapIntensity = 1.0;
                             node.material.needsUpdate = true;
@@ -78901,8 +79344,6 @@ function initialize()
                             
                         if (emo)
                         {
-                            //console.log("Setting EM on " + node.name);
-
                             node.material.envMap = scene.envMap;
                             node.material.envMapIntensity = emo.intensity;
                             node.material.roughness = emo.roughness;
@@ -78912,6 +79353,15 @@ function initialize()
                     if (obj.name == "Screen")
                     {
                         obj.material.emissiveIntensity = 1.25;
+                    }
+                    else if (obj.name =="Floor")
+                    {
+                        obj.material.lightMapIntensity = 2.0;
+                        obj.material.metalness = 0.5;
+                    }
+                    else if (obj.name == "AccentWall")
+                    {
+                        obj.material.lightMapIntensity = 1.5;
                     }
                 }
                 scene.add(gltf.scene);
@@ -79026,7 +79476,7 @@ function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
-    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__["update"](accumulatedTime);
+    _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_8__["update"](accumulatedTime);
 
     updateHands(dt, accumulatedTime);
     if (bag && gameLogic && punchingStats)
@@ -79061,11 +79511,11 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
-    bag = new _bag_js__WEBPACK_IMPORTED_MODULE_9__["Bag"](audioListener, scene, camera, renderer);
+    bag = new _bag_js__WEBPACK_IMPORTED_MODULE_10__["Bag"](audioListener, scene, camera, renderer);
     scene.add(bag);
 
-    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_10__["BoxingSession"](scene, audioListener, 3, 120, 20);
-    punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_10__["PunchingStats"](scene, bag);
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__["BoxingSession"](scene, audioListener, 3, 120, 20);
+    punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__["PunchingStats"](scene, bag);
 }
 
 
@@ -79085,7 +79535,7 @@ function setupHand(hand, whichHand)
     }
     else
     {
-        hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_8__["Glove"](hand.controller, scene, whichHand);
+        hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_9__["Glove"](hand.controller, scene, whichHand);
     }
     hand.isSetUp = true;
 }
@@ -79125,7 +79575,7 @@ function LoadEnvMapPromise()
         
         new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_4__["EXRLoader"]()
             .setDataType( three__WEBPACK_IMPORTED_MODULE_0__["HalfFloatType"] )
-            .load( './content/gym_v8_envmap.exr',  ( texture ) => {
+            .load( './content/gym_v8_envmap_2.exr',  ( texture ) => {
 
                 let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
                 scene.envMap = exrCubeRenderTarget.texture;
@@ -79147,8 +79597,9 @@ function InitBasisLoader()
 function LoadLightmapPromise(meshName, filepath)
 {
     return new Promise( (resolve, reject) => {
-        new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load(filepath, (texture) => 
+        new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_6__["TGALoader"]().load(filepath, (texture) => 
         {
+            console.log("LOADED: " + meshName + " -> " + filepath);
             texture.name = filepath;
             texture.flipY = false;
             texture.encoding = three__WEBPACK_IMPORTED_MODULE_0__["RGBDEncoding"];
@@ -79320,7 +79771,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BoxingSession", function() { return BoxingSession; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PunchingStats", function() { return PunchingStats; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-var createGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js")
+var createGeometry = __webpack_require__(/*! ./thirdparty/three-bmfont-text/ */ "./src/thirdparty/three-bmfont-text/index.js")
 var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
 
 
@@ -79332,8 +79783,8 @@ const SESSION_REST = 3;
 const SESSION_OUTRO = 4;
 const SESSION_PAUSED = 5;
 
-var MSDFShader = __webpack_require__(/*! three-bmfont-text/shaders/msdf */ "./node_modules/three-bmfont-text/shaders/msdf.js")
-var SDFShader = __webpack_require__(/*! three-bmfont-text/shaders/sdf */ "./node_modules/three-bmfont-text/shaders/sdf.js")
+var MSDFShader = __webpack_require__(/*! ./thirdparty/three-bmfont-text/shaders/msdf */ "./src/thirdparty/three-bmfont-text/shaders/msdf.js")
+//var SDFShader = require('./thirdparty/three-bmfont-text/shaders/sdf')
 
 class BoxingSession
 {
@@ -79357,6 +79808,16 @@ class BoxingSession
                 this.sound321.buffer = buffer;
             });
         
+        this.soundEndOfRound = new three__WEBPACK_IMPORTED_MODULE_0__["PositionalAudio"](audioListener);
+        this.soundEndOfRound.setVolume(1.0);
+        this.soundEndOfRound.setRefDistance(40.0);
+        new three__WEBPACK_IMPORTED_MODULE_0__["AudioLoader"]().load(
+            "./content/endOfRound.mp3",
+            (buffer) => 
+            {
+                this.soundEndOfRound.buffer = buffer;
+            });
+        
         // font
         loadFont('./content/ROCKB.TTF-msdf.json',
         (err, font) => {
@@ -79375,27 +79836,8 @@ class BoxingSession
                 flipY: true,
             });
 
-            // const manager = new THREE.LoadingManager();
-            // manager.addHandler( /\.dds$/i, new DDSLoader() );
-
-            // // the texture atlas containing our glyphs
-            // var texture = new DDSLoader(manager).load('./content/output.dds');
-
             var texture = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/ROCKBTTF.png');
-
-            // we can use a simple ThreeJS material
-            // this.timerFontMaterial = new THREE.MeshBasicMaterial({
-            //     map: texture,
-            //     transparent: true,
-            //     side: THREE.FrontSide,
-            //     color: 0x000000, //0xfac3b9,
-            //     opacity: 1.0,
-            //     depthTest: true, //:THREE.NeverDepth
-            //     side: THREE.DoubleSide
-
-            // });
-
-            
+          
             this.timerFontMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["RawShaderMaterial"](MSDFShader({
                 map: texture,
                 side: three__WEBPACK_IMPORTED_MODULE_0__["DoubleSide"],
@@ -79442,6 +79884,7 @@ class BoxingSession
                     this.TV.add(this.roundsFontMesh);
                     // console.log("FOUND TV");
                     this.TV.add(this.sound321);
+                    this.TV.add(this.soundEndOfRound);
 
                     this.updateTimer();
                     this.updateRoundsMessage();
@@ -79523,7 +79966,7 @@ class BoxingSession
                     }
                     this.elapsedTime = 0.0;
                     //play "end of round" sound
-                    this.sound321.play();
+                    this.soundEndOfRound.play();
                     this.updateRoundsMessage();
                 }
                 else
@@ -79548,7 +79991,9 @@ class BoxingSession
                 }
                 break;
             case SESSION_OUTRO:
-                this.blankTimer();
+                //this.blankTimer();
+                this.updateTimer(0);
+                this.updateRoundsMessage();
                 break;
         }
     }
@@ -79556,9 +80001,11 @@ class BoxingSession
     updateTimer(value)
     {
         let message;
-        if (this.state == SESSION_NULL)
+        let colonIndex = 1;
+        if (this.state == SESSION_NULL || this.state == SESSION_OUTRO)
         {
-            message = "--:--";
+            message = "0:00";
+            colonIndex = 1;
         }
         else
         {
@@ -79574,16 +80021,20 @@ class BoxingSession
             let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
             let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
 
+            if (minutes > 9) colonIndex = 2;
+
             message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
         }
 
         this.timerFontGeometry.update(message);
         this.timerFontGeometry.computeBoundingBox();
         let box = this.timerFontGeometry.boundingBox;
-        this.timerFontMesh.position.x = box.min.x;
+
+        let pos = this.timerFontGeometry.getTopLeftCornerXOfCharAt(colonIndex);
+        this.timerFontMesh.position.x = pos;
         this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
-        let quantizedMaxX = Math.floor(box.max.x * this.timerFontMesh.scale.x * 10.0) * 0.1;
-        this.timerFontMesh.position.x += quantizedMaxX * -0.5;
+        this.timerFontMesh.position.x -= 0.65;
+
     }
     updateRoundsMessage()
     {
@@ -79593,7 +80044,6 @@ class BoxingSession
             message = "ROUND"+ ("-/-").padStart(6, ' ') 
             + "\n\n\n\n"
             + (this.state == SESSION_PAUSED ? "PAUSED" : "IDLE");
-
         }
         else
         {
@@ -79601,7 +80051,8 @@ class BoxingSession
             + "\n\n\n\n" 
             + (this.state == SESSION_INTRO ? "GET READY" : 
             (this.state == SESSION_ROUND) ? "FIGHT" :
-            (this.state == SESSION_REST) ? "REST" : "");
+            (this.state == SESSION_REST) ? "REST" : 
+            (this.state == SESSION_OUTRO) ? "GREAT JOB!" : "");
         }
         this.roundsFontGeometry.update(message);
         this.roundsFontGeometry.computeBoundingBox();
@@ -79765,7 +80216,6 @@ class PunchingStats
     //     const kSmoothPPM = 0.005;
     //     this.smoothAvgPPM = ppm * kSmoothPPM + (this.smoothAvgPPM * (1.0 - kSmoothPPM));
 
-        const kPadStart = 15;
         this.fontGeometry.update(
             // "ROUND:    3/8\n\n\n" + "FIGHT\n" +
             "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 
@@ -79903,7 +80353,7 @@ let line = new THREE.Line3();
 
 let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 
-const kGloveRadius = 0.085;
+const kGloveRadius = 0.08;
 const kNewContactDelay = 0.15;
 
 class Glove extends THREE.Group
@@ -80044,6 +80494,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 
 
+const kMaxLogo = "40%";
+const kMinLogo = "20%";
 class PageUI
 {
 
@@ -80096,6 +80548,7 @@ class PageUI
 
         this.uiLogo = document.createElement("img");
         this.uiLogo.className = "title_image";
+        this.uiLogo.style.width = kMaxLogo;
         this.uiLogo.src = "./content/heavy_bag_trainer_logo.png";
 
 
@@ -80127,6 +80580,14 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiConfigureButton);
 
 
+        this.uiAboutButton = document.createElement("button");
+        this.uiAboutButton.style.fontSize = "2.25vw";
+        this.uiAboutButton.style.borderWidth = "0.4vw";
+        this.uiAboutButton.innerHTML = "About";
+        this.uiAboutButton.onclick = () => {this.onAboutClicked()};
+        this.uiButtonGroup.appendChild(this.uiAboutButton);
+
+
         this.uiConfigurationContainer = document.createElement("div");
         this.uiConfigurationContainer.className = "configuration_container";
         this.uiConfigurationContainer.style.height = "0%";
@@ -80137,6 +80598,7 @@ class PageUI
         this.uiConfigurationGroup.style.visibility = "hidden";
 
         this.uiConfigurationContainer.appendChild(this.uiConfigurationGroup);
+        
 
         //
         // ROUND TIME
@@ -80263,9 +80725,6 @@ class PageUI
         okButton.style.boxShadow = "";
         okButton.onclick = () => { this.onOkClicked(); }
         div.appendChild(okButton);
-
-
-
     }
 
     checkForXR()
@@ -80341,7 +80800,7 @@ class PageUI
         this.uiRoundTimeDisplay.innerHTML = this.formatTime(this.roundTime);
         this.uiRestTimeDisplay.innerHTML = this.formatTime(this.restTime);
 
-        this.uiLogo.style.width = "25%";
+        this.uiLogo.style.width = kMinLogo;
 
         this.uiButtonContainer.style.height = "0%";
         this.uiButtonGroup.style.visibility = "hidden";
@@ -80349,6 +80808,11 @@ class PageUI
         this.uiConfigurationContainer.style.height = "auto";
         this.uiConfigurationGroup.style.visibility = "visible";
 
+    }
+
+    onAboutClicked()
+    {
+        location.href="about.html";
     }
 
     formatTime(value)
@@ -80396,7 +80860,7 @@ class PageUI
 
     hideConfigurationUI()
     {
-        this.uiLogo.style.width = "50%";
+        this.uiLogo.style.width = kMaxLogo;
 
         this.uiButtonContainer.style.height = "auto";
         this.uiButtonGroup.style.visibility = "visible";
@@ -80503,6 +80967,411 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
 /* harmony default export */ __webpack_exports__["default"] = (_node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./src/thirdparty/three-bmfont-text/index.js":
+/*!***************************************************!*\
+  !*** ./src/thirdparty/three-bmfont-text/index.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(THREE) {var createLayout = __webpack_require__(/*! layout-bmfont-text */ "./node_modules/layout-bmfont-text/index.js")
+var inherits = __webpack_require__(/*! inherits */ "./node_modules/inherits/inherits_browser.js")
+var createIndices = __webpack_require__(/*! quad-indices */ "./node_modules/quad-indices/index.js")
+
+var vertices = __webpack_require__(/*! ./lib/vertices */ "./src/thirdparty/three-bmfont-text/lib/vertices.js")
+var utils = __webpack_require__(/*! ./lib/utils */ "./src/thirdparty/three-bmfont-text/lib/utils.js")
+
+var Base = THREE.BufferGeometry
+
+module.exports = function createTextGeometry (opt) {
+  return new TextGeometry(opt)
+}
+
+function TextGeometry (opt) {
+  Base.call(this)
+
+  if (typeof opt === 'string') {
+    opt = { text: opt }
+  }
+
+  // use these as default values for any subsequent
+  // calls to update()
+  this._opt = Object.assign({}, opt)
+
+  // also do an initial setup...
+  if (opt) this.update(opt)
+}
+
+inherits(TextGeometry, Base)
+
+TextGeometry.prototype.update = function (opt) {
+  if (typeof opt === 'string') {
+    opt = { text: opt }
+  }
+
+  // use constructor defaults
+  opt = Object.assign({}, this._opt, opt)
+
+  if (!opt.font) {
+    throw new TypeError('must specify a { font } in options')
+  }
+
+  this.layout = createLayout(opt)
+
+  // get vec2 texcoords
+  var flipY = opt.flipY !== false
+
+  // the desired BMFont data
+  var font = opt.font
+
+  // determine texture size from font file
+  var texWidth = font.common.scaleW
+  var texHeight = font.common.scaleH
+
+  // get visible glyphs
+  var glyphs = this.layout.glyphs.filter(function (glyph) {
+    var bitmap = glyph.data
+    return bitmap.width * bitmap.height > 0
+  })
+
+  // provide visible glyphs for convenience
+  this.visibleGlyphs = glyphs
+
+  // get common vertex data
+  var positions = vertices.positions(glyphs)
+  var uvs = vertices.uvs(glyphs, texWidth, texHeight, flipY)
+  var indices = createIndices([], {
+    clockwise: true,
+    type: 'uint16',
+    count: glyphs.length
+  })
+
+  // update vertex data
+  this.setIndex(indices)
+  this.setAttribute('position', new THREE.BufferAttribute(positions, 2))
+  this.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
+
+  // update multipage data
+  if (!opt.multipage && 'page' in this.attributes) {
+    // disable multipage rendering
+    this.removeAttribute('page')
+  } else if (opt.multipage) {
+    // enable multipage rendering
+    var pages = vertices.pages(glyphs)
+    this.setAttribute('page', new THREE.BufferAttribute(pages, 1))
+  }
+}
+
+TextGeometry.prototype.computeBoundingSphere = function () {
+  if (this.boundingSphere === null) {
+    this.boundingSphere = new THREE.Sphere()
+  }
+
+  var positions = this.attributes.position.array
+  var itemSize = this.attributes.position.itemSize
+  if (!positions || !itemSize || positions.length < 2) {
+    this.boundingSphere.radius = 0
+    this.boundingSphere.center.set(0, 0, 0)
+    return
+  }
+  utils.computeSphere(positions, this.boundingSphere)
+  if (isNaN(this.boundingSphere.radius)) {
+    console.error('THREE.BufferGeometry.computeBoundingSphere(): ' +
+      'Computed radius is NaN. The ' +
+      '"position" attribute is likely to have NaN values.')
+  }
+}
+
+TextGeometry.prototype.computeBoundingBox = function () {
+  if (this.boundingBox === null) {
+    this.boundingBox = new THREE.Box3()
+  }
+
+  var bbox = this.boundingBox
+  var positions = this.attributes.position.array
+  var itemSize = this.attributes.position.itemSize
+  if (!positions || !itemSize || positions.length < 2) {
+    bbox.makeEmpty()
+    return
+  }
+  utils.computeBox(positions, bbox)
+}
+
+TextGeometry.prototype.getTopLeftCornerXOfCharAt = function(index) {
+  let positions = this.attributes.position.array;
+  let offset = index * 8 + 2;
+
+  console.assert(offset < positions.length);
+
+  return positions[offset];
+} 
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
+/***/ "./src/thirdparty/three-bmfont-text/lib/utils.js":
+/*!*******************************************************!*\
+  !*** ./src/thirdparty/three-bmfont-text/lib/utils.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var itemSize = 2
+var box = { min: [0, 0], max: [0, 0] }
+
+function bounds (positions) {
+  var count = positions.length / itemSize
+  box.min[0] = positions[0]
+  box.min[1] = positions[1]
+  box.max[0] = positions[0]
+  box.max[1] = positions[1]
+
+  for (var i = 0; i < count; i++) {
+    var x = positions[i * itemSize + 0]
+    var y = positions[i * itemSize + 1]
+    box.min[0] = Math.min(x, box.min[0])
+    box.min[1] = Math.min(y, box.min[1])
+    box.max[0] = Math.max(x, box.max[0])
+    box.max[1] = Math.max(y, box.max[1])
+  }
+}
+
+module.exports.computeBox = function (positions, output) {
+  bounds(positions)
+  output.min.set(box.min[0], box.min[1], 0)
+  output.max.set(box.max[0], box.max[1], 0)
+}
+
+module.exports.computeSphere = function (positions, output) {
+  bounds(positions)
+  var minX = box.min[0]
+  var minY = box.min[1]
+  var maxX = box.max[0]
+  var maxY = box.max[1]
+  var width = maxX - minX
+  var height = maxY - minY
+  var length = Math.sqrt(width * width + height * height)
+  output.center.set(minX + width / 2, minY + height / 2, 0)
+  output.radius = length / 2
+}
+
+
+/***/ }),
+
+/***/ "./src/thirdparty/three-bmfont-text/lib/vertices.js":
+/*!**********************************************************!*\
+  !*** ./src/thirdparty/three-bmfont-text/lib/vertices.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports.pages = function pages (glyphs) {
+  var pages = new Float32Array(glyphs.length * 4 * 1)
+  var i = 0
+  glyphs.forEach(function (glyph) {
+    var id = glyph.data.page || 0
+    pages[i++] = id
+    pages[i++] = id
+    pages[i++] = id
+    pages[i++] = id
+  })
+  return pages
+}
+
+module.exports.uvs = function uvs (glyphs, texWidth, texHeight, flipY) {
+  var uvs = new Float32Array(glyphs.length * 4 * 2)
+  var i = 0
+  glyphs.forEach(function (glyph) {
+    var bitmap = glyph.data
+    var bw = (bitmap.x + bitmap.width)
+    var bh = (bitmap.y + bitmap.height)
+
+    // top left position
+    var u0 = bitmap.x / texWidth
+    var v1 = bitmap.y / texHeight
+    var u1 = bw / texWidth
+    var v0 = bh / texHeight
+
+    if (flipY) {
+      v1 = (texHeight - bitmap.y) / texHeight
+      v0 = (texHeight - bh) / texHeight
+    }
+
+    // BL
+    uvs[i++] = u0
+    uvs[i++] = v1
+    // TL
+    uvs[i++] = u0
+    uvs[i++] = v0
+    // TR
+    uvs[i++] = u1
+    uvs[i++] = v0
+    // BR
+    uvs[i++] = u1
+    uvs[i++] = v1
+  })
+  return uvs
+}
+
+module.exports.positions = function positions (glyphs) {
+  var positions = new Float32Array(glyphs.length * 4 * 2)
+  var i = 0
+  glyphs.forEach(function (glyph) {
+    var bitmap = glyph.data
+
+    // bottom left position
+    var x = glyph.position[0] + bitmap.xoffset
+    var y = glyph.position[1] + bitmap.yoffset
+
+    // quad size
+    var w = bitmap.width
+    var h = bitmap.height
+
+    // BL
+    positions[i++] = x
+    positions[i++] = y
+    // TL
+    positions[i++] = x
+    positions[i++] = y + h
+    // TR
+    positions[i++] = x + w
+    positions[i++] = y + h
+    // BR
+    positions[i++] = x + w
+    positions[i++] = y
+  })
+  return positions
+}
+
+
+/***/ }),
+
+/***/ "./src/thirdparty/three-bmfont-text/shaders/msdf.js":
+/*!**********************************************************!*\
+  !*** ./src/thirdparty/three-bmfont-text/shaders/msdf.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(THREE) {const objectAssign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
+var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
+
+module.exports = function createMSDFShader (opt) {
+  opt = opt || {};
+  var opacity = typeof opt.opacity === 'number' ? opt.opacity : 1;
+  var alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001;
+  var precision = opt.precision || 'highp';
+  var color = opt.color;
+  var map = opt.map;
+  var negate = typeof opt.negate === 'boolean' ? opt.negate : true;
+  var webGL2 = typeof opt.webGL2 == 'boolean' ? opt.webGL2 : true;
+
+  // remove to satisfy r73
+  delete opt.map;
+  delete opt.color;
+  delete opt.precision;
+  delete opt.opacity;
+  delete opt.negate;
+
+  let vertexShaderCode;
+  let fragmentShaderCode;
+  if (webGL2)
+  {
+    console.log("BUILDING WebGL2 Shaders");
+    vertexShaderCode = [
+      '#version 300 es',
+      'in vec2 uv;',
+      'in vec4 position;',
+      'uniform mat4 projectionMatrix;',
+      'uniform mat4 modelViewMatrix;',
+      'out vec2 vUv;',
+      'void main() {',
+      'vUv = uv;',
+      'gl_Position = projectionMatrix * modelViewMatrix * position;',
+      '}'
+    ].join('\n');
+
+    fragmentShaderCode = [
+      '#version 300 es',
+      'precision ' + precision + ' float;',
+      'uniform float opacity;',
+      'uniform vec3 color;',
+      'uniform sampler2D map;',
+      'in vec2 vUv;',
+      'out vec4 result;',
+
+      'float median(float r, float g, float b) {',
+      '  return max(min(r, g), min(max(r, g), b));',
+      '}',
+
+      'void main() {',
+      '  vec3 imageSample = ' + (negate ? '1.0 - ' : '') + 'texture(map, vUv).rgb;',
+      '  float sigDist = median(imageSample.r, imageSample.g, imageSample.b) - 0.5;',
+      '  float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);',
+      '  result = vec4(color.xyz, alpha * opacity);',
+      alphaTest === 0
+        ? ''
+        : '  if (result.a < ' + alphaTest + ') discard;',
+      '}'
+    ].join('\n');
+  }
+  else
+  {
+    console.log("BUILDING WebGL1 Shaders");
+    vertexShaderCode = [
+      'attribute vec2 uv;',
+      'attribute vec4 position;',
+      'uniform mat4 projectionMatrix;',
+      'uniform mat4 modelViewMatrix;',
+      'varying vec2 vUv;',
+      'void main() {',
+      'vUv = uv;',
+      'gl_Position = projectionMatrix * modelViewMatrix * position;',
+      '}'
+    ].join('\n');
+
+    fragmentShaderCode = [
+      '#ifdef GL_OES_standard_derivatives',
+      '#extension GL_OES_standard_derivatives : enable',
+      '#endif',
+      'precision ' + precision + ' float;',
+      'uniform float opacity;',
+      'uniform vec3 color;',
+      'uniform sampler2D map;',
+      'varying vec2 vUv;',
+
+      'float median(float r, float g, float b) {',
+      '  return max(min(r, g), min(max(r, g), b));',
+      '}',
+
+      'void main() {',
+      '  vec3 sample = ' + (negate ? '1.0 - ' : '') + 'texture2D(map, vUv).rgb;',
+      '  float sigDist = median(sample.r, sample.g, sample.b) - 0.5;',
+      '  float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);',
+      '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
+      alphaTest === 0
+        ? ''
+        : '  if (gl_FragColor.a < ' + alphaTest + ') discard;',
+      '}'
+    ].join('\n');
+  }
+
+  return assign({
+    uniforms: {
+      opacity: { type: 'f', value: opacity },
+      map: { type: 't', value: map || new THREE.Texture() },
+      color: { type: 'c', value: new THREE.Color(color) }
+    },
+    vertexShader: vertexShaderCode,
+    fragmentShader: fragmentShaderCode
+  }, opt);
+};
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ })
 

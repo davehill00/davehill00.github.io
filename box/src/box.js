@@ -4,6 +4,9 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import {BasisTextureLoader} from 'three/examples/jsm/loaders/BasisTextureLoader.js'
+
+import {TGALoader} from 'three/examples/jsm/loaders/TGALoader.js'
+
 //import * as BASIS from 'three/exmaples/js/libs/basis/basis_transcoder.js'
 
 var inputProfilesList = require( "@webxr-input-profiles/registry/dist/profilesList.json");
@@ -53,7 +56,6 @@ let basisLoader = null;
 let envMapObjects = {}
 let hud = null;
 let pageUI = null;
-
 initialize();
 
 function initialize()
@@ -74,7 +76,7 @@ function initialize()
     renderer = new THREE.WebGLRenderer( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    renderer.xr.setFramebufferScaleFactor(0.75);
+    renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
     let color = new THREE.Color(0x000000);
     //color.convertSRGBToLinear();
     renderer.setClearColor(color);
@@ -103,23 +105,53 @@ function initialize()
     //lightmaps['Room'] = LoadLightmapBasis("./content/Lightmaps_V8/", "Room_denoised.basis");
 
     let lightmapPromises = [];
-    lightmapPromises.push(LoadBasisLightmapPromise('Room', "./content/Lightmaps_V8/Room_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('Baseboard', "./content/Lightmaps_V8/Baseboard_denoised.basis"));
-
-    lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
+    if (true)
+    {
+        lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.basis"));
+    }
+    else
+    {
+        // lightmapPromises.push(LoadLightmapPromise('Room', "./content/Lightmaps_V8/Room_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.tga"));
+        lightmapPromises.push(LoadLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.tga"));
+        // lightmapPromises.push(LoadLightmapPromise('ShelfLegs', "./content/Lightmaps_V8/ShelfLegs_denoised.tga"));
+        
+        
+    }
+    // lightmapPromises.push(LoadBasisLightmapPromise('Kettlebell', "./content/Lightmaps_V8/Kettlebell_denoised.basis"));
+    // lightmapPromises.push(LoadBasisLightmapPromise('Legs', "./content/Lightmaps_V8/Legs_denoised.basis"));
+    // lightmapPromises.push(LoadBasisLightmapPromise('Seat', "./content/Lightmaps_V8/Seat_denoised.basis"));
 
     lightmapPromises.push(LoadEnvMapPromise());
 
 
-    envMapObjects['Floor'] = { intensity: 0.2, roughness: 0.35};
-    envMapObjects['AccentWall'] = { intensity: 0.5, roughness: 0.2};
+    envMapObjects['Floor'] = { intensity: 0.03, roughness: 0.36};
+    envMapObjects['AccentWall'] = { intensity: 0.35, roughness: 0.2};
+    envMapObjects['Dumbell'] = { intensity: 0.25, roughness: 0.7};
+    envMapObjects['Shelf'] = { intensity: 0.15, roughness: 0.2};
+    envMapObjects['DumbellHandle'] = { intensity: 0.55, roughness: 0.1};
+    envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
+    envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
+    
+    
+    // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};
+    // envMapObjects['Legs'] = {intensity: 0.5, roughness: 0.5};
+    // envMapObjects['Kettlebell'] = {intensity: 0.75, roughness: 0.5};
     
     // What do I want to have happen for loading?
     // Load enviornment map
@@ -133,6 +165,7 @@ function initialize()
     
     const loadingManager = new THREE.LoadingManager();
     loadingManager.addHandler(/\.basis$/i, basisLoader);
+    loadingManager.addHandler( /\.tga$/i, new TGALoader() );
 
     let loaderPromise = new Promise( (resolve) => {
         let loader = new GLTFLoader(loadingManager);
@@ -149,10 +182,18 @@ function initialize()
                     let obj = gltf.scene.children[i];       
                     obj.traverse(function (node) {
 
-                        //console.log("NODE: " + node.name);
+                        if (node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
+                        {
+                            let simpleMat = new THREE.MeshLambertMaterial();
+                            simpleMat.color = node.material.color;
+                            simpleMat.emissive = node.material.emissive;
+                            node.material = simpleMat;
+                        }
+
+                        // console.log("NODE: " + node.name);
                         let nodeLightmap = lightmaps[node.name];
                         if (node.material && nodeLightmap && 'lightMap' in node.material) {
-                            //console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                            // console.log("--> LIGHTMAP: " + nodeLightmap.name);
                             node.material.lightMap = nodeLightmap;
                             node.material.lightMapIntensity = 1.0;
                             node.material.needsUpdate = true;
@@ -162,8 +203,6 @@ function initialize()
                             
                         if (emo)
                         {
-                            //console.log("Setting EM on " + node.name);
-
                             node.material.envMap = scene.envMap;
                             node.material.envMapIntensity = emo.intensity;
                             node.material.roughness = emo.roughness;
@@ -173,6 +212,15 @@ function initialize()
                     if (obj.name == "Screen")
                     {
                         obj.material.emissiveIntensity = 1.25;
+                    }
+                    else if (obj.name =="Floor")
+                    {
+                        obj.material.lightMapIntensity = 2.0;
+                        obj.material.metalness = 0.5;
+                    }
+                    else if (obj.name == "AccentWall")
+                    {
+                        obj.material.lightMapIntensity = 1.5;
                     }
                 }
                 scene.add(gltf.scene);
@@ -404,7 +452,7 @@ function LoadEnvMapPromise()
         
         new EXRLoader()
             .setDataType( THREE.HalfFloatType )
-            .load( './content/gym_v8_envmap.exr',  ( texture ) => {
+            .load( './content/gym_v8_envmap_2.exr',  ( texture ) => {
 
                 let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
                 scene.envMap = exrCubeRenderTarget.texture;
@@ -426,8 +474,9 @@ function InitBasisLoader()
 function LoadLightmapPromise(meshName, filepath)
 {
     return new Promise( (resolve, reject) => {
-        new THREE.TextureLoader().load(filepath, (texture) => 
+        new TGALoader().load(filepath, (texture) => 
         {
+            console.log("LOADED: " + meshName + " -> " + filepath);
             texture.name = filepath;
             texture.flipY = false;
             texture.encoding = THREE.RGBDEncoding;

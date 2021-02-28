@@ -231,3 +231,48 @@ button:disabled
 {
     margin-left: auto;
 }
+.about_panel_container
+{
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    width: 100%;
+    height: 20%;
+    padding: 16px;
+    border: 3px solid green;
+}
+.about_panel_group
+{
+    display: block;
+    /* justify-content: center; */
+    width: 90%;
+    height: 100%;
+
+    border:#9f7909;
+    border-style: solid;
+    border-width: 8px;
+    background-color: black;
+
+    margin-top: 1vh;
+}
+.about_panel_iframe
+{
+    border-style:none;
+    width: 100%;
+    min-height: 35vh;
+
+    /* border:yellowgreen;
+    border-width: 8px;
+    border-style: solid; */
+}
+.about_close_button
+{
+    font-size: 32px;
+    display: block;
+    height: auto;
+    width: 50%;
+    margin-left: 25%;
+    border-width: 6px;
+    justify-content: center;
+    box-shadow: none;
+}
