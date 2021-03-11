@@ -1,4 +1,5 @@
 import {doesCircleCollideWithOtherCircle} from "./circleCircleIntersection.js";
+import {doesSphereCollideWithOtherSphere} from "./sphereSphereIntersection.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 let dest = new THREE.Vector3();
@@ -69,6 +70,7 @@ export class Glove extends THREE.Group
                 }
                 this.add(gltf.scene);
                 this.mesh = gltf.scene.children[0];
+                // this.mesh.visible = false;
             });
     }
     show()
@@ -109,14 +111,16 @@ export class Glove extends THREE.Group
         // Check for collisions from current position to goal position
 
         let t;
-        if (doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, t))
+        // if (doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, t))
+        if (doesSphereCollideWithOtherSphere(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, hitNormal, t, false))
         {
-            this.bag.processHit(this.velocity, hitPoint, this.whichHand, !this.inContactWithBag);
+            //console.log(((this.whichHand == 2) ? "RIGHT " : "LEFT ") + "hit bag! New pos = " + hitPoint.x + ", " + hitPoint.y + ", " + hitPoint.z)
+            this.bag.processHit(this.velocity, hitPoint, hitNormal, this.whichHand, !this.inContactWithBag);
 
  
 
             this.position.copy(hitPoint);
-            if (!this.inContactWithBag)
+            if (!this.inContactWithBag && this.velocity.lengthSq() > 0.01)
             {
                 this.nextNewContactTime = accumulatedTime + kNewContactDelay;
 

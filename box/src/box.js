@@ -16,6 +16,7 @@ import * as TWEEN from '@tweenjs/tween.js';
 
 import {Glove} from './glove.js';
 import {Bag} from './bag.js';
+import {DoubleEndedBag} from './doubleEndedBag.js';
 import {BoxingSession, PunchingStats} from './gamelogic.js';
 
 
@@ -49,6 +50,7 @@ let punchingStats = null;
 
 let pmremGenerator = null;
 let lightmaps = {};
+let aomaps = {};
 let basisLoader = null;
 
 
@@ -86,7 +88,7 @@ function initialize()
     // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
+    // renderer.toneMappingExposure = 1.25;
 
     pageUI = new PageUI(renderer);
 
@@ -116,6 +118,28 @@ function initialize()
         lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.basis"));
         lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.basis"));
         lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.basis"));
+    }
+    else if (true)
+    {
+        lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_baked_dir.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_baked_dir.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_baked_dir.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_baked_dir.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_baked_dir.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_baked_dir.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_baked_dir.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_baked_dir.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_baked_dir.basis"));
+
+        lightmapPromises.push(LoadBasisAoPromise('Room001', "./content/Lightmaps_V8/Room.001_baked_ao.basis"));
+        lightmapPromises.push(LoadBasisAoPromise('Floor', "./content/Lightmaps_V8/Floor_baked_ao.basis"));
+        lightmapPromises.push(LoadBasisAoPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_baked_ao.basis"));
+        lightmapPromises.push(LoadBasisAoPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_baked_ao.basis"));
+        lightmapPromises.push(LoadBasisAoPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_baked_ao.basis"));
+        lightmapPromises.push(LoadBasisAoPromise('TV', "./content/Lightmaps_V8/TV_baked_ao.basis"));
+        lightmapPromises.push(LoadBasisAoPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_baked_ao.basis"));
+        lightmapPromises.push(LoadBasisAoPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_baked_ao.basis"));
+        lightmapPromises.push(LoadBasisAoPromise('Shelf', "./content/Lightmaps_V8/Shelf_baked_ao.basis"));
     }
     else
     {
@@ -183,7 +207,7 @@ function initialize()
                     let obj = gltf.scene.children[i];       
                     obj.traverse(function (node) {
 
-                        if (node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
+                        if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
                         {
                             let simpleMat = new THREE.MeshLambertMaterial();
                             simpleMat.color = node.material.color;
@@ -193,10 +217,17 @@ function initialize()
 
                         // console.log("NODE: " + node.name);
                         let nodeLightmap = lightmaps[node.name];
-                        if (node.material && nodeLightmap && 'lightMap' in node.material) {
+                        if (nodeLightmap && node.material && 'lightMap' in node.material) {
                             // console.log("--> LIGHTMAP: " + nodeLightmap.name);
                             node.material.lightMap = nodeLightmap;
                             node.material.lightMapIntensity = 1.0;
+                            node.material.needsUpdate = true;
+                        }
+
+                        let nodeAomap = aomaps[node.name];
+                        if(nodeAomap && node.material && 'aoMap' in node.material) {
+                            node.material.aoMap = nodeAomap;
+                            node.material.aoMapIntensity = 0.5;
                             node.material.needsUpdate = true;
                         }
 
@@ -371,7 +402,7 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
-    bag = new Bag(audioListener, scene, camera, renderer);
+    bag = new DoubleEndedBag(audioListener, scene, camera, renderer);
     scene.add(bag);
 
     gameLogic = new BoxingSession(scene, audioListener, 3, 120, 20);
@@ -495,12 +526,26 @@ function LoadBasisLightmapPromise(meshName, filepath)
         basisLoader.load(filepath, (texture) => {
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = THREE.RGBDEncoding;
+            texture.encoding = THREE.RGBDEncoding  ;
             lightmaps[meshName] = texture;
             resolve();
         });
     });
 }
+
+function LoadBasisAoPromise(meshName, filepath)
+{
+    return new Promise( (resolve, reject) => {
+        basisLoader.load(filepath, (texture) => {
+            texture.name = filepath;
+            texture.flipY = false;
+            texture.encoding = THREE.RGBDEncoding;
+            aomaps[meshName] = texture;
+            resolve();
+        });
+    });
+}
+
 
 export function OnStartButton()
 {

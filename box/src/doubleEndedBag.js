@@ -21,7 +21,7 @@ let tVec0 = new THREE.Vector3();
 let hitNormal = new THREE.Vector3();
 
 
-export class Bag extends THREE.Group
+export class DoubleEndedBag extends THREE.Group
 {
     constructor(audioListener, scene, camera, renderer)
     {
@@ -32,6 +32,9 @@ export class Bag extends THREE.Group
         this.targetHeightVelocity = 0.0;
         this.targetHeight = this.targetPosition.y;
         this.position.copy(this.targetPosition);
+
+        this.rotationValue = 0.0;
+        this.rotationVelocity = 0.0;
 
         this.scene = scene;
         this.camera = camera;
@@ -54,7 +57,7 @@ export class Bag extends THREE.Group
 
         let loaderPromise = new Promise( resolve => {
             let loader = new GLTFLoader();
-            loader.load('./content/bag.gltf', resolve);
+            loader.load('./content/double_ended_bag.gltf', resolve);
         });
         loaderPromise.then(
             gltf => {
@@ -70,48 +73,48 @@ export class Bag extends THREE.Group
                     {
                         this.mesh = obj;
                         obj.name = "BAG " + i;
-                        obj.material.roughness = 0.2;
-                        obj.material.envMapIntensity = 0.8;
+                        obj.material.roughness = 0.25;
+                        obj.material.envMapIntensity = 0.5;
                         obj.material.envMap = this.scene.envMap;
                     }
-                    else if (obj.name == "PunchEffectMesh")
-                    {
-                        this.punchEffectGeometry = obj.geometry;
-                        this.punchEffectMaterial = obj.material;
-                        this.punchEffectMaterial = new THREE.MeshBasicMaterial( 
-                            {
-                                color: 0x77210B,
-                                //color: 0x404040,
-                                map: obj.material.map,
-                                depthWrite: false,
-                                blending: THREE.AdditiveBlending,
-                            });
-                        this.punchEffectMaterial.color.convertSRGBToLinear();
-                        this.punchEffectMaterial.name = "PunchEffectMaterial";
+                    // else if (obj.name == "PunchEffectMesh")
+                    // {
+                    //     this.punchEffectGeometry = obj.geometry;
+                    //     this.punchEffectMaterial = obj.material;
+                    //     this.punchEffectMaterial = new THREE.MeshBasicMaterial( 
+                    //         {
+                    //             color: 0x77210B,
+                    //             //color: 0x404040,
+                    //             map: obj.material.map,
+                    //             depthWrite: false,
+                    //             blending: THREE.AdditiveBlending,
+                    //         });
+                    //     this.punchEffectMaterial.color.convertSRGBToLinear();
+                    //     this.punchEffectMaterial.name = "PunchEffectMaterial";
 
-                        let bag = obj.parent;
-                        obj.parent.remove(obj);
-                        obj.parent = null;
+                    //     let bag = obj.parent;
+                    //     obj.parent.remove(obj);
+                    //     obj.parent = null;
 
                         
-                        for (let i = 0; i < 6; i++)
-                        {
-                            let pe = new THREE.Mesh(this.punchEffectGeometry, this.punchEffectMaterial.clone());
-                            pe.name = "Punch Effect Mesh " + i;
-                            pe.rotation.set(0.0, i * 0.87, 0.0);
-                            pe.scale.set(1.00, 1.00, 1.00);
-                            //pe.position.setY(i*0.1);
-                            pe.visible = false;
-                            bag.add(pe);
-                            this.punchEffects[i] = pe;
-                        }
-                        this.nextPunchEffect = 0;
-                    }
+                    //     for (let i = 0; i < 6; i++)
+                    //     {
+                    //         let pe = new THREE.Mesh(this.punchEffectGeometry, this.punchEffectMaterial.clone());
+                    //         pe.name = "Punch Effect Mesh " + i;
+                    //         pe.rotation.set(0.0, i * 0.87, 0.0);
+                    //         pe.scale.set(1.00, 1.00, 1.00);
+                    //         //pe.position.setY(i*0.1);
+                    //         pe.visible = false;
+                    //         bag.add(pe);
+                    //         this.punchEffects[i] = pe;
+                    //     }
+                    //     this.nextPunchEffect = 0;
+                    // }
                 }
-                gltf.scene.scale.set(0.5, 0.5, 0.5);
-                //this.add(gltf.scene);
+                //gltf.scene.scale.set(0.5, 0.5, 0.5);
+                this.add(gltf.scene);
 
-                this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
+                //this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
             });
 
 
@@ -229,7 +232,7 @@ export class Bag extends THREE.Group
             tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
 
             // now apply velocity damping
-            let kSpringDamping = 3.0;
+            let kSpringDamping = 2.0;
             tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
 
             //assume mass == 1, so a = F
@@ -237,6 +240,25 @@ export class Bag extends THREE.Group
             desiredVelocity.addScaledVector(tVec0, dt);
 
             desiredPosition.addScaledVector(desiredVelocity, dt);
+
+
+
+            // compute rotation velocity on a spring
+            let rotationSpring = 0.0 - this.rotationValue;
+            const kRotationSpringConstant = 200.0;
+            rotationSpring *= kRotationSpringConstant;
+
+            rotationSpring -= this.rotationVelocity * 3.0;
+            //const kRotationSpringDamping = 0.1;
+            //rotationSpring += this.rotationVelocity * -kRotationSpringConstant;
+
+            this.rotationVelocity += rotationSpring * dt;
+            this.rotationValue += this.rotationVelocity * dt;
+
+            this.rotation.set(0.0, this.rotationValue * Math.PI, 0.0);
+
+            //console.log("Rotation Value: " + this.rotationValue + ", Rotation Velocity: " + this.rotationVelocity);
+
         }
         else
         {
@@ -247,7 +269,7 @@ export class Bag extends THREE.Group
             let kSpringConstant = 100.0;
             tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
             // now apply velocity damping
-            let kSpringDamping = 40.0; //1.0;
+            let kSpringDamping = 1.0;
             tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
 
             //assume mass == 1, so a = F
@@ -406,6 +428,8 @@ export class Bag extends THREE.Group
         tVec0.multiplyScalar(1.0);
         this.velocity.add(tVec0);
 
+        this.rotationValue -= normal.x * 0.785; // PI / 4
+
         this.cooldownAfterHit = 0.0;
 
         if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
@@ -432,37 +456,40 @@ export class Bag extends THREE.Group
                 cb(whichHand, velocity);
             }
 
-            // Rotate through a pool of punch effects
-            let pe = this.punchEffects[this.nextPunchEffect];
-            this.nextPunchEffect = (this.nextPunchEffect + 1) % this.punchEffects.length;
-
-            //enable this hit effect and set opacity based on punch speed
-            pe.visible = true;
-            pe.material.opacity = Math.min((speed-1.0)*0.8, 2.0);
-
-            // get the position -- use getWorldPosition because the bag is parented into a scene
-            // and "position" just gives the local position relative to parent
-            this.mesh.getWorldPosition(tVec0);
-            //set the position of the punch effect, plus a slight tweak to make it appear
-            //more directly under the glove
-
-            let kAdjust = -0.05;
-            if (velocity.y > 1.0)
+            if (false)
             {
-                kAdjust = 0.0;
+                // Rotate through a pool of punch effects
+                let pe = this.punchEffects[this.nextPunchEffect];
+                this.nextPunchEffect = (this.nextPunchEffect + 1) % this.punchEffects.length;
+
+                //enable this hit effect and set opacity based on punch speed
+                pe.visible = true;
+                pe.material.opacity = Math.min((speed-1.0)*0.8, 2.0);
+
+                // get the position -- use getWorldPosition because the bag is parented into a scene
+                // and "position" just gives the local position relative to parent
+                this.mesh.getWorldPosition(tVec0);
+                //set the position of the punch effect, plus a slight tweak to make it appear
+                //more directly under the glove
+
+                let kAdjust = -0.05;
+                if (velocity.y > 1.0)
+                {
+                    kAdjust = 0.0;
+                }
+
+                pe.position.setY( position.y - tVec0.y + kAdjust);
+                
+                // Figure out rotation of the hit -- using X/-Z, because we're rotating around the Y=Up Axis
+
+                // flip order to negate z, because atan2 expects that axis to be positive 
+                // moving "away" from the player
+                let z = tVec0.z - position.z; 
+
+                // atan2 gives the rotation in radius from the +X axis
+                let rot = Math.atan2(z, position.x);
+                pe.rotation.set(0.0, rot, 0.0);
             }
-
-            pe.position.setY( position.y - tVec0.y + kAdjust);
-            
-            // Figure out rotation of the hit -- using X/-Z, because we're rotating around the Y=Up Axis
-
-            // flip order to negate z, because atan2 expects that axis to be positive 
-            // moving "away" from the player
-            let z = tVec0.z - position.z; 
-
-            // atan2 gives the rotation in radius from the +X axis
-            let rot = Math.atan2(z, position.x);
-            pe.rotation.set(0.0, rot, 0.0);
         }
     }
 

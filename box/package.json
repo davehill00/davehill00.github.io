@@ -24,6 +24,8 @@
     "build": "webpack --config webpack.config.js",
     "serve": "webpack serve --config webpack.config.js ",
     "build-release": "webpack --config webpack.config.release.js",
-    "serve-release": "webpack serve --config webpack.config.release.js"
+    "serve-release": "webpack serve --config webpack.config.release.js",
+    "beta-build": "webpack --config webpack.config.beta.js",
+    "beta-serve": "webpack serve --config webpack.config.beta.js "
   }
 }
