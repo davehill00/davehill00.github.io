@@ -11,6 +11,7 @@ export function doesCircleCollideWithOtherCircle(
     stationaryPos,
     stationaryRadius,
     hitPoint,
+    hitNormal,
     hitT
 )
 {
@@ -71,6 +72,12 @@ export function doesCircleCollideWithOtherCircle(
     let oneOver2A = 1.0 / (2.0 * A);
     let t0 = (-B - plusMinusPart) * oneOver2A;
     let t1 = (-B + plusMinusPart) * oneOver2A;
+
+
+    // TEMPTEMPTEMPTEMP!!!!!!!!!!!!!!!!!!!!!
+    hitNormal.copy(directionVector);
+    hitNormal.negate();
+    hitNormal.normalize();
 
     // if nearer hit point is close to zero, then don't move at all... it means that we're already in contact
     // if it was significantly negative, it means we're already inside and don't want to register a hit.

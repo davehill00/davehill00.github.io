@@ -10,14 +10,44 @@ const SESSION_REST = 3;
 const SESSION_OUTRO = 4;
 const SESSION_PAUSED = 5;
 
+const ROUND_HEAVY_BAG = 0;
+const ROUND_DOUBLE_ENDED_BAG = 1;
+// const BAGTYPE_SPEED = 2; 
+
 var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
+
+class BoxingRound
+{
+    constructor(roundType, duration)
+    {
+        this.roundType = roundType;
+        this.duration = duration;
+    }
+    start()
+    {
+        this.elapsedTime = 0.0;
+    }
+    update(dt)
+    {
+        this.elapsedTime += dt;
+    }
+    isComplete()
+    {
+        return this.elapsedTime >= this.duration;
+    }
+}
 
 export class BoxingSession
 {
-    constructor(scene, audioListener, numRounds, roundDuration, restDuration)
+    constructor(scene, audioListener, heavyBag, doubleEndedBag, numRounds, roundDuration, restDuration)
     {
         this.scene = scene;
         this.audioListener = audioListener;
+        this.heavyBag = heavyBag;
+        this.doubleEndedBag = doubleEndedBag;
+
+        this.roundType = ROUND_DOUBLE_ENDED_BAG;
+
 
         this.TV = null;
 
@@ -126,6 +156,7 @@ export class BoxingSession
         this.introDuration = kIntroDuration;
         this.currentRound = 0;
         this.state = SESSION_NULL;
+        this.roundType = ROUND_HEAVY_BAG;
     }
 
     start()
@@ -154,6 +185,17 @@ export class BoxingSession
 
     update(dt, accumulatedTime)
     {
+        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        {
+            if (this.doubleEndedBag.visible)
+                this.doubleEndedBag.update(dt, accumulatedTime);
+        }
+        else
+        {
+            if (this.heavyBag.visible)
+                this.heavyBag.update(dt, accumulatedTime);
+        }
+
         switch(this.state)
         {
             case SESSION_NULL:
@@ -167,6 +209,7 @@ export class BoxingSession
                     // play "starting bell" sound
                     this.sound321.play();
                     this.updateRoundsMessage();
+                    this.showBagForNextRound();
                 }
                 else
                 {
@@ -177,9 +220,11 @@ export class BoxingSession
                 this.elapsedTime += dt;
                 if (this.elapsedTime > this.roundDuration)
                 {
+                    this.hideBag();
                     if (this.currentRound < this.numRounds)
                     {
                         this.state = SESSION_REST;
+
                     }
                     else
                     {
@@ -205,6 +250,7 @@ export class BoxingSession
                     this.sound321.play();
                     this.currentRound++;
                     this.updateRoundsMessage();
+                    this.showBagForNextRound();
                 }
                 else
                 {
@@ -216,6 +262,34 @@ export class BoxingSession
                 this.updateTimer(0);
                 this.updateRoundsMessage();
                 break;
+        }
+    }
+
+    hideBag()
+    {
+        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        {
+            console.assert(this.doubleEndedBag.visible && !this.heavyBag.visible);
+            this.doubleEndedBag.visible = false;
+        }
+        else
+        {
+            console.assert(!this.doubleEndedBag.visible && this.heavyBag.visible);
+            this.heavyBag.visible = false;
+        }
+    }
+    showBagForNextRound()
+    {
+        console.assert(!this.doubleEndedBag.visible && !this.heavyBag.visible);
+        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        {
+            this.roundType = ROUND_HEAVY_BAG;
+            this.heavyBag.visible = true;
+        }
+        else
+        {
+            this.roundType = ROUND_DOUBLE_ENDED_BAG;
+            this.doubleEndedBag.visible = true;
         }
     }
 
@@ -293,7 +367,7 @@ export class BoxingSession
 
 export class PunchingStats
 {
-    constructor(scene, bag)
+    constructor(scene, heavyBag, doubleEndedBag)
     {
 
         this.scene = scene;
@@ -352,7 +426,8 @@ export class PunchingStats
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
 
-        bag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
+        heavyBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
+        doubleEndedBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
     }
 
     update(dt, accumulatedTime)

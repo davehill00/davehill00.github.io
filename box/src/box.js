@@ -43,7 +43,8 @@ let leftHand = {};
 let rightHand = {};
 
 let audioListener = null;
-let bag = null;
+let heavyBag  = null;
+let doubleEndedBag = null;
 
 let gameLogic = null;
 let punchingStats = null;
@@ -273,18 +274,7 @@ function initialize()
     scene.add( controllers[0] );
     
     renderer.xr.getControllerGrip(0).addEventListener("connected", (evt) => {
-        console.log("Got Gamepad for Controller 0: " + evt.data.handedness );
-        controllers[0].gamepad = evt.data.gamepad;
-        if (evt.data.handedness == "left")
-        {
-            leftHand.controller = controllers[0];
-            setupHand(leftHand, 1);
-        }
-        else
-        {
-            rightHand.controller = controllers[0];
-            setupHand(rightHand, 2);
-        }
+        setupHandForController(0, evt);
     });
     renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 0");
@@ -318,18 +308,20 @@ function initialize()
     //controllers[1].add(controllerModelFactory.createControllerModel(controllers[1]));
    
     renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
-        console.log("Got Gamepad for Controller 1: " + evt.data.handedness);
-        controllers[1].gamepad = evt.data.gamepad;
-        if (evt.data.handedness == "left")
-        {
-            leftHand.controller = controllers[1];
-            setupHand(leftHand, 1);
-        }
-        else
-        {
-            rightHand.controller = controllers[1];
-            setupHand(rightHand, 2);
-        }
+
+        setupHandForController(1, evt);
+        // console.log("Got Gamepad for Controller 1: " + evt.data.handedness);
+        // controllers[1].gamepad = evt.data.gamepad;
+        // if (evt.data.handedness == "left")
+        // {
+        //     leftHand.setController(controllers[1]);
+        //     setupHand(leftHand, 1);
+        // }
+        // else
+        // {
+        //     rightHand.setController(controllers[0]);
+        //     setupHand(rightHand, 2);
+        // }
 
     });
     renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
@@ -360,6 +352,26 @@ function initialize()
     renderer.setAnimationLoop(render); 
 }
 
+function setupHandForController(id, evt)
+{
+    console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
+    controllers[id].gamepad = evt.data.gamepad;
+    if (evt.data.handedness == "left")
+    {
+        console.assert(leftHand.glove);
+        leftHand.glove.setController(controllers[id]);
+        leftHand.glove.show();
+        leftHand.isSetUp = true;
+    }
+    else
+    {
+        console.assert(rightHand.glove);
+        rightHand.glove.setController(controllers[id]);
+        rightHand.glove.show();
+        rightHand.isSetUp = true;
+    }
+}
+
 function render() {
 
     // hud.update();
@@ -370,9 +382,9 @@ function render() {
     TWEEN.update(accumulatedTime);
 
     updateHands(dt, accumulatedTime);
-    if (bag && gameLogic && punchingStats)
+    if (gameLogic && punchingStats)
     {
-        bag.update(dt, accumulatedTime);
+        //bag.update(dt, accumulatedTime);
         gameLogic.update(dt, accumulatedTime);
         punchingStats.update(dt, accumulatedTime);
     }
@@ -402,14 +414,29 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
-    bag = new DoubleEndedBag(audioListener, scene, camera, renderer);
-    scene.add(bag);
+    heavyBag = new Bag(audioListener, scene, camera, renderer);
+    heavyBag.visible = false;
+    doubleEndedBag = new DoubleEndedBag(audioListener, scene, camera, renderer);
+    doubleEndedBag.visible = false;
 
-    gameLogic = new BoxingSession(scene, audioListener, 3, 120, 20);
-    punchingStats = new PunchingStats(scene, bag);
+    scene.add(heavyBag);
+    scene.add(doubleEndedBag);
+    
+    leftHand.glove = new Glove(scene, 1);
+    leftHand.glove.heavyBag = heavyBag;
+    leftHand.glove.doubleEndedBag = doubleEndedBag;
+    rightHand.glove = new Glove(scene, 2);
+    rightHand.glove.heavyBag = heavyBag;
+    rightHand.glove.doubleEndedBag = doubleEndedBag;
+
+    heavyBag.setGloves(leftHand.glove, rightHand.glove);
+    doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
+
+    gameLogic = new BoxingSession(scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20);
+    punchingStats = new PunchingStats(scene, heavyBag, doubleEndedBag);
 }
 
-
+/*
 function setupHand(hand, whichHand)
 {
     if (false) 
@@ -447,24 +474,24 @@ function setupHand(hand, whichHand)
         hand.glove = new Glove(hand.controller, scene, whichHand);
     }
     hand.isSetUp = true;
-}
+}*/
 
 function updateHands(dt, accumulatedTime)
 {
     if (leftHand.isSetUp && rightHand.isSetUp)
     {
-        if (leftHand.glove.bag == null || rightHand.glove.bag == null)
-        {
-            bag.setGloves(leftHand.glove, rightHand.glove);
+        // if (leftHand.glove.bag == null || rightHand.glove.bag == null)
+        // {
+        //     bag.setGloves(leftHand.glove, rightHand.glove);
 
-            leftHand.glove.bag = bag;
-            rightHand.glove.bag = bag;
-        }
-        else
-        {
-            leftHand.glove.update(dt, accumulatedTime);
-            rightHand.glove.update(dt, accumulatedTime);
-        }
+        //     leftHand.glove.bag = bag;
+        //     rightHand.glove.bag = bag;
+        // }
+        // else
+        // {
+        leftHand.glove.update(dt, accumulatedTime);
+        rightHand.glove.update(dt, accumulatedTime);
+        // }
     }
 }
 

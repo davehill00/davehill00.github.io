@@ -12,7 +12,7 @@ let leftHitNormal = new THREE.Vector3();
 let rightHitPoint = new THREE.Vector3();
 let rightHitNormal = new THREE.Vector3();
 
-const kBagRadius = 0.15;
+const kBagRadius = 0.25;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 const kPunchEffectFadeRate = 4.0;
 const kInconsequentialMovementSq = 0.01 * 0.01;
@@ -37,10 +37,6 @@ export class Bag extends THREE.Group
         this.camera = camera;
         this.renderer = renderer;
         
-        this.hitMeshDebug = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-        scene.add(this.hitMeshDebug);
-        this.hitMeshDebug.visible = false;
-
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
 
@@ -108,10 +104,10 @@ export class Bag extends THREE.Group
                         this.nextPunchEffect = 0;
                     }
                 }
-                gltf.scene.scale.set(0.5, 0.5, 0.5);
-                //this.add(gltf.scene);
+                // gltf.scene.scale.set(0.5, 0.5, 0.5);
+                this.add(gltf.scene);
 
-                this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
+                // this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
             });
 
 
@@ -188,33 +184,9 @@ export class Bag extends THREE.Group
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
 
-
-        // frequency -- how quickly it tries to move back to the target position.
-        // high numbers -> very fast, low numbers -> less fast
-        // I want higher numbers as it's further away and lower numbers
-        // problem is that it hits a hard outer edge and gets fired back with all the velocity, so the
-        // upper limit basically controls how quickly it'll hit my hand again. i.e., 1/upper = time before it's
-        // back in place
-
-        // try a "cooldown" time after hit before I start applying the frequency?
-
-        if (false)
+        if (true)
         {
-            let cooldownT = Math.min(this.cooldownAfterHit / 0.25, 1.0);
-        
-            const kMinFreq = 0.5;
-            const kMaxFreq = kMinFreq + cooldownT * 3.0;
-            
-            let xDist = desiredPosition.x - this.targetPosition.x;
-            let zDist = desiredPosition.z - this.targetPosition.z;
-            let xzDist = Math.sqrt(xDist * xDist + zDist * zDist);
-            let t = Math.min(xzDist/0.6, 1.0);
-            //t *= t;
-            
-            //t = Math.min(t, cooldownT);
-
-            let curFreq = kMinFreq + (kMaxFreq - kMinFreq) * t;
-            ApplyPDVec3(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, curFreq, 0.01, dt);
+            ApplyPDVec3(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.3, 0.9, dt);
 
         }
         else if (true)
@@ -238,37 +210,6 @@ export class Bag extends THREE.Group
 
             desiredPosition.addScaledVector(desiredVelocity, dt);
         }
-        else
-        {
-            tVec0.copy(this.targetPosition);
-            tVec0.y += 1.0;
-            tVec0.sub(desiredPosition);
-
-            let kSpringConstant = 100.0;
-            tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
-            // now apply velocity damping
-            let kSpringDamping = 40.0; //1.0;
-            tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
-
-            //assume mass == 1, so a = F
-            // vel' = vel + a * dt;
-            desiredVelocity.addScaledVector(tVec0, dt);
-
-            tVec0.copy(this.targetPosition);
-            tVec0.y -= 1.0;
-            tVec0.sub(desiredPosition);
-            tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
-            tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
-
-            desiredVelocity.addScaledVector(tVec0, dt);
-
-            desiredPosition.addScaledVector(desiredVelocity, dt);
-
-            // console.log("BAG SPEED: " + desiredVelocity.length().toFixed(3));
-
-        }
-
-        //desiredPosition.y = this.targetPosition.y;
 
         if (!this.bHasGloves)
         {
@@ -280,8 +221,7 @@ export class Bag extends THREE.Group
         let tLeft = 1.0;
         let tRight = 1.0;
 
-        // let hitLeft = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, tLeft);
-        // let hitRight = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, tRight);
+
 
         // General behavior:
         // Move from position to desired position
@@ -294,9 +234,12 @@ export class Bag extends THREE.Group
         // while (maxIter--)
         if (true)
         {
-            let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft, false);
-            let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight, false);
-    
+            // let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft, false);
+            // let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight, false);
+
+            let hitLeft = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft);
+            let hitRight = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight);
+
             if (hitLeft || hitRight)
             {
                 if (hitLeft && hitRight)
@@ -402,8 +345,8 @@ export class Bag extends THREE.Group
         // normal.negate(); //because normal's pointing the wrong way
 
         tVec0.copy(velocity);
-        tVec0.projectOnVector(normal);
-        tVec0.multiplyScalar(1.0);
+        // tVec0.projectOnVector(normal);
+        // tVec0.multiplyScalar(1.0);
         this.velocity.add(tVec0);
 
         this.cooldownAfterHit = 0.0;

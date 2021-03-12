@@ -78839,7 +78839,7 @@ let leftHitNormal = new THREE.Vector3();
 let rightHitPoint = new THREE.Vector3();
 let rightHitNormal = new THREE.Vector3();
 
-const kBagRadius = 0.15;
+const kBagRadius = 0.25;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 const kPunchEffectFadeRate = 4.0;
 const kInconsequentialMovementSq = 0.01 * 0.01;
@@ -78864,10 +78864,6 @@ class Bag extends THREE.Group
         this.camera = camera;
         this.renderer = renderer;
         
-        this.hitMeshDebug = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-        scene.add(this.hitMeshDebug);
-        this.hitMeshDebug.visible = false;
-
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
 
@@ -78935,10 +78931,10 @@ class Bag extends THREE.Group
                         this.nextPunchEffect = 0;
                     }
                 }
-                gltf.scene.scale.set(0.5, 0.5, 0.5);
-                //this.add(gltf.scene);
+                // gltf.scene.scale.set(0.5, 0.5, 0.5);
+                this.add(gltf.scene);
 
-                this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
+                // this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
             });
 
 
@@ -79015,43 +79011,12 @@ class Bag extends THREE.Group
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
 
-
-        // frequency -- how quickly it tries to move back to the target position.
-        // high numbers -> very fast, low numbers -> less fast
-        // I want higher numbers as it's further away and lower numbers
-        // problem is that it hits a hard outer edge and gets fired back with all the velocity, so the
-        // upper limit basically controls how quickly it'll hit my hand again. i.e., 1/upper = time before it's
-        // back in place
-
-        // try a "cooldown" time after hit before I start applying the frequency?
-
-        if (false)
-        {}
-        else if (true)
+        if (true)
         {
-            // goal is to compute new desiredPosition and desiredVelocity based on current values of those and relative to targetPosition
+            Object(_pdacceleration_js__WEBPACK_IMPORTED_MODULE_1__["ApplyPDVec3"])(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.3, 0.9, dt);
 
-            // compute tVec0 = vector pointing from current position to target position
-            tVec0.copy(this.targetPosition);
-            tVec0.sub(desiredPosition);
-            
-            let kSpringConstant = 250.0;
-            tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
-
-            // now apply velocity damping
-            let kSpringDamping = 3.0;
-            tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
-
-            //assume mass == 1, so a = F
-            // vel' = vel + a * dt;
-            desiredVelocity.addScaledVector(tVec0, dt);
-
-            desiredPosition.addScaledVector(desiredVelocity, dt);
         }
-        else
-        {}
-
-        //desiredPosition.y = this.targetPosition.y;
+        else {}
 
         if (!this.bHasGloves)
         {
@@ -79063,8 +79028,7 @@ class Bag extends THREE.Group
         let tLeft = 1.0;
         let tRight = 1.0;
 
-        // let hitLeft = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, tLeft);
-        // let hitRight = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, tRight);
+
 
         // General behavior:
         // Move from position to desired position
@@ -79077,9 +79041,12 @@ class Bag extends THREE.Group
         // while (maxIter--)
         if (true)
         {
-            let hitLeft = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft, false);
-            let hitRight = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight, false);
-    
+            // let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft, false);
+            // let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight, false);
+
+            let hitLeft = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft);
+            let hitRight = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight);
+
             if (hitLeft || hitRight)
             {
                 if (hitLeft && hitRight)
@@ -79181,8 +79148,8 @@ class Bag extends THREE.Group
         // normal.negate(); //because normal's pointing the wrong way
 
         tVec0.copy(velocity);
-        tVec0.projectOnVector(normal);
-        tVec0.multiplyScalar(1.0);
+        // tVec0.projectOnVector(normal);
+        // tVec0.multiplyScalar(1.0);
         this.velocity.add(tVec0);
 
         this.cooldownAfterHit = 0.0;
@@ -79326,7 +79293,8 @@ let leftHand = {};
 let rightHand = {};
 
 let audioListener = null;
-let bag = null;
+let heavyBag  = null;
+let doubleEndedBag = null;
 
 let gameLogic = null;
 let punchingStats = null;
@@ -79514,18 +79482,7 @@ function initialize()
     scene.add( controllers[0] );
     
     renderer.xr.getControllerGrip(0).addEventListener("connected", (evt) => {
-        console.log("Got Gamepad for Controller 0: " + evt.data.handedness );
-        controllers[0].gamepad = evt.data.gamepad;
-        if (evt.data.handedness == "left")
-        {
-            leftHand.controller = controllers[0];
-            setupHand(leftHand, 1);
-        }
-        else
-        {
-            rightHand.controller = controllers[0];
-            setupHand(rightHand, 2);
-        }
+        setupHandForController(0, evt);
     });
     renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 0");
@@ -79559,18 +79516,20 @@ function initialize()
     //controllers[1].add(controllerModelFactory.createControllerModel(controllers[1]));
    
     renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
-        console.log("Got Gamepad for Controller 1: " + evt.data.handedness);
-        controllers[1].gamepad = evt.data.gamepad;
-        if (evt.data.handedness == "left")
-        {
-            leftHand.controller = controllers[1];
-            setupHand(leftHand, 1);
-        }
-        else
-        {
-            rightHand.controller = controllers[1];
-            setupHand(rightHand, 2);
-        }
+
+        setupHandForController(1, evt);
+        // console.log("Got Gamepad for Controller 1: " + evt.data.handedness);
+        // controllers[1].gamepad = evt.data.gamepad;
+        // if (evt.data.handedness == "left")
+        // {
+        //     leftHand.setController(controllers[1]);
+        //     setupHand(leftHand, 1);
+        // }
+        // else
+        // {
+        //     rightHand.setController(controllers[0]);
+        //     setupHand(rightHand, 2);
+        // }
 
     });
     renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
@@ -79601,6 +79560,26 @@ function initialize()
     renderer.setAnimationLoop(render); 
 }
 
+function setupHandForController(id, evt)
+{
+    console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
+    controllers[id].gamepad = evt.data.gamepad;
+    if (evt.data.handedness == "left")
+    {
+        console.assert(leftHand.glove);
+        leftHand.glove.setController(controllers[id]);
+        leftHand.glove.show();
+        leftHand.isSetUp = true;
+    }
+    else
+    {
+        console.assert(rightHand.glove);
+        rightHand.glove.setController(controllers[id]);
+        rightHand.glove.show();
+        rightHand.isSetUp = true;
+    }
+}
+
 function render() {
 
     // hud.update();
@@ -79611,9 +79590,9 @@ function render() {
     _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_8__["update"](accumulatedTime);
 
     updateHands(dt, accumulatedTime);
-    if (bag && gameLogic && punchingStats)
+    if (gameLogic && punchingStats)
     {
-        bag.update(dt, accumulatedTime);
+        //bag.update(dt, accumulatedTime);
         gameLogic.update(dt, accumulatedTime);
         punchingStats.update(dt, accumulatedTime);
     }
@@ -79643,21 +79622,54 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
-    bag = new _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_11__["DoubleEndedBag"](audioListener, scene, camera, renderer);
-    scene.add(bag);
+    heavyBag = new _bag_js__WEBPACK_IMPORTED_MODULE_10__["Bag"](audioListener, scene, camera, renderer);
+    heavyBag.visible = false;
+    doubleEndedBag = new _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_11__["DoubleEndedBag"](audioListener, scene, camera, renderer);
+    doubleEndedBag.visible = false;
 
-    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_12__["BoxingSession"](scene, audioListener, 3, 120, 20);
-    punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_12__["PunchingStats"](scene, bag);
+    scene.add(heavyBag);
+    scene.add(doubleEndedBag);
+    
+    leftHand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_9__["Glove"](scene, 1);
+    leftHand.glove.heavyBag = heavyBag;
+    leftHand.glove.doubleEndedBag = doubleEndedBag;
+    rightHand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_9__["Glove"](scene, 2);
+    rightHand.glove.heavyBag = heavyBag;
+    rightHand.glove.doubleEndedBag = doubleEndedBag;
+
+    heavyBag.setGloves(leftHand.glove, rightHand.glove);
+    doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
+
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_12__["BoxingSession"](scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20);
+    punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_12__["PunchingStats"](scene, heavyBag, doubleEndedBag);
 }
 
-
+/*
 function setupHand(hand, whichHand)
 {
     if (false) 
-    {}
+    {
+        hand.mesh = new THREE.Mesh(
+            new THREE.BoxGeometry(0.1, 0.2, 0.15),
+            new THREE.MeshStandardMaterial(
+                {
+                    color: 0x552010,
+                    roughness: 0.7,
+                    metalness: 0.1
+                    // wireframe: true
+                }
+            )
+        );
+
+        hand.mesh.material.color.convertSRGBToLinear();
+
+        hand.mesh.rotation.set(0.45, 0.0, 0.0);
+        //hand.mesh.position.x = 0.05;
+        hand.controller.add(hand.mesh);
+    }
     hand.which = whichHand;
 
-    hand.lastWorldPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
+    hand.lastWorldPos = new THREE.Vector3();
     //@TODO - compute last world pos to initialize properly
 
 
@@ -79667,27 +79679,27 @@ function setupHand(hand, whichHand)
     }
     else
     {
-        hand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_9__["Glove"](hand.controller, scene, whichHand);
+        hand.glove = new Glove(hand.controller, scene, whichHand);
     }
     hand.isSetUp = true;
-}
+}*/
 
 function updateHands(dt, accumulatedTime)
 {
     if (leftHand.isSetUp && rightHand.isSetUp)
     {
-        if (leftHand.glove.bag == null || rightHand.glove.bag == null)
-        {
-            bag.setGloves(leftHand.glove, rightHand.glove);
+        // if (leftHand.glove.bag == null || rightHand.glove.bag == null)
+        // {
+        //     bag.setGloves(leftHand.glove, rightHand.glove);
 
-            leftHand.glove.bag = bag;
-            rightHand.glove.bag = bag;
-        }
-        else
-        {
-            leftHand.glove.update(dt, accumulatedTime);
-            rightHand.glove.update(dt, accumulatedTime);
-        }
+        //     leftHand.glove.bag = bag;
+        //     rightHand.glove.bag = bag;
+        // }
+        // else
+        // {
+        leftHand.glove.update(dt, accumulatedTime);
+        rightHand.glove.update(dt, accumulatedTime);
+        // }
     }
 }
 
@@ -79808,6 +79820,7 @@ function doesCircleCollideWithOtherCircle(
     stationaryPos,
     stationaryRadius,
     hitPoint,
+    hitNormal,
     hitT
 )
 {
@@ -79868,6 +79881,12 @@ function doesCircleCollideWithOtherCircle(
     let oneOver2A = 1.0 / (2.0 * A);
     let t0 = (-B - plusMinusPart) * oneOver2A;
     let t1 = (-B + plusMinusPart) * oneOver2A;
+
+
+    // TEMPTEMPTEMPTEMP!!!!!!!!!!!!!!!!!!!!!
+    hitNormal.copy(directionVector);
+    hitNormal.negate();
+    hitNormal.normalize();
 
     // if nearer hit point is close to zero, then don't move at all... it means that we're already in contact
     // if it was significantly negative, it means we're already inside and don't want to register a hit.
@@ -80367,14 +80386,44 @@ const SESSION_REST = 3;
 const SESSION_OUTRO = 4;
 const SESSION_PAUSED = 5;
 
+const ROUND_HEAVY_BAG = 0;
+const ROUND_DOUBLE_ENDED_BAG = 1;
+// const BAGTYPE_SPEED = 2; 
+
 var MSDFShader = __webpack_require__(/*! ./thirdparty/three-bmfont-text/shaders/msdf */ "./src/thirdparty/three-bmfont-text/shaders/msdf.js")
+
+class BoxingRound
+{
+    constructor(roundType, duration)
+    {
+        this.roundType = roundType;
+        this.duration = duration;
+    }
+    start()
+    {
+        this.elapsedTime = 0.0;
+    }
+    update(dt)
+    {
+        this.elapsedTime += dt;
+    }
+    isComplete()
+    {
+        return this.elapsedTime >= this.duration;
+    }
+}
 
 class BoxingSession
 {
-    constructor(scene, audioListener, numRounds, roundDuration, restDuration)
+    constructor(scene, audioListener, heavyBag, doubleEndedBag, numRounds, roundDuration, restDuration)
     {
         this.scene = scene;
         this.audioListener = audioListener;
+        this.heavyBag = heavyBag;
+        this.doubleEndedBag = doubleEndedBag;
+
+        this.roundType = ROUND_DOUBLE_ENDED_BAG;
+
 
         this.TV = null;
 
@@ -80483,6 +80532,7 @@ class BoxingSession
         this.introDuration = kIntroDuration;
         this.currentRound = 0;
         this.state = SESSION_NULL;
+        this.roundType = ROUND_HEAVY_BAG;
     }
 
     start()
@@ -80511,6 +80561,17 @@ class BoxingSession
 
     update(dt, accumulatedTime)
     {
+        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        {
+            if (this.doubleEndedBag.visible)
+                this.doubleEndedBag.update(dt, accumulatedTime);
+        }
+        else
+        {
+            if (this.heavyBag.visible)
+                this.heavyBag.update(dt, accumulatedTime);
+        }
+
         switch(this.state)
         {
             case SESSION_NULL:
@@ -80524,6 +80585,7 @@ class BoxingSession
                     // play "starting bell" sound
                     this.sound321.play();
                     this.updateRoundsMessage();
+                    this.showBagForNextRound();
                 }
                 else
                 {
@@ -80534,9 +80596,11 @@ class BoxingSession
                 this.elapsedTime += dt;
                 if (this.elapsedTime > this.roundDuration)
                 {
+                    this.hideBag();
                     if (this.currentRound < this.numRounds)
                     {
                         this.state = SESSION_REST;
+
                     }
                     else
                     {
@@ -80562,6 +80626,7 @@ class BoxingSession
                     this.sound321.play();
                     this.currentRound++;
                     this.updateRoundsMessage();
+                    this.showBagForNextRound();
                 }
                 else
                 {
@@ -80573,6 +80638,34 @@ class BoxingSession
                 this.updateTimer(0);
                 this.updateRoundsMessage();
                 break;
+        }
+    }
+
+    hideBag()
+    {
+        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        {
+            console.assert(this.doubleEndedBag.visible && !this.heavyBag.visible);
+            this.doubleEndedBag.visible = false;
+        }
+        else
+        {
+            console.assert(!this.doubleEndedBag.visible && this.heavyBag.visible);
+            this.heavyBag.visible = false;
+        }
+    }
+    showBagForNextRound()
+    {
+        console.assert(!this.doubleEndedBag.visible && !this.heavyBag.visible);
+        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        {
+            this.roundType = ROUND_HEAVY_BAG;
+            this.heavyBag.visible = true;
+        }
+        else
+        {
+            this.roundType = ROUND_DOUBLE_ENDED_BAG;
+            this.doubleEndedBag.visible = true;
         }
     }
 
@@ -80650,7 +80743,7 @@ class BoxingSession
 
 class PunchingStats
 {
-    constructor(scene, bag)
+    constructor(scene, heavyBag, doubleEndedBag)
     {
 
         this.scene = scene;
@@ -80709,7 +80802,8 @@ class PunchingStats
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
 
-        bag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
+        heavyBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
+        doubleEndedBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
     }
 
     update(dt, accumulatedTime)
@@ -80872,14 +80966,12 @@ const kNewContactDelay = 0.15;
 
 class Glove extends THREE.Group
 {
-    constructor(controller, scene, whichHand)
+    constructor(scene, whichHand)
     {
         super();
-        this.controller = controller;
-        
-        //this.controller.getWorldPosition(this.position);
-        //this.position.set(0.0, 1.0, 0.0);
-        this.rotation.copy(this.controller.rotation);
+
+        this.controller = null;
+
         this.velocity = new THREE.Vector3();
         this.radius = kGloveRadius;
 
@@ -80920,6 +81012,15 @@ class Glove extends THREE.Group
                 // this.mesh.visible = false;
             });
     }
+
+    setController(controller)
+    {
+        this.controller = controller;
+        this.rotation.copy(this.controller.rotation);
+        this.isSetUp = true;
+        this.show();
+    }
+
     show()
     {
         console.assert(this.mesh);
@@ -80958,13 +81059,25 @@ class Glove extends THREE.Group
         // Check for collisions from current position to goal position
 
         let t;
-        // if (doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, t))
-        if (Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesSphereCollideWithOtherSphere"])(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, hitNormal, t, false))
+        let hit = false;
+        let bag = null;
+        if (this.heavyBag.visible)
+        {
+            bag = this.heavyBag;
+            hit = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__["doesCircleCollideWithOtherCircle"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitPoint, hitNormal, t)
+
+        }
+        else if (this.doubleEndedBag.visible)
+        {
+            bag = this.doubleEndedBag;
+            hit = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesSphereCollideWithOtherSphere"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitPoint, hitNormal, t, false);
+
+        }
+
+        if ( hit )
         {
             //console.log(((this.whichHand == 2) ? "RIGHT " : "LEFT ") + "hit bag! New pos = " + hitPoint.x + ", " + hitPoint.y + ", " + hitPoint.z)
-            this.bag.processHit(this.velocity, hitPoint, hitNormal, this.whichHand, !this.inContactWithBag);
-
- 
+            bag.processHit(this.velocity, hitPoint, hitNormal, this.whichHand, !this.inContactWithBag);
 
             this.position.copy(hitPoint);
             if (!this.inContactWithBag && this.velocity.lengthSq() > 0.01)
@@ -81497,19 +81610,6 @@ function doesSphereCollideWithOtherSphere(
 )
 {
 
-    // @TODO
-    // Figure out the logic and different cases for intersections -- don't just randomly check T0 and T1
-    // If I'm moving out of the bag, I should always get out -- maybe look at Ray Direction and something else to figure this out
-    // I can tell if StartPos is inside the sphere with a simple radius check -- if it is, can tell if endPos is out in a good direction 
-    // (i.e., trying to get out not go through)
-    // T0 should always be closer to startPos (unless it's negative... if it's negative, that means I'm inside)
-    // Sketch out all the cases and figure out it instead of just guessing
-
-
-
-
-
-
     //
     // Do a raycast fron startPos to endPos against a stationary sphere with the combined radius of both spheres
     //
@@ -81576,51 +81676,13 @@ function doesSphereCollideWithOtherSphere(
         let plusMinusPart = Math.sqrt(discriminant);
         let oneOver2A = 1.0/(2.0*A);
         let t0 = (-B - plusMinusPart) * oneOver2A;
-        let t1 = (-B + plusMinusPart) * oneOver2A;
-        console.assert(t0 < t1);
-
     
         if (log)
         {
             console.log("A: " + A.toFixed(3) + ", B: " + B.toFixed(3) + ", C: " + C.toFixed(3));
-            console.log("T0: " + t0.toFixed(3) + ", T1: " + t1.toFixed(3));
+            console.log("T0: " + t0.toFixed(3));
         }
 
-        // if(isApproxZero(t0))
-        // {
-        //     if (log)
-        //         console.log("t0 is approx zero: " + t0);
-        //     if (t1 > kPlusEpsilon)
-        //     {
-        //         if (log)
-        //             console.log("pushing in -- t1 = " + t1);
-        //         // starting point is right on the surface, and we're pushing in
-        //         hitPoint.copy(startPos);
-
-        //         hitNormal.copy(rayDirection);
-        //         hitNormal.negate();
-        //         hitNormal.normalize();
-
-        //         hitT = 0.0;
-        //         return true;
-        //     }
-        //     else if (t1 < kMinusEpsilon)
-        //     {
-        //         if (log)
-        //             console.log("pulling out -- t1 = " + t1);
-
-        //         // starting point is on the surface, and we're pulling away from it
-        //         hitPoint.copy(endPos);
-        //         hitT = 1.0;
-        //         return false;
-        //     }
-        //     else
-        //     {
-        //         console.log("T0 and T1 are both zero-ish: " + t0 + ", " + t1);
-        //         console.assert(false);
-        //     }
-        // }
-        // else 
         if (t0 < kPlusEpsilon)
         {
             if (log)
@@ -81651,36 +81713,6 @@ function doesSphereCollideWithOtherSphere(
 
                 return true;
             }
-            
-
-            // // We're starting inside the sphere         
-            // if (t1 > kPlusEpsilon)
-            // {
-            //     if (log)
-            //         console.log("pushing in -- t1 = " + t1);
-
-            //     // we're trying to push in, since the other collision point is ahead in the direction of the ray
-            //     hitPoint.copy(startPos);
-
-            //     hitNormal.copy(rayDirection);
-            //     hitNormal.negate();
-            //     hitNormal.normalize();
-
-            //     hitT = 0.0;
-
-            //     return true;
-            // }
-            // else if (t1 < kMinusEpsilon)
-            // {
-            //     if (log)
-            //         console.log("pulling out -- t1 = " + t1);
-
-            //     // we're trying to pull out, since the other collision point is behind in the direction of the ray
-            //     hitPoint.copy(endPos);
-            //     hitT = 1.0;
-
-            //     return false;
-            // }
         }
         else
         {

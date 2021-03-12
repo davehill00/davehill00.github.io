@@ -16,14 +16,12 @@ const kNewContactDelay = 0.15;
 
 export class Glove extends THREE.Group
 {
-    constructor(controller, scene, whichHand)
+    constructor(scene, whichHand)
     {
         super();
-        this.controller = controller;
-        
-        //this.controller.getWorldPosition(this.position);
-        //this.position.set(0.0, 1.0, 0.0);
-        this.rotation.copy(this.controller.rotation);
+
+        this.controller = null;
+
         this.velocity = new THREE.Vector3();
         this.radius = kGloveRadius;
 
@@ -73,6 +71,15 @@ export class Glove extends THREE.Group
                 // this.mesh.visible = false;
             });
     }
+
+    setController(controller)
+    {
+        this.controller = controller;
+        this.rotation.copy(this.controller.rotation);
+        this.isSetUp = true;
+        this.show();
+    }
+
     show()
     {
         console.assert(this.mesh);
@@ -111,13 +118,25 @@ export class Glove extends THREE.Group
         // Check for collisions from current position to goal position
 
         let t;
-        // if (doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, t))
-        if (doesSphereCollideWithOtherSphere(this.position, dest, kGloveRadius, this.bag.position, this.bag.radius, hitPoint, hitNormal, t, false))
+        let hit = false;
+        let bag = null;
+        if (this.heavyBag.visible)
+        {
+            bag = this.heavyBag;
+            hit = doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, bag.position, bag.radius, hitPoint, hitNormal, t)
+
+        }
+        else if (this.doubleEndedBag.visible)
+        {
+            bag = this.doubleEndedBag;
+            hit = doesSphereCollideWithOtherSphere(this.position, dest, kGloveRadius, bag.position, bag.radius, hitPoint, hitNormal, t, false);
+
+        }
+
+        if ( hit )
         {
             //console.log(((this.whichHand == 2) ? "RIGHT " : "LEFT ") + "hit bag! New pos = " + hitPoint.x + ", " + hitPoint.y + ", " + hitPoint.z)
-            this.bag.processHit(this.velocity, hitPoint, hitNormal, this.whichHand, !this.inContactWithBag);
-
- 
+            bag.processHit(this.velocity, hitPoint, hitNormal, this.whichHand, !this.inContactWithBag);
 
             this.position.copy(hitPoint);
             if (!this.inContactWithBag && this.velocity.lengthSq() > 0.01)

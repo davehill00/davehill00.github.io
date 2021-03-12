@@ -26,19 +26,6 @@ export function doesSphereCollideWithOtherSphere(
 )
 {
 
-    // @TODO
-    // Figure out the logic and different cases for intersections -- don't just randomly check T0 and T1
-    // If I'm moving out of the bag, I should always get out -- maybe look at Ray Direction and something else to figure this out
-    // I can tell if StartPos is inside the sphere with a simple radius check -- if it is, can tell if endPos is out in a good direction 
-    // (i.e., trying to get out not go through)
-    // T0 should always be closer to startPos (unless it's negative... if it's negative, that means I'm inside)
-    // Sketch out all the cases and figure out it instead of just guessing
-
-
-
-
-
-
     //
     // Do a raycast fron startPos to endPos against a stationary sphere with the combined radius of both spheres
     //
@@ -110,51 +97,13 @@ export function doesSphereCollideWithOtherSphere(
         let plusMinusPart = Math.sqrt(discriminant);
         let oneOver2A = 1.0/(2.0*A);
         let t0 = (-B - plusMinusPart) * oneOver2A;
-        let t1 = (-B + plusMinusPart) * oneOver2A;
-        console.assert(t0 < t1);
-
     
         if (log)
         {
             console.log("A: " + A.toFixed(3) + ", B: " + B.toFixed(3) + ", C: " + C.toFixed(3));
-            console.log("T0: " + t0.toFixed(3) + ", T1: " + t1.toFixed(3));
+            console.log("T0: " + t0.toFixed(3));
         }
 
-        // if(isApproxZero(t0))
-        // {
-        //     if (log)
-        //         console.log("t0 is approx zero: " + t0);
-        //     if (t1 > kPlusEpsilon)
-        //     {
-        //         if (log)
-        //             console.log("pushing in -- t1 = " + t1);
-        //         // starting point is right on the surface, and we're pushing in
-        //         hitPoint.copy(startPos);
-
-        //         hitNormal.copy(rayDirection);
-        //         hitNormal.negate();
-        //         hitNormal.normalize();
-
-        //         hitT = 0.0;
-        //         return true;
-        //     }
-        //     else if (t1 < kMinusEpsilon)
-        //     {
-        //         if (log)
-        //             console.log("pulling out -- t1 = " + t1);
-
-        //         // starting point is on the surface, and we're pulling away from it
-        //         hitPoint.copy(endPos);
-        //         hitT = 1.0;
-        //         return false;
-        //     }
-        //     else
-        //     {
-        //         console.log("T0 and T1 are both zero-ish: " + t0 + ", " + t1);
-        //         console.assert(false);
-        //     }
-        // }
-        // else 
         if (t0 < kPlusEpsilon)
         {
             if (log)
@@ -185,36 +134,6 @@ export function doesSphereCollideWithOtherSphere(
 
                 return true;
             }
-            
-
-            // // We're starting inside the sphere         
-            // if (t1 > kPlusEpsilon)
-            // {
-            //     if (log)
-            //         console.log("pushing in -- t1 = " + t1);
-
-            //     // we're trying to push in, since the other collision point is ahead in the direction of the ray
-            //     hitPoint.copy(startPos);
-
-            //     hitNormal.copy(rayDirection);
-            //     hitNormal.negate();
-            //     hitNormal.normalize();
-
-            //     hitT = 0.0;
-
-            //     return true;
-            // }
-            // else if (t1 < kMinusEpsilon)
-            // {
-            //     if (log)
-            //         console.log("pulling out -- t1 = " + t1);
-
-            //     // we're trying to pull out, since the other collision point is behind in the direction of the ray
-            //     hitPoint.copy(endPos);
-            //     hitT = 1.0;
-
-            //     return false;
-            // }
         }
         else
         {
