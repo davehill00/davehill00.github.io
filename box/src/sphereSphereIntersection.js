@@ -13,15 +13,23 @@ function isApproxZero(value)
     return kMinusEpsilon < value && value < kPlusEpsilon;
 }
 
+export class HitResult
+{
+    constructor()
+    {
+        this.hitPoint = new THREE.Vector3();
+        this.hitNormal = new THREE.Vector3();
+        this.hitT = -1.0;
+    }
+}
+
 export function doesSphereCollideWithOtherSphere(
     startPos,
     endPos,
     movingRadius,
     stationaryPos,
     stationaryRadius,
-    hitPoint,
-    hitNormal,
-    hitT,
+    result,
     log=false
 )
 {
@@ -70,15 +78,15 @@ export function doesSphereCollideWithOtherSphere(
 
     if (A <= kPlusEpsilon)
     {
-        if (log)
+        if (false && log)
             console.log("A = 0, not moving.");
-        hitPoint = endPos;
+        result.hitPoint.copy(endPos);
 
         // hitNormal.copy(hitPoint);
         // hitNormal.sub(stationaryPos);
         // hitNormal.normalize();
 
-        hitT = 1.0;
+        result.hitT = 1.0;
         return false;
 
 
@@ -88,8 +96,8 @@ export function doesSphereCollideWithOtherSphere(
     {
         //if(log) console.log("NO COLLISION CASE");
 
-        hitPoint = endPos;
-        hitT = 1.0;
+        result.hitPoint.copy(endPos);
+        result.hitT = 1.0;
         return false;
     }
     else
@@ -117,20 +125,20 @@ export function doesSphereCollideWithOtherSphere(
             if (pushingInTest < 0)
             {
                 // pulling out
-                hitT = 1.0;
-                hitPoint.copy(endPos);
+                result.hitT = 1.0;
+                result.hitPoint.copy(endPos);
                 return false;
             }
             else
             {
                 // we're trying to push in, since the other collision point is ahead in the direction of the ray
-                hitPoint.copy(startPos);
+                result.hitPoint.copy(startPos);
 
-                hitNormal.copy(rayDirection);
-                hitNormal.negate();
-                hitNormal.normalize();
+                result.hitNormal.copy(rayDirection);
+                result.hitNormal.negate();
+                result.hitNormal.normalize();
 
-                hitT = 0.0;
+                result.hitT = 0.0;
 
                 return true;
             }
@@ -142,21 +150,21 @@ export function doesSphereCollideWithOtherSphere(
             // We're starting outside the sphere
             if (t0 < 1.0)
             {
-                hitPoint.copy(startPos);
-                hitPoint.addScaledVector(rayDirection, t0);
+                result.hitPoint.copy(startPos);
+                result.hitPoint.addScaledVector(rayDirection, t0);
 
-                hitNormal.copy(hitPoint);
-                hitNormal.sub(stationaryPos);
-                hitNormal.normalize();
+                result.hitNormal.copy(result.hitPoint);
+                result.hitNormal.sub(stationaryPos);
+                result.hitNormal.normalize();
 
-                hitT = t0;
+                result.hitT = t0;
 
                 return true;
             }
             else
             {
-                hitPoint.copy(endPos);
-                hitT = 1.0;
+                result.hitPoint.copy(endPos);
+                result.hitT = 1.0;
                 return false;
             }
         }

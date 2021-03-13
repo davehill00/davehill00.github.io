@@ -1,10 +1,9 @@
 import {doesCircleCollideWithOtherCircle} from "./circleCircleIntersection.js";
-import {doesSphereCollideWithOtherSphere} from "./sphereSphereIntersection.js";
+import {doesSphereCollideWithOtherSphere, HitResult} from "./sphereSphereIntersection.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 let dest = new THREE.Vector3();
-let hitPoint = new THREE.Vector3();
-let hitNormal = new THREE.Vector3();
+let hitResult = new HitResult();
 
 let plane = new THREE.Plane(new THREE.Vector3(0.0, 0.0, 1.0), 1.0);
 let line = new THREE.Line3();
@@ -117,28 +116,28 @@ export class Glove extends THREE.Group
 
         // Check for collisions from current position to goal position
 
-        let t;
+        
         let hit = false;
         let bag = null;
         if (this.heavyBag.visible)
         {
             bag = this.heavyBag;
-            hit = doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, bag.position, bag.radius, hitPoint, hitNormal, t)
+            hit = doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         }
         else if (this.doubleEndedBag.visible)
         {
             bag = this.doubleEndedBag;
-            hit = doesSphereCollideWithOtherSphere(this.position, dest, kGloveRadius, bag.position, bag.radius, hitPoint, hitNormal, t, false);
+            hit = doesSphereCollideWithOtherSphere(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         }
 
         if ( hit )
         {
             //console.log(((this.whichHand == 2) ? "RIGHT " : "LEFT ") + "hit bag! New pos = " + hitPoint.x + ", " + hitPoint.y + ", " + hitPoint.z)
-            bag.processHit(this.velocity, hitPoint, hitNormal, this.whichHand, !this.inContactWithBag);
+            bag.processHit(this.velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
 
-            this.position.copy(hitPoint);
+            this.position.copy(hitResult.hitPoint);
             if (!this.inContactWithBag && this.velocity.lengthSq() > 0.01)
             {
                 this.nextNewContactTime = accumulatedTime + kNewContactDelay;
@@ -150,7 +149,10 @@ export class Glove extends THREE.Group
                     let kMilliseconds = 16;
                     let hapticActuator = gamepad.hapticActuators[0];
                     if( hapticActuator != null)
+                    {
                         hapticActuator.pulse( kIntensity, kMilliseconds );
+                        console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
+                    }
                 }
             }
             this.inContactWithBag = true;

@@ -1,16 +1,14 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {ApplyPDVec3, ComputePDAcceleration} from "./pdacceleration.js";
 import {doesCircleCollideWithOtherCircle} from "./circleCircleIntersection.js";
-import {doesSphereCollideWithOtherSphere} from "./sphereSphereIntersection.js";
+import {doesSphereCollideWithOtherSphere, HitResult} from "./sphereSphereIntersection.js";
 import { BlendingDstFactor, BlendingEquation, BlendingSrcFactor } from 'three';
 
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
 
-let leftHitPoint = new THREE.Vector3();
-let leftHitNormal = new THREE.Vector3();
-let rightHitPoint = new THREE.Vector3();
-let rightHitNormal = new THREE.Vector3();
+let leftHitResult = new HitResult();
+let rightHitResult = new HitResult();
 
 const kBagRadius = 0.25;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
@@ -237,14 +235,14 @@ export class Bag extends THREE.Group
             // let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft, false);
             // let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight, false);
 
-            let hitLeft = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft);
-            let hitRight = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight);
+            let hitLeft = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitResult);
+            let hitRight = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitResult);
 
             if (hitLeft || hitRight)
             {
                 if (hitLeft && hitRight)
                 {
-                    if (tLeft < tRight)
+                    if (leftHitResult.hitT < rightHitResult.hitT)
                     {
                         hitRight = false;
                     }
@@ -256,7 +254,7 @@ export class Bag extends THREE.Group
 
                 if (hitLeft)
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitPoint, this.leftGlove.position))
+                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitResult.hitPoint, this.leftGlove.position))
                     {
                         //break;
                     }
@@ -265,7 +263,7 @@ export class Bag extends THREE.Group
                 }
                 else
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitPoint, this.rightGlove.position))
+                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, this.rightGlove.position))
                     {
                         //break;
                     }

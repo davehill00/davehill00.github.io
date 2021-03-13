@@ -1,21 +1,18 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {ApplyPDVec3, ComputePDAcceleration} from "./pdacceleration.js";
 import {doesCircleCollideWithOtherCircle} from "./circleCircleIntersection.js";
-import {doesSphereCollideWithOtherSphere} from "./sphereSphereIntersection.js";
+import {doesSphereCollideWithOtherSphere, HitResult} from "./sphereSphereIntersection.js";
 import { BlendingDstFactor, BlendingEquation, BlendingSrcFactor } from 'three';
 
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
 
-let leftHitPoint = new THREE.Vector3();
-let leftHitNormal = new THREE.Vector3();
-let rightHitPoint = new THREE.Vector3();
-let rightHitNormal = new THREE.Vector3();
+let leftHitResult = new HitResult();
+let rightHitResult = new HitResult();
 
 const kBagRadius = 0.15;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 const kPunchEffectFadeRate = 4.0;
-const kInconsequentialMovementSq = 0.01 * 0.01;
 
 let tVec0 = new THREE.Vector3();
 let hitNormal = new THREE.Vector3();
@@ -77,39 +74,6 @@ export class DoubleEndedBag extends THREE.Group
                         obj.material.envMapIntensity = 0.5;
                         obj.material.envMap = this.scene.envMap;
                     }
-                    // else if (obj.name == "PunchEffectMesh")
-                    // {
-                    //     this.punchEffectGeometry = obj.geometry;
-                    //     this.punchEffectMaterial = obj.material;
-                    //     this.punchEffectMaterial = new THREE.MeshBasicMaterial( 
-                    //         {
-                    //             color: 0x77210B,
-                    //             //color: 0x404040,
-                    //             map: obj.material.map,
-                    //             depthWrite: false,
-                    //             blending: THREE.AdditiveBlending,
-                    //         });
-                    //     this.punchEffectMaterial.color.convertSRGBToLinear();
-                    //     this.punchEffectMaterial.name = "PunchEffectMaterial";
-
-                    //     let bag = obj.parent;
-                    //     obj.parent.remove(obj);
-                    //     obj.parent = null;
-
-                        
-                    //     for (let i = 0; i < 6; i++)
-                    //     {
-                    //         let pe = new THREE.Mesh(this.punchEffectGeometry, this.punchEffectMaterial.clone());
-                    //         pe.name = "Punch Effect Mesh " + i;
-                    //         pe.rotation.set(0.0, i * 0.87, 0.0);
-                    //         pe.scale.set(1.00, 1.00, 1.00);
-                    //         //pe.position.setY(i*0.1);
-                    //         pe.visible = false;
-                    //         bag.add(pe);
-                    //         this.punchEffects[i] = pe;
-                    //     }
-                    //     this.nextPunchEffect = 0;
-                    // }
                 }
                 //gltf.scene.scale.set(0.5, 0.5, 0.5);
                 this.add(gltf.scene);
@@ -259,6 +223,12 @@ export class DoubleEndedBag extends THREE.Group
 
             //console.log("Rotation Value: " + this.rotationValue + ", Rotation Velocity: " + this.rotationVelocity);
 
+
+            // ramp envmap sharpness with speed
+            let speed = desiredVelocity.length();
+            let roughnessT = Math.max(Math.min((speed-1.0) * 0.1, 1.0), 0.0);
+            this.mesh.material.roughness = 0.25 + roughnessT * 0.25;
+
         }
         else
         {
@@ -316,14 +286,14 @@ export class DoubleEndedBag extends THREE.Group
         // while (maxIter--)
         if (true)
         {
-            let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft, false);
-            let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight, false);
+            let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitResult);
+            let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitResult);
     
             if (hitLeft || hitRight)
             {
                 if (hitLeft && hitRight)
                 {
-                    if (tLeft < tRight)
+                    if (leftHitResult.hitT < rightHitResult.hitT)
                     {
                         hitRight = false;
                     }
@@ -335,7 +305,7 @@ export class DoubleEndedBag extends THREE.Group
 
                 if (hitLeft)
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitPoint, this.leftGlove.position))
+                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitResult.hitPoint, leftHitResult.hitNormal))
                     {
                         //break;
                     }
@@ -344,7 +314,7 @@ export class DoubleEndedBag extends THREE.Group
                 }
                 else
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitPoint, this.rightGlove.position))
+                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, rightHitResult.hitNormal))
                     {
                         //break;
                     }
@@ -428,7 +398,7 @@ export class DoubleEndedBag extends THREE.Group
         tVec0.multiplyScalar(1.0);
         this.velocity.add(tVec0);
 
-        this.rotationValue -= normal.x * 0.785; // PI / 4
+        
 
         this.cooldownAfterHit = 0.0;
 
@@ -444,6 +414,8 @@ export class DoubleEndedBag extends THREE.Group
 
             let speed = velocity.length();
 
+            this.rotationValue -= normal.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
+
             let speedBaseVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
             hitSound.setVolume(speedBaseVolume);
 
@@ -454,41 +426,6 @@ export class DoubleEndedBag extends THREE.Group
             for(let cb of this.punchCallbacks)
             {
                 cb(whichHand, velocity);
-            }
-
-            if (false)
-            {
-                // Rotate through a pool of punch effects
-                let pe = this.punchEffects[this.nextPunchEffect];
-                this.nextPunchEffect = (this.nextPunchEffect + 1) % this.punchEffects.length;
-
-                //enable this hit effect and set opacity based on punch speed
-                pe.visible = true;
-                pe.material.opacity = Math.min((speed-1.0)*0.8, 2.0);
-
-                // get the position -- use getWorldPosition because the bag is parented into a scene
-                // and "position" just gives the local position relative to parent
-                this.mesh.getWorldPosition(tVec0);
-                //set the position of the punch effect, plus a slight tweak to make it appear
-                //more directly under the glove
-
-                let kAdjust = -0.05;
-                if (velocity.y > 1.0)
-                {
-                    kAdjust = 0.0;
-                }
-
-                pe.position.setY( position.y - tVec0.y + kAdjust);
-                
-                // Figure out rotation of the hit -- using X/-Z, because we're rotating around the Y=Up Axis
-
-                // flip order to negate z, because atan2 expects that axis to be positive 
-                // moving "away" from the player
-                let z = tVec0.z - position.z; 
-
-                // atan2 gives the rotation in radius from the +X axis
-                let rot = Math.atan2(z, position.x);
-                pe.rotation.set(0.0, rot, 0.0);
             }
         }
     }

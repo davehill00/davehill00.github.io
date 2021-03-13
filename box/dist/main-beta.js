@@ -78834,10 +78834,8 @@ __webpack_require__.r(__webpack_exports__);
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
 
-let leftHitPoint = new THREE.Vector3();
-let leftHitNormal = new THREE.Vector3();
-let rightHitPoint = new THREE.Vector3();
-let rightHitNormal = new THREE.Vector3();
+let leftHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
+let rightHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
 
 const kBagRadius = 0.25;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
@@ -79044,14 +79042,14 @@ class Bag extends THREE.Group
             // let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft, false);
             // let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight, false);
 
-            let hitLeft = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft);
-            let hitRight = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight);
+            let hitLeft = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitResult);
+            let hitRight = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_2__["doesCircleCollideWithOtherCircle"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitResult);
 
             if (hitLeft || hitRight)
             {
                 if (hitLeft && hitRight)
                 {
-                    if (tLeft < tRight)
+                    if (leftHitResult.hitT < rightHitResult.hitT)
                     {
                         hitRight = false;
                     }
@@ -79063,7 +79061,7 @@ class Bag extends THREE.Group
 
                 if (hitLeft)
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitPoint, this.leftGlove.position))
+                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitResult.hitPoint, this.leftGlove.position))
                     {
                         //break;
                     }
@@ -79072,7 +79070,7 @@ class Bag extends THREE.Group
                 }
                 else
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitPoint, this.rightGlove.position))
+                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, this.rightGlove.position))
                     {
                         //break;
                     }
@@ -79807,9 +79805,13 @@ function OnStartButton()
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "doesCircleCollideWithOtherCircle", function() { return doesCircleCollideWithOtherCircle; });
+/* harmony import */ var _sphereSphereIntersection__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sphereSphereIntersection */ "./src/sphereSphereIntersection.js");
+
 
 let start = new THREE.Vector3();
 let end = new THREE.Vector3();
+let stationary = new THREE.Vector3();
+
 let directionVector = new THREE.Vector3();
 const kEpsilon = 0.00001;
 
@@ -79819,107 +79821,26 @@ function doesCircleCollideWithOtherCircle(
     movingRadius,
     stationaryPos,
     stationaryRadius,
-    hitPoint,
-    hitNormal,
-    hitT
+    result,
+    log = false
 )
 {
-    //We want to translate stationary circle to origin, so we need to translate start and end pos by the same amount.
-    start.subVectors(startPos, stationaryPos);
+    start.copy(startPos);
     start.y = 0.0;
-
-    
-
-    end.subVectors(endPos, stationaryPos);
+    end.copy(endPos);
     end.y = 0.0;
+    stationary.copy(stationaryPos);
+    stationary.y = 0.0;
 
-    // Add the two radii together to make a bigger stationary circle that we can raycast against with a line
-    let combinedRadius = stationaryRadius + movingRadius;
+    let hit = Object(_sphereSphereIntersection__WEBPACK_IMPORTED_MODULE_0__["doesSphereCollideWithOtherSphere"])(start, end, movingRadius, stationary, stationaryRadius, result, log);
 
-    // if startPos is inside radius, return true because we're stuck inside and trying to get out
-    // if (startPos.x*startPos.x + startPos.z*startPos.z < (combinedRadius*combinedRadius))
-    // {
-    //     hitPoint.copy(endPos);
-    //     return false;
-    // }
-
-    directionVector.subVectors(end, start);
-
-    // if directionVector is moving out of the circle, the return true
-
-
-
-    // line = startPos + t * dirVec
-    //      = (startPos.x + t * dirVec.x) + (startPos.y + t * dirVec.y)
-
-    // Solve X^2 + Y^2 = R^2
-    // X = (startPos.x + t * dirVec.x)
-    // X^2 = (startPos.x + t * dirVec.x)(startPos.x + t * dirVec.x)
-    //     = startPos.x^2 + 2 * t * startPos.x * dirVec.x + t^2 * dirVec.x^2
-    // Y = (startPos.y + t * dirVec.y)
-
-    // Quadratic equation is Ax^2 + Bx + C = 0
-    // A = dirVec.x^2 + dirVec.y^2
-    // B = 2 * startPos.x * dirVec.x + 2 * startPos.y * dirVec.y
-    // C = startPos.x^2 + startPos.y^2 + radius^2
-
-    let A = directionVector.x * directionVector.x + directionVector.z * directionVector.z;
-    let B = 2.0 * start.x * directionVector.x + 2.0 * start.z * directionVector.z;
-    let C = start.x * start.x + start.z * start.z - combinedRadius*combinedRadius;
-
-    
-
-    let discriminant = B*B - 4.0 * A * C;
-    if (discriminant < 0.0) 
+    if (hit)
     {
-        //no real intersection points ==> no collision
-        hitPoint.copy(endPos);
-        hitT = 1.0;
-        return false;
+        result.hitPoint.lerpVectors(startPos, endPos, result.hitT);
     }
-    let plusMinusPart = Math.sqrt(discriminant);
-    let oneOver2A = 1.0 / (2.0 * A);
-    let t0 = (-B - plusMinusPart) * oneOver2A;
-    let t1 = (-B + plusMinusPart) * oneOver2A;
-
-
-    // TEMPTEMPTEMPTEMP!!!!!!!!!!!!!!!!!!!!!
-    hitNormal.copy(directionVector);
-    hitNormal.negate();
-    hitNormal.normalize();
-
-    // if nearer hit point is close to zero, then don't move at all... it means that we're already in contact
-    // if it was significantly negative, it means we're already inside and don't want to register a hit.
-    if (-kEpsilon <= t0 && t0 <= kEpsilon)
-    {
-        hitPoint.copy(startPos);
-        hitT = 0.0;
-        return true;
-    }
-    else if (0.0 <= t0 && t0 <= 1.0)
-    {
-        
-        hitPoint.lerpVectors(startPos, endPos, t0);
-        // console.log("Move from (" + start.x + ", " + start.z + ") to (" + end.x + ", " + end.z + ")");
-        // console.log("HIT @ (" + hitPoint.x + ", " + hitPoint.z + "). t0 = " + t0);
-        hitT = t0;
-        return true;
-    }
-    else if (kEpsilon <= t1 && t1 <= 1.0)
-    {
-        hitPoint.lerpVectors(startPos, endPos, t1);
-        // console.log("Move from (" + start.x + ", " + start.z + ") to (" + end.x + ", " + end.z + ")");
-        // console.log("HIT @ " + hitPoint.x + ", " + hitPoint.z + ". t1 = " + t1);
-        hitT = t1;
-        return true;
-    }
-
-    // console.log("Move from (" + start.x + ", " + start.z + ") to (" + end.x + ", " + end.z + ")");
-    // console.log("NO HIT");
-    hitPoint.copy(endPos);
-    hitT = 1.0;
-    return false;
+    return hit;
 }
+
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ }),
@@ -79948,15 +79869,12 @@ __webpack_require__.r(__webpack_exports__);
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
 
-let leftHitPoint = new THREE.Vector3();
-let leftHitNormal = new THREE.Vector3();
-let rightHitPoint = new THREE.Vector3();
-let rightHitNormal = new THREE.Vector3();
+let leftHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
+let rightHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
 
 const kBagRadius = 0.15;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 const kPunchEffectFadeRate = 4.0;
-const kInconsequentialMovementSq = 0.01 * 0.01;
 
 let tVec0 = new THREE.Vector3();
 let hitNormal = new THREE.Vector3();
@@ -80018,39 +79936,6 @@ class DoubleEndedBag extends THREE.Group
                         obj.material.envMapIntensity = 0.5;
                         obj.material.envMap = this.scene.envMap;
                     }
-                    // else if (obj.name == "PunchEffectMesh")
-                    // {
-                    //     this.punchEffectGeometry = obj.geometry;
-                    //     this.punchEffectMaterial = obj.material;
-                    //     this.punchEffectMaterial = new THREE.MeshBasicMaterial( 
-                    //         {
-                    //             color: 0x77210B,
-                    //             //color: 0x404040,
-                    //             map: obj.material.map,
-                    //             depthWrite: false,
-                    //             blending: THREE.AdditiveBlending,
-                    //         });
-                    //     this.punchEffectMaterial.color.convertSRGBToLinear();
-                    //     this.punchEffectMaterial.name = "PunchEffectMaterial";
-
-                    //     let bag = obj.parent;
-                    //     obj.parent.remove(obj);
-                    //     obj.parent = null;
-
-                        
-                    //     for (let i = 0; i < 6; i++)
-                    //     {
-                    //         let pe = new THREE.Mesh(this.punchEffectGeometry, this.punchEffectMaterial.clone());
-                    //         pe.name = "Punch Effect Mesh " + i;
-                    //         pe.rotation.set(0.0, i * 0.87, 0.0);
-                    //         pe.scale.set(1.00, 1.00, 1.00);
-                    //         //pe.position.setY(i*0.1);
-                    //         pe.visible = false;
-                    //         bag.add(pe);
-                    //         this.punchEffects[i] = pe;
-                    //     }
-                    //     this.nextPunchEffect = 0;
-                    // }
                 }
                 //gltf.scene.scale.set(0.5, 0.5, 0.5);
                 this.add(gltf.scene);
@@ -80183,6 +80068,12 @@ class DoubleEndedBag extends THREE.Group
 
             //console.log("Rotation Value: " + this.rotationValue + ", Rotation Velocity: " + this.rotationVelocity);
 
+
+            // ramp envmap sharpness with speed
+            let speed = desiredVelocity.length();
+            let roughnessT = Math.max(Math.min((speed-1.0) * 0.1, 1.0), 0.0);
+            this.mesh.material.roughness = 0.25 + roughnessT * 0.25;
+
         }
         else
         {}
@@ -80213,14 +80104,14 @@ class DoubleEndedBag extends THREE.Group
         // while (maxIter--)
         if (true)
         {
-            let hitLeft = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, leftHitNormal, tLeft, false);
-            let hitRight = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, rightHitNormal, tRight, false);
+            let hitLeft = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitResult);
+            let hitRight = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitResult);
     
             if (hitLeft || hitRight)
             {
                 if (hitLeft && hitRight)
                 {
-                    if (tLeft < tRight)
+                    if (leftHitResult.hitT < rightHitResult.hitT)
                     {
                         hitRight = false;
                     }
@@ -80232,7 +80123,7 @@ class DoubleEndedBag extends THREE.Group
 
                 if (hitLeft)
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitPoint, this.leftGlove.position))
+                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitResult.hitPoint, leftHitResult.hitNormal))
                     {
                         //break;
                     }
@@ -80241,7 +80132,7 @@ class DoubleEndedBag extends THREE.Group
                 }
                 else
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitPoint, this.rightGlove.position))
+                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, rightHitResult.hitNormal))
                     {
                         //break;
                     }
@@ -80321,7 +80212,7 @@ class DoubleEndedBag extends THREE.Group
         tVec0.multiplyScalar(1.0);
         this.velocity.add(tVec0);
 
-        this.rotationValue -= normal.x * 0.785; // PI / 4
+        
 
         this.cooldownAfterHit = 0.0;
 
@@ -80337,6 +80228,8 @@ class DoubleEndedBag extends THREE.Group
 
             let speed = velocity.length();
 
+            this.rotationValue -= normal.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
+
             let speedBaseVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
             hitSound.setVolume(speedBaseVolume);
 
@@ -80348,9 +80241,6 @@ class DoubleEndedBag extends THREE.Group
             {
                 cb(whichHand, velocity);
             }
-
-            if (false)
-            {}
         }
     }
 
@@ -80953,8 +80843,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let dest = new THREE.Vector3();
-let hitPoint = new THREE.Vector3();
-let hitNormal = new THREE.Vector3();
+let hitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_1__["HitResult"]();
 
 let plane = new THREE.Plane(new THREE.Vector3(0.0, 0.0, 1.0), 1.0);
 let line = new THREE.Line3();
@@ -81058,28 +80947,28 @@ class Glove extends THREE.Group
 
         // Check for collisions from current position to goal position
 
-        let t;
+        
         let hit = false;
         let bag = null;
         if (this.heavyBag.visible)
         {
             bag = this.heavyBag;
-            hit = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__["doesCircleCollideWithOtherCircle"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitPoint, hitNormal, t)
+            hit = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__["doesCircleCollideWithOtherCircle"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         }
         else if (this.doubleEndedBag.visible)
         {
             bag = this.doubleEndedBag;
-            hit = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesSphereCollideWithOtherSphere"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitPoint, hitNormal, t, false);
+            hit = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesSphereCollideWithOtherSphere"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         }
 
         if ( hit )
         {
             //console.log(((this.whichHand == 2) ? "RIGHT " : "LEFT ") + "hit bag! New pos = " + hitPoint.x + ", " + hitPoint.y + ", " + hitPoint.z)
-            bag.processHit(this.velocity, hitPoint, hitNormal, this.whichHand, !this.inContactWithBag);
+            bag.processHit(this.velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
 
-            this.position.copy(hitPoint);
+            this.position.copy(hitResult.hitPoint);
             if (!this.inContactWithBag && this.velocity.lengthSq() > 0.01)
             {
                 this.nextNewContactTime = accumulatedTime + kNewContactDelay;
@@ -81091,7 +80980,10 @@ class Glove extends THREE.Group
                     let kMilliseconds = 16;
                     let hapticActuator = gamepad.hapticActuators[0];
                     if( hapticActuator != null)
+                    {
                         hapticActuator.pulse( kIntensity, kMilliseconds );
+                        console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
+                    }
                 }
             }
             this.inContactWithBag = true;
@@ -81576,12 +81468,13 @@ function ApplyPDVec3(
 /*!*****************************************!*\
   !*** ./src/sphereSphereIntersection.js ***!
   \*****************************************/
-/*! exports provided: doesSphereCollideWithOtherSphere */
+/*! exports provided: HitResult, doesSphereCollideWithOtherSphere */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "doesSphereCollideWithOtherSphere", function() { return doesSphereCollideWithOtherSphere; });
+/* WEBPACK VAR INJECTION */(function(THREE) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HitResult", function() { return HitResult; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "doesSphereCollideWithOtherSphere", function() { return doesSphereCollideWithOtherSphere; });
 // let start = new THREE.Vector3();
 // let end = new THREE.Vector3();
 let rayDirection = new THREE.Vector3();
@@ -81597,15 +81490,23 @@ function isApproxZero(value)
     return kMinusEpsilon < value && value < kPlusEpsilon;
 }
 
+class HitResult
+{
+    constructor()
+    {
+        this.hitPoint = new THREE.Vector3();
+        this.hitNormal = new THREE.Vector3();
+        this.hitT = -1.0;
+    }
+}
+
 function doesSphereCollideWithOtherSphere(
     startPos,
     endPos,
     movingRadius,
     stationaryPos,
     stationaryRadius,
-    hitPoint,
-    hitNormal,
-    hitT,
+    result,
     log=false
 )
 {
@@ -81649,15 +81550,15 @@ function doesSphereCollideWithOtherSphere(
 
     if (A <= kPlusEpsilon)
     {
-        if (log)
-            console.log("A = 0, not moving.");
-        hitPoint = endPos;
+        if (false)
+            {}
+        result.hitPoint.copy(endPos);
 
         // hitNormal.copy(hitPoint);
         // hitNormal.sub(stationaryPos);
         // hitNormal.normalize();
 
-        hitT = 1.0;
+        result.hitT = 1.0;
         return false;
 
 
@@ -81667,8 +81568,8 @@ function doesSphereCollideWithOtherSphere(
     {
         //if(log) console.log("NO COLLISION CASE");
 
-        hitPoint = endPos;
-        hitT = 1.0;
+        result.hitPoint.copy(endPos);
+        result.hitT = 1.0;
         return false;
     }
     else
@@ -81696,20 +81597,20 @@ function doesSphereCollideWithOtherSphere(
             if (pushingInTest < 0)
             {
                 // pulling out
-                hitT = 1.0;
-                hitPoint.copy(endPos);
+                result.hitT = 1.0;
+                result.hitPoint.copy(endPos);
                 return false;
             }
             else
             {
                 // we're trying to push in, since the other collision point is ahead in the direction of the ray
-                hitPoint.copy(startPos);
+                result.hitPoint.copy(startPos);
 
-                hitNormal.copy(rayDirection);
-                hitNormal.negate();
-                hitNormal.normalize();
+                result.hitNormal.copy(rayDirection);
+                result.hitNormal.negate();
+                result.hitNormal.normalize();
 
-                hitT = 0.0;
+                result.hitT = 0.0;
 
                 return true;
             }
@@ -81721,21 +81622,21 @@ function doesSphereCollideWithOtherSphere(
             // We're starting outside the sphere
             if (t0 < 1.0)
             {
-                hitPoint.copy(startPos);
-                hitPoint.addScaledVector(rayDirection, t0);
+                result.hitPoint.copy(startPos);
+                result.hitPoint.addScaledVector(rayDirection, t0);
 
-                hitNormal.copy(hitPoint);
-                hitNormal.sub(stationaryPos);
-                hitNormal.normalize();
+                result.hitNormal.copy(result.hitPoint);
+                result.hitNormal.sub(stationaryPos);
+                result.hitNormal.normalize();
 
-                hitT = t0;
+                result.hitT = t0;
 
                 return true;
             }
             else
             {
-                hitPoint.copy(endPos);
-                hitT = 1.0;
+                result.hitPoint.copy(endPos);
+                result.hitT = 1.0;
                 return false;
             }
         }
