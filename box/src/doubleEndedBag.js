@@ -7,12 +7,15 @@ import { Bag } from './bag.js';
 
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
+let headPosition = new THREE.Vector3();
 
 let leftHitResult = new HitResult();
 let rightHitResult = new HitResult();
+let headHitResult = new HitResult();
 
 const kBagRadius = 0.15;
-const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
+const kMinPunchSoundVelocitySq = 0.25 * 0.25;
+const kHeadRadius = 0.12;
 
 let tVec0 = new THREE.Vector3();
 let hitNormal = new THREE.Vector3();
@@ -20,11 +23,13 @@ let hitNormal = new THREE.Vector3();
 
 export class DoubleEndedBag extends Bag
 {
-    constructor(audioListener, scene, camera, renderer)
+    constructor(audioListener, scene, camera, renderer, playerHud)
     {
         super(audioListener, scene, camera, renderer);
 
         this.name = "Double-end Bag";
+
+        this.playerHud = playerHud;
 
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
@@ -35,14 +40,6 @@ export class DoubleEndedBag extends Bag
 
         this.rotationValue = 0.0;
         this.rotationVelocity = 0.0;
-
-        // this.scene = scene;
-        // this.camera = camera;
-        // this.renderer = renderer;
-        
-        this.hitMeshDebug = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-        scene.add(this.hitMeshDebug);
-        this.hitMeshDebug.visible = false;
 
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
@@ -72,10 +69,7 @@ export class DoubleEndedBag extends Bag
                         obj.material.envMap = this.scene.envMap;
                     }
                 }
-                //gltf.scene.scale.set(0.5, 0.5, 0.5);
-                this.add(gltf.scene);
-
-                //this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
+                this.add(this.mesh);
             });
 
 
@@ -92,6 +86,10 @@ export class DoubleEndedBag extends Bag
         ];
         this.nextSoundIndex = 0;
 
+        this.headHitSound = new THREE.PositionalAudio(audioListener);
+        this.headHitSound.setRefDistance(40);
+        this.headHitSound.setVolume(1.0);
+
         for (let hitSound of this.hitSounds)
         {
             hitSound.setRefDistance(40);
@@ -101,11 +99,9 @@ export class DoubleEndedBag extends Bag
         var audioLoader = new THREE.AudioLoader();
         audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
             this.hitSoundBuffers.push(buffer);
+
+            this.headHitSound.buffer = buffer;
         });
-
-
-
-        //this.add(mesh);
 
         this.punchCallbacks = [];
     }
@@ -118,12 +114,14 @@ export class DoubleEndedBag extends Bag
 
         this.accumulatedTime = accumulatedTime;
 
+        let hasHeadPosition = false;
+
         if (this.renderer && this.renderer.xr && this.renderer.xr.isPresenting)
         {
             let xrCamera = this.renderer.xr.getCamera(this.camera);
-            xrCamera.getWorldPosition(tVec0);
+            xrCamera.getWorldPosition(headPosition);
 
-            let desiredHeight = tVec0.y; // + 2.0 * kBagRadius;
+            let desiredHeight = headPosition.y; // + 2.0 * kBagRadius;
 
             let delta = desiredHeight - this.targetHeight;
             if (Math.abs(delta) > 0.15)
@@ -137,6 +135,7 @@ export class DoubleEndedBag extends Bag
             this.targetHeightVelocity += heightAccel * dt;
             this.targetPosition.y += this.targetHeightVelocity * dt;
         
+            hasHeadPosition = true;
         }
 
         desiredPosition.copy(this.position);
@@ -241,38 +240,67 @@ export class DoubleEndedBag extends Bag
         {
             let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitResult);
             let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitResult);
-    
-            if (hitLeft || hitRight)
+            let hitHead = hasHeadPosition && 
+                doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, headPosition, kHeadRadius, headHitResult);
+
+            if (hitLeft || hitRight || hitHead)
             {
-                if (hitLeft && hitRight)
-                {
-                    if (leftHitResult.hitT < rightHitResult.hitT)
-                    {
-                        hitRight = false;
-                    }
-                    else
-                    {
-                        hitLeft = false;
-                    }
-                }
+                let hr = null;
 
+                
                 if (hitLeft)
-                {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitResult.hitPoint, leftHitResult.hitNormal))
-                    {
-                        //break;
-                    }
-                    //otherwise, keep going for another iteration
+                    hr = leftHitResult;
+                if (hitRight)
+                    hr = (hr == null || hr.hitT > rightHitResult.hitT) ? rightHitResult : hr;
 
-                }
-                else
+                let isHeadHit = false;
+                if (hitHead)
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, rightHitResult.hitNormal))
+                    if (hr == null || hr.hitT > headHitResult.hitT)
                     {
-                        //break;
+                        isHeadHit = true;
+                        hr = headHitResult;
                     }
-                    //otherwise, keep going for another iteration
                 }
+
+                this.processCollisionIteration(desiredPosition, desiredVelocity, hr.hitPoint, hr.hitNormal);
+
+                if (isHeadHit)
+                {
+                    this.headHitSound.position.copy(headPosition);
+                    this.headHitSound.play();
+                    this.playerHud.processHit();
+                }
+
+                // if (hitLeft && hitRight)
+                // {
+                //     if (leftHitResult.hitT < rightHitResult.hitT)
+                //     {
+                //         hitRight = false;
+                //     }
+                //     else
+                //     {
+                //         hitLeft = false;
+                //     }
+                // }
+
+                // if (hitLeft)
+                // {
+                //     if ()
+                //     {
+                //         //break;
+                //     }
+                //     //otherwise, keep going for another iteration
+
+                // }
+                // else
+                // {
+                //     if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, rightHitResult.hitNormal))
+                //     {
+                //         //break;
+                //     }
+                //     //otherwise, keep going for another iteration
+                // }
             }
             else
             {
@@ -281,7 +309,6 @@ export class DoubleEndedBag extends Bag
                 //break;
             }
         }
-
     }
 
     processCollisionIteration( desiredPosition, desiredVelocity, hitPoint, hitNormal) //hitObjectCenter)
@@ -290,8 +317,7 @@ export class DoubleEndedBag extends Bag
 
         //move to current hit point, and back up a bit to avoid interpenetration
         this.position.copy(hitPoint);
-
-        
+       
         // this.velocity.copy(desiredVelocity);
         // this.velocity.reflect(hitNormal);
         // this.velocity.multiplyScalar(0.1);
@@ -349,15 +375,14 @@ export class DoubleEndedBag extends Bag
             hitSound.buffer = this.hitSoundBuffers[whichSound];
 
             let speed = velocity.length();
-
-            this.rotationValue -= normal.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
-
+          
             let speedBaseVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
             hitSound.setVolume(speedBaseVolume);
-
             hitSound.play();
 
             this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
+
+            this.rotationValue -= normal.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
 
             for(let cb of this.punchCallbacks)
             {

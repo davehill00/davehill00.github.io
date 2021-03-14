@@ -96,7 +96,7 @@ export class Bag extends THREE.Group
     fadeIn()
     {
         this.resetPositionAndVelocity();
-        
+
         this.mesh.material.opacity = 0.0;
         this.fadingIn = true;
         this.visible = true;
@@ -152,7 +152,7 @@ export class HeavyBag extends Bag
 
         let loaderPromise = new Promise( resolve => {
             let loader = new GLTFLoader();
-            loader.load('./content/bag.gltf', resolve);
+            loader.load('./content/bag_v2.gltf', resolve);
         });
         loaderPromise.then(
             gltf => {

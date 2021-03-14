@@ -3385,7 +3385,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()(_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default.a);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, ".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n    font-size: 3vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":[".buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 50%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 60%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 10px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n    font-size: 3vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, "html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n    font-size: 3vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":["html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n    font-size: 3vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
@@ -66442,9 +66442,9 @@ const kBagRadius = 0.25;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 const kPunchEffectFadeRate = 4.0;
 
-const kFadeInTime = 0.75;
+const kFadeInTime = 0.5;
 const kOneOverFadeInTime = 1.0 / kFadeInTime;
-const kFadeOutTime = 0.75;
+const kFadeOutTime = 1.0;
 const kOneOverFadeOutTime = 1.0 / kFadeOutTime;
 
 let tVec0 = new THREE.Vector3();
@@ -66488,6 +66488,7 @@ class Bag extends THREE.Group
             {
                 this.setOpaque();
                 this.fadingIn = false;
+                //console.log(this.name + " FADED IN");
             }
             else
             {
@@ -66501,6 +66502,8 @@ class Bag extends THREE.Group
                 this.setOpaque();
                 this.fadingOut = false;
                 this.visible = false;
+
+                //console.log(this.name + " FADED OUT");
             }
             else
             {
@@ -66515,15 +66518,20 @@ class Bag extends THREE.Group
         this.fadingOut = true;
         this.fadeTimer = 0.0;
         this.setTransparent();
+        //console.log(this.name + " STARTING TO FADE OUT");
     }
 
     fadeIn()
     {
+        this.resetPositionAndVelocity();
+
         this.mesh.material.opacity = 0.0;
         this.fadingIn = true;
         this.visible = true;
         this.fadeTimer = 0.0;
         this.setTransparent();
+
+        //console.log(this.name + " STARTING TO FADE IN");
     }
 
     setOpaque()
@@ -66535,6 +66543,12 @@ class Bag extends THREE.Group
     setTransparent()
     {
         this.mesh.material.transparent = true;
+    }
+
+    resetPositionAndVelocity()
+    {
+        this.position.copy(this.targetPosition);
+        this.velocity.copy(this.targetVelocity);
     }
 }
 
@@ -66562,9 +66576,11 @@ class HeavyBag extends Bag
         this.punchEffectMaterial = null;
         this.punchEffects = [];
 
+        this.name = "Heavy Bag";
+
         let loaderPromise = new Promise( resolve => {
             let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_0__["GLTFLoader"]();
-            loader.load('./content/bag.gltf', resolve);
+            loader.load('./content/bag_v2.gltf', resolve);
         });
         loaderPromise.then(
             gltf => {
@@ -66666,15 +66682,14 @@ class HeavyBag extends Bag
             let xrCamera = this.renderer.xr.getCamera(this.camera);
             xrCamera.getWorldPosition(tVec0);
 
-            let desiredHeight = tVec0.y; // + 2.0 * kBagRadius;
+            let desiredHeight = tVec0.y - 0.25;
 
             let delta = desiredHeight - this.targetHeight;
-            if (Math.abs(delta) > 0.15)
+            if (Math.abs(delta) > 0.10)
             {               
                 this.targetHeight = desiredHeight;
             }
 
-            //this.targetHeight = tVec0.y - 0.25;
             let heightAccel = Object(_pdacceleration_js__WEBPACK_IMPORTED_MODULE_1__["ComputePDAcceleration"])(this.targetPosition.y, this.targetHeightVelocity,
                 this.targetHeight, 0.0, 0.25, 2.0, dt);
             this.targetHeightVelocity += heightAccel * dt;
@@ -66685,12 +66700,29 @@ class HeavyBag extends Bag
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
 
-        if (true)
+        if (false)
+        {}
+        else if (true)
         {
-            Object(_pdacceleration_js__WEBPACK_IMPORTED_MODULE_1__["ApplyPDVec3"])(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.3, 0.9, dt);
+            // goal is to compute new desiredPosition and desiredVelocity based on current values of those and relative to targetPosition
 
+            // compute tVec0 = vector pointing from current position to target position
+            tVec0.copy(this.targetPosition);
+            tVec0.sub(desiredPosition);
+            
+            let kSpringConstant = 700.0;
+            tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
+
+            // now apply velocity damping
+            let kSpringDamping = 40.0;
+            tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
+
+            //assume mass == 1, so a = F
+            // vel' = vel + a * dt;
+            desiredVelocity.addScaledVector(tVec0, dt);
+
+            desiredPosition.addScaledVector(desiredVelocity, dt);
         }
-        else {}
 
         if (!this.bHasGloves)
         {
@@ -66804,8 +66836,8 @@ class HeavyBag extends Bag
         // normal.negate(); //because normal's pointing the wrong way
 
         tVec0.copy(velocity);
-        // tVec0.projectOnVector(normal);
-        // tVec0.multiplyScalar(1.0);
+        tVec0.projectOnVector(normal);
+        tVec0.multiplyScalar(0.5);
         this.velocity.add(tVec0);
 
         this.cooldownAfterHit = 0.0;
@@ -66867,9 +66899,6 @@ class HeavyBag extends Bag
             pe.rotation.set(0.0, rot, 0.0);
         }
     }
-
-    
-
 }
 
 
@@ -66901,10 +66930,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
 /* harmony import */ var _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./doubleEndedBag.js */ "./src/doubleEndedBag.js");
 /* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
-/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
-/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
-/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
+/* harmony import */ var _playerHud_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./playerHud.js */ "./src/playerHud.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
+/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
+/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
 
 
 
@@ -66953,6 +66983,8 @@ let doubleEndedBag = null;
 let gameLogic = null;
 let punchingStats = null;
 
+let playerHud = null;
+
 let pmremGenerator = null;
 let lightmaps = {};
 let aomaps = {};
@@ -66975,7 +67007,7 @@ function initialize()
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
 
-    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_13__["StatsHud"](camera);
+    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_14__["StatsHud"](camera);
 
     audioListener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
     camera.add( audioListener );
@@ -66995,7 +67027,7 @@ function initialize()
     renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_0__["ACESFilmicToneMapping"];
     // renderer.toneMappingExposure = 1.25;
 
-    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_14__["PageUI"](renderer);
+    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_15__["PageUI"](renderer);
 
 
     document.body.appendChild(renderer.domElement);
@@ -67250,6 +67282,8 @@ function render() {
         gameLogic.update(dt, accumulatedTime);
         punchingStats.update(dt, accumulatedTime);
     }
+    if(playerHud) 
+        playerHud.update(dt);
 
     renderer.render(scene, camera);
 }
@@ -67264,7 +67298,7 @@ function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX,
 function onSessionStart()
 {
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
-    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime);
+    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap);
     gameLogic.start();
 }
 
@@ -67276,9 +67310,11 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
+    playerHud = new _playerHud_js__WEBPACK_IMPORTED_MODULE_12__["PlayerHud"](camera, audioListener);
+
     heavyBag = new _bag_js__WEBPACK_IMPORTED_MODULE_9__["HeavyBag"](audioListener, scene, camera, renderer);
     heavyBag.visible = false;
-    doubleEndedBag = new _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_10__["DoubleEndedBag"](audioListener, scene, camera, renderer);
+    doubleEndedBag = new _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_10__["DoubleEndedBag"](audioListener, scene, camera, renderer, playerHud);
     doubleEndedBag.visible = false;
 
     scene.add(heavyBag);
@@ -67294,8 +67330,10 @@ function initScene(scene, camera, renderer)
     heavyBag.setGloves(leftHand.glove, rightHand.glove);
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
 
-    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__["BoxingSession"](scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20);
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__["BoxingSession"](scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
     punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__["PunchingStats"](scene, heavyBag, doubleEndedBag);
+
+
 }
 
 /*
@@ -67526,13 +67564,15 @@ __webpack_require__.r(__webpack_exports__);
 
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
+let headPosition = new THREE.Vector3();
 
 let leftHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
 let rightHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
+let headHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
 
 const kBagRadius = 0.15;
-const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
-const kPunchEffectFadeRate = 4.0;
+const kMinPunchSoundVelocitySq = 0.25 * 0.25;
+const kHeadRadius = 0.12;
 
 let tVec0 = new THREE.Vector3();
 let hitNormal = new THREE.Vector3();
@@ -67540,9 +67580,13 @@ let hitNormal = new THREE.Vector3();
 
 class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
 {
-    constructor(audioListener, scene, camera, renderer)
+    constructor(audioListener, scene, camera, renderer, playerHud)
     {
         super(audioListener, scene, camera, renderer);
+
+        this.name = "Double-end Bag";
+
+        this.playerHud = playerHud;
 
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
@@ -67554,24 +67598,10 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
         this.rotationValue = 0.0;
         this.rotationVelocity = 0.0;
 
-        // this.scene = scene;
-        // this.camera = camera;
-        // this.renderer = renderer;
-        
-        this.hitMeshDebug = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-        scene.add(this.hitMeshDebug);
-        this.hitMeshDebug.visible = false;
-
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
 
-        this.cooldownAfterHit = 0.0;
-
         this.bHasGloves = false;
-
-        this.punchEffectGeometry = null;
-        this.punchEffectMaterial = null;
-        this.punchEffects = [];
 
         let loaderPromise = new Promise( resolve => {
             let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_0__["GLTFLoader"]();
@@ -67596,10 +67626,7 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
                         obj.material.envMap = this.scene.envMap;
                     }
                 }
-                //gltf.scene.scale.set(0.5, 0.5, 0.5);
-                this.add(gltf.scene);
-
-                //this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
+                this.add(this.mesh);
             });
 
 
@@ -67616,6 +67643,10 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
         ];
         this.nextSoundIndex = 0;
 
+        this.headHitSound = new THREE.PositionalAudio(audioListener);
+        this.headHitSound.setRefDistance(40);
+        this.headHitSound.setVolume(1.0);
+
         for (let hitSound of this.hitSounds)
         {
             hitSound.setRefDistance(40);
@@ -67625,11 +67656,9 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
         var audioLoader = new THREE.AudioLoader();
         audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
             this.hitSoundBuffers.push(buffer);
+
+            this.headHitSound.buffer = buffer;
         });
-
-
-
-        //this.add(mesh);
 
         this.punchCallbacks = [];
     }
@@ -67641,14 +67670,15 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
         super.update(dt, accumulatedTime);
 
         this.accumulatedTime = accumulatedTime;
-        this.cooldownAfterHit += dt;
+
+        let hasHeadPosition = false;
 
         if (this.renderer && this.renderer.xr && this.renderer.xr.isPresenting)
         {
             let xrCamera = this.renderer.xr.getCamera(this.camera);
-            xrCamera.getWorldPosition(tVec0);
+            xrCamera.getWorldPosition(headPosition);
 
-            let desiredHeight = tVec0.y; // + 2.0 * kBagRadius;
+            let desiredHeight = headPosition.y; // + 2.0 * kBagRadius;
 
             let delta = desiredHeight - this.targetHeight;
             if (Math.abs(delta) > 0.15)
@@ -67662,24 +67692,14 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
             this.targetHeightVelocity += heightAccel * dt;
             this.targetPosition.y += this.targetHeightVelocity * dt;
         
+            hasHeadPosition = true;
         }
 
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
 
 
-        // frequency -- how quickly it tries to move back to the target position.
-        // high numbers -> very fast, low numbers -> less fast
-        // I want higher numbers as it's further away and lower numbers
-        // problem is that it hits a hard outer edge and gets fired back with all the velocity, so the
-        // upper limit basically controls how quickly it'll hit my hand again. i.e., 1/upper = time before it's
-        // back in place
-
-        // try a "cooldown" time after hit before I start applying the frequency?
-
-        if (false)
-        {}
-        else if (true)
+        if (true)
         {
             // goal is to compute new desiredPosition and desiredVelocity based on current values of those and relative to targetPosition
 
@@ -67737,12 +67757,6 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
             return;
         }
 
-        let tLeft = 1.0;
-        let tRight = 1.0;
-
-        // let hitLeft = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, tLeft);
-        // let hitRight = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, tRight);
-
         // General behavior:
         // Move from position to desired position
         // if collision, figure out which one is closer
@@ -67756,59 +67770,73 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
         {
             let hitLeft = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitResult);
             let hitRight = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitResult);
-    
-            if (hitLeft || hitRight)
+            let hitHead = hasHeadPosition && 
+                Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["doesSphereCollideWithOtherSphere"])(this.position, desiredPosition, this.radius, headPosition, kHeadRadius, headHitResult);
+
+            if (hitLeft || hitRight || hitHead)
             {
-                if (hitLeft && hitRight)
-                {
-                    if (leftHitResult.hitT < rightHitResult.hitT)
-                    {
-                        hitRight = false;
-                    }
-                    else
-                    {
-                        hitLeft = false;
-                    }
-                }
+                let hr = null;
 
+                
                 if (hitLeft)
-                {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitResult.hitPoint, leftHitResult.hitNormal))
-                    {
-                        //break;
-                    }
-                    //otherwise, keep going for another iteration
+                    hr = leftHitResult;
+                if (hitRight)
+                    hr = (hr == null || hr.hitT > rightHitResult.hitT) ? rightHitResult : hr;
 
-                }
-                else
+                let isHeadHit = false;
+                if (hitHead)
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, rightHitResult.hitNormal))
+                    if (hr == null || hr.hitT > headHitResult.hitT)
                     {
-                        //break;
+                        isHeadHit = true;
+                        hr = headHitResult;
                     }
-                    //otherwise, keep going for another iteration
                 }
+
+                this.processCollisionIteration(desiredPosition, desiredVelocity, hr.hitPoint, hr.hitNormal);
+
+                if (isHeadHit)
+                {
+                    this.headHitSound.position.copy(headPosition);
+                    this.headHitSound.play();
+                    this.playerHud.processHit();
+                }
+
+                // if (hitLeft && hitRight)
+                // {
+                //     if (leftHitResult.hitT < rightHitResult.hitT)
+                //     {
+                //         hitRight = false;
+                //     }
+                //     else
+                //     {
+                //         hitLeft = false;
+                //     }
+                // }
+
+                // if (hitLeft)
+                // {
+                //     if ()
+                //     {
+                //         //break;
+                //     }
+                //     //otherwise, keep going for another iteration
+
+                // }
+                // else
+                // {
+                //     if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, rightHitResult.hitNormal))
+                //     {
+                //         //break;
+                //     }
+                //     //otherwise, keep going for another iteration
+                // }
             }
             else
             {
                 this.position.copy(desiredPosition);
                 this.velocity.copy(desiredVelocity);
                 //break;
-            }
-        }
-
-
-
-        for(let pe of this.punchEffects)
-        {
-            if (pe.visible)
-            {
-                pe.material.opacity -= dt * kPunchEffectFadeRate;
-                if (pe.material.opacity < 0.0)
-                {
-                    pe.visible = false;
-                    pe.material.opacity = 0.0;
-                }
             }
         }
     }
@@ -67819,8 +67847,7 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
 
         //move to current hit point, and back up a bit to avoid interpenetration
         this.position.copy(hitPoint);
-
-        
+       
         // this.velocity.copy(desiredVelocity);
         // this.velocity.reflect(hitNormal);
         // this.velocity.multiplyScalar(0.1);
@@ -67860,11 +67887,8 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
         tVec0.copy(velocity);
         tVec0.projectOnVector(normal);
         tVec0.multiplyScalar(1.0);
-        this.velocity.add(tVec0);
+        this.velocity.add(tVec0);     
 
-        
-
-        this.cooldownAfterHit = 0.0;
 
         if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
         {
@@ -67877,21 +67901,27 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_5__["Bag"]
             hitSound.buffer = this.hitSoundBuffers[whichSound];
 
             let speed = velocity.length();
-
-            this.rotationValue -= normal.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
-
+          
             let speedBaseVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
             hitSound.setVolume(speedBaseVolume);
-
             hitSound.play();
 
             this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
+
+            this.rotationValue -= normal.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
 
             for(let cb of this.punchCallbacks)
             {
                 cb(whichHand, velocity);
             }
         }
+    }
+
+    resetPositionAndVelocity()
+    {
+        super.resetPositionAndVelocity();
+        this.rotationValue = 0.0;
+        this.rotationVelocity = 0.0;
     }
 
 }
@@ -67917,6 +67947,7 @@ __webpack_require__.r(__webpack_exports__);
 var createGeometry = __webpack_require__(/*! ./thirdparty/three-bmfont-text/ */ "./src/thirdparty/three-bmfont-text/index.js")
 var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
 
+var MSDFShader = __webpack_require__(/*! ./thirdparty/three-bmfont-text/shaders/msdf */ "./src/thirdparty/three-bmfont-text/shaders/msdf.js")
 
 const SESSION_NULL = 0;
 const SESSION_INTRO = 1;
@@ -67929,10 +67960,11 @@ const ROUND_HEAVY_BAG = 0;
 const ROUND_DOUBLE_ENDED_BAG = 1;
 // const BAGTYPE_SPEED = 2; 
 
-const kIntroDuration = 3.0;
+const kIntroDuration = 5.0;
 const kBagRevealTime = 3.0;
+const kRoundAlmostDoneTime = 10.0;
 
-var MSDFShader = __webpack_require__(/*! ./thirdparty/three-bmfont-text/shaders/msdf */ "./src/thirdparty/three-bmfont-text/shaders/msdf.js")
+
 
 class BoxingRound
 {
@@ -67957,7 +67989,7 @@ class BoxingRound
 
 class BoxingSession
 {
-    constructor(scene, audioListener, heavyBag, doubleEndedBag, numRounds, roundDuration, restDuration)
+    constructor(scene, audioListener, heavyBag, doubleEndedBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
     {
         this.scene = scene;
         this.audioListener = audioListener;
@@ -67991,6 +68023,17 @@ class BoxingSession
             {
                 this.soundEndOfRound.buffer = buffer;
             });
+        
+        this.soundGetReady = new three__WEBPACK_IMPORTED_MODULE_0__["PositionalAudio"](audioListener);
+        this.soundGetReady.setVolume(0.5);
+        this.soundGetReady.setRefDistance(40.0);
+        new three__WEBPACK_IMPORTED_MODULE_0__["AudioLoader"]().load(
+            "./content/3x-Punch-Kick-A3-med-www.fesliyanstudios.com.mp3",
+            (buffer) =>
+            {
+                this.soundGetReady.buffer = buffer;
+            });
+
         
         // font
         loadFont('./content/ROCKB.TTF-msdf.json',
@@ -68054,6 +68097,7 @@ class BoxingSession
                     // console.log("FOUND TV");
                     this.TV.add(this.sound321);
                     this.TV.add(this.soundEndOfRound);
+                    this.TV.add(this.soundGetReady);
 
                     this.updateTimer();
                     this.updateRoundsMessage();
@@ -68063,18 +68107,20 @@ class BoxingSession
 
         // models?
 
-        this.initialize(numRounds, roundDuration, restDuration);
+        this.initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound);
     }
 
-    initialize(numRounds, roundDuration, restDuration)
+    initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
     {
         this.numRounds = numRounds;
         this.roundDuration = roundDuration;
         this.restDuration = restDuration;
         this.introDuration = kIntroDuration;
+        this.playedAlmostDoneAlert = false;
         this.currentRound = 0;
         this.state = SESSION_NULL;
-        this.roundType = ROUND_DOUBLE_ENDED_BAG;
+        this.roundType = bagType;
+        this.doBagSwap = doBagSwapEachRound;
     }
 
     start()
@@ -68083,10 +68129,6 @@ class BoxingSession
         this.elapsedTime = 0.0;
         this.currentRound = 1;
         this.updateRoundsMessage();
-        this.showBagForNextRound(false);
-
-        //play "get ready" sound
-        this.soundGetReady.play(); //@TODO
     }
 
     pause()
@@ -68121,10 +68163,18 @@ class BoxingSession
                 break;
             case SESSION_INTRO:
                 this.elapsedTime += dt;
+                if (!this.playedAlmostDoneAlert && (this.introDuration - this.elapsedTime) < kBagRevealTime)
+                {
+                    this.showBagForNextRound(false);
+                    this.soundGetReady.play();
+                    this.playedAlmostDoneAlert = true;
+                }
                 if (this.elapsedTime > this.introDuration)
                 {
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
+                    this.playedAlmostDoneAlert = false;
+
                     // play "starting bell" sound
                     this.sound321.play();
                     this.updateRoundsMessage();
@@ -68136,6 +68186,11 @@ class BoxingSession
                 break;
             case SESSION_ROUND:
                 this.elapsedTime += dt;
+                if (!this.playedAlmostDoneAlert && (this.roundDuration - this.elapsedTime) < kRoundAlmostDoneTime)
+                {
+                    this.playedAlmostDoneAlert = true;
+                    this.soundGetReady.play();
+                }
                 if (this.elapsedTime > this.roundDuration)
                 {
                     this.hideBag();
@@ -68162,18 +68217,19 @@ class BoxingSession
                 this.elapsedTime += dt;
                 if (this.bagHidden && (this.restDuration - this.elapsedTime) < kBagRevealTime)
                 {
-                    this.showBagForNextRound(true);
-                    //this.soundGetReady.play(); //@TODO
+                    if (this.doBagSwap)
+                        this.showBagForNextRound(true);
+                    this.soundGetReady.play();
                 }
                 else if (this.elapsedTime > this.restDuration)
                 {
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
+                    this.playedAlmostDoneAlert = false;
                     // play "start of round" sound
                     this.sound321.play();
                     this.currentRound++;
                     this.updateRoundsMessage();
-                    this.showBagForNextRound(true);
                 }
                 else
                 {
@@ -68190,6 +68246,8 @@ class BoxingSession
 
     hideBag()
     {
+        if (!this.doBagSwap) return;
+
         this.bagHidden = true;
         if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
         {
@@ -68699,6 +68757,8 @@ class PageUI
         this.roundTime = 120;
         this.roundCount = 3;
         this.restTime = 30;
+        this.bagType = 0;
+        this.doBagSwap = true;
 
         if (!window.localStorage.getItem("first_run"))
         {
@@ -68706,6 +68766,8 @@ class PageUI
             window.localStorage.setItem("cfg_roundTime", this.roundTime);
             window.localStorage.setItem("cfg_roundCount", this.roundCount);
             window.localStorage.setItem("cfg_restTime", this.restTime);
+            window.localStorage.setItem("cfg_bagType", this.bagType);
+            window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
         }
         else
         {
@@ -68721,6 +68783,14 @@ class PageUI
             val = window.localStorage.getItem("cfg_restTime");
             if (val)
                 this.restTime = parseInt(val);
+
+            val = window.localStorage.getItem("cfg_bagType");
+            if (val)
+                this.bagType = parseInt(val);
+
+            val = window.localStorage.getItem("cfg_bagSwap");
+            if (val)
+                this.doBagSwap = (parseInt(val) == 1);
         }
 
 
@@ -68780,6 +68850,12 @@ class PageUI
         this.uiAboutButton.onclick = () => {this.onAboutClicked()};
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
+        let appVersionText = document.createElement("span");
+        appVersionText.innerHTML = "Version 0.3&beta;";
+        appVersionText.className = "app_version_text";
+        
+        this.uiButtonGroup.appendChild(appVersionText);
+
 
         this.uiConfigurationContainer = document.createElement("div");
         this.uiConfigurationContainer.className = "configuration_container";
@@ -68811,7 +68887,7 @@ class PageUI
         let roundTimeMinusButton = document.createElement("button");
         roundTimeMinusButton.innerHTML = "-";
         roundTimeMinusButton.className = "plus_minus_button";
-        let val = div.clientWidth - roundTime.clientWidth - 200;
+        let val = div.clientWidth - roundTime.clientWidth - 300;
         roundTimeMinusButton.style.marginLeft = val.toString() + "px";
         roundTimeMinusButton.onclick = () => {this.onRoundTimeChanged(-30)};
         div.appendChild(roundTimeMinusButton);
@@ -68844,7 +68920,7 @@ class PageUI
         let roundCountMinusButton = document.createElement("button");
         roundCountMinusButton.innerHTML = "-";
         roundCountMinusButton.className = "plus_minus_button";
-        val = div.clientWidth - roundCount.clientWidth - 200;
+        val = div.clientWidth - roundCount.clientWidth - 300;
         roundCountMinusButton.style.marginLeft = val.toString() + "px";
         roundCountMinusButton.onclick = () => {this.onRoundCountChanged(-1)};
         div.appendChild(roundCountMinusButton);
@@ -68877,7 +68953,7 @@ class PageUI
         let restTimeMinusButton = document.createElement("button");
         restTimeMinusButton.innerHTML = "-";
         restTimeMinusButton.className = "plus_minus_button";
-        val = div.clientWidth - restTime.clientWidth - 200;
+        val = div.clientWidth - restTime.clientWidth - 300;
         restTimeMinusButton.style.marginLeft = val.toString() + "px";
         restTimeMinusButton.onclick = () => {this.onRestTimeChanged(-5)};
         div.appendChild(restTimeMinusButton);
@@ -68895,7 +68971,60 @@ class PageUI
         restTimePlusButton.onclick = () => {this.onRestTimeChanged(5)};
         div.appendChild(restTimePlusButton);
 
-        // OK & CANCEL 
+        // Bag Type
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiConfigurationGroup.appendChild(div);
+
+        let bagType = document.createElement("p");
+        bagType.innerHTML = "BAG TYPE:";
+        bagType.className = "configuration_label";
+        div.appendChild(bagType);
+
+        let bagTypeLeftButton = document.createElement("button");
+        bagTypeLeftButton.innerHTML = "<";
+        bagTypeLeftButton.className = "plus_minus_button";
+        val = div.clientWidth - bagType.clientWidth - 300;
+        bagTypeLeftButton.style.marginLeft = val.toString() + "px";
+        bagTypeLeftButton.onclick = () => {this.onBagTypeChanged(-1)};
+        div.appendChild(bagTypeLeftButton);
+        
+        this.uiBagTypeDisplay = document.createElement("p");
+        this.uiBagTypeDisplay.innerHTML = this.getBagTypeString();
+        this.uiBagTypeDisplay.className = "configuration_label";
+        this.uiBagTypeDisplay.style.marginLeft = "auto";
+        div.appendChild(this.uiBagTypeDisplay);
+
+        let bagTypeRightButton = document.createElement("button");
+        bagTypeRightButton.innerHTML = ">";
+        bagTypeRightButton.className = "plus_minus_button";
+        bagTypeRightButton.style.marginLeft = "auto";
+        bagTypeRightButton.onclick = () => {this.onBagTypeChanged(1)};
+        div.appendChild(bagTypeRightButton);
+
+
+        // Switch bag each round
+        
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiConfigurationGroup.appendChild(div);
+
+        let swapBagType = document.createElement("p");
+        swapBagType.innerHTML = "SWAP BAG EACH ROUND:";
+        swapBagType.className = "configuration_label";
+        div.appendChild(swapBagType);
+
+        this.uiSwapBagTypeButton = document.createElement("button");
+        this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
+        this.uiSwapBagTypeButton.className = "plus_minus_button";
+        this.uiSwapBagTypeButton.style.marginLeft = "auto";
+        // this.uiSwapBagTypeButton.style.fontSize = "32px";
+        this.uiSwapBagTypeButton.style.borderRadius = "30%";
+        
+        this.uiSwapBagTypeButton.onclick = () => {this.onSwapBagTypeChecked()};
+        div.appendChild(this.uiSwapBagTypeButton);
+
+         // OK & CANCEL 
         this.uiConfigurationGroup.appendChild(document.createElement("br"));
         this.uiConfigurationGroup.appendChild(document.createElement("br"));
 
@@ -68918,6 +69047,9 @@ class PageUI
         okButton.style.boxShadow = "";
         okButton.onclick = () => { this.onOkClicked(); }
         div.appendChild(okButton);
+
+
+
     }
 
     checkForXR()
@@ -68993,6 +69125,9 @@ class PageUI
         this.uiRoundTimeDisplay.innerHTML = this.formatTime(this.roundTime);
         this.uiRestTimeDisplay.innerHTML = this.formatTime(this.restTime);
 
+        this.uiBagTypeDisplay.innerHTML = this.getBagTypeString();
+        this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
+
         this.uiLogo.style.width = kMinLogo;
 
         this.uiButtonContainer.style.height = "0%";
@@ -69049,6 +69184,8 @@ class PageUI
         window.localStorage.setItem("cfg_roundTime", this.roundTime);
         window.localStorage.setItem("cfg_roundCount", this.roundCount);
         window.localStorage.setItem("cfg_restTime", this.restTime);
+        window.localStorage.setItem("cfg_bagType", this.bagType);
+        window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
     }
 
     hideConfigurationUI()
@@ -69071,6 +69208,36 @@ class PageUI
 
         return this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
     }
+
+    onBagTypeChanged(val)
+    {
+        this.bagType = (this.bagType + val + 2) % 2;
+        this.uiBagTypeDisplay.innerHTML = this.getBagTypeString();
+    }
+
+    getBagTypeString()
+    {
+        if (this.bagType == 0)
+        {
+            return "HEAVY";
+        }
+        else if (this.bagType == 1)
+        {
+            return "DOUBLE-END";
+        }
+    }
+
+    onSwapBagTypeChecked()
+    {
+        this.doBagSwap = !this.doBagSwap;
+        this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
+    }
+
+    getBagSwapString()
+    {
+        return this.doBagSwap ? "&#x2713;" : "";
+    }
+    
 }
 
 /***/ }),
@@ -69132,6 +69299,69 @@ function ApplyPDVec3(
     currentValue.z += currentVelocity.z * dt;
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
+
+/***/ }),
+
+/***/ "./src/playerHud.js":
+/*!**************************!*\
+  !*** ./src/playerHud.js ***!
+  \**************************/
+/*! exports provided: PlayerHud */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlayerHud", function() { return PlayerHud; });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+function clamp(value, min, max)
+{
+    return Math.min(Math.max(value, min), max);
+}
+
+class PlayerHud
+{
+    constructor(camera, audioListener)
+    {
+        this.camera = camera;
+        this.audioListener = audioListener;
+
+        this.screenQuad = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
+            new three__WEBPACK_IMPORTED_MODULE_0__["PlaneBufferGeometry"](10.0, 10.0, 1, 1), 
+            new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"](
+                {
+                    color: 0x801010, 
+                    opacity: 0.0, 
+                    transparent: true,
+                    depthTest: false,
+                    depthWrite: false,
+                    blending: three__WEBPACK_IMPORTED_MODULE_0__["AdditiveBlending"]
+                }));
+
+        this.screenQuad.renderOrder = 1;
+        this.screenQuad.position.z = -1;
+        camera.add(this.screenQuad);
+
+
+        this.hitTimer = 0.0;
+    }
+
+    processHit()
+    {
+        this.hitTimer = Math.min(this.hitTimer + 0.5, 0.5);
+    }
+
+    update(dt)
+    {
+        if (this.hitTimer > 0.0)
+        {
+            this.hitTimer -= dt;
+            let intensity = clamp(this.hitTimer*2.0, 0.0, 0.8);
+            this.screenQuad.material.opacity = intensity;
+        }
+    }
+}
 
 /***/ }),
 

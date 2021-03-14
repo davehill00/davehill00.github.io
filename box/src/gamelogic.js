@@ -79,7 +79,7 @@ export class BoxingSession
             });
         
         this.soundGetReady = new THREE.PositionalAudio(audioListener);
-        this.soundGetReady.setVolume(0.3);
+        this.soundGetReady.setVolume(0.5);
         this.soundGetReady.setRefDistance(40.0);
         new THREE.AudioLoader().load(
             "./content/3x-Punch-Kick-A3-med-www.fesliyanstudios.com.mp3",
@@ -151,6 +151,7 @@ export class BoxingSession
                     // console.log("FOUND TV");
                     this.TV.add(this.sound321);
                     this.TV.add(this.soundEndOfRound);
+                    this.TV.add(this.soundGetReady);
 
                     this.updateTimer();
                     this.updateRoundsMessage();
@@ -270,7 +271,8 @@ export class BoxingSession
                 this.elapsedTime += dt;
                 if (this.bagHidden && (this.restDuration - this.elapsedTime) < kBagRevealTime)
                 {
-                    this.showBagForNextRound(this.doBagSwap);
+                    if (this.doBagSwap)
+                        this.showBagForNextRound(true);
                     this.soundGetReady.play();
                 }
                 else if (this.elapsedTime > this.restDuration)
@@ -298,6 +300,8 @@ export class BoxingSession
 
     hideBag()
     {
+        if (!this.doBagSwap) return;
+
         this.bagHidden = true;
         if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
         {

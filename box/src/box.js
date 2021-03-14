@@ -17,7 +17,7 @@ import {Glove} from './glove.js';
 import {HeavyBag} from './bag.js';
 import {DoubleEndedBag} from './doubleEndedBag.js';
 import {BoxingSession, PunchingStats} from './gamelogic.js';
-
+import {PlayerHud} from './playerHud.js';
 
 import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-controllers';
 import { Session } from './gamelogic.js';
@@ -45,6 +45,8 @@ let doubleEndedBag = null;
 
 let gameLogic = null;
 let punchingStats = null;
+
+let playerHud = null;
 
 let pmremGenerator = null;
 let lightmaps = {};
@@ -385,6 +387,8 @@ function render() {
         gameLogic.update(dt, accumulatedTime);
         punchingStats.update(dt, accumulatedTime);
     }
+    if(playerHud) 
+        playerHud.update(dt);
 
     renderer.render(scene, camera);
 }
@@ -411,9 +415,11 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
+    playerHud = new PlayerHud(camera, audioListener);
+
     heavyBag = new HeavyBag(audioListener, scene, camera, renderer);
     heavyBag.visible = false;
-    doubleEndedBag = new DoubleEndedBag(audioListener, scene, camera, renderer);
+    doubleEndedBag = new DoubleEndedBag(audioListener, scene, camera, renderer, playerHud);
     doubleEndedBag.visible = false;
 
     scene.add(heavyBag);
@@ -431,6 +437,8 @@ function initScene(scene, camera, renderer)
 
     gameLogic = new BoxingSession(scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
     punchingStats = new PunchingStats(scene, heavyBag, doubleEndedBag);
+
+
 }
 
 /*
