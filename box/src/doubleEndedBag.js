@@ -3,6 +3,7 @@ import {ApplyPDVec3, ComputePDAcceleration} from "./pdacceleration.js";
 import {doesCircleCollideWithOtherCircle} from "./circleCircleIntersection.js";
 import {doesSphereCollideWithOtherSphere, HitResult} from "./sphereSphereIntersection.js";
 import { BlendingDstFactor, BlendingEquation, BlendingSrcFactor } from 'three';
+import { Bag } from './bag.js';
 
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
@@ -12,17 +13,19 @@ let rightHitResult = new HitResult();
 
 const kBagRadius = 0.15;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
-const kPunchEffectFadeRate = 4.0;
 
 let tVec0 = new THREE.Vector3();
 let hitNormal = new THREE.Vector3();
 
 
-export class DoubleEndedBag extends THREE.Group
+export class DoubleEndedBag extends Bag
 {
     constructor(audioListener, scene, camera, renderer)
     {
-        super();
+        super(audioListener, scene, camera, renderer);
+
+        this.name = "Double-end Bag";
+
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
         this.targetPosition = new THREE.Vector3(0.0, 1.55, -0.75);
@@ -33,9 +36,9 @@ export class DoubleEndedBag extends THREE.Group
         this.rotationValue = 0.0;
         this.rotationVelocity = 0.0;
 
-        this.scene = scene;
-        this.camera = camera;
-        this.renderer = renderer;
+        // this.scene = scene;
+        // this.camera = camera;
+        // this.renderer = renderer;
         
         this.hitMeshDebug = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), new THREE.MeshBasicMaterial({color: 0xff00ff}));
         scene.add(this.hitMeshDebug);
@@ -44,13 +47,7 @@ export class DoubleEndedBag extends THREE.Group
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
 
-        this.cooldownAfterHit = 0.0;
-
         this.bHasGloves = false;
-
-        this.punchEffectGeometry = null;
-        this.punchEffectMaterial = null;
-        this.punchEffects = [];
 
         let loaderPromise = new Promise( resolve => {
             let loader = new GLTFLoader();
@@ -113,23 +110,13 @@ export class DoubleEndedBag extends THREE.Group
         this.punchCallbacks = [];
     }
 
-    setGloves(leftGlove, rightGlove)
-    {
-        this.leftGlove = leftGlove;
-        this.rightGlove = rightGlove;
-        this.bHasGloves = true;
-    }
 
     update(dt, accumulatedTime)
     {
 
-        // if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
-        // {
-        //     this.mesh.material.envMap = this.scene.envMap;
-        //     console.log("SET BAG ENVMAP");
-        // }
+        super.update(dt, accumulatedTime);
+
         this.accumulatedTime = accumulatedTime;
-        this.cooldownAfterHit += dt;
 
         if (this.renderer && this.renderer.xr && this.renderer.xr.isPresenting)
         {
@@ -156,35 +143,7 @@ export class DoubleEndedBag extends THREE.Group
         desiredVelocity.copy(this.velocity);
 
 
-        // frequency -- how quickly it tries to move back to the target position.
-        // high numbers -> very fast, low numbers -> less fast
-        // I want higher numbers as it's further away and lower numbers
-        // problem is that it hits a hard outer edge and gets fired back with all the velocity, so the
-        // upper limit basically controls how quickly it'll hit my hand again. i.e., 1/upper = time before it's
-        // back in place
-
-        // try a "cooldown" time after hit before I start applying the frequency?
-
-        if (false)
-        {
-            let cooldownT = Math.min(this.cooldownAfterHit / 0.25, 1.0);
-        
-            const kMinFreq = 0.5;
-            const kMaxFreq = kMinFreq + cooldownT * 3.0;
-            
-            let xDist = desiredPosition.x - this.targetPosition.x;
-            let zDist = desiredPosition.z - this.targetPosition.z;
-            let xzDist = Math.sqrt(xDist * xDist + zDist * zDist);
-            let t = Math.min(xzDist/0.6, 1.0);
-            //t *= t;
-            
-            //t = Math.min(t, cooldownT);
-
-            let curFreq = kMinFreq + (kMaxFreq - kMinFreq) * t;
-            ApplyPDVec3(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, curFreq, 0.01, dt);
-
-        }
-        else if (true)
+        if (true)
         {
             // goal is to compute new desiredPosition and desiredVelocity based on current values of those and relative to targetPosition
 
@@ -269,12 +228,6 @@ export class DoubleEndedBag extends THREE.Group
             return;
         }
 
-        let tLeft = 1.0;
-        let tRight = 1.0;
-
-        // let hitLeft = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitPoint, tLeft);
-        // let hitRight = doesCircleCollideWithOtherCircle(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitPoint, tRight);
-
         // General behavior:
         // Move from position to desired position
         // if collision, figure out which one is closer
@@ -329,20 +282,6 @@ export class DoubleEndedBag extends THREE.Group
             }
         }
 
-
-
-        for(let pe of this.punchEffects)
-        {
-            if (pe.visible)
-            {
-                pe.material.opacity -= dt * kPunchEffectFadeRate;
-                if (pe.material.opacity < 0.0)
-                {
-                    pe.visible = false;
-                    pe.material.opacity = 0.0;
-                }
-            }
-        }
     }
 
     processCollisionIteration( desiredPosition, desiredVelocity, hitPoint, hitNormal) //hitObjectCenter)
@@ -396,11 +335,8 @@ export class DoubleEndedBag extends THREE.Group
         tVec0.copy(velocity);
         tVec0.projectOnVector(normal);
         tVec0.multiplyScalar(1.0);
-        this.velocity.add(tVec0);
+        this.velocity.add(tVec0);     
 
-        
-
-        this.cooldownAfterHit = 0.0;
 
         if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
         {
@@ -428,6 +364,13 @@ export class DoubleEndedBag extends THREE.Group
                 cb(whichHand, velocity);
             }
         }
+    }
+
+    resetPositionAndVelocity()
+    {
+        super.resetPositionAndVelocity();
+        this.rotationValue = 0.0;
+        this.rotationVelocity = 0.0;
     }
 
 }

@@ -10,19 +10,16 @@ import {TGALoader} from 'three/examples/jsm/loaders/TGALoader.js'
 //import * as BASIS from 'three/exmaples/js/libs/basis/basis_transcoder.js'
 
 var inputProfilesList = require( "@webxr-input-profiles/registry/dist/profilesList.json");
-import * as CANNON from 'cannon-es';
 import * as TWEEN from '@tweenjs/tween.js';
 
 
 import {Glove} from './glove.js';
-import {Bag} from './bag.js';
+import {HeavyBag} from './bag.js';
 import {DoubleEndedBag} from './doubleEndedBag.js';
 import {BoxingSession, PunchingStats} from './gamelogic.js';
 
 
-
 import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-controllers';
-import { Fog } from 'three';
 import { Session } from './gamelogic.js';
 import * as HUD from './StatsHud.js';
 import {PageUI} from './pageUI.js';
@@ -402,7 +399,7 @@ export function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, 
 function onSessionStart()
 {
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
-    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime);
+    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap);
     gameLogic.start();
 }
 
@@ -414,7 +411,7 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
-    heavyBag = new Bag(audioListener, scene, camera, renderer);
+    heavyBag = new HeavyBag(audioListener, scene, camera, renderer);
     heavyBag.visible = false;
     doubleEndedBag = new DoubleEndedBag(audioListener, scene, camera, renderer);
     doubleEndedBag.visible = false;
@@ -432,7 +429,7 @@ function initScene(scene, camera, renderer)
     heavyBag.setGloves(leftHand.glove, rightHand.glove);
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
 
-    gameLogic = new BoxingSession(scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20);
+    gameLogic = new BoxingSession(scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
     punchingStats = new PunchingStats(scene, heavyBag, doubleEndedBag);
 }
 

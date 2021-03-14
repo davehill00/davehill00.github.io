@@ -13,27 +13,129 @@ let rightHitResult = new HitResult();
 const kBagRadius = 0.25;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
 const kPunchEffectFadeRate = 4.0;
-const kInconsequentialMovementSq = 0.01 * 0.01;
+
+const kFadeInTime = 0.5;
+const kOneOverFadeInTime = 1.0 / kFadeInTime;
+const kFadeOutTime = 1.0;
+const kOneOverFadeOutTime = 1.0 / kFadeOutTime;
 
 let tVec0 = new THREE.Vector3();
 let hitNormal = new THREE.Vector3();
 
-
 export class Bag extends THREE.Group
 {
+
     constructor(audioListener, scene, camera, renderer)
     {
         super();
+        this.scene = scene;
+        this.camera = camera;
+        this.renderer = renderer;
+
+        this.punchCallbacks = [];
+
+        this.fadeTimer = 0.0; 
+        this.fadingOut = false;
+        this.fadingIn = false;
+    }
+
+    setGloves(leftGlove, rightGlove)
+    {
+        this.leftGlove = leftGlove;
+        this.rightGlove = rightGlove;
+        this.bHasGloves = true;
+    }
+
+    update(dt, accumulatedTime)
+    {
+        this.updateFade(dt);
+    }
+
+    updateFade(dt)
+    {
+        this.fadeTimer += dt;
+        if (this.fadingIn)
+        {
+            if (this.fadeTimer > kFadeInTime)
+            {
+                this.setOpaque();
+                this.fadingIn = false;
+                //console.log(this.name + " FADED IN");
+            }
+            else
+            {
+                this.mesh.material.opacity = Math.min(this.fadeTimer * kOneOverFadeInTime, 1.0);
+            }
+        }
+        else if (this.fadingOut)
+        {
+            if (this.fadeTimer > kFadeOutTime)
+            {
+                this.setOpaque();
+                this.fadingOut = false;
+                this.visible = false;
+
+                //console.log(this.name + " FADED OUT");
+            }
+            else
+            {
+                this.mesh.material.opacity = Math.min(Math.max(1.0 - (this.fadeTimer * kOneOverFadeOutTime), 0.0), 1.0);
+            }
+        }
+    }
+
+    fadeOut()
+    {
+        this.mesh.material.opacity = 1.0;
+        this.fadingOut = true;
+        this.fadeTimer = 0.0;
+        this.setTransparent();
+        //console.log(this.name + " STARTING TO FADE OUT");
+    }
+
+    fadeIn()
+    {
+        this.resetPositionAndVelocity();
+        
+        this.mesh.material.opacity = 0.0;
+        this.fadingIn = true;
+        this.visible = true;
+        this.fadeTimer = 0.0;
+        this.setTransparent();
+
+        //console.log(this.name + " STARTING TO FADE IN");
+    }
+
+    setOpaque()
+    {
+        this.mesh.material.transparent = false;
+        this.mesh.material.opacity = 1.0;
+    }
+
+    setTransparent()
+    {
+        this.mesh.material.transparent = true;
+    }
+
+    resetPositionAndVelocity()
+    {
+        this.position.copy(this.targetPosition);
+        this.velocity.copy(this.targetVelocity);
+    }
+}
+
+export class HeavyBag extends Bag
+{
+    constructor(audioListener, scene, camera, renderer)
+    {
+        super(audioListener, scene, camera, renderer);
+
         this.velocity = new THREE.Vector3();
         this.targetVelocity = new THREE.Vector3(0.0, 0.0, 0.0);
         this.targetPosition = new THREE.Vector3(0.0, 1.55, -0.75);
         this.targetHeightVelocity = 0.0;
         this.targetHeight = this.targetPosition.y;
         this.position.copy(this.targetPosition);
-
-        this.scene = scene;
-        this.camera = camera;
-        this.renderer = renderer;
         
         this.radius = kBagRadius;
         this.accumulatedTime = 0.0;
@@ -45,6 +147,8 @@ export class Bag extends THREE.Group
         this.punchEffectGeometry = null;
         this.punchEffectMaterial = null;
         this.punchEffects = [];
+
+        this.name = "Heavy Bag";
 
         let loaderPromise = new Promise( resolve => {
             let loader = new GLTFLoader();
@@ -134,27 +238,14 @@ export class Bag extends THREE.Group
         });
 
 
-
-        //this.add(mesh);
-
-        this.punchCallbacks = [];
     }
 
-    setGloves(leftGlove, rightGlove)
-    {
-        this.leftGlove = leftGlove;
-        this.rightGlove = rightGlove;
-        this.bHasGloves = true;
-    }
+
 
     update(dt, accumulatedTime)
     {
-
-        // if (this.mesh != null && this.scene.envMap != null && this.mesh.material.envMap == null)
-        // {
-        //     this.mesh.material.envMap = this.scene.envMap;
-        //     console.log("SET BAG ENVMAP");
-        // }
+        super.update(dt, accumulatedTime);
+    
         this.accumulatedTime = accumulatedTime;
         this.cooldownAfterHit += dt;
 
@@ -163,15 +254,14 @@ export class Bag extends THREE.Group
             let xrCamera = this.renderer.xr.getCamera(this.camera);
             xrCamera.getWorldPosition(tVec0);
 
-            let desiredHeight = tVec0.y; // + 2.0 * kBagRadius;
+            let desiredHeight = tVec0.y - 0.25;
 
             let delta = desiredHeight - this.targetHeight;
-            if (Math.abs(delta) > 0.15)
+            if (Math.abs(delta) > 0.10)
             {               
                 this.targetHeight = desiredHeight;
             }
 
-            //this.targetHeight = tVec0.y - 0.25;
             let heightAccel = ComputePDAcceleration(this.targetPosition.y, this.targetHeightVelocity,
                 this.targetHeight, 0.0, 0.25, 2.0, dt);
             this.targetHeightVelocity += heightAccel * dt;
@@ -182,7 +272,7 @@ export class Bag extends THREE.Group
         desiredPosition.copy(this.position);
         desiredVelocity.copy(this.velocity);
 
-        if (true)
+        if (false)
         {
             ApplyPDVec3(desiredPosition, desiredVelocity, this.targetPosition, this.targetVelocity, 3.3, 0.9, dt);
 
@@ -195,11 +285,11 @@ export class Bag extends THREE.Group
             tVec0.copy(this.targetPosition);
             tVec0.sub(desiredPosition);
             
-            let kSpringConstant = 250.0;
+            let kSpringConstant = 700.0;
             tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
 
             // now apply velocity damping
-            let kSpringDamping = 3.0;
+            let kSpringDamping = 40.0;
             tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
 
             //assume mass == 1, so a = F
@@ -314,28 +404,6 @@ export class Bag extends THREE.Group
 
         return false;
 
-        // calc the remainder of the movement
-        tVec0.copy(desiredPosition);
-        tVec0.sub(this.position);
-
-        // project it onto the plane of the hit normal to "slide" off the collision
-        tVec0.projectOnPlane(hitNormal);
-        desiredVelocity.projectOnPlane(hitNormal);
-
-        // console.log("NEW VELOCITY: " + desiredVelocity.x.toFixed(1) + ", " + desiredVelocity.y.toFixed(1) + ", " + desiredVelocity.z.toFixed(1));
-
-        // if there's enough movement to care about, move in the slide direction
-        if (false) //tVec0.lengthSq() > kInconsequentialMovementSq)
-        {
-            desiredPosition.copy(hitPoint);
-            desiredPosition.add(tVec0);
-            return false;
-        }
-        else {
-            // close enough -- we're all done
-            this.velocity.copy(desiredVelocity);
-            return true;
-        }
     }
 
     processHit(velocity, position, normal, whichHand, isNewHit)
@@ -343,8 +411,8 @@ export class Bag extends THREE.Group
         // normal.negate(); //because normal's pointing the wrong way
 
         tVec0.copy(velocity);
-        // tVec0.projectOnVector(normal);
-        // tVec0.multiplyScalar(1.0);
+        tVec0.projectOnVector(normal);
+        tVec0.multiplyScalar(0.5);
         this.velocity.add(tVec0);
 
         this.cooldownAfterHit = 0.0;
@@ -406,7 +474,6 @@ export class Bag extends THREE.Group
             pe.rotation.set(0.0, rot, 0.0);
         }
     }
-
 }
 
 

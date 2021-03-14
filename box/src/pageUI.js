@@ -12,6 +12,8 @@ export class PageUI
         this.roundTime = 120;
         this.roundCount = 3;
         this.restTime = 30;
+        this.bagType = 0;
+        this.doBagSwap = true;
 
         if (!window.localStorage.getItem("first_run"))
         {
@@ -19,6 +21,8 @@ export class PageUI
             window.localStorage.setItem("cfg_roundTime", this.roundTime);
             window.localStorage.setItem("cfg_roundCount", this.roundCount);
             window.localStorage.setItem("cfg_restTime", this.restTime);
+            window.localStorage.setItem("cfg_bagType", this.bagType);
+            window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
         }
         else
         {
@@ -34,6 +38,14 @@ export class PageUI
             val = window.localStorage.getItem("cfg_restTime");
             if (val)
                 this.restTime = parseInt(val);
+
+            val = window.localStorage.getItem("cfg_bagType");
+            if (val)
+                this.bagType = parseInt(val);
+
+            val = window.localStorage.getItem("cfg_bagSwap");
+            if (val)
+                this.doBagSwap = (parseInt(val) == 1);
         }
 
 
@@ -93,6 +105,12 @@ export class PageUI
         this.uiAboutButton.onclick = () => {this.onAboutClicked()};
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
+        let appVersionText = document.createElement("span");
+        appVersionText.innerHTML = "Version 0.2";
+        appVersionText.className = "app_version_text";
+        
+        this.uiButtonGroup.appendChild(appVersionText);
+
 
         this.uiConfigurationContainer = document.createElement("div");
         this.uiConfigurationContainer.className = "configuration_container";
@@ -124,7 +142,7 @@ export class PageUI
         let roundTimeMinusButton = document.createElement("button");
         roundTimeMinusButton.innerHTML = "-";
         roundTimeMinusButton.className = "plus_minus_button";
-        let val = div.clientWidth - roundTime.clientWidth - 200;
+        let val = div.clientWidth - roundTime.clientWidth - 300;
         roundTimeMinusButton.style.marginLeft = val.toString() + "px";
         roundTimeMinusButton.onclick = () => {this.onRoundTimeChanged(-30)};
         div.appendChild(roundTimeMinusButton);
@@ -157,7 +175,7 @@ export class PageUI
         let roundCountMinusButton = document.createElement("button");
         roundCountMinusButton.innerHTML = "-";
         roundCountMinusButton.className = "plus_minus_button";
-        val = div.clientWidth - roundCount.clientWidth - 200;
+        val = div.clientWidth - roundCount.clientWidth - 300;
         roundCountMinusButton.style.marginLeft = val.toString() + "px";
         roundCountMinusButton.onclick = () => {this.onRoundCountChanged(-1)};
         div.appendChild(roundCountMinusButton);
@@ -190,7 +208,7 @@ export class PageUI
         let restTimeMinusButton = document.createElement("button");
         restTimeMinusButton.innerHTML = "-";
         restTimeMinusButton.className = "plus_minus_button";
-        val = div.clientWidth - restTime.clientWidth - 200;
+        val = div.clientWidth - restTime.clientWidth - 300;
         restTimeMinusButton.style.marginLeft = val.toString() + "px";
         restTimeMinusButton.onclick = () => {this.onRestTimeChanged(-5)};
         div.appendChild(restTimeMinusButton);
@@ -208,7 +226,60 @@ export class PageUI
         restTimePlusButton.onclick = () => {this.onRestTimeChanged(5)};
         div.appendChild(restTimePlusButton);
 
-        // OK & CANCEL 
+        // Bag Type
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiConfigurationGroup.appendChild(div);
+
+        let bagType = document.createElement("p");
+        bagType.innerHTML = "BAG TYPE:";
+        bagType.className = "configuration_label";
+        div.appendChild(bagType);
+
+        let bagTypeLeftButton = document.createElement("button");
+        bagTypeLeftButton.innerHTML = "<";
+        bagTypeLeftButton.className = "plus_minus_button";
+        val = div.clientWidth - bagType.clientWidth - 300;
+        bagTypeLeftButton.style.marginLeft = val.toString() + "px";
+        bagTypeLeftButton.onclick = () => {this.onBagTypeChanged(-1)};
+        div.appendChild(bagTypeLeftButton);
+        
+        this.uiBagTypeDisplay = document.createElement("p");
+        this.uiBagTypeDisplay.innerHTML = this.getBagTypeString();
+        this.uiBagTypeDisplay.className = "configuration_label";
+        this.uiBagTypeDisplay.style.marginLeft = "auto";
+        div.appendChild(this.uiBagTypeDisplay);
+
+        let bagTypeRightButton = document.createElement("button");
+        bagTypeRightButton.innerHTML = ">";
+        bagTypeRightButton.className = "plus_minus_button";
+        bagTypeRightButton.style.marginLeft = "auto";
+        bagTypeRightButton.onclick = () => {this.onBagTypeChanged(1)};
+        div.appendChild(bagTypeRightButton);
+
+
+        // Switch bag each round
+        
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiConfigurationGroup.appendChild(div);
+
+        let swapBagType = document.createElement("p");
+        swapBagType.innerHTML = "SWAP BAG EACH ROUND:";
+        swapBagType.className = "configuration_label";
+        div.appendChild(swapBagType);
+
+        this.uiSwapBagTypeButton = document.createElement("button");
+        this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
+        this.uiSwapBagTypeButton.className = "plus_minus_button";
+        this.uiSwapBagTypeButton.style.marginLeft = "auto";
+        // this.uiSwapBagTypeButton.style.fontSize = "32px";
+        this.uiSwapBagTypeButton.style.borderRadius = "30%";
+        
+        this.uiSwapBagTypeButton.onclick = () => {this.onSwapBagTypeChecked()};
+        div.appendChild(this.uiSwapBagTypeButton);
+
+         // OK & CANCEL 
         this.uiConfigurationGroup.appendChild(document.createElement("br"));
         this.uiConfigurationGroup.appendChild(document.createElement("br"));
 
@@ -231,6 +302,9 @@ export class PageUI
         okButton.style.boxShadow = "";
         okButton.onclick = () => { this.onOkClicked(); }
         div.appendChild(okButton);
+
+
+
     }
 
     checkForXR()
@@ -306,6 +380,9 @@ export class PageUI
         this.uiRoundTimeDisplay.innerHTML = this.formatTime(this.roundTime);
         this.uiRestTimeDisplay.innerHTML = this.formatTime(this.restTime);
 
+        this.uiBagTypeDisplay.innerHTML = this.getBagTypeString();
+        this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
+
         this.uiLogo.style.width = kMinLogo;
 
         this.uiButtonContainer.style.height = "0%";
@@ -362,6 +439,8 @@ export class PageUI
         window.localStorage.setItem("cfg_roundTime", this.roundTime);
         window.localStorage.setItem("cfg_roundCount", this.roundCount);
         window.localStorage.setItem("cfg_restTime", this.restTime);
+        window.localStorage.setItem("cfg_bagType", this.bagType);
+        window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
     }
 
     hideConfigurationUI()
@@ -384,4 +463,34 @@ export class PageUI
 
         return this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
     }
+
+    onBagTypeChanged(val)
+    {
+        this.bagType = (this.bagType + val + 2) % 2;
+        this.uiBagTypeDisplay.innerHTML = this.getBagTypeString();
+    }
+
+    getBagTypeString()
+    {
+        if (this.bagType == 0)
+        {
+            return "HEAVY";
+        }
+        else if (this.bagType == 1)
+        {
+            return "DOUBLE-END";
+        }
+    }
+
+    onSwapBagTypeChecked()
+    {
+        this.doBagSwap = !this.doBagSwap;
+        this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
+    }
+
+    getBagSwapString()
+    {
+        return this.doBagSwap ? "&#x2713;" : "";
+    }
+    
 }

@@ -1,8 +1,8 @@
 var createGeometry = require('./thirdparty/three-bmfont-text/')
 var loadFont = require('load-bmfont')
 import * as THREE from 'three';
+var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
 
-const kIntroDuration = 3.0;
 const SESSION_NULL = 0;
 const SESSION_INTRO = 1;
 const SESSION_ROUND = 2;
@@ -14,7 +14,11 @@ const ROUND_HEAVY_BAG = 0;
 const ROUND_DOUBLE_ENDED_BAG = 1;
 // const BAGTYPE_SPEED = 2; 
 
-var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
+const kIntroDuration = 5.0;
+const kBagRevealTime = 3.0;
+const kRoundAlmostDoneTime = 10.0;
+
+
 
 class BoxingRound
 {
@@ -39,7 +43,7 @@ class BoxingRound
 
 export class BoxingSession
 {
-    constructor(scene, audioListener, heavyBag, doubleEndedBag, numRounds, roundDuration, restDuration)
+    constructor(scene, audioListener, heavyBag, doubleEndedBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
     {
         this.scene = scene;
         this.audioListener = audioListener;
@@ -73,6 +77,17 @@ export class BoxingSession
             {
                 this.soundEndOfRound.buffer = buffer;
             });
+        
+        this.soundGetReady = new THREE.PositionalAudio(audioListener);
+        this.soundGetReady.setVolume(0.3);
+        this.soundGetReady.setRefDistance(40.0);
+        new THREE.AudioLoader().load(
+            "./content/3x-Punch-Kick-A3-med-www.fesliyanstudios.com.mp3",
+            (buffer) =>
+            {
+                this.soundGetReady.buffer = buffer;
+            });
+
         
         // font
         loadFont('./content/ROCKB.TTF-msdf.json',
@@ -145,18 +160,20 @@ export class BoxingSession
 
         // models?
 
-        this.initialize(numRounds, roundDuration, restDuration);
+        this.initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound);
     }
 
-    initialize(numRounds, roundDuration, restDuration)
+    initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
     {
         this.numRounds = numRounds;
         this.roundDuration = roundDuration;
         this.restDuration = restDuration;
         this.introDuration = kIntroDuration;
+        this.playedAlmostDoneAlert = false;
         this.currentRound = 0;
         this.state = SESSION_NULL;
-        this.roundType = ROUND_HEAVY_BAG;
+        this.roundType = bagType;
+        this.doBagSwap = doBagSwapEachRound;
     }
 
     start()
@@ -165,9 +182,6 @@ export class BoxingSession
         this.elapsedTime = 0.0;
         this.currentRound = 1;
         this.updateRoundsMessage();
-
-
-        //play "get ready" sound
     }
 
     pause()
@@ -202,14 +216,21 @@ export class BoxingSession
                 break;
             case SESSION_INTRO:
                 this.elapsedTime += dt;
+                if (!this.playedAlmostDoneAlert && (this.introDuration - this.elapsedTime) < kBagRevealTime)
+                {
+                    this.showBagForNextRound(false);
+                    this.soundGetReady.play();
+                    this.playedAlmostDoneAlert = true;
+                }
                 if (this.elapsedTime > this.introDuration)
                 {
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
+                    this.playedAlmostDoneAlert = false;
+
                     // play "starting bell" sound
                     this.sound321.play();
                     this.updateRoundsMessage();
-                    this.showBagForNextRound();
                 }
                 else
                 {
@@ -218,6 +239,11 @@ export class BoxingSession
                 break;
             case SESSION_ROUND:
                 this.elapsedTime += dt;
+                if (!this.playedAlmostDoneAlert && (this.roundDuration - this.elapsedTime) < kRoundAlmostDoneTime)
+                {
+                    this.playedAlmostDoneAlert = true;
+                    this.soundGetReady.play();
+                }
                 if (this.elapsedTime > this.roundDuration)
                 {
                     this.hideBag();
@@ -242,15 +268,20 @@ export class BoxingSession
                 break;
             case SESSION_REST:
                 this.elapsedTime += dt;
-                if (this.elapsedTime > this.restDuration)
+                if (this.bagHidden && (this.restDuration - this.elapsedTime) < kBagRevealTime)
+                {
+                    this.showBagForNextRound(this.doBagSwap);
+                    this.soundGetReady.play();
+                }
+                else if (this.elapsedTime > this.restDuration)
                 {
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
+                    this.playedAlmostDoneAlert = false;
                     // play "start of round" sound
                     this.sound321.play();
                     this.currentRound++;
                     this.updateRoundsMessage();
-                    this.showBagForNextRound();
                 }
                 else
                 {
@@ -267,30 +298,44 @@ export class BoxingSession
 
     hideBag()
     {
+        this.bagHidden = true;
         if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
         {
             console.assert(this.doubleEndedBag.visible && !this.heavyBag.visible);
-            this.doubleEndedBag.visible = false;
+            this.doubleEndedBag.fadeOut();
         }
         else
         {
             console.assert(!this.doubleEndedBag.visible && this.heavyBag.visible);
-            this.heavyBag.visible = false;
+            this.heavyBag.fadeOut();
         }
     }
-    showBagForNextRound()
+    showBagForNextRound(toggle)
     {
+        
         console.assert(!this.doubleEndedBag.visible && !this.heavyBag.visible);
-        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        if (toggle)
         {
-            this.roundType = ROUND_HEAVY_BAG;
-            this.heavyBag.visible = true;
+            if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+            {
+                this.roundType = ROUND_HEAVY_BAG;
+            }
+            else
+            {
+                this.roundType = ROUND_DOUBLE_ENDED_BAG;
+            }
+        }
+        
+        if (this.roundType == ROUND_HEAVY_BAG)
+        {
+            this.heavyBag.fadeIn();
         }
         else
         {
-            this.roundType = ROUND_DOUBLE_ENDED_BAG;
-            this.doubleEndedBag.visible = true;
+            this.doubleEndedBag.fadeIn();
         }
+
+        this.bagHidden = false;
     }
 
     updateTimer(value)
