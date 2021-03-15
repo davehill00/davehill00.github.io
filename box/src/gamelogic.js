@@ -252,11 +252,10 @@ export class BoxingSession
                 }
                 if (this.elapsedTime > this.roundDuration)
                 {
-                    this.hideBag();
                     if (this.currentRound < this.numRounds)
                     {
+                        this.hideBag();
                         this.state = SESSION_REST;
-
                     }
                     else
                     {
