@@ -3,6 +3,7 @@ import {ApplyPDVec3, ComputePDAcceleration} from "./pdacceleration.js";
 import {doesCircleCollideWithOtherCircle} from "./circleCircleIntersection.js";
 import {doesSphereCollideWithOtherSphere, HitResult} from "./sphereSphereIntersection.js";
 import { BlendingDstFactor, BlendingEquation, BlendingSrcFactor } from 'three';
+import { MultiInstanceSound } from './multiBufferSound.js';
 
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
@@ -82,6 +83,14 @@ export class Bag extends THREE.Group
                 this.mesh.material.opacity = Math.min(Math.max(1.0 - (this.fadeTimer * kOneOverFadeOutTime), 0.0), 1.0);
             }
         }
+    }
+
+    hide()
+    {
+        this.fadingOut = false;
+        this.fadingIn = false;
+        this.visible = false;
+        this.setOpaque();
     }
 
     fadeOut()
@@ -214,7 +223,7 @@ export class HeavyBag extends Bag
 
 
 
-
+        /*
         this.hitSoundBuffers = [];
         this.hitSounds = [
             new THREE.PositionalAudio(audioListener),
@@ -236,8 +245,9 @@ export class HeavyBag extends Bag
         audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
             this.hitSoundBuffers.push(buffer);
         });
+        */
 
-
+        this.hitSound = new MultiInstanceSound(audioListener, 6, ['./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3']);
     }
 
 
@@ -285,11 +295,11 @@ export class HeavyBag extends Bag
             tVec0.copy(this.targetPosition);
             tVec0.sub(desiredPosition);
             
-            let kSpringConstant = 700.0;
+            let kSpringConstant = 500.0;
             tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
 
             // now apply velocity damping
-            let kSpringDamping = 40.0;
+            let kSpringDamping = 20.0;
             tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
 
             //assume mass == 1, so a = F
@@ -419,22 +429,21 @@ export class HeavyBag extends Bag
 
         if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
         {
-            let hitSound = this.hitSounds[this.nextSoundIndex];
-            if (hitSound.isPlaying)
-                hitSound.stop();
+            // let hitSound = this.hitSounds[this.nextSoundIndex];
+            // if (hitSound.isPlaying)
+            //     hitSound.stop();
 
-            hitSound.position.copy(position);
-            let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
-            hitSound.buffer = this.hitSoundBuffers[whichSound];
+            // hitSound.position.copy(position);
+            // let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
+            // hitSound.buffer = this.hitSoundBuffers[whichSound];
 
             let speed = velocity.length();
+            let speedBasedVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
+            this.hitSound.play(position, speedBasedVolume);
 
-            let speedBaseVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
-            hitSound.setVolume(speedBaseVolume);
-
-            hitSound.play();
-
-            this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
+            // hitSound.setVolume(speedBaseVolume);
+            // hitSound.play();
+            // this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
 
             for(let cb of this.punchCallbacks)
             {

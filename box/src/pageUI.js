@@ -12,7 +12,7 @@ export class PageUI
         this.roundTime = 120;
         this.roundCount = 3;
         this.restTime = 30;
-        this.bagType = 0;
+        this.bagType = 1;
         this.doBagSwap = true;
 
         if (!window.localStorage.getItem("first_run"))
@@ -106,7 +106,8 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.3&beta;";
+        // appVersionText.innerHTML = "Version 0.3&beta;";
+        appVersionText.innerHTML = "Version 0.3";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);

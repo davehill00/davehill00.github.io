@@ -16,7 +16,7 @@ export class PlayerHud
             new THREE.PlaneBufferGeometry(10.0, 10.0, 1, 1), 
             new THREE.MeshBasicMaterial(
                 {
-                    color: 0x801010, 
+                    color: 0xFF2020, 
                     opacity: 0.0, 
                     transparent: true,
                     depthTest: false,

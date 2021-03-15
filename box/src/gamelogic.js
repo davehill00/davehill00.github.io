@@ -175,6 +175,11 @@ export class BoxingSession
         this.state = SESSION_NULL;
         this.roundType = bagType;
         this.doBagSwap = doBagSwapEachRound;
+
+        if (this.heavyBag.visible)
+            this.heavyBag.hide();
+        if (this.doubleEndedBag.visible)
+            this.doubleEndedBag.hide();
     }
 
     start()

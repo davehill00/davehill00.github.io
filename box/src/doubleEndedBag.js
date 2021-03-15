@@ -2,8 +2,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {ApplyPDVec3, ComputePDAcceleration} from "./pdacceleration.js";
 import {doesCircleCollideWithOtherCircle} from "./circleCircleIntersection.js";
 import {doesSphereCollideWithOtherSphere, HitResult} from "./sphereSphereIntersection.js";
-import { BlendingDstFactor, BlendingEquation, BlendingSrcFactor } from 'three';
 import { Bag } from './bag.js';
+import { MultiInstanceSound } from './multiBufferSound.js';
 
 let desiredPosition = new THREE.Vector3();
 let desiredVelocity = new THREE.Vector3();
@@ -16,8 +16,11 @@ let headHitResult = new HitResult();
 const kBagRadius = 0.15;
 const kMinPunchSoundVelocitySq = 0.25 * 0.25;
 const kHeadRadius = 0.12;
+const kHeadHitMinSpeedSq = 2.0 * 2.0;
+const kHeadHitCooldown = 1.0;
 
 let tVec0 = new THREE.Vector3();
+let tVec1 = new THREE.Vector3();
 let hitNormal = new THREE.Vector3();
 
 
@@ -73,35 +76,14 @@ export class DoubleEndedBag extends Bag
             });
 
 
-
-
-        this.hitSoundBuffers = [];
-        this.hitSounds = [
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-        ];
-        this.nextSoundIndex = 0;
-
-        this.headHitSound = new THREE.PositionalAudio(audioListener);
-        this.headHitSound.setRefDistance(40);
-        this.headHitSound.setVolume(1.0);
-
-        for (let hitSound of this.hitSounds)
-        {
-            hitSound.setRefDistance(40);
-            hitSound.setVolume(1.0);
-        }
-
-        var audioLoader = new THREE.AudioLoader();
-        audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
-            this.hitSoundBuffers.push(buffer);
-
-            this.headHitSound.buffer = buffer;
-        });
+        this.hitSound = new MultiInstanceSound(audioListener, 6, ['./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3']);
+        this.playerHitSound = new MultiInstanceSound(audioListener, 3, 
+            [
+                './content/hit_and_grunt_1.mp3', 
+                './content/hit_and_grunt_2.mp3',
+                './content/hit_and_grunt_3.mp3'
+            ]);
+        this.nextHeadHitTime = -1.0;
 
         this.punchCallbacks = [];
     }
@@ -240,13 +222,33 @@ export class DoubleEndedBag extends Bag
         {
             let hitLeft = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.leftGlove.position, this.leftGlove.radius, leftHitResult);
             let hitRight = doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, this.rightGlove.position, this.rightGlove.radius, rightHitResult);
-            let hitHead = hasHeadPosition && 
-                doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, headPosition, kHeadRadius, headHitResult);
+
+            // Determine if we're moving towards the player to decide if we want to do a head-collision check.
+            // Sometimes the ball can get past the player and hit them in the back of the head, which is
+            // confusing and not that helpful, and we're trying to filter those cases out.
+            let hitHead = false;
+            if (accumulatedTime > this.nextHeadHitTime)
+            {
+                tVec0.copy(this.position);
+                tVec0.sub(desiredPosition);
+
+                tVec1.copy(this.position);
+                tVec1.sub(headPosition);
+
+                let movingTowardPlayer = tVec0.dot(tVec1) > 0.0;
+                
+                hitHead = hasHeadPosition && movingTowardPlayer && 
+                    doesSphereCollideWithOtherSphere(this.position, desiredPosition, this.radius, headPosition, kHeadRadius, headHitResult);
+                
+                if (hitHead)
+                {
+                    this.nextHeadHitTime = accumulatedTime + kHeadHitCooldown;
+                }
+            }
 
             if (hitLeft || hitRight || hitHead)
             {
                 let hr = null;
-
                 
                 if (hitLeft)
                     hr = leftHitResult;
@@ -265,42 +267,12 @@ export class DoubleEndedBag extends Bag
 
                 this.processCollisionIteration(desiredPosition, desiredVelocity, hr.hitPoint, hr.hitNormal);
 
-                if (isHeadHit)
+                if (isHeadHit && desiredVelocity.lengthSq() > kHeadHitMinSpeedSq)
                 {
-                    this.headHitSound.position.copy(headPosition);
-                    this.headHitSound.play();
+                    // console.log("HEAD HIT SPEED: " + desiredVelocity.length());
+                    this.playerHitSound.play(hr.hitPoint, 1.0);
                     this.playerHud.processHit();
                 }
-
-                // if (hitLeft && hitRight)
-                // {
-                //     if (leftHitResult.hitT < rightHitResult.hitT)
-                //     {
-                //         hitRight = false;
-                //     }
-                //     else
-                //     {
-                //         hitLeft = false;
-                //     }
-                // }
-
-                // if (hitLeft)
-                // {
-                //     if ()
-                //     {
-                //         //break;
-                //     }
-                //     //otherwise, keep going for another iteration
-
-                // }
-                // else
-                // {
-                //     if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, rightHitResult.hitNormal))
-                //     {
-                //         //break;
-                //     }
-                //     //otherwise, keep going for another iteration
-                // }
             }
             else
             {
@@ -366,21 +338,21 @@ export class DoubleEndedBag extends Bag
 
         if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
         {
-            let hitSound = this.hitSounds[this.nextSoundIndex];
-            if (hitSound.isPlaying)
-                hitSound.stop();
+            // let hitSound = this.hitSounds[this.nextSoundIndex];
+            // if (hitSound.isPlaying)
+            //     hitSound.stop();
 
-            hitSound.position.copy(position);
-            let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
-            hitSound.buffer = this.hitSoundBuffers[whichSound];
+            // hitSound.position.copy(position);
+            // let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
+            // hitSound.buffer = this.hitSoundBuffers[whichSound];
 
             let speed = velocity.length();
-          
-            let speedBaseVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
-            hitSound.setVolume(speedBaseVolume);
-            hitSound.play();
+            let speedBasedVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
+            this.hitSound.play(position, speedBasedVolume);
+            // hitSound.setVolume(speedBaseVolume);
+            // hitSound.play();
 
-            this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
+            // this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
 
             this.rotationValue -= normal.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
 
