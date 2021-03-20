@@ -25,6 +25,7 @@ import * as HUD from './StatsHud.js';
 import {PageUI} from './pageUI.js';
 
 import css from './styles.css';
+import { initializeTextBoxSystem } from './textBox.js';
 
 const uri = './profiles/';
 const motionControllers = {};
@@ -415,6 +416,8 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
+    initializeTextBoxSystem();
+    
     playerHud = new PlayerHud(camera, audioListener);
 
     heavyBag = new HeavyBag(audioListener, scene, camera, renderer);

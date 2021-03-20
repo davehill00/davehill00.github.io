@@ -1,6 +1,7 @@
 var createGeometry = require('./thirdparty/three-bmfont-text/')
 var loadFont = require('load-bmfont')
 import * as THREE from 'three';
+import { TextBox } from './textBox';
 var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
 
 const SESSION_NULL = 0;
@@ -49,11 +50,9 @@ export class BoxingSession
         this.audioListener = audioListener;
         this.heavyBag = heavyBag;
         this.doubleEndedBag = doubleEndedBag;
-
-        this.roundType = ROUND_DOUBLE_ENDED_BAG;
-
-
         this.TV = null;
+
+        this.initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound);
 
         //load assets here
         
@@ -88,80 +87,51 @@ export class BoxingSession
                 this.soundGetReady.buffer = buffer;
             });
 
+        const kTopRowY = 0.4;
+        this.roundsTextBox = new TextBox(420, "center", 0.5, "center", 0.3, 0x000000, "", "", true);
+        this.roundsTextBox.position.x = -0.62;
+        this.roundsTextBox.position.y = kTopRowY;
         
-        // font
-        loadFont('./content/ROCKB.TTF-msdf.json',
-        (err, font) => {
-            // create a geometry of packed bitmap glyphs,
-            // word wrapped to 300px and right-aligned
-            this.timerFontGeometry = createGeometry({
-                align: 'left',
-                font: font,
-                flipY: true,
-                //width: 800
-            })
 
-            this.roundsFontGeometry = createGeometry({
-                align: 'center',
-                font: font,
-                flipY: true,
-            });
+        this.stateTextBox = new TextBox(420, "center", 0.5, "center", 0.5, 0x000000);
+        this.stateTextBox.position.x = 0.62;
+        this.stateTextBox.position.y = kTopRowY;
 
-            var texture = new THREE.TextureLoader().load('./content/ROCKBTTF.png');
-          
-            this.timerFontMaterial = new THREE.RawShaderMaterial(MSDFShader({
-                map: texture,
-                side: THREE.DoubleSide,
-                transparent: true,
-                color: 0x000000,
-                opacity: 1.0,
-                alphaTest: 0.1,
-                negate: false,
-            }))
+        this.timerTextBox = new TextBox(160, "center", 1.0, "center", 0.5, 0x000000, "5:00", ":");
+        this.timerTextBox.position.y = kTopRowY + 0.01;
+
+        // this.objectiveTextBox = new TextBox(320, "center", 0x000000, 1.0, 1.75);
+        // this.objectiveTextBox.position.y = -0.1;
+        // this.objectiveTextBox.displayMessage("THE JAB x 100");
 
 
-            // scale and position the mesh to get it doing something reasonable
-            this.timerFontMesh = new THREE.Mesh(this.timerFontGeometry, this.timerFontMaterial);
-            this.timerFontMesh.frustumCulled = false;
-            this.timerFontMesh.renderOrder = 0;
-            //this.timerFontMesh.position.set(0.0, 0.5, -3.0);
-            let kFontScale = 0.01;
-            this.timerFontMesh.scale.set(kFontScale, kFontScale, kFontScale);
-            this.timerFontMesh.rotation.set(3.14, 0.0, 0.0);
-            this.timerFontMesh.position.set(0.0, 0.085, 0.0);
+        this.currentTimeInWholeSeconds = -1.0;
 
+  
+        this.scene.traverse((node) => {
+            if (node.name == "Screen")
+            {
+                this.TV = node;
+                this.TV.add(this.timerTextBox);
+                this.TV.add(this.roundsTextBox);
+                this.TV.add(this.stateTextBox);
+                // this.TV.add(this.objectiveTextBox);
 
-            this.roundsFontMesh = new THREE.Mesh(this.roundsFontGeometry, this.timerFontMaterial);
-            let kRoundsFontScale = 0.0025;
-            this.roundsFontMesh.scale.set(kRoundsFontScale, kRoundsFontScale, kRoundsFontScale);
-            this.roundsFontMesh.rotation.set(3.14, 0.0, 0.0);
-            this.roundsFontMesh.position.set(0.0, -0.05, 0.0);
+                this.TV.add(this.sound321);
+                this.TV.add(this.soundEndOfRound);
+                this.TV.add(this.soundGetReady);
 
-            this.currentTimeInWholeSeconds = -1.0;
-
-
-
-
-            this.scene.traverse((node) => {
-                if (node.name == "Screen")
-                {
-                    this.TV = node;
-                    this.TV.add(this.timerFontMesh);
-                    this.TV.add(this.roundsFontMesh);
-                    // console.log("FOUND TV");
-                    this.TV.add(this.sound321);
-                    this.TV.add(this.soundEndOfRound);
-                    this.TV.add(this.soundGetReady);
-
-                    this.updateTimer();
-                    this.updateRoundsMessage();
-                }
-            });
+                this.updateTimer();
+                this.updateRoundsMessage();
+            }
         });
+
+
+
 
         // models?
 
-        this.initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound);
+        
     }
 
     initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
@@ -349,11 +319,12 @@ export class BoxingSession
     updateTimer(value)
     {
         let message;
-        let colonIndex = 1;
+        let messageColor = null;
+        let odd = false;
         if (this.state == SESSION_NULL || this.state == SESSION_OUTRO)
         {
+            this.timerTextBox.setMessageColor(0x000000);
             message = "0:00";
-            colonIndex = 1;
         }
         else
         {
@@ -369,47 +340,59 @@ export class BoxingSession
             let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
             let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
 
-            if (minutes > 9) colonIndex = 2;
+            if (this.state == SESSION_ROUND && newTimeInWholeSeconds <= 10.0)
+            {
+                this.timerTextBox.setMessageColor(0xaa0000);
+            }
+            else
+            {
+                this.timerTextBox.setMessageColor(0x000000);
+            }
+            if (seconds % 2)
+            {
+                odd = true;
+            }
 
             message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
         }
-
-        this.timerFontGeometry.update(message);
-        this.timerFontGeometry.computeBoundingBox();
-        let box = this.timerFontGeometry.boundingBox;
-
-        let pos = this.timerFontGeometry.getTopLeftCornerXOfCharAt(colonIndex);
-        this.timerFontMesh.position.x = pos;
-        this.timerFontMesh.position.x *= this.timerFontMesh.scale.x;
-        this.timerFontMesh.position.x -= 0.65;
+        this.timerTextBox.displayMessage(message);
 
     }
     updateRoundsMessage()
     {
-        let message;
+        let roundMessage;
+        let stateMessage;
         if (this.state == SESSION_NULL || this.state == SESSION_PAUSED)
         {
-            message = "ROUND"+ ("-/-").padStart(6, ' ') 
-            + "\n\n\n\n"
-            + (this.state == SESSION_PAUSED ? "PAUSED" : "IDLE");
+            roundMessage = "ROUND -/-";
+            stateMessage = this.state == SESSION_PAUSED ? "PAUSED" : "IDLE";
         }
         else
         {
-            message = "ROUND"+ (this.currentRound.toString() + "/" + this.numRounds.toString()).padStart(6, ' ') 
-            + "\n\n\n\n" 
-            + (this.state == SESSION_INTRO ? "GET READY" : 
-            (this.state == SESSION_ROUND) ? "FIGHT" :
-            (this.state == SESSION_REST) ? "REST" : 
-            (this.state == SESSION_OUTRO) ? "GREAT JOB!" : "");
+            roundMessage = "ROUND "+ (this.currentRound.toString() + "/" + this.numRounds.toString());
+            
+            switch(this.state)
+            {
+                case SESSION_INTRO:
+                    stateMessage = "GET READY";
+                    break;
+                case SESSION_ROUND:
+                    stateMessage = "FIGHT";
+                    break;
+                case SESSION_REST:
+                    stateMessage = "REST";
+                    break;
+                case SESSION_OUTRO:
+                    stateMessage = "GREAT JOB!";
+                    break;
+            }
+            // (this.state == SESSION_INTRO ? "GET READY" : 
+            // (this.state == SESSION_ROUND) ? "FIGHT" :
+            // (this.state == SESSION_REST) ? "REST" : 
+            // (this.state == SESSION_OUTRO) ? "GREAT JOB!" : "");
         }
-        this.roundsFontGeometry.update(message);
-        this.roundsFontGeometry.computeBoundingBox();
-        let box = this.roundsFontGeometry.boundingBox;
-
-        this.roundsFontMesh.position.x = box.min.x;
-        this.roundsFontMesh.position.x *= this.roundsFontMesh.scale.x;
-        let quantizedMaxX = Math.floor(box.max.x * this.roundsFontMesh.scale.x * 10.0) * 0.1;
-        this.roundsFontMesh.position.x += quantizedMaxX * -0.5;
+        this.roundsTextBox.displayMessage(roundMessage);
+        this.stateTextBox.displayMessage(stateMessage);
 
     }
     blankTimer()
@@ -426,49 +409,10 @@ export class PunchingStats
         this.scene = scene;
         this.TV = null;
       
-        loadFont('./content/ROCKB.TTF-msdf.json',
-        (err, font) => {
-            // create a geometry of packed bitmap glyphs,
-            // word wrapped to 300px and right-aligned
-            this.fontGeometry = createGeometry({
-                align: 'left',
-                font: font,
-                flipY: true,
-            });
 
-            var texture = new THREE.TextureLoader().load('./content/ROCKBTTF.png');
+        // @TODO -- swap out punch stats with a Text Box
 
-            this.fontMaterial = new THREE.RawShaderMaterial(MSDFShader({
-                map: texture,
-                side: THREE.DoubleSide,
-                transparent: true,
-                color: 0x000000,
-                opacity: 1.0,
-                alphaTest: 0.1,
-                negate: false,
-            }))
 
-            // scale and position the mesh to get it doing something reasonable
-            this.fontMesh = new THREE.Mesh(this.fontGeometry, this.fontMaterial);
-            this.fontMesh.renderOrder = 0;
-            this.fontMesh.position.set(0.0, -0.45, 0.02);
-            let kStatsFontScale = 0.0025; //25;
-            this.fontMesh.scale.set(kStatsFontScale, kStatsFontScale, kStatsFontScale);
-            this.fontMesh.rotation.set(3.14, 0.0, 0.0);
-
-            this.scene.traverse((node) => {
-                if (node.name == "Screen")
-                {
-                    this.TV = node;
-                    this.TV.add(this.fontMesh);
-                }
-            });
-
-            this.updateStatsDisplay();
-
-            this.currentTimeInWholeSeconds = -1.0;
-
-        });
 
         this.punches = 0;
         this.lastPunchTime = -1.0;
@@ -481,6 +425,21 @@ export class PunchingStats
 
         heavyBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
         doubleEndedBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
+
+
+        this.textBox = new TextBox(420, "left", 1.0, "center", 0.5, 0x000000);
+        this.textBox.position.x = 0.12;
+        this.textBox.position.y = -0.3;
+
+        this.scene.traverse((node) => {
+            if (node.name == "Screen")
+            {
+                this.TV = node;
+                this.TV.add(this.textBox);
+            }
+        });
+
+        this.updateStatsDisplay();
     }
 
     update(dt, accumulatedTime)
@@ -508,23 +467,24 @@ export class PunchingStats
 
 
     updateStatsDisplay(isPunch=false)
-    {
-        if (!this.fontGeometry)
-            return;
-        
+    {       
         let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
 
 
-        this.fontGeometry.update(
+        let message = 
             "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 
             "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
-            "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---"));
+            "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---");
+
+        /*
         this.fontGeometry.computeBoundingBox();
         let box = this.fontGeometry.boundingBox;
         this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;
 
         let quantizedMaxX = Math.floor(box.max.x * this.fontMesh.scale.x * 10.0) * 0.1;
         this.fontMesh.position.x += quantizedMaxX * -0.5;
+        */
+        this.textBox.displayMessage(message);
         
         this.nextStatsUpdate = this.accumulatedTime + 1.5;
     }
