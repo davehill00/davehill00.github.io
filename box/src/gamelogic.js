@@ -88,22 +88,33 @@ export class BoxingSession
             });
 
         const kTopRowY = 0.4;
-        this.roundsTextBox = new TextBox(420, "center", 0.5, "center", 0.3, 0x000000, "", "", true);
-        this.roundsTextBox.position.x = -0.62;
+        this.roundsTextBox = new TextBox(520, "center", 0.4, "center", 0.3, 0x000000, "", "");
+        this.roundsTextBox.position.x = -0.61;
         this.roundsTextBox.position.y = kTopRowY;
         
 
-        this.stateTextBox = new TextBox(420, "center", 0.5, "center", 0.5, 0x000000);
-        this.stateTextBox.position.x = 0.62;
+        this.stateTextBox = new TextBox(520, "center", 0.4, "center", 0.3, 0x000000, "", "");
+        this.stateTextBox.position.x = 0.61;
         this.stateTextBox.position.y = kTopRowY;
 
-        this.timerTextBox = new TextBox(160, "center", 1.0, "center", 0.5, 0x000000, "5:00", ":");
+        this.timerTextBox = new TextBox(160, "center", 0.8, "center", 0.3, 0x000000, "5:00", ":");
         this.timerTextBox.position.y = kTopRowY + 0.01;
 
-        // this.objectiveTextBox = new TextBox(320, "center", 0x000000, 1.0, 1.75);
-        // this.objectiveTextBox.position.y = -0.1;
-        // this.objectiveTextBox.displayMessage("THE JAB x 100");
-
+        this.objectiveTextBox = new TextBox(620, "left", 1.55, "top", 0.48, 0x000000, "", "");
+        this.objectiveTextBox.position.y = 0.01;
+        //this.objectiveTextBox.displayMessage("FREESTYLE ROUND:\nTry out different punches and combos. Start slow to get the feel of it, then focus on increasing your speed.");
+        //this.objectiveTextBox.displayMessage("SPEED ROUND:\nQuickly alternate between jabs and straights. Try to stay above 300PPM for the entire round. Your shoulders will really feel the burn on this one!");
+        //this.objectiveTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nAlternate punches.\nKeep your guard up, because the double-end bag can hit back!");
+        // this.objectiveTextBox.displayMessage("JAB THEN STRAIGHT:\nFor the first two minutes, throw the jab while circling around the bag.\nFor the last minute, throw the straight instead. Keep moving around the bag.");
+        // this.objectiveTextBox.displayMessage("RIGHT HOOK THEN LEFT HOOK:\nFor the first two minutes, throw the left hook while circling around the bag.\nFor the last minute, throw the right hook instead. Keep moving around the bag.");
+        this.objectiveTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\n \u2022 Throw two jabs, followed by the straight. Keep your hands moving the entire round.\n \u2022 Watch out! The double-end bag can hit back, so keep your guard up.");
+        // this.objectiveTextBox.displayMessage("STRAIGHT THEN HOOK:\nThrow the straight, followed by the left hook.\nThis will be tricky, because the bag is going to move in different directions.");
+        // this.objectiveTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nThrow two jabs, followed by the right hook.\nThe bag is going to move around a lot, so stay focused.");
+        // this.objectiveTextBox.displayMessage("JAB STRAIGHT HOOK:\nThrow the jab, followed by the straight, followed by the left hook.\nDouble-up your jab for the last minute.");
+        // this.objectiveTextBox.displayMessage("JAB STRAIGHT SLIP:\nThrow the jab, then the striaght, then move your head side-to-side.\nUse your core muscles to move your head, not your neck.\nDouble-up the jab for the last minute.");
+        // this.objectiveTextBox.displayMessage("DOUBLE-JAB\u2022STRAIGHT\u2022JAB\u2022STRAIGHT:\nYou know the drill.");
+        //jab-straight-slip
+        
 
         this.currentTimeInWholeSeconds = -1.0;
 
@@ -115,7 +126,7 @@ export class BoxingSession
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
                 this.TV.add(this.stateTextBox);
-                // this.TV.add(this.objectiveTextBox);
+                this.TV.add(this.objectiveTextBox);
 
                 this.TV.add(this.sound321);
                 this.TV.add(this.soundEndOfRound);
@@ -427,9 +438,9 @@ export class PunchingStats
         doubleEndedBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
 
 
-        this.textBox = new TextBox(420, "left", 1.0, "center", 0.5, 0x000000);
-        this.textBox.position.x = 0.12;
-        this.textBox.position.y = -0.3;
+        this.textBox = new TextBox(520, "left", 1.55, "bottom", 0.25, 0x000000);
+        // this.textBox.position.x = 0.12;
+        this.textBox.position.y = -0.35;
 
         this.scene.traverse((node) => {
             if (node.name == "Screen")

@@ -36,7 +36,7 @@ export class TextBox extends THREE.Group
         this.worldSpaceHeight = worldSpaceHeight;
 
         this.horizontalAlign = horizontalAlign;
-        this.verticalAlignt = verticalAlign;
+        this.verticalAlign = verticalAlign;
 
         if (debug)
         {
@@ -142,12 +142,23 @@ export class TextBox extends THREE.Group
                 
                 // Compute Y position -- this is trickier, since the the font layout system doesn't know anything
                 // about height.
-                                
-                let halfHeightOffset = (box.max.y - box.min.y) * -0.5 * this.meshScale;
-                //let posY = 0.0;
-                
+                // If centered, figure out the half-height of the box and 
+                let textHeight = (box.max.y - box.min.y) * this.meshScale;
+                let posY = 0.0;
+                if (this.verticalAlign == "top")
+                {
+                    posY = this.worldSpaceHeight * 0.5 - textHeight;
+                }
+                else if (this.verticalAlign == "center")
+                {
+                    posY = -0.5 * textHeight;
+                }
+                else // bottom
+                {
+                    posY = -0.5 * this.worldSpaceHeight;
+                }
 
-                this.fontMesh.position.set(posX, halfHeightOffset, 0);
+                this.fontMesh.position.set(posX, posY, 0);
             }
         }
     }

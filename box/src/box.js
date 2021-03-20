@@ -10,7 +10,7 @@ import {TGALoader} from 'three/examples/jsm/loaders/TGALoader.js'
 //import * as BASIS from 'three/exmaples/js/libs/basis/basis_transcoder.js'
 
 var inputProfilesList = require( "@webxr-input-profiles/registry/dist/profilesList.json");
-import * as TWEEN from '@tweenjs/tween.js';
+// import * as TWEEN from '@tweenjs/tween.js';
 
 
 import {Glove} from './glove.js';
@@ -379,7 +379,7 @@ function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
-    TWEEN.update(accumulatedTime);
+    // TWEEN.update(accumulatedTime);
 
     updateHands(dt, accumulatedTime);
     if (gameLogic && punchingStats)
