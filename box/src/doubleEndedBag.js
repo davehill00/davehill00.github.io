@@ -136,7 +136,7 @@ export class DoubleEndedBag extends Bag
             tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
 
             // now apply velocity damping
-            let kSpringDamping = 2.0;
+            let kSpringDamping = 1.0;
             tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
 
             //assume mass == 1, so a = F

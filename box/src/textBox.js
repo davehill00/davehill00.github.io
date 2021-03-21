@@ -27,7 +27,7 @@ export class TextBox extends THREE.Group
     constructor(fontPixelsPerMeter, horizontalAlign, worldSpaceWidth, verticalAlign, worldSpaceHeight, color, lockPositionString="", lockPositionChar="", debug)
     {
         super();
-        this.fontPixelsPerMeter = fontPixelsPerMeter;
+        // this.fontPixelsPerMeter = fontPixelsPerMeter;
         this.queuedMessage = null;
         this.queuedMessageColor = color;
         this.bReady = false;
@@ -63,7 +63,7 @@ export class TextBox extends THREE.Group
                 transparent: true,
                 color: color,
                 opacity: 1.0,
-                alphaTest: 0.1,
+                alphaTest: 0.2,
                 negate: false
             }));
 
@@ -93,6 +93,19 @@ export class TextBox extends THREE.Group
                 this.displayMessage(this.queuedMessage);
             }
         });
+    }
+
+    setFontPixelsPerMeter(fontPixelsPerMeter)
+    {
+        console.log("SET FONT PPM TO: " + fontPixelsPerMeter);
+
+        console.assert(this.lockPositionChar == null); //@TODO - need to do something else if we want "locked" strings to handle resizing properly.
+
+        this.fontGeometry._opt.width = fontPixelsPerMeter * this.worldSpaceWidth;
+        this.meshScale = 1.0/fontPixelsPerMeter;
+        this.fontMesh.scale.set(this.meshScale, this.meshScale, this.meshScale);
+
+        this.fontGeometry.update("");
     }
 
     setMessageColor(color)

@@ -79,7 +79,7 @@ function initialize()
     renderer = new THREE.WebGLRenderer( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
+    //renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
     let color = new THREE.Color(0x000000);
     //color.convertSRGBToLinear();
     renderer.setClearColor(color);
@@ -376,7 +376,7 @@ function render() {
 
     // hud.update();
 
-    let dt = Math.min(clock.getDelta(), 0.0333);
+    let dt = Math.min(clock.getDelta(), 0.0333); // * 3.0;
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
     // TWEEN.update(accumulatedTime);
