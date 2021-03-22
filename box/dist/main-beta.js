@@ -117563,7 +117563,7 @@ function initialize()
     renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
+    //renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
     let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
     //color.convertSRGBToLinear();
     renderer.setClearColor(color);
@@ -117818,7 +117818,7 @@ function render() {
 
     // hud.update();
 
-    let dt = Math.min(clock.getDelta(), 0.0333);
+    let dt = Math.min(clock.getDelta(), 0.0333); // * 3.0;
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
     // TWEEN.update(accumulatedTime);
@@ -118128,6 +118128,8 @@ const kHeadHitCooldown = 1.0;
 
 let tVec0 = new THREE.Vector3();
 let tVec1 = new THREE.Vector3();
+let tVec2 = new THREE.Vector3();
+
 let hitNormal = new THREE.Vector3();
 
 
@@ -118210,10 +118212,10 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
             let xrCamera = this.renderer.xr.getCamera(this.camera);
             xrCamera.getWorldPosition(headPosition);
 
-            let desiredHeight = headPosition.y; // + 2.0 * kBagRadius;
+            let desiredHeight = headPosition.y - 0.1; // + 2.0 * kBagRadius;
 
             let delta = desiredHeight - this.targetHeight;
-            if (Math.abs(delta) > 0.15)
+            if (Math.abs(delta) > 0.05)
             {               
                 this.targetHeight = desiredHeight;
             }
@@ -118231,56 +118233,152 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
         desiredVelocity.copy(this.velocity);
 
 
-        if (true)
+        if (false)
+        {}
+        else
         {
-            // goal is to compute new desiredPosition and desiredVelocity based on current values of those and relative to targetPosition
 
-            // compute tVec0 = vector pointing from current position to target position
+            // double-end bag thoughts --
+            // 1. Adjust between chest and chin height
+            // 2. Consider a rigid cord (i.e., a max length) that the cord can extend to -- how to model this? 
+            //    I can limit the stretch easily enough, but not sure about the physics of hitting that full extension.
+            //    Should probably jerk it back -- does that just kill the outward velocity, or does it "bounce" off that?
+            //    Could I just model this as a max radius that the ball can get out to?
+            // 3. The cords are not the same length (but maybe would be ideally?)
+            // 4. Feels like the ball bounces around a fair bit, but never goes crazy far.
+
+
+            // Start by getting the double-spring setup correct.
+            // The "stretch" length * the spring constant is the force applied by the spring.
+            // The "velocity along the spring" * the damping constant is the damping force
+            // 
+            // Compute the "stretched length"
+            // Compute the velocity along the spring:
+            // = bag velocity projected onto the spring vector
+            // 
+
+
+
+            const kRestLength = 0.8;
+            const kPositionOffset = 1.51; //10 feet ceiling, suspend in the middle
+
             tVec0.copy(this.targetPosition);
+            tVec0.y += kPositionOffset;
             tVec0.sub(desiredPosition);
             
-            let kSpringConstant = 250.0;
-            tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
+            let length = tVec0.length();
+            if (length > 0.0)
+            {
+                tVec0.divideScalar(length);
+                let stretchLength = Math.max(length - kRestLength, 0.0);
+                tVec0.multiplyScalar(stretchLength);
+            }
 
+
+            const kSpringConstant = 150.0;
+            const kSpringDamping = -2.0;
+            
+
+            //@TODO - subtract the "rest length" from tVec0
+            
+            tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
             // now apply velocity damping
-            let kSpringDamping = 2.0;
-            tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
+            
+            tVec1.copy(desiredVelocity);
+            tVec1.projectOnVector(tVec0);
+
+            tVec0.addScaledVector(tVec1, kSpringDamping);
 
             //assume mass == 1, so a = F
             // vel' = vel + a * dt;
+            // desiredVelocity.addScaledVector(tVec0, dt);
+
+            tVec2.copy(this.targetPosition);
+            tVec2.y -= kPositionOffset;
+            tVec2.sub(desiredPosition);
+
+            length = tVec2.length();
+            if (length > 0.0)
+            {
+                tVec2.divideScalar(length);
+                let stretchLength = Math.max(length - kRestLength, 0.0);
+                tVec2.multiplyScalar(stretchLength);
+            }
+            tVec2.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
+            tVec1.copy(desiredVelocity);
+            tVec1.projectOnVector(tVec2);
+            tVec2.addScaledVector(tVec1, kSpringDamping);
+
+
+            //add the forces together
+            tVec0.add(tVec2); 
+
+            const kOverallDamping = -1.4; // 1.5
+            tVec0.addScaledVector(desiredVelocity, kOverallDamping);
+
+            // let kSpringConstant = 200.0;
+            // tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
+
+            // // now apply velocity damping -- should this be along the direction of the spring?
+            // let kSpringDamping = 2.0;
+            // tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
+
+            // Apply the resulting force as an acceleration
             desiredVelocity.addScaledVector(tVec0, dt);
 
-            desiredPosition.addScaledVector(desiredVelocity, dt);
+            // Calculate a hard stop at some radius in the horizontal plane, and don't go outside of that.
+            // - figure out where the velocity vector intersects with circle of radius R
+            // - take the positive root since we're inside and always moving outside
 
+            // HACK -- Take the calculated position and snap it to the radius of the circle, then mirror around the 
+            // normal at that point and reflect the remaining velocity
+            tVec0.subVectors(desiredPosition, this.targetPosition); // tVec0 = desiredPosition - targetPosition;
+            tVec0.addScaledVector(desiredVelocity, dt);
+            tVec0.y = 0.0;
+            const kOutsideRadius = 0.70;
+            const kOutsideRadiusSq = kOutsideRadius * kOutsideRadius;
+            if (tVec0.lengthSq() > kOutsideRadiusSq)
+            {
+                console.log("MOVING OUTSIDE RADIUS");
+                let length = tVec0.length();
+                let t = kOutsideRadius/length; // what percentage of the way have we moved.
 
+                // Compute reflection vector -- it's the unit-length version of tVec0, then negated to point towards the origin of the cylinder
+                tVec0.divideScalar(-length);
+
+                // Assume amount of movement is low, so just set "desiredPosition" the point on the border
+                tVec1.copy(desiredPosition);
+                tVec1.addScaledVector(desiredVelocity, dt * t);
+
+                desiredPosition.copy(tVec1);
+
+                // Compute the new reflected velocity
+                desiredVelocity.reflect(tVec0);
+                const kOuterEdgeCollisionScale = 0.5;
+                desiredVelocity.multiplyScalar(kOuterEdgeCollisionScale);
+
+                let remainingMovement = length - kOutsideRadius;
+
+            }
+            else
+            {
+                desiredPosition.addScaledVector(desiredVelocity, dt);
+            }
 
             // compute rotation velocity on a spring
             let rotationSpring = 0.0 - this.rotationValue;
             const kRotationSpringConstant = 200.0;
             rotationSpring *= kRotationSpringConstant;
-
             rotationSpring -= this.rotationVelocity * 3.0;
-            //const kRotationSpringDamping = 0.1;
-            //rotationSpring += this.rotationVelocity * -kRotationSpringConstant;
-
             this.rotationVelocity += rotationSpring * dt;
             this.rotationValue += this.rotationVelocity * dt;
-
             this.rotation.set(0.0, this.rotationValue * Math.PI, 0.0);
-
-            //console.log("Rotation Value: " + this.rotationValue + ", Rotation Velocity: " + this.rotationVelocity);
-
 
             // ramp envmap sharpness with speed
             let speed = desiredVelocity.length();
             let roughnessT = Math.max(Math.min((speed-1.0) * 0.1, 1.0), 0.0);
-            this.mesh.material.roughness = 0.25 + roughnessT * 0.25;
-
+            this.mesh.material.roughness = 0.25 + roughnessT * 0.25;           
         }
-        else
-        {}
-
-        //desiredPosition.y = this.targetPosition.y;
 
         if (!this.bHasGloves)
         {
@@ -118467,49 +118565,166 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PunchingStats", function() { return PunchingStats; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var _textBox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./textBox */ "./src/textBox.js");
+/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
 var createGeometry = __webpack_require__(/*! ./thirdparty/three-bmfont-text/ */ "./src/thirdparty/three-bmfont-text/index.js")
 var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
+
 
 
 var MSDFShader = __webpack_require__(/*! ./thirdparty/three-bmfont-text/shaders/msdf */ "./src/thirdparty/three-bmfont-text/shaders/msdf.js")
 
 const SESSION_NULL = 0;
 const SESSION_INTRO = 1;
-const SESSION_ROUND = 2;
-const SESSION_REST = 3;
-const SESSION_OUTRO = 4;
-const SESSION_PAUSED = 5;
+const SESSION_GET_READY = 2;
+const SESSION_ROUND = 3;
+const SESSION_REST = 4;
+const SESSION_OUTRO = 5;
+const SESSION_PAUSED = 6;
 
-const ROUND_HEAVY_BAG = 0;
-const ROUND_DOUBLE_ENDED_BAG = 1;
 // const BAGTYPE_SPEED = 2; 
 
-const kIntroDuration = 5.0;
-const kBagRevealTime = 3.0;
+
+
+
+const kIntroDuration = 2.0;
+const kIntroGetReadyDuration = 3.0;
+const kRestGetReadyDuration = 5.0;
 const kRoundAlmostDoneTime = 10.0;
+// const kGetReadyDuration = 3.0;
 
+const kWorkoutTextBoxSmallFontSize = 520;
+const kWorkoutTextBoxBigFontSize = 350;
 
+// let workout1 = [
+//     {
+//         //Placeholder for ROUND 0 (which isn't actually a thing), but lets me use proper round numbering everywhere else.
+//         //@TODO - consider using this for intro text
+//         introText: "TEST WORKOUT #1:\n \u2022 Round 1: Do two things.\n \u2022 Round 2: Do three things.",
+//         stages:[],
+//         bagType: null
+//     },
+//     {
+//         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2",
+//         stages: [
+//             {
+//                 startTimePercent: 0.0,
+//                 descriptionText: "THINGS TO DO DURING THE FIRST HALF"
+//             },
+//             {
+//                 startTimePercent: 0.5,
+//                 descriptionText: "THINGS TO DO DURING THE SECOND HALF"
+//             }
+//         ],
+//         bagType: ROUND_HEAVY_BAG
+//     },
+//     {
+//         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2\n \u2022 Thing 3",
+//         stages: [
+//             {
+//                 startTimePercent: 0.0,
+//                 descriptionText: "THINGS TO DO DURING THE FIRST 33%"
+//             },
+//             {
+//                 startTimePercent: 0.33,
+//                 descriptionText: "THINGS TO DO DURING THE SECOND 33%"
+//             },
+//             {
+//                 startTimePercent: 0.67,
+//                 descriptionText: "THINGS TO DO DURING THE FINAL 33%"
+//             }
+//         ],
+//         bagType: ROUND_DOUBLE_ENDED_BAG
+//     }
+// ]
 
-class BoxingRound
+class Workout
 {
-    constructor(roundType, duration)
+    constructor()
     {
-        this.roundType = roundType;
-        this.duration = duration;
+
     }
-    start()
+    initialize()
     {
-        this.elapsedTime = 0.0;
+
     }
     update(dt)
     {
-        this.elapsedTime += dt;
     }
-    isComplete()
-    {
-        return this.elapsedTime >= this.duration;
-    }
+
+    // register "onComplete" callbacks
 }
+
+// Assumes the notion of timing and round structure, and has event handlers
+// for the common stages of the workout
+//
+// Want to handle three scenarios:
+//  1. A time-based workout. e.g., 5 x 2:00 rounds, 0:30 rests
+//  2. A scripted workout. e.g., each workout has some scripted stages and some criteria for ending each round.
+//  3. (Maybe?) A punches-based workout. Not time-driven, but rather some other criteria for ending each round.
+//     Could just fold into the scripted workout.
+//
+// So:
+//  - there are rounds and there are rests
+//  - the round determines:
+//     - clock behavior (count up vs. down)
+//     - what goes on the screens -- each round can define its own layout
+//     - when the round is over
+//     - whether the round was passed (i.e., continue to next round, or end the workout) -- only if there are pass/fail workouts
+//     - what type of exercise the round is (e.g., bags are shown/hidden, the goals of the round)
+//  - the workout also determines:
+//     - how long the intro is and what happens during the intro
+//     - how many rounds are scheduled
+//     - what happens at the end of the workout (e.g., what is displayed on screen)
+//
+// So, the boxing session is responsible for:
+//  - loading up the assets and holding on to everything
+//  - being the interface to game logic for the rest of the game
+//
+// It really is just handling:
+//  - asset loading
+//  - initialize the workout
+//  - start the workout
+//  - update the workout
+//  - pause/resume the workout
+//  - know when the workout is over
+//
+// Workout
+//   set up the intro
+//      display some descriptive text
+//   run the intro
+//      run a countdown timer
+//      look for a gesture/input to exit the intro
+//   determine when the intro is over
+//      time has run out
+//      gesture/input has been received
+//   transition into 'get ready' state
+//      play some 'get ready' sound
+//      start a countdown timer
+//   run the 'get ready' state
+//      update timer
+//      play additional effects
+//   transition to the round
+//   run the round
+//   determine when the round is over
+//   determine if we're doing another round or if we're done with the workout
+//   transition to rest state
+//   run the rest state
+//   determine that the rest is over --> transition to 'get ready' state
+//   transition to the outro state
+//   update the outro state
+class BoxingWorkout
+{
+    onIntro(){}
+    onStartOfRound(){}
+    updateRound(dt, accumulatedTime){}
+    isRoundOver(){}
+    onEndOfRound(){}
+    onStartOfRest(){}
+    onEndOfRest(){}
+    hasMoreRounds(){}
+    onEndOfWorkout(){}  
+}
+
 
 class BoxingSession
 {
@@ -118521,7 +118736,7 @@ class BoxingSession
         this.doubleEndedBag = doubleEndedBag;
         this.TV = null;
 
-        this.initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound);
+        this.initialize(numRounds, roundDuration, restDuration);
 
         //load assets here
         
@@ -118569,19 +118784,24 @@ class BoxingSession
         this.timerTextBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](160, "center", 0.8, "center", 0.3, 0x000000, "5:00", ":");
         this.timerTextBox.position.y = kTopRowY + 0.01;
 
-        this.objectiveTextBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](620, "left", 1.55, "top", 0.48, 0x000000, "", "");
-        this.objectiveTextBox.position.y = 0.01;
-        //this.objectiveTextBox.displayMessage("FREESTYLE ROUND:\nTry out different punches and combos. Start slow to get the feel of it, then focus on increasing your speed.");
-        //this.objectiveTextBox.displayMessage("SPEED ROUND:\nQuickly alternate between jabs and straights. Try to stay above 300PPM for the entire round. Your shoulders will really feel the burn on this one!");
-        //this.objectiveTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nAlternate punches.\nKeep your guard up, because the double-end bag can hit back!");
-        // this.objectiveTextBox.displayMessage("JAB THEN STRAIGHT:\nFor the first two minutes, throw the jab while circling around the bag.\nFor the last minute, throw the straight instead. Keep moving around the bag.");
-        // this.objectiveTextBox.displayMessage("RIGHT HOOK THEN LEFT HOOK:\nFor the first two minutes, throw the left hook while circling around the bag.\nFor the last minute, throw the right hook instead. Keep moving around the bag.");
-        this.objectiveTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\n \u2022 Throw two jabs, followed by the straight. Keep your hands moving the entire round.\n \u2022 Watch out! The double-end bag can hit back, so keep your guard up.");
-        // this.objectiveTextBox.displayMessage("STRAIGHT THEN HOOK:\nThrow the straight, followed by the left hook.\nThis will be tricky, because the bag is going to move in different directions.");
-        // this.objectiveTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nThrow two jabs, followed by the right hook.\nThe bag is going to move around a lot, so stay focused.");
-        // this.objectiveTextBox.displayMessage("JAB STRAIGHT HOOK:\nThrow the jab, followed by the straight, followed by the left hook.\nDouble-up your jab for the last minute.");
-        // this.objectiveTextBox.displayMessage("JAB STRAIGHT SLIP:\nThrow the jab, then the striaght, then move your head side-to-side.\nUse your core muscles to move your head, not your neck.\nDouble-up the jab for the last minute.");
-        // this.objectiveTextBox.displayMessage("DOUBLE-JAB\u2022STRAIGHT\u2022JAB\u2022STRAIGHT:\nYou know the drill.");
+        this.workoutIntroTextBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](kWorkoutTextBoxSmallFontSize, "left", 1.55, "top", 0.48, 0x000000);
+        this.workoutIntroTextBox.position.y = 0.01;
+
+        this.workoutStageTextBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](kWorkoutTextBoxBigFontSize, "center", 1.55, "center", 0.48, 0x000000)
+        this.workoutStageTextBox.position.y = 0.01;
+        this.workoutStageTextBox.visible = false;
+
+        //this.workoutTextBox.displayMessage("FREESTYLE ROUND:\nTry out different punches and combos. Start slow to get the feel of it, then focus on increasing your speed.");
+        //this.workoutTextBox.displayMessage("SPEED ROUND:\nQuickly alternate between jabs and straights. Try to stay above 300PPM for the entire round. Your shoulders will really feel the burn on this one!");
+        //this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nAlternate punches.\nKeep your guard up, because the double-end bag can hit back!");
+        // this.workoutTextBox.displayMessage("JAB THEN STRAIGHT:\nFor the first two minutes, throw the jab while circling around the bag.\nFor the last minute, throw the straight instead. Keep moving around the bag.");
+        // this.workoutTextBox.displayMessage("RIGHT HOOK THEN LEFT HOOK:\nFor the first two minutes, throw the left hook while circling around the bag.\nFor the last minute, throw the right hook instead. Keep moving around the bag.");
+        // this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\n \u2022 Throw two jabs, followed by the straight. Keep your hands moving the entire round.\n \u2022 Watch out! The double-end bag can hit back, so keep your guard up.");
+        // this.workoutTextBox.displayMessage("STRAIGHT THEN HOOK:\nThrow the straight, followed by the left hook.\nThis will be tricky, because the bag is going to move in different directions.");
+        // this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nThrow two jabs, followed by the right hook.\nThe bag is going to move around a lot, so stay focused.");
+        // this.workoutTextBox.displayMessage("JAB STRAIGHT HOOK:\nThrow the jab, followed by the straight, followed by the left hook.\nDouble-up your jab for the last minute.");
+        // this.workoutTextBox.displayMessage("JAB STRAIGHT SLIP:\nThrow the jab, then the striaght, then move your head side-to-side.\nUse your core muscles to move your head, not your neck.\nDouble-up the jab for the last minute.");
+        // this.workoutTextBox.displayMessage("DOUBLE-JAB\u2022STRAIGHT\u2022JAB\u2022STRAIGHT:\nYou know the drill.");
         //jab-straight-slip
         
 
@@ -118591,11 +118811,14 @@ class BoxingSession
         this.scene.traverse((node) => {
             if (node.name == "Screen")
             {
+                node.material.emissiveIntensity = 0.35;
+                node.material.emissive.set(0xAAAAAA);
                 this.TV = node;
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
                 this.TV.add(this.stateTextBox);
-                this.TV.add(this.objectiveTextBox);
+                this.TV.add(this.workoutIntroTextBox);
+                this.TV.add(this.workoutStageTextBox);
 
                 this.TV.add(this.sound321);
                 this.TV.add(this.soundEndOfRound);
@@ -118614,30 +118837,45 @@ class BoxingSession
         
     }
 
-    initialize(numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
+    initialize(numRounds, roundDuration, restDuration)
     {
-        this.numRounds = numRounds;
+        // this.numRounds = numRounds;
         this.roundDuration = roundDuration;
-        this.restDuration = restDuration;
-        this.introDuration = kIntroDuration;
+        // this.introDuration = kIntroDuration;
+        // this.getReadyDuration = kGetReadyDuration;
+        this.restDuration = restDuration - kRestGetReadyDuration;
+
         this.playedAlmostDoneAlert = false;
-        this.currentRound = 0;
+        
         this.state = SESSION_NULL;
-        this.roundType = bagType;
-        this.doBagSwap = doBagSwapEachRound;
+
+        this.currentBagType = null;
 
         if (this.heavyBag.visible)
             this.heavyBag.hide();
         if (this.doubleEndedBag.visible)
             this.doubleEndedBag.hide();
+
+        this.initializeWorkout(_workoutData_js__WEBPACK_IMPORTED_MODULE_2__["workoutData"][1]);
+    }
+
+    initializeWorkout(info)
+    {
+        this.numRounds = info.length - 1; // info contains a "round 0" that we ignore
+        this.currentRound = 0;
+        this.workoutInfo = info;
     }
 
     start()
     {
         this.state = SESSION_INTRO;
         this.elapsedTime = 0.0;
-        this.currentRound = 1;
+        this.currentRound = 0;
         this.updateRoundsMessage();
+
+        this.workoutStageTextBox.visible = false;
+        this.workoutIntroTextBox.visible = true;
+        this.updateWorkoutMessage();
     }
 
     pause()
@@ -118655,15 +118893,13 @@ class BoxingSession
 
     update(dt, accumulatedTime)
     {
-        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        if (this.doubleEndedBag.visible)
         {
-            if (this.doubleEndedBag.visible)
-                this.doubleEndedBag.update(dt, accumulatedTime);
+            this.doubleEndedBag.update(dt, accumulatedTime);
         }
-        else
+        else if (this.heavyBag.visible)
         {
-            if (this.heavyBag.visible)
-                this.heavyBag.update(dt, accumulatedTime);
+            this.heavyBag.update(dt, accumulatedTime);
         }
 
         switch(this.state)
@@ -118672,34 +118908,60 @@ class BoxingSession
                 break;
             case SESSION_INTRO:
                 this.elapsedTime += dt;
-                if (!this.playedAlmostDoneAlert && (this.introDuration - this.elapsedTime) < kBagRevealTime)
+
+                // START OF THE FIRST ROUND
+                if (this.elapsedTime > kIntroDuration)
                 {
-                    this.showBagForNextRound(false);
-                    this.soundGetReady.play();
-                    this.playedAlmostDoneAlert = true;
+
+                    this.startGetReadyState();
                 }
-                if (this.elapsedTime > this.introDuration)
+                // COUNTING DOWN THE INTRO
+                else
                 {
+                    this.updateTimer(kIntroDuration + kIntroGetReadyDuration - this.elapsedTime);
+                }
+                break;
+            case SESSION_GET_READY:
+                this.elapsedTime += dt;
+                let readyDuration = (this.currentRound == 0) ? kIntroGetReadyDuration : kRestGetReadyDuration;
+                if (this.elapsedTime > readyDuration)
+                {
+                    //START THE ROUND
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
                     this.playedAlmostDoneAlert = false;
 
                     // play "starting bell" sound
                     this.sound321.play();
+
+                    this.currentRound++;
+
+                    this.workoutIntroTextBox.visible = false;
+                    this.workoutStageTextBox.visible = true;
+
+                    let roundInfo = this.workoutInfo[this.currentRound];
+                    this.nextWorkoutStageTime = roundInfo.stages[0].startTimePercent * this.roundDuration;
+                    this.nextWorkoutStage = 0;
+
+                    // update the TV screen
                     this.updateRoundsMessage();
+                    this.updateWorkoutMessage();
                 }
                 else
                 {
-                    this.updateTimer(this.introDuration - this.elapsedTime);
+                    this.updateTimer(readyDuration - this.elapsedTime);
                 }
                 break;
             case SESSION_ROUND:
                 this.elapsedTime += dt;
+
+                //ALMOST DONE THE ROUND
                 if (!this.playedAlmostDoneAlert && (this.roundDuration - this.elapsedTime) < kRoundAlmostDoneTime)
                 {
                     this.playedAlmostDoneAlert = true;
                     this.soundGetReady.play();
                 }
+                // END OF THE ROUND
                 if (this.elapsedTime > this.roundDuration)
                 {
                     if (this.currentRound < this.numRounds)
@@ -118712,36 +118974,41 @@ class BoxingSession
                         this.state = SESSION_OUTRO;
                     }
                     this.elapsedTime = 0.0;
+                    this.playedAlmostDoneAlert = false;
+
                     //play "end of round" sound
                     this.soundEndOfRound.play();
                     this.updateRoundsMessage();
+
+                    //this.workoutTextBox.setFontPixelsPerMeter(kWorkoutTextBoxSmallFontSize)
+
+                    this.updateWorkoutMessage(); //END OF ROUND
                 }
                 else
                 {
                     this.updateTimer(this.roundDuration - this.elapsedTime);
+                    this.updateWorkoutMessage(); //DURING ROUND
                 }
                 break;
             case SESSION_REST:
                 this.elapsedTime += dt;
-                if (this.bagHidden && (this.restDuration - this.elapsedTime) < kBagRevealTime)
+
+                // START OF THE NEXT ROUND
+                if (this.elapsedTime > this.restDuration)
                 {
-                    if (this.doBagSwap)
-                        this.showBagForNextRound(true);
-                    this.soundGetReady.play();
+                    this.startGetReadyState();
+
+                    // this.state = SESSION_GET_READY;
+                    // this.showBagForNextRound();
+                    // this.soundGetReady.play();
+
+                    // this.elapsedTime = 0.0;
+                    // this.updateWorkoutMessage();
                 }
-                else if (this.elapsedTime > this.restDuration)
-                {
-                    this.state = SESSION_ROUND;
-                    this.elapsedTime = 0.0;
-                    this.playedAlmostDoneAlert = false;
-                    // play "start of round" sound
-                    this.sound321.play();
-                    this.currentRound++;
-                    this.updateRoundsMessage();
-                }
+                // COUNTING DOWN THE REST
                 else
                 {
-                    this.updateTimer(this.restDuration - this.elapsedTime);
+                    this.updateTimer(this.restDuration + kRestGetReadyDuration - this.elapsedTime);
                 }
                 break;
             case SESSION_OUTRO:
@@ -118752,48 +119019,52 @@ class BoxingSession
         }
     }
 
+    startGetReadyState()
+    {
+        this.state = SESSION_GET_READY;
+        this.showBagForNextRound();
+        this.soundGetReady.play();
+
+        this.elapsedTime = 0.0;
+        this.workoutIntroTextBox.visible = true;
+        this.workoutStageTextBox.visible = false;
+        this.updateWorkoutMessage();
+    }
     hideBag()
     {
-        if (!this.doBagSwap) return;
-
-        this.bagHidden = true;
-        if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+        let desiredBagType = this.workoutInfo[this.currentRound+1];
+        if (this.currentBagType != desiredBagType)
         {
-            console.assert(this.doubleEndedBag.visible && !this.heavyBag.visible);
-            this.doubleEndedBag.fadeOut();
-        }
-        else
-        {
-            console.assert(!this.doubleEndedBag.visible && this.heavyBag.visible);
-            this.heavyBag.fadeOut();
+            switch(this.currentBagType)
+            {
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"]:
+                    this.heavyBag.fadeOut();
+                    break;
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_ENDED_BAG"]:
+                    this.doubleEndedBag.fadeOut();
+                    break;
+            }
+            this.currentBagType = null;
         }
     }
-    showBagForNextRound(toggle)
+    showBagForNextRound()
     {
-        
-        console.assert(!this.doubleEndedBag.visible && !this.heavyBag.visible);
-        if (toggle)
+        let desiredBagType = this.workoutInfo[this.currentRound + 1].bagType;
+        if (this.currentBagType != desiredBagType)
         {
-            if (this.roundType == ROUND_DOUBLE_ENDED_BAG)
+            switch(desiredBagType)
             {
-                this.roundType = ROUND_HEAVY_BAG;
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"]:
+                    this.heavyBag.fadeIn();
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"];
+                    break;
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_ENDED_BAG"]:
+                    this.doubleEndedBag.fadeIn();
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_ENDED_BAG"];
+                    break;
             }
-            else
-            {
-                this.roundType = ROUND_DOUBLE_ENDED_BAG;
-            }
+            
         }
-        
-        if (this.roundType == ROUND_HEAVY_BAG)
-        {
-            this.heavyBag.fadeIn();
-        }
-        else
-        {
-            this.doubleEndedBag.fadeIn();
-        }
-
-        this.bagHidden = false;
     }
 
     updateTimer(value)
@@ -118849,12 +119120,15 @@ class BoxingSession
         }
         else
         {
-            roundMessage = "ROUND "+ (this.currentRound.toString() + "/" + this.numRounds.toString());
+            roundMessage = "ROUND "+ (Math.max(this.currentRound, 1).toString() + "/" + this.numRounds.toString());
             
             switch(this.state)
             {
                 case SESSION_INTRO:
-                    stateMessage = "GET READY";
+                    stateMessage = "";
+                    break;
+                case SESSION_GET_READY:
+                    stateMessage = "GET READY"; //(this.currentRound == 0) : "GET READY" ? "REST";
                     break;
                 case SESSION_ROUND:
                     stateMessage = "FIGHT";
@@ -118866,18 +119140,62 @@ class BoxingSession
                     stateMessage = "GREAT JOB!";
                     break;
             }
-            // (this.state == SESSION_INTRO ? "GET READY" : 
-            // (this.state == SESSION_ROUND) ? "FIGHT" :
-            // (this.state == SESSION_REST) ? "REST" : 
-            // (this.state == SESSION_OUTRO) ? "GREAT JOB!" : "");
         }
         this.roundsTextBox.displayMessage(roundMessage);
         this.stateTextBox.displayMessage(stateMessage);
 
     }
-    blankTimer()
+    updateWorkoutMessage()
     {
-        this.timerFontMesh.visible = false;
+        console.assert(this.workoutInfo);
+        switch(this.state)
+        {
+            case SESSION_INTRO:
+                {
+                    console.assert(!this.workoutStageTextBox.visible && this.workoutIntroTextBox.visible);
+                    this.workoutIntroTextBox.displayMessage(this.workoutInfo[0].introText);
+                }
+                break;
+            case SESSION_GET_READY:
+                {
+                    console.assert(!this.workoutStageTextBox.visible && this.workoutIntroTextBox.visible);
+                    console.assert(this.workoutInfo.length > (this.currentRound + 1));
+                    let roundInfo = this.workoutInfo[this.currentRound + 1];
+                    this.workoutIntroTextBox.displayMessage(roundInfo.introText);
+                    this.nextWorkoutStageTime = roundInfo.stages[0].startTimePercent * this.roundDuration;
+                    this.nextWorkoutStage = 0;
+                }
+                break;
+            case SESSION_ROUND:
+                {
+                    console.assert(this.workoutStageTextBox.visible && !this.workoutIntroTextBox.visible);
+                    if (this.elapsedTime >= this.nextWorkoutStageTime)
+                    {
+                        let roundInfo = this.workoutInfo[this.currentRound];
+                        this.workoutStageTextBox.displayMessage(roundInfo.stages[this.nextWorkoutStage].descriptionText);
+                        this.nextWorkoutStage++;
+                        if (this.nextWorkoutStage < roundInfo.stages.length)
+                        {
+                            this.nextWorkoutStageTime = roundInfo.stages[this.nextWorkoutStage].startTimePercent * this.roundDuration;
+                        }
+                        else
+                        {
+                            this.nextWorkoutStageTime = Number.MAX_VALUE;
+                        }
+                    }
+                }
+                break;
+            case SESSION_REST:
+                {
+                    console.assert(this.workoutStageTextBox.visible && !this.workoutIntroTextBox.visible);
+                    this.workoutStageTextBox.displayMessage("TAKE A BREATHER!");
+                }
+                break;
+            case SESSION_OUTRO:
+                this.workoutIntroTextBox.visible = false;
+                this.workoutStageTextBox.visible = false;
+                break;
+        }
     }
 }
 
@@ -119428,8 +119746,8 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        // appVersionText.innerHTML = "Version 0.3&beta;";
-        appVersionText.innerHTML = "Version 0.3";
+        appVersionText.innerHTML = "Version 0.4&beta;";
+        //appVersionText.innerHTML = "Version 0.3";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -120212,7 +120530,7 @@ class TextBox extends three__WEBPACK_IMPORTED_MODULE_0__["Group"]
     constructor(fontPixelsPerMeter, horizontalAlign, worldSpaceWidth, verticalAlign, worldSpaceHeight, color, lockPositionString="", lockPositionChar="", debug)
     {
         super();
-        this.fontPixelsPerMeter = fontPixelsPerMeter;
+        // this.fontPixelsPerMeter = fontPixelsPerMeter;
         this.queuedMessage = null;
         this.queuedMessageColor = color;
         this.bReady = false;
@@ -120248,7 +120566,7 @@ class TextBox extends three__WEBPACK_IMPORTED_MODULE_0__["Group"]
                 transparent: true,
                 color: color,
                 opacity: 1.0,
-                alphaTest: 0.1,
+                alphaTest: 0.2,
                 negate: false
             }));
 
@@ -120278,6 +120596,19 @@ class TextBox extends three__WEBPACK_IMPORTED_MODULE_0__["Group"]
                 this.displayMessage(this.queuedMessage);
             }
         });
+    }
+
+    setFontPixelsPerMeter(fontPixelsPerMeter)
+    {
+        console.log("SET FONT PPM TO: " + fontPixelsPerMeter);
+
+        console.assert(this.lockPositionChar == null); //@TODO - need to do something else if we want "locked" strings to handle resizing properly.
+
+        this.fontGeometry._opt.width = fontPixelsPerMeter * this.worldSpaceWidth;
+        this.meshScale = 1.0/fontPixelsPerMeter;
+        this.fontMesh.scale.set(this.meshScale, this.meshScale, this.meshScale);
+
+        this.fontGeometry.update("");
     }
 
     setMessageColor(color)
@@ -121268,6 +121599,159 @@ function monospace(text, start, end, width) {
         end: start+glyphs
     }
 }
+
+/***/ }),
+
+/***/ "./src/workoutData.js":
+/*!****************************!*\
+  !*** ./src/workoutData.js ***!
+  \****************************/
+/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_ENDED_BAG, workoutData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUND_HEAVY_BAG", function() { return ROUND_HEAVY_BAG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUND_DOUBLE_ENDED_BAG", function() { return ROUND_DOUBLE_ENDED_BAG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "workoutData", function() { return workoutData; });
+const ROUND_HEAVY_BAG = 0;
+const ROUND_DOUBLE_ENDED_BAG = 1;
+let workoutData = [
+
+    // WORKOUT 0
+    [
+    
+        {
+            introText: "TEST WORKOUT #1:\n \u2022 Round 1: Do two things.\n \u2022 Round 2: Do three things.",
+            stages:[],
+            bagType: null
+        },
+        {
+            introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2",
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "THINGS TO DO DURING THE FIRST HALF"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "THINGS TO DO DURING THE SECOND HALF"
+                }
+            ],
+            bagType: ROUND_HEAVY_BAG
+        },
+        {
+            introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2\n \u2022 Thing 3",
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "THINGS TO DO DURING THE FIRST 33%"
+                },
+                {
+                    startTimePercent: 0.33,
+                    descriptionText: "THINGS TO DO DURING THE SECOND 33%"
+                },
+                {
+                    startTimePercent: 0.67,
+                    descriptionText: "THINGS TO DO DURING THE FINAL 33%"
+                }
+            ],
+            bagType: ROUND_DOUBLE_ENDED_BAG
+        }
+    ],
+
+    // WORKOUT 1
+    [
+        {
+            introText: "DOUBLE-END BAG #1:\n" +
+                " \u2022 5 rounds of double-end bag drills.\n" +
+                " \u2022 Focus on accuracy then speed.\n" +
+                " \u2022 The double-end bag can hit back, so keep your guard up!",
+            stages:[],
+            bagType: null
+        },
+        {
+            introText: 
+                "JAB THEN STRAIGHT:\n" +
+                " \u2022 Throw JABs(1) and move around the bag for the first half.\n" +
+                " \u2022 Throw STRAIGHTs(2) and move around the bag for the second half.",
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "JAB(1) and move around the bag."
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "STRAIGHT(2) and move around the bag."
+                }
+            ],
+            bagType: ROUND_DOUBLE_ENDED_BAG
+        },
+        {
+            introText: 
+                "JAB, HOOK, STRAIGHT, HOOK:\n" +
+                " \u2022 Throw JAB(1) then RIGHT HOOK(4) for the first half.\n" +
+                " \u2022 Throw STRAIGHT(2) then LEFT HOOK(3) for the second half.\n",
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "JAB(1) then RIGHT HOOK(4)"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "STRAIGHT(2) then LEFT HOOK(3)"
+                }
+            ],
+            bagType: ROUND_DOUBLE_ENDED_BAG
+        },
+        {
+            introText: 
+                "THE OLD ONE-TWO PUNCH:\n" +
+                " \u2022 Throw JAB(1) then STRAIGHT(2) for the first half.\n" +
+                " \u2022 Throw 2 JABs(1) in quick succession then STRAIGHT(2) for the second half.\n",
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "JAB(1) then STRAIGHT(2)."
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "JAB(1), JAB(1), STRAIGHT(2)."
+                }
+            ],
+            bagType: ROUND_DOUBLE_ENDED_BAG
+        },
+        {
+            introText: 
+                "ROUND 4 - CAPTAIN HOOK:\n" +
+                " \u2022 Throw LEFT HOOKs(3) and move around the bag for the first half.\n" +
+                " \u2022 Throw RIGHT HOOKs(4) and move around the bag for the second half.\n",
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "LEFT HOOK(3) and move around the bag."
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "RIGHT HOOK(4) and move around the bag."
+                }
+            ],
+            bagType: ROUND_DOUBLE_ENDED_BAG
+        },
+        {
+            introText: 
+                "ROUND 5 - JAB-STRAIGHT COMBOS:\n" +
+                " \u2022 Throw 2 JABs(1), then a STRAIGHT(2), then a JAB (1), then a STRAIGHT(2).\n",
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "JAB(1), JAB(1), STRAIGHT(2), JAB(1), STRAIGHT (2)."
+                }
+            ],
+            bagType: ROUND_DOUBLE_ENDED_BAG
+        },
+    ]
+];
 
 /***/ })
 

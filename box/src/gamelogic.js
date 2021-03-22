@@ -18,8 +18,8 @@ const SESSION_PAUSED = 6;
 import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_ENDED_BAG} from "./workoutData.js";
 
 
-const kIntroDuration = 5.0;
-const kIntroGetReadyDuration = 5.0;
+const kIntroDuration = 2.0;
+const kIntroGetReadyDuration = 3.0;
 const kRestGetReadyDuration = 5.0;
 const kRoundAlmostDoneTime = 10.0;
 // const kGetReadyDuration = 3.0;
@@ -68,6 +68,94 @@ const kWorkoutTextBoxBigFontSize = 350;
 //         bagType: ROUND_DOUBLE_ENDED_BAG
 //     }
 // ]
+
+class Workout
+{
+    constructor()
+    {
+
+    }
+    initialize()
+    {
+
+    }
+    update(dt)
+    {
+    }
+
+    // register "onComplete" callbacks
+}
+
+// Assumes the notion of timing and round structure, and has event handlers
+// for the common stages of the workout
+//
+// Want to handle three scenarios:
+//  1. A time-based workout. e.g., 5 x 2:00 rounds, 0:30 rests
+//  2. A scripted workout. e.g., each workout has some scripted stages and some criteria for ending each round.
+//  3. (Maybe?) A punches-based workout. Not time-driven, but rather some other criteria for ending each round.
+//     Could just fold into the scripted workout.
+//
+// So:
+//  - there are rounds and there are rests
+//  - the round determines:
+//     - clock behavior (count up vs. down)
+//     - what goes on the screens -- each round can define its own layout
+//     - when the round is over
+//     - whether the round was passed (i.e., continue to next round, or end the workout) -- only if there are pass/fail workouts
+//     - what type of exercise the round is (e.g., bags are shown/hidden, the goals of the round)
+//  - the workout also determines:
+//     - how long the intro is and what happens during the intro
+//     - how many rounds are scheduled
+//     - what happens at the end of the workout (e.g., what is displayed on screen)
+//
+// So, the boxing session is responsible for:
+//  - loading up the assets and holding on to everything
+//  - being the interface to game logic for the rest of the game
+//
+// It really is just handling:
+//  - asset loading
+//  - initialize the workout
+//  - start the workout
+//  - update the workout
+//  - pause/resume the workout
+//  - know when the workout is over
+//
+// Workout
+//   set up the intro
+//      display some descriptive text
+//   run the intro
+//      run a countdown timer
+//      look for a gesture/input to exit the intro
+//   determine when the intro is over
+//      time has run out
+//      gesture/input has been received
+//   transition into 'get ready' state
+//      play some 'get ready' sound
+//      start a countdown timer
+//   run the 'get ready' state
+//      update timer
+//      play additional effects
+//   transition to the round
+//   run the round
+//   determine when the round is over
+//   determine if we're doing another round or if we're done with the workout
+//   transition to rest state
+//   run the rest state
+//   determine that the rest is over --> transition to 'get ready' state
+//   transition to the outro state
+//   update the outro state
+class BoxingWorkout
+{
+    onIntro(){}
+    onStartOfRound(){}
+    updateRound(dt, accumulatedTime){}
+    isRoundOver(){}
+    onEndOfRound(){}
+    onStartOfRest(){}
+    onEndOfRest(){}
+    hasMoreRounds(){}
+    onEndOfWorkout(){}  
+}
 
 
 export class BoxingSession

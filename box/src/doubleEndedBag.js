@@ -21,6 +21,8 @@ const kHeadHitCooldown = 1.0;
 
 let tVec0 = new THREE.Vector3();
 let tVec1 = new THREE.Vector3();
+let tVec2 = new THREE.Vector3();
+
 let hitNormal = new THREE.Vector3();
 
 
@@ -103,10 +105,10 @@ export class DoubleEndedBag extends Bag
             let xrCamera = this.renderer.xr.getCamera(this.camera);
             xrCamera.getWorldPosition(headPosition);
 
-            let desiredHeight = headPosition.y; // + 2.0 * kBagRadius;
+            let desiredHeight = headPosition.y - 0.1; // + 2.0 * kBagRadius;
 
             let delta = desiredHeight - this.targetHeight;
-            if (Math.abs(delta) > 0.15)
+            if (Math.abs(delta) > 0.05)
             {               
                 this.targetHeight = desiredHeight;
             }
@@ -124,14 +126,16 @@ export class DoubleEndedBag extends Bag
         desiredVelocity.copy(this.velocity);
 
 
-        if (true)
+        if (false)
         {
             // goal is to compute new desiredPosition and desiredVelocity based on current values of those and relative to targetPosition
 
             // compute tVec0 = vector pointing from current position to target position
             tVec0.copy(this.targetPosition);
             tVec0.sub(desiredPosition);
-            
+            // @TODO - subtract a "rest length" from tVec0 -- this will give us some slop in the middle.
+
+   
             let kSpringConstant = 250.0;
             tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
 
@@ -172,35 +176,148 @@ export class DoubleEndedBag extends Bag
         }
         else
         {
-            tVec0.copy(this.targetPosition);
-            tVec0.y += 1.0;
-            tVec0.sub(desiredPosition);
 
-            let kSpringConstant = 100.0;
+            // double-end bag thoughts --
+            // 1. Adjust between chest and chin height
+            // 2. Consider a rigid cord (i.e., a max length) that the cord can extend to -- how to model this? 
+            //    I can limit the stretch easily enough, but not sure about the physics of hitting that full extension.
+            //    Should probably jerk it back -- does that just kill the outward velocity, or does it "bounce" off that?
+            //    Could I just model this as a max radius that the ball can get out to?
+            // 3. The cords are not the same length (but maybe would be ideally?)
+            // 4. Feels like the ball bounces around a fair bit, but never goes crazy far.
+
+
+            // Start by getting the double-spring setup correct.
+            // The "stretch" length * the spring constant is the force applied by the spring.
+            // The "velocity along the spring" * the damping constant is the damping force
+            // 
+            // Compute the "stretched length"
+            // Compute the velocity along the spring:
+            // = bag velocity projected onto the spring vector
+            // 
+
+
+
+            const kRestLength = 0.8;
+            const kPositionOffset = 1.51; //10 feet ceiling, suspend in the middle
+
+            tVec0.copy(this.targetPosition);
+            tVec0.y += kPositionOffset;
+            tVec0.sub(desiredPosition);
+            
+            let length = tVec0.length();
+            if (length > 0.0)
+            {
+                tVec0.divideScalar(length);
+                let stretchLength = Math.max(length - kRestLength, 0.0);
+                tVec0.multiplyScalar(stretchLength);
+            }
+
+
+            const kSpringConstant = 150.0;
+            const kSpringDamping = -2.0;
+            
+
+            //@TODO - subtract the "rest length" from tVec0
+            
             tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
             // now apply velocity damping
-            let kSpringDamping = 1.0;
-            tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
+            
+            tVec1.copy(desiredVelocity);
+            tVec1.projectOnVector(tVec0);
+
+            tVec0.addScaledVector(tVec1, kSpringDamping);
 
             //assume mass == 1, so a = F
             // vel' = vel + a * dt;
+            // desiredVelocity.addScaledVector(tVec0, dt);
+
+            tVec2.copy(this.targetPosition);
+            tVec2.y -= kPositionOffset;
+            tVec2.sub(desiredPosition);
+
+            length = tVec2.length();
+            if (length > 0.0)
+            {
+                tVec2.divideScalar(length);
+                let stretchLength = Math.max(length - kRestLength, 0.0);
+                tVec2.multiplyScalar(stretchLength);
+            }
+            tVec2.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
+            tVec1.copy(desiredVelocity);
+            tVec1.projectOnVector(tVec2);
+            tVec2.addScaledVector(tVec1, kSpringDamping);
+
+
+            //add the forces together
+            tVec0.add(tVec2); 
+
+            const kOverallDamping = -1.4; // 1.5
+            tVec0.addScaledVector(desiredVelocity, kOverallDamping);
+
+            // let kSpringConstant = 200.0;
+            // tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
+
+            // // now apply velocity damping -- should this be along the direction of the spring?
+            // let kSpringDamping = 2.0;
+            // tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
+
+            // Apply the resulting force as an acceleration
             desiredVelocity.addScaledVector(tVec0, dt);
 
-            tVec0.copy(this.targetPosition);
-            tVec0.y -= 1.0;
-            tVec0.sub(desiredPosition);
-            tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
-            tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
+            // Calculate a hard stop at some radius in the horizontal plane, and don't go outside of that.
+            // - figure out where the velocity vector intersects with circle of radius R
+            // - take the positive root since we're inside and always moving outside
 
-            desiredVelocity.addScaledVector(tVec0, dt);
+            // HACK -- Take the calculated position and snap it to the radius of the circle, then mirror around the 
+            // normal at that point and reflect the remaining velocity
+            tVec0.subVectors(desiredPosition, this.targetPosition); // tVec0 = desiredPosition - targetPosition;
+            tVec0.addScaledVector(desiredVelocity, dt);
+            tVec0.y = 0.0;
+            const kOutsideRadius = 0.70;
+            const kOutsideRadiusSq = kOutsideRadius * kOutsideRadius;
+            if (tVec0.lengthSq() > kOutsideRadiusSq)
+            {
+                console.log("MOVING OUTSIDE RADIUS");
+                let length = tVec0.length();
+                let t = kOutsideRadius/length; // what percentage of the way have we moved.
 
-            desiredPosition.addScaledVector(desiredVelocity, dt);
+                // Compute reflection vector -- it's the unit-length version of tVec0, then negated to point towards the origin of the cylinder
+                tVec0.divideScalar(-length);
 
-            // console.log("BAG SPEED: " + desiredVelocity.length().toFixed(3));
+                // Assume amount of movement is low, so just set "desiredPosition" the point on the border
+                tVec1.copy(desiredPosition);
+                tVec1.addScaledVector(desiredVelocity, dt * t);
 
+                desiredPosition.copy(tVec1);
+
+                // Compute the new reflected velocity
+                desiredVelocity.reflect(tVec0);
+                const kOuterEdgeCollisionScale = 0.5;
+                desiredVelocity.multiplyScalar(kOuterEdgeCollisionScale);
+
+                let remainingMovement = length - kOutsideRadius;
+
+            }
+            else
+            {
+                desiredPosition.addScaledVector(desiredVelocity, dt);
+            }
+
+            // compute rotation velocity on a spring
+            let rotationSpring = 0.0 - this.rotationValue;
+            const kRotationSpringConstant = 200.0;
+            rotationSpring *= kRotationSpringConstant;
+            rotationSpring -= this.rotationVelocity * 3.0;
+            this.rotationVelocity += rotationSpring * dt;
+            this.rotationValue += this.rotationVelocity * dt;
+            this.rotation.set(0.0, this.rotationValue * Math.PI, 0.0);
+
+            // ramp envmap sharpness with speed
+            let speed = desiredVelocity.length();
+            let roughnessT = Math.max(Math.min((speed-1.0) * 0.1, 1.0), 0.0);
+            this.mesh.material.roughness = 0.25 + roughnessT * 0.25;           
         }
-
-        //desiredPosition.y = this.targetPosition.y;
 
         if (!this.bHasGloves)
         {
