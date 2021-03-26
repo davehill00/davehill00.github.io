@@ -3,3 +3,4 @@ content/.DS_Store
 .DS_Store
 node_modules
 *.log
+box/.yalc/*

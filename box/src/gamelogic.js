@@ -136,14 +136,29 @@ class Workout
 //      update timer
 //      play additional effects
 //   transition to the round
+//      play some 'start of round' sound
+//      start the countdown timer
 //   run the round
+//      update the timer
+//      update other counters/trackers
+//      play "almost done" sounds when appropriate
 //   determine when the round is over
+//      check timer or other success/failure criteria
+//      when appropriate, report that round is complete
 //   determine if we're doing another round or if we're done with the workout
+//      check round count
+//      check whether we passed or failed the current round
+//      play end-of-round sound/effects
 //   transition to rest state
+//      start the rest counter
 //   run the rest state
+//      update the rest counter
 //   determine that the rest is over --> transition to 'get ready' state
+//      check the timer against the time limit
 //   transition to the outro state
+//      do whatever is needed -- update message, etc.
 //   update the outro state
+//      display end-of-workout report
 class BoxingWorkout
 {
     onIntro(){}
@@ -152,6 +167,7 @@ class BoxingWorkout
     isRoundOver(){}
     onEndOfRound(){}
     onStartOfRest(){}
+    isRestOver(){}
     onEndOfRest(){}
     hasMoreRounds(){}
     onEndOfWorkout(){}  

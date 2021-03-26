@@ -134,11 +134,20 @@ export class Glove extends THREE.Group
 
         if ( hit )
         {
-            //console.log(((this.whichHand == 2) ? "RIGHT " : "LEFT ") + "hit bag! New pos = " + hitPoint.x + ", " + hitPoint.y + ", " + hitPoint.z)
-            bag.processHit(this.velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
+            let velocity;
+            if (this.controller.hasLinearVelocity)
+            {
+                velocity = this.controller.linearVelocity;
+            }
+            else
+            {
+                velocity = this.velocity;
+            }
+
+            bag.processHit(velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
 
             this.position.copy(hitResult.hitPoint);
-            if (!this.inContactWithBag && this.velocity.lengthSq() > 0.01)
+            if (!this.inContactWithBag && velocity.lengthSq() > 0.01)
             {
                 this.nextNewContactTime = accumulatedTime + kNewContactDelay;
 

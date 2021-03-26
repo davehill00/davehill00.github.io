@@ -198,7 +198,7 @@ export class DoubleEndedBag extends Bag
 
 
 
-            const kRestLength = 0.8;
+            const kRestLength = 0.4; //0.8;
             const kPositionOffset = 1.51; //10 feet ceiling, suspend in the middle
 
             tVec0.copy(this.targetPosition);
@@ -216,17 +216,13 @@ export class DoubleEndedBag extends Bag
 
             const kSpringConstant = 150.0;
             const kSpringDamping = -2.0;
-            
-
-            //@TODO - subtract the "rest length" from tVec0
-            
-            tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
+                      
+            tVec0.multiplyScalar(kSpringConstant); // this is now the "Hooke-ian" force (-k*x)
             // now apply velocity damping
             
             tVec1.copy(desiredVelocity);
             tVec1.projectOnVector(tVec0);
-
-            tVec0.addScaledVector(tVec1, kSpringDamping);
+            tVec0.addScaledVector(tVec1, kSpringDamping); // damping is using the velocity along the spring
 
             //assume mass == 1, so a = F
             // vel' = vel + a * dt;
@@ -244,9 +240,10 @@ export class DoubleEndedBag extends Bag
                 tVec2.multiplyScalar(stretchLength);
             }
             tVec2.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
+
             tVec1.copy(desiredVelocity);
             tVec1.projectOnVector(tVec2);
-            tVec2.addScaledVector(tVec1, kSpringDamping);
+            tVec2.addScaledVector(tVec1, kSpringDamping); // damping is using the velocity along the spring
 
 
             //add the forces together
@@ -254,13 +251,6 @@ export class DoubleEndedBag extends Bag
 
             const kOverallDamping = -1.4; // 1.5
             tVec0.addScaledVector(desiredVelocity, kOverallDamping);
-
-            // let kSpringConstant = 200.0;
-            // tVec0.multiplyScalar(kSpringConstant); //this is now the "Hooke-ian" force (-k*x)
-
-            // // now apply velocity damping -- should this be along the direction of the spring?
-            // let kSpringDamping = 2.0;
-            // tVec0.addScaledVector(desiredVelocity, -kSpringDamping);
 
             // Apply the resulting force as an acceleration
             desiredVelocity.addScaledVector(tVec0, dt);
@@ -404,18 +394,18 @@ export class DoubleEndedBag extends Bag
     {
         // console.log("OLD VELOCITY: " + desiredVelocity.x.toFixed(1) + ", " + desiredVelocity.y.toFixed(1) + ", " + desiredVelocity.z.toFixed(1));
 
-        //move to current hit point, and back up a bit to avoid interpenetration
+        //move to current hit point
         this.position.copy(hitPoint);
        
-        // this.velocity.copy(desiredVelocity);
-        // this.velocity.reflect(hitNormal);
-        // this.velocity.multiplyScalar(0.1);
+        this.velocity.copy(desiredVelocity);
+        this.velocity.reflect(hitNormal);
+        this.velocity.multiplyScalar(0.5);
 
         // tVec0.copy(desiredVelocity);
         // tVec0.normalize();
         // this.position.addScaledVector(hitNormal, -0.005); // could back us up through another object :\
 
-        this.velocity.set(0,0,0);
+        // this.velocity.set(0,0,0);
 
         return false;
 
