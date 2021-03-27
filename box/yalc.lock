@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "three": {
-      "signature": "744698a66ba54d36c995e853b618aa09",
+      "signature": "bfa0b8409c1fc863296bc9715f752aa7",
       "file": true,
       "replaced": "^0.126.1"
     }

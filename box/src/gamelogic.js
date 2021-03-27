@@ -480,7 +480,7 @@ export class BoxingSession
     }
     hideBag()
     {
-        let desiredBagType = this.workoutInfo[this.currentRound+1];
+        let desiredBagType = this.workoutInfo[this.currentRound+1].bagType;
         if (this.currentBagType != desiredBagType)
         {
             switch(this.currentBagType)
