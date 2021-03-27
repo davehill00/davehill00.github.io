@@ -116044,7 +116044,7 @@ let rightHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3
 let headHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
 
 const kBagRadius = 0.15;
-const kMinPunchSoundVelocitySq = 0.25 * 0.25;
+const kMinPunchSoundVelocitySq = 0.5 * 0.5;
 const kHeadRadius = 0.12;
 const kHeadHitMinSpeedSq = 2.0 * 2.0;
 const kHeadHitCooldown = 1.0;
@@ -116345,6 +116345,11 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
                     hr = leftHitResult;
                 if (hitRight)
                     hr = (hr == null || hr.hitT > rightHitResult.hitT) ? rightHitResult : hr;
+                
+                if (hr == rightHitResult) 
+                {
+                    hitLeft = false; //want hitLeft and hitRight to be mutually exclusive
+                }
 
                 let isHeadHit = false;
                 if (hitHead)
@@ -116352,7 +116357,12 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
                     if (hr == null || hr.hitT > headHitResult.hitT)
                     {
                         isHeadHit = true;
+                        
+                        hitLeft = false; //want hitLeft, hitRight, and hitHead to be mutually exculsive
+                        hitRight = false;
+
                         hr = headHitResult;
+
                     }
                 }
 
@@ -116363,6 +116373,19 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
                     // console.log("HEAD HIT SPEED: " + desiredVelocity.length());
                     this.playerHitSound.play(hr.hitPoint, 1.0);
                     this.playerHud.processHit();
+
+
+                }
+                else if (hitLeft || hitRight)
+                {
+                    hr.hitNormal.negate(); // need this pointing out from the bag
+                    this.processCollisionBetweenBagAndGlove(
+                        hitLeft ? this.leftGlove : this.rightGlove,
+                        hitLeft ? this.leftGlove.velocity : this.rightGlove.velocity,
+                        hr.hitPoint,
+                        hr.hitNormal,
+                        accumulatedTime
+                    )
                 }
             }
             else
@@ -116411,6 +116434,48 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
             this.velocity.copy(desiredVelocity);
             return true;
         }
+    }
+
+    processCollisionBetweenBagAndGlove(
+        glove,
+        gloveVelocity,
+        hitPoint,
+        hitNormalWRTBag, //hit normal on surface of bag
+        accumulatedTime
+    )
+    {
+        // Compute the impact speed -- we'll need this later.
+        tVec0.subVectors(this.velocity, gloveVelocity);
+        let collisionSpeedSq = tVec0.lengthSq();
+        
+        // Compute change in velocity to add to bag velocity.
+        tVec1.copy(gloveVelocity);
+        tVec1.projectOnVector(hitNormalWRTBag);
+        this.velocity.add(tVec1);
+        
+        // Determine if the bag is already touching this glove.
+        // If not, play hit effects.
+
+        if (collisionSpeedSq > kMinPunchSoundVelocitySq && !glove.isInContactWithBag())
+        {
+            let speed = Math.sqrt(collisionSpeedSq);
+            let speedBasedVolume = 0.0 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
+            this.hitSound.play(hitPoint, speedBasedVolume);
+
+            if (speed > 1.0)
+            {
+                this.rotationValue -= hitNormalWRTBag.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
+                glove.playImpactHaptic();
+            }
+
+            glove.registerBagContact(accumulatedTime);
+            
+
+            for(let cb of this.punchCallbacks)
+            {
+                cb(glove.whichHand, gloveVelocity);
+            }
+        }        
     }
 
     processHit(velocity, position, normal, whichHand, isNewHit)
@@ -117395,6 +117460,36 @@ class Glove extends THREE.Group
         this.mesh.visible = false;
     }
 
+    isInContactWithBag()
+    {
+        return this.inContactWithBag;
+    }
+
+    registerBagContact(accumulatedTime)
+    {
+        if (!this.inContactWithBag)
+        {
+            this.nextNewContactTime = accumulatedTime + kNewContactDelay;
+        }
+        this.inContactWithBag = true;
+    }
+
+    playImpactHaptic()
+    {
+        let gamepad = this.controller.gamepad;
+        if (gamepad != null && gamepad.hapticActuators != null)
+        {
+            let kIntensity = 1.0;
+            let kMilliseconds = 16;
+            let hapticActuator = gamepad.hapticActuators[0];
+            if( hapticActuator != null)
+            {
+                hapticActuator.pulse( kIntensity, kMilliseconds );
+                console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
+            }
+        }
+    }
+
     update(dt, accumulatedTime)
     {
         
@@ -117449,27 +117544,34 @@ class Glove extends THREE.Group
                 velocity = this.velocity;
             }
 
-            bag.processHit(velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
+            if (bag == this.doubleEndedBag)
+            {
+                bag.processCollisionBetweenBagAndGlove(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
+            }
+            else
+            {
+                bag.processHit(velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
+            }
 
             this.position.copy(hitResult.hitPoint);
-            if (!this.inContactWithBag && velocity.lengthSq() > 0.01)
-            {
-                this.nextNewContactTime = accumulatedTime + kNewContactDelay;
+            // if (!this.inContactWithBag && velocity.lengthSq() > 0.01)
+            // {
+            //     this.nextNewContactTime = accumulatedTime + kNewContactDelay;
 
-                let gamepad = this.controller.gamepad;
-                if (gamepad != null && gamepad.hapticActuators != null)
-                {
-                    let kIntensity = 1.0;
-                    let kMilliseconds = 16;
-                    let hapticActuator = gamepad.hapticActuators[0];
-                    if( hapticActuator != null)
-                    {
-                        hapticActuator.pulse( kIntensity, kMilliseconds );
-                        console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
-                    }
-                }
-            }
-            this.inContactWithBag = true;
+            //     let gamepad = this.controller.gamepad;
+            //     if (gamepad != null && gamepad.hapticActuators != null)
+            //     {
+            //         let kIntensity = 1.0;
+            //         let kMilliseconds = 16;
+            //         let hapticActuator = gamepad.hapticActuators[0];
+            //         if( hapticActuator != null)
+            //         {
+            //             hapticActuator.pulse( kIntensity, kMilliseconds );
+            //             console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
+            //         }
+            //     }
+            // }
+            // this.inContactWithBag = true;
         }
         else
         {
