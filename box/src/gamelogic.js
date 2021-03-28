@@ -669,8 +669,8 @@ export class PunchingStats
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
 
-        heavyBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
-        doubleEndedBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
+        heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
+        doubleEndedBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
 
 
         this.textBox = new TextBox(520, "left", 1.55, "bottom", 0.25, 0x000000);
@@ -701,13 +701,13 @@ export class PunchingStats
         this.accumulatedTime = accumulatedTime;
     }
 
-    onBagHit(whichHand, velocity)
+    onBagHit(whichHand, speed)
     {
         this.punches++;
         this.lastPunchTime = this.accumulatedTime;
         this.punchRateNew.recordPunch(this.accumulatedTime);
 
-        this.lastPunchSpeed = velocity.length();
+        this.lastPunchSpeed = speed; //velocity.length();
         this.updateStatsDisplay(true);
     }
 

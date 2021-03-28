@@ -78565,7 +78565,7 @@ Object.assign( WebXRController.prototype, {
 					if ( inputPose.linearVelocity != null ) {
 
 						targetRay.hasLinearVelocity = true;
-						targetRay.linearVelocity.set( inputPose.linearVelocity.x, inputPose.linearVelocity.y, inputPose.linearVelocity.z );
+						targetRay.linearVelocity.copy( inputPose.linearVelocity );
 
 					} else {
 
@@ -78576,7 +78576,7 @@ Object.assign( WebXRController.prototype, {
 					if ( inputPose.angularVelocity != null ) {
 
 						targetRay.hasAngularVelocity = true;
-						targetRay.angularVelocity.set( inputPose.angularVelocity.x, inputPose.angularVelocity.y, inputPose.angularVelocity.z );
+						targetRay.angularVelocity.copy( inputPose.angularVelocity );
 
 					} else {
 
@@ -78667,7 +78667,7 @@ Object.assign( WebXRController.prototype, {
 						if ( gripPose.linearVelocity != null ) {
 
 							grip.hasLinearVelocity = true;
-							grip.linearVelocity.set( gripPose.linearVelocity.x, gripPose.linearVelocity.y, gripPose.linearVelocity.z );
+							grip.linearVelocity.copy( gripPose.linearVelocity );
 
 						} else {
 
@@ -78678,7 +78678,7 @@ Object.assign( WebXRController.prototype, {
 						if ( gripPose.angularVelocity != null ) {
 
 							grip.hasAngularVelocity = true;
-							grip.angularVelocity.set( gripPose.angularVelocity.x, gripPose.angularVelocity.y, gripPose.angularVelocity.z );
+							grip.angularVelocity.copy( gripPose.angularVelocity );
 
 						} else {
 
@@ -114901,8 +114901,8 @@ let leftHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3_
 let rightHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
 
 const kBagRadius = 0.25;
-const kMinPunchSoundVelocitySq = 0.25 * 0.25; //1.5 * 1.5;
-const kPunchEffectFadeRate = 4.0;
+const kMinPunchSoundVelocity = 0.25; //1.5 * 1.5;
+const kPunchEffectFadeRate = 10.0;
 
 const kFadeInTime = 0.5;
 const kOneOverFadeInTime = 1.0 / kFadeInTime;
@@ -115110,32 +115110,6 @@ class HeavyBag extends Bag
                 // this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
             });
 
-
-
-        /*
-        this.hitSoundBuffers = [];
-        this.hitSounds = [
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-            new THREE.PositionalAudio(audioListener),
-        ];
-        this.nextSoundIndex = 0;
-
-        for (let hitSound of this.hitSounds)
-        {
-            hitSound.setRefDistance(40);
-            hitSound.setVolume(1.0);
-        }
-
-        var audioLoader = new THREE.AudioLoader();
-        audioLoader.load('./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3', (buffer) => {
-            this.hitSoundBuffers.push(buffer);
-        });
-        */
-
         this.hitSound = new _multiBufferSound_js__WEBPACK_IMPORTED_MODULE_5__["MultiInstanceSound"](audioListener, 6, ['./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3']);
     }
 
@@ -115226,35 +115200,39 @@ class HeavyBag extends Bag
 
             if (hitLeft || hitRight)
             {
-                if (hitLeft && hitRight)
-                {
-                    if (leftHitResult.hitT < rightHitResult.hitT)
-                    {
-                        hitRight = false;
-                    }
-                    else
-                    {
-                        hitLeft = false;
-                    }
-                }
-
+                let hr = null;
+                let glove = null;
                 if (hitLeft)
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, leftHitResult.hitPoint, this.leftGlove.position))
-                    {
-                        //break;
-                    }
-                    //otherwise, keep going for another iteration
-
+                    hr = leftHitResult;
+                    glove = this.leftGlove;
                 }
-                else
+                if (hitRight && (hr == null || rightHitResult.hitT < hr.hitT))
                 {
-                    if (this.processCollisionIteration(desiredPosition, desiredVelocity, rightHitResult.hitPoint, this.rightGlove.position))
-                    {
-                        //break;
-                    }
-                    //otherwise, keep going for another iteration
+                    hr = rightHitResult;
+                    glove = this.rightGlove;
                 }
+
+                //this.processCollisionIteration(desiredPosition, desiredVelocity, hr.hitPoint, hr.)
+                this.position.copy(hr.hitPoint);
+
+                // bounce the desired velocity off the thing we hit, and scale down to account for inelastic collision
+                this.velocity.copy(desiredVelocity);
+                this.velocity.reflect(hr.hitNormal);
+                this.velocity.multiplyScalar(0.5);
+
+                // Play the hit effects
+                tVec0.subVectors(desiredVelocity, glove.velocity);
+                hr.hitNormal.negate(); // because we want this WRT the bag (and it's actually WRT the glove right now)
+                this.processCollisionEffects(
+                    glove,
+                    tVec0.length(),
+                    hr.hitPoint,
+                    hr.hitNormal,
+                    accumulatedTime,
+                    false
+                );
+
             }
             else
             {
@@ -115280,29 +115258,97 @@ class HeavyBag extends Bag
         }
     }
 
-    processCollisionIteration( desiredPosition, desiredVelocity, hitPoint, hitNormal) //hitObjectCenter)
+    processCollisionEffects(
+        glove, 
+        collisionSpeed,
+        hitPoint,
+        hitNormalWRTBag,
+        accumulatedTime,
+        isPunch = true
+    )
     {
-        // console.log("OLD VELOCITY: " + desiredVelocity.x.toFixed(1) + ", " + desiredVelocity.y.toFixed(1) + ", " + desiredVelocity.z.toFixed(1));
+        if (collisionSpeed > kMinPunchSoundVelocity && !glove.isInContactWithBag())
+        {
+            if (collisionSpeed > 1.0)
+            {
+                this.rotationValue -= hitNormalWRTBag.x * 0.785 * Math.max(collisionSpeed * 0.1, 1.0); //0.785 is approx PI/4
+                glove.playImpactHaptic();
+            }
 
-        //move to current hit point, and back up a bit to avoid interpenetration
-        this.position.copy(hitPoint);
+            glove.registerBagContact(accumulatedTime);
+            
+            if (isPunch)
+            {
+                let speedBasedVolume = 0.0 + Math.min(collisionSpeed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
+                this.hitSound.play(hitPoint, speedBasedVolume);
 
-        
-        // this.velocity.copy(desiredVelocity);
-        // this.velocity.reflect(hitNormal);
-        // this.velocity.multiplyScalar(0.1);
+                for(let cb of this.punchCallbacks)
+                {
+                    cb(glove.whichHand, collisionSpeed);
+                }
 
-        // tVec0.copy(desiredVelocity);
-        // tVec0.normalize();
-        // this.position.addScaledVector(hitNormal, -0.005); // could back us up through another object :\
+                //
+                // Apply the Punch Effect
+                //
 
-        this.velocity.set(0,0,0);
+                // Rotate through a pool of punch effects
+                let pe = this.punchEffects[this.nextPunchEffect];
+                this.nextPunchEffect = (this.nextPunchEffect + 1) % this.punchEffects.length;
 
-        return false;
+                //enable this hit effect and set opacity based on punch speed
+                pe.visible = true;
+                pe.material.opacity = Math.min((collisionSpeed-1.0)*0.8, 2.0);
+
+                // get the position -- use getWorldPosition because the bag is parented into a scene
+                // and "position" just gives the local position relative to parent
+                this.mesh.getWorldPosition(tVec0);
+                //set the position of the punch effect, plus a slight tweak to make it appear
+                //more directly under the glove
+
+                let kAdjust = -0.05;
+                // if (velocity.y > 1.0)
+                // {
+                //     kAdjust = 0.0;
+                // }
+
+                pe.position.setY( hitPoint.y - tVec0.y + kAdjust);
+                
+                // Figure out rotation of the hit -- using X/-Z, because we're rotating around the Y=Up Axis
+
+                // flip order to negate z, because atan2 expects that axis to be positive 
+                // moving "away" from the player
+                let z = tVec0.z - hitPoint.z; 
+
+                // atan2 gives the rotation in radius from the +X axis
+                let rot = Math.atan2(z, hitPoint.x);
+                pe.rotation.set(0.0, rot, 0.0);
+            }
+        }     
+    }
+
+    processHit(
+        glove,
+        gloveVelocity,
+        hitPoint,
+        hitNormalWRTBag, //hit normal on surface of bag
+        accumulatedTime
+    )
+    {
+        // Compute the delta speed between the bag and the glove
+        tVec0.subVectors(this.velocity, gloveVelocity);
+        let collisionSpeed = tVec0.length();
+
+        // Apply the glove velocity to the bag
+        tVec0.copy(gloveVelocity);
+        tVec0.projectOnVector(hitNormalWRTBag);
+        tVec0.multiplyScalar(0.95); // scale it up to give the punch more weight
+        this.velocity.add(tVec0);
+
+        this.processCollisionEffects(glove, collisionSpeed, hitPoint, hitNormalWRTBag, accumulatedTime);
 
     }
 
-    processHit(velocity, position, normal, whichHand, isNewHit)
+    OLDprocessHit(velocity, position, normal, whichHand, isNewHit)
     {
         // normal.negate(); //because normal's pointing the wrong way
 
@@ -115336,37 +115382,7 @@ class HeavyBag extends Bag
                 cb(whichHand, velocity);
             }
 
-            // Rotate through a pool of punch effects
-            let pe = this.punchEffects[this.nextPunchEffect];
-            this.nextPunchEffect = (this.nextPunchEffect + 1) % this.punchEffects.length;
 
-            //enable this hit effect and set opacity based on punch speed
-            pe.visible = true;
-            pe.material.opacity = Math.min((speed-1.0)*0.8, 2.0);
-
-            // get the position -- use getWorldPosition because the bag is parented into a scene
-            // and "position" just gives the local position relative to parent
-            this.mesh.getWorldPosition(tVec0);
-            //set the position of the punch effect, plus a slight tweak to make it appear
-            //more directly under the glove
-
-            let kAdjust = -0.05;
-            if (velocity.y > 1.0)
-            {
-                kAdjust = 0.0;
-            }
-
-            pe.position.setY( position.y - tVec0.y + kAdjust);
-            
-            // Figure out rotation of the hit -- using X/-Z, because we're rotating around the Y=Up Axis
-
-            // flip order to negate z, because atan2 expects that axis to be positive 
-            // moving "away" from the player
-            let z = tVec0.z - position.z; 
-
-            // atan2 gives the rotation in radius from the +X axis
-            let rot = Math.atan2(z, position.x);
-            pe.rotation.set(0.0, rot, 0.0);
         }
     }
 }
@@ -116044,7 +116060,7 @@ let rightHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3
 let headHitResult = new _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_3__["HitResult"]();
 
 const kBagRadius = 0.15;
-const kMinPunchSoundVelocitySq = 0.5 * 0.5;
+const kMinPunchSoundVelocity = 0.5;
 const kHeadRadius = 0.12;
 const kHeadHitMinSpeedSq = 2.0 * 2.0;
 const kHeadHitCooldown = 1.0;
@@ -116366,26 +116382,32 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
                     }
                 }
 
-                this.processCollisionIteration(desiredPosition, desiredVelocity, hr.hitPoint, hr.hitNormal);
+                // move the the hit point and update bag velocity based on the collision
+                this.position.copy(hr.hitPoint);
+
+                // bounce the desired velocity off the thing we hit, and scale down to account for inelastic collision
+                this.velocity.copy(desiredVelocity);
+                this.velocity.reflect(hr.hitNormal);
+                this.velocity.multiplyScalar(0.5);
 
                 if (isHeadHit && desiredVelocity.lengthSq() > kHeadHitMinSpeedSq)
                 {
-                    // console.log("HEAD HIT SPEED: " + desiredVelocity.length());
                     this.playerHitSound.play(hr.hitPoint, 1.0);
                     this.playerHud.processHit();
-
-
                 }
                 else if (hitLeft || hitRight)
                 {
-                    hr.hitNormal.negate(); // need this pointing out from the bag
-                    this.processCollisionBetweenBagAndGlove(
-                        hitLeft ? this.leftGlove : this.rightGlove,
-                        hitLeft ? this.leftGlove.velocity : this.rightGlove.velocity,
+                    let glove = hitLeft ? this.leftGlove : this.rightGlove;
+                    tVec0.subVectors(desiredVelocity, glove.velocity);
+                    hr.hitNormal.negate(); // because we want this WRT the bag (and it's actually WRT the glove right now)
+                    this.processCollisionEffects(
+                        glove,
+                        tVec0.length(),
                         hr.hitPoint,
                         hr.hitNormal,
-                        accumulatedTime
-                    )
+                        accumulatedTime,
+                        false
+                    );
                 }
             }
             else
@@ -116397,46 +116419,39 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
         }
     }
 
-    processCollisionIteration( desiredPosition, desiredVelocity, hitPoint, hitNormal) //hitObjectCenter)
+    processCollisionEffects(
+        glove, 
+        collisionSpeed,
+        hitPoint,
+        hitNormalWRTBag,
+        accumulatedTime,
+        isPunch = true
+    )
     {
-        // console.log("OLD VELOCITY: " + desiredVelocity.x.toFixed(1) + ", " + desiredVelocity.y.toFixed(1) + ", " + desiredVelocity.z.toFixed(1));
+        if (collisionSpeed > kMinPunchSoundVelocity && !glove.isInContactWithBag())
+        {
+            if (collisionSpeed > 1.0)
+            {
+                this.rotationValue -= hitNormalWRTBag.x * 0.785 * Math.max(collisionSpeed * 0.1, 1.0); //0.785 is approx PI/4
+                glove.playImpactHaptic();
+            }
 
-        //move to current hit point
-        this.position.copy(hitPoint);
-       
-        this.velocity.copy(desiredVelocity);
-        this.velocity.reflect(hitNormal);
-        this.velocity.multiplyScalar(0.5);
+            glove.registerBagContact(accumulatedTime);
+            
+            if (isPunch)
+            {
+                let speedBasedVolume = 0.0 + Math.min(collisionSpeed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
+                this.hitSound.play(hitPoint, speedBasedVolume);
 
-        // tVec0.copy(desiredVelocity);
-        // tVec0.normalize();
-        // this.position.addScaledVector(hitNormal, -0.005); // could back us up through another object :\
-
-        // this.velocity.set(0,0,0);
-
-        return false;
-
-        // calc the remainder of the movement
-        tVec0.copy(desiredPosition);
-        tVec0.sub(this.position);
-
-        // project it onto the plane of the hit normal to "slide" off the collision
-        tVec0.projectOnPlane(hitNormal);
-        desiredVelocity.projectOnPlane(hitNormal);
-
-        // console.log("NEW VELOCITY: " + desiredVelocity.x.toFixed(1) + ", " + desiredVelocity.y.toFixed(1) + ", " + desiredVelocity.z.toFixed(1));
-
-        // if there's enough movement to care about, move in the slide direction
-        if (false) //tVec0.lengthSq() > kInconsequentialMovementSq)
-        {}
-        else {
-            // close enough -- we're all done
-            this.velocity.copy(desiredVelocity);
-            return true;
-        }
+                for(let cb of this.punchCallbacks)
+                {
+                    cb(glove.whichHand, collisionSpeed);
+                }
+            }
+        }     
     }
 
-    processCollisionBetweenBagAndGlove(
+    processHit(
         glove,
         gloveVelocity,
         hitPoint,
@@ -116444,75 +116459,18 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
         accumulatedTime
     )
     {
-        // Compute the impact speed -- we'll need this later.
+        // Compute the delta speed between the bag and the glove
         tVec0.subVectors(this.velocity, gloveVelocity);
-        let collisionSpeedSq = tVec0.lengthSq();
-        
-        // Compute change in velocity to add to bag velocity.
-        tVec1.copy(gloveVelocity);
-        tVec1.projectOnVector(hitNormalWRTBag);
-        this.velocity.add(tVec1);
-        
-        // Determine if the bag is already touching this glove.
-        // If not, play hit effects.
+        let collisionSpeed = tVec0.length();
 
-        if (collisionSpeedSq > kMinPunchSoundVelocitySq && !glove.isInContactWithBag())
-        {
-            let speed = Math.sqrt(collisionSpeedSq);
-            let speedBasedVolume = 0.0 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
-            this.hitSound.play(hitPoint, speedBasedVolume);
+        // Apply the glove velocity to the bag
+        tVec0.copy(gloveVelocity);
+        tVec0.projectOnVector(hitNormalWRTBag);
+        tVec0.multiplyScalar(2.0); // scale it up to give the punch more weight
+        this.velocity.add(tVec0);
 
-            if (speed > 1.0)
-            {
-                this.rotationValue -= hitNormalWRTBag.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
-                glove.playImpactHaptic();
-            }
+        this.processCollisionEffects(glove, collisionSpeed, hitPoint, hitNormalWRTBag, accumulatedTime);
 
-            glove.registerBagContact(accumulatedTime);
-            
-
-            for(let cb of this.punchCallbacks)
-            {
-                cb(glove.whichHand, gloveVelocity);
-            }
-        }        
-    }
-
-    processHit(velocity, position, normal, whichHand, isNewHit)
-    {
-        // normal.negate(); //because normal's pointing the wrong way
-
-        tVec0.copy(velocity);
-        tVec0.projectOnVector(normal);
-        tVec0.multiplyScalar(1.0);
-        this.velocity.add(tVec0);     
-
-
-        if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
-        {
-            // let hitSound = this.hitSounds[this.nextSoundIndex];
-            // if (hitSound.isPlaying)
-            //     hitSound.stop();
-
-            // hitSound.position.copy(position);
-            // let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
-            // hitSound.buffer = this.hitSoundBuffers[whichSound];
-
-            let speed = velocity.length();
-            let speedBasedVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
-            this.hitSound.play(position, speedBasedVolume);
-            // hitSound.setVolume(speedBaseVolume);
-            // hitSound.play();
-
-            // this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
-
-            this.rotationValue -= normal.x * 0.785 * Math.max(speed * 0.1, 1.0); //0.785 is approx PI/4
-
-            for(let cb of this.punchCallbacks)
-            {
-                cb(whichHand, velocity);
-            }
-        }
     }
 
     resetPositionAndVelocity()
@@ -117215,8 +117173,8 @@ class PunchingStats
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
 
-        heavyBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
-        doubleEndedBag.punchCallbacks.push((whichHand, velocity) => {this.onBagHit(whichHand, velocity)});
+        heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
+        doubleEndedBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
 
 
         this.textBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](520, "left", 1.55, "bottom", 0.25, 0x000000);
@@ -117247,13 +117205,13 @@ class PunchingStats
         this.accumulatedTime = accumulatedTime;
     }
 
-    onBagHit(whichHand, velocity)
+    onBagHit(whichHand, speed)
     {
         this.punches++;
         this.lastPunchTime = this.accumulatedTime;
         this.punchRateNew.recordPunch(this.accumulatedTime);
 
-        this.lastPunchSpeed = velocity.length();
+        this.lastPunchSpeed = speed; //velocity.length();
         this.updateStatsDisplay(true);
     }
 
@@ -117544,34 +117502,19 @@ class Glove extends THREE.Group
                 velocity = this.velocity;
             }
 
-            if (bag == this.doubleEndedBag)
+            bag.processHit(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
+            
+            /*if (bag == this.doubleEndedBag)
             {
-                bag.processCollisionBetweenBagAndGlove(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
+                bag.processHit(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
             }
             else
             {
                 bag.processHit(velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
             }
+            */
 
             this.position.copy(hitResult.hitPoint);
-            // if (!this.inContactWithBag && velocity.lengthSq() > 0.01)
-            // {
-            //     this.nextNewContactTime = accumulatedTime + kNewContactDelay;
-
-            //     let gamepad = this.controller.gamepad;
-            //     if (gamepad != null && gamepad.hapticActuators != null)
-            //     {
-            //         let kIntensity = 1.0;
-            //         let kMilliseconds = 16;
-            //         let hapticActuator = gamepad.hapticActuators[0];
-            //         if( hapticActuator != null)
-            //         {
-            //             hapticActuator.pulse( kIntensity, kMilliseconds );
-            //             console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
-            //         }
-            //     }
-            // }
-            // this.inContactWithBag = true;
         }
         else
         {
@@ -119725,7 +119668,7 @@ let workoutData = [
                     descriptionText: "STRAIGHT(2) and move around the bag."
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_HEAVY_BAG
         },
         {
             introText: 
@@ -119742,7 +119685,7 @@ let workoutData = [
                     descriptionText: "STRAIGHT(2) then LEFT HOOK(3)"
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_HEAVY_BAG
         },
         {
             introText: 
@@ -119759,7 +119702,7 @@ let workoutData = [
                     descriptionText: "JAB(1), JAB(1), STRAIGHT(2)."
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_HEAVY_BAG
         },
         {
             introText: 
@@ -119776,7 +119719,7 @@ let workoutData = [
                     descriptionText: "RIGHT HOOK(4) and move around the bag."
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_HEAVY_BAG
         },
         {
             introText: 
@@ -119788,7 +119731,7 @@ let workoutData = [
                     descriptionText: "JAB(1), JAB(1), STRAIGHT(2), JAB(1), STRAIGHT (2)."
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_HEAVY_BAG
         },
     ]
 ];

@@ -174,34 +174,19 @@ export class Glove extends THREE.Group
                 velocity = this.velocity;
             }
 
-            if (bag == this.doubleEndedBag)
+            bag.processHit(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
+            
+            /*if (bag == this.doubleEndedBag)
             {
-                bag.processCollisionBetweenBagAndGlove(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
+                bag.processHit(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
             }
             else
             {
                 bag.processHit(velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
             }
+            */
 
             this.position.copy(hitResult.hitPoint);
-            // if (!this.inContactWithBag && velocity.lengthSq() > 0.01)
-            // {
-            //     this.nextNewContactTime = accumulatedTime + kNewContactDelay;
-
-            //     let gamepad = this.controller.gamepad;
-            //     if (gamepad != null && gamepad.hapticActuators != null)
-            //     {
-            //         let kIntensity = 1.0;
-            //         let kMilliseconds = 16;
-            //         let hapticActuator = gamepad.hapticActuators[0];
-            //         if( hapticActuator != null)
-            //         {
-            //             hapticActuator.pulse( kIntensity, kMilliseconds );
-            //             console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
-            //         }
-            //     }
-            // }
-            // this.inContactWithBag = true;
         }
         else
         {
