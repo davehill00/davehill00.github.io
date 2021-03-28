@@ -69,7 +69,7 @@ export let workoutData = [
                     descriptionText: "STRAIGHT(2) and move around the bag."
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
         {
             introText: 
@@ -86,7 +86,7 @@ export let workoutData = [
                     descriptionText: "STRAIGHT(2) then LEFT HOOK(3)"
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
         {
             introText: 
@@ -103,7 +103,7 @@ export let workoutData = [
                     descriptionText: "JAB(1), JAB(1), STRAIGHT(2)."
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
         {
             introText: 
@@ -120,7 +120,7 @@ export let workoutData = [
                     descriptionText: "RIGHT HOOK(4) and move around the bag."
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
         {
             introText: 
@@ -132,7 +132,7 @@ export let workoutData = [
                     descriptionText: "JAB(1), JAB(1), STRAIGHT(2), JAB(1), STRAIGHT (2)."
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
     ]
 ];

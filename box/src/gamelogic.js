@@ -13,8 +13,6 @@ const SESSION_REST = 4;
 const SESSION_OUTRO = 5;
 const SESSION_PAUSED = 6;
 
-// const BAGTYPE_SPEED = 2; 
-
 import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_ENDED_BAG} from "./workoutData.js";
 
 
@@ -26,48 +24,6 @@ const kRoundAlmostDoneTime = 10.0;
 
 const kWorkoutTextBoxSmallFontSize = 520;
 const kWorkoutTextBoxBigFontSize = 350;
-
-// let workout1 = [
-//     {
-//         //Placeholder for ROUND 0 (which isn't actually a thing), but lets me use proper round numbering everywhere else.
-//         //@TODO - consider using this for intro text
-//         introText: "TEST WORKOUT #1:\n \u2022 Round 1: Do two things.\n \u2022 Round 2: Do three things.",
-//         stages:[],
-//         bagType: null
-//     },
-//     {
-//         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2",
-//         stages: [
-//             {
-//                 startTimePercent: 0.0,
-//                 descriptionText: "THINGS TO DO DURING THE FIRST HALF"
-//             },
-//             {
-//                 startTimePercent: 0.5,
-//                 descriptionText: "THINGS TO DO DURING THE SECOND HALF"
-//             }
-//         ],
-//         bagType: ROUND_HEAVY_BAG
-//     },
-//     {
-//         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2\n \u2022 Thing 3",
-//         stages: [
-//             {
-//                 startTimePercent: 0.0,
-//                 descriptionText: "THINGS TO DO DURING THE FIRST 33%"
-//             },
-//             {
-//                 startTimePercent: 0.33,
-//                 descriptionText: "THINGS TO DO DURING THE SECOND 33%"
-//             },
-//             {
-//                 startTimePercent: 0.67,
-//                 descriptionText: "THINGS TO DO DURING THE FINAL 33%"
-//             }
-//         ],
-//         bagType: ROUND_DOUBLE_ENDED_BAG
-//     }
-// ]
 
 class Workout
 {
@@ -219,6 +175,16 @@ export class BoxingSession
                 this.soundGetReady.buffer = buffer;
             });
 
+        this.soundNewInstructions = new THREE.PositionalAudio(audioListener);
+        this.soundNewInstructions.setVolume(1.0);
+        this.soundNewInstructions.setRefDistance(40.0);
+        new THREE.AudioLoader().load(
+            "./content/new_instructions.mp3",
+            (buffer) => 
+            {
+                this.soundNewInstructions.buffer = buffer;
+            });
+
         const kTopRowY = 0.4;
         this.roundsTextBox = new TextBox(520, "center", 0.4, "center", 0.3, 0x000000, "", "");
         this.roundsTextBox.position.x = -0.61;
@@ -271,6 +237,7 @@ export class BoxingSession
                 this.TV.add(this.sound321);
                 this.TV.add(this.soundEndOfRound);
                 this.TV.add(this.soundGetReady);
+                this.TV.add(this.soundNewInstructions);
 
                 this.updateTimer();
                 this.updateRoundsMessage();
@@ -619,6 +586,10 @@ export class BoxingSession
                     console.assert(this.workoutStageTextBox.visible && !this.workoutIntroTextBox.visible);
                     if (this.elapsedTime >= this.nextWorkoutStageTime)
                     {
+                        if (this.nextWorkoutStage != 0)
+                        {
+                            this.soundNewInstructions.play();
+                        }
                         let roundInfo = this.workoutInfo[this.currentRound];
                         this.workoutStageTextBox.displayMessage(roundInfo.stages[this.nextWorkoutStage].descriptionText);
                         this.nextWorkoutStage++;
@@ -630,6 +601,7 @@ export class BoxingSession
                         {
                             this.nextWorkoutStageTime = Number.MAX_VALUE;
                         }
+                        
                     }
                 }
                 break;

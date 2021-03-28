@@ -116517,8 +116517,6 @@ const SESSION_REST = 4;
 const SESSION_OUTRO = 5;
 const SESSION_PAUSED = 6;
 
-// const BAGTYPE_SPEED = 2; 
-
 
 
 
@@ -116530,48 +116528,6 @@ const kRoundAlmostDoneTime = 10.0;
 
 const kWorkoutTextBoxSmallFontSize = 520;
 const kWorkoutTextBoxBigFontSize = 350;
-
-// let workout1 = [
-//     {
-//         //Placeholder for ROUND 0 (which isn't actually a thing), but lets me use proper round numbering everywhere else.
-//         //@TODO - consider using this for intro text
-//         introText: "TEST WORKOUT #1:\n \u2022 Round 1: Do two things.\n \u2022 Round 2: Do three things.",
-//         stages:[],
-//         bagType: null
-//     },
-//     {
-//         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2",
-//         stages: [
-//             {
-//                 startTimePercent: 0.0,
-//                 descriptionText: "THINGS TO DO DURING THE FIRST HALF"
-//             },
-//             {
-//                 startTimePercent: 0.5,
-//                 descriptionText: "THINGS TO DO DURING THE SECOND HALF"
-//             }
-//         ],
-//         bagType: ROUND_HEAVY_BAG
-//     },
-//     {
-//         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2\n \u2022 Thing 3",
-//         stages: [
-//             {
-//                 startTimePercent: 0.0,
-//                 descriptionText: "THINGS TO DO DURING THE FIRST 33%"
-//             },
-//             {
-//                 startTimePercent: 0.33,
-//                 descriptionText: "THINGS TO DO DURING THE SECOND 33%"
-//             },
-//             {
-//                 startTimePercent: 0.67,
-//                 descriptionText: "THINGS TO DO DURING THE FINAL 33%"
-//             }
-//         ],
-//         bagType: ROUND_DOUBLE_ENDED_BAG
-//     }
-// ]
 
 class Workout
 {
@@ -116723,6 +116679,16 @@ class BoxingSession
                 this.soundGetReady.buffer = buffer;
             });
 
+        this.soundNewInstructions = new three__WEBPACK_IMPORTED_MODULE_0__["PositionalAudio"](audioListener);
+        this.soundNewInstructions.setVolume(1.0);
+        this.soundNewInstructions.setRefDistance(40.0);
+        new three__WEBPACK_IMPORTED_MODULE_0__["AudioLoader"]().load(
+            "./content/new_instructions.mp3",
+            (buffer) => 
+            {
+                this.soundNewInstructions.buffer = buffer;
+            });
+
         const kTopRowY = 0.4;
         this.roundsTextBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](520, "center", 0.4, "center", 0.3, 0x000000, "", "");
         this.roundsTextBox.position.x = -0.61;
@@ -116775,6 +116741,7 @@ class BoxingSession
                 this.TV.add(this.sound321);
                 this.TV.add(this.soundEndOfRound);
                 this.TV.add(this.soundGetReady);
+                this.TV.add(this.soundNewInstructions);
 
                 this.updateTimer();
                 this.updateRoundsMessage();
@@ -117123,6 +117090,10 @@ class BoxingSession
                     console.assert(this.workoutStageTextBox.visible && !this.workoutIntroTextBox.visible);
                     if (this.elapsedTime >= this.nextWorkoutStageTime)
                     {
+                        if (this.nextWorkoutStage != 0)
+                        {
+                            this.soundNewInstructions.play();
+                        }
                         let roundInfo = this.workoutInfo[this.currentRound];
                         this.workoutStageTextBox.displayMessage(roundInfo.stages[this.nextWorkoutStage].descriptionText);
                         this.nextWorkoutStage++;
@@ -117134,6 +117105,7 @@ class BoxingSession
                         {
                             this.nextWorkoutStageTime = Number.MAX_VALUE;
                         }
+                        
                     }
                 }
                 break;
@@ -117460,9 +117432,6 @@ class Glove extends THREE.Group
 
         // Try to move from current position to controller position
         this.controller.getWorldPosition(dest);
-        // dest.x = 0.0;
-        // dest.y = 1.0;
-        // dest.z = -2.0;
 
         // Update velocity (i.e., how fast is controller we're slaved to moving)
         const oneOverDt = 1.0 / dt;
@@ -117472,23 +117441,21 @@ class Glove extends THREE.Group
 
         
 
-        // Check for collisions from current position to goal position
-
-        
+        // Check for collisions from current position to goal position    
         let hit = false;
         let bag = null;
         if (this.heavyBag.visible)
         {
             bag = this.heavyBag;
-            hit = Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__["doesCircleCollideWithOtherCircle"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         }
         else if (this.doubleEndedBag.visible)
         {
             bag = this.doubleEndedBag;
-            hit = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesSphereCollideWithOtherSphere"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
-
         }
+
+        hit = (bag != null) && 
+            Object(_circleCircleIntersection_js__WEBPACK_IMPORTED_MODULE_0__["doesCircleCollideWithOtherCircle"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         if ( hit )
         {
@@ -117503,16 +117470,6 @@ class Glove extends THREE.Group
             }
 
             bag.processHit(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
-            
-            /*if (bag == this.doubleEndedBag)
-            {
-                bag.processHit(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
-            }
-            else
-            {
-                bag.processHit(velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
-            }
-            */
 
             this.position.copy(hitResult.hitPoint);
         }
@@ -119668,7 +119625,7 @@ let workoutData = [
                     descriptionText: "STRAIGHT(2) and move around the bag."
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
         {
             introText: 
@@ -119685,7 +119642,7 @@ let workoutData = [
                     descriptionText: "STRAIGHT(2) then LEFT HOOK(3)"
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
         {
             introText: 
@@ -119702,7 +119659,7 @@ let workoutData = [
                     descriptionText: "JAB(1), JAB(1), STRAIGHT(2)."
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
         {
             introText: 
@@ -119719,7 +119676,7 @@ let workoutData = [
                     descriptionText: "RIGHT HOOK(4) and move around the bag."
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
         {
             introText: 
@@ -119731,7 +119688,7 @@ let workoutData = [
                     descriptionText: "JAB(1), JAB(1), STRAIGHT(2), JAB(1), STRAIGHT (2)."
                 }
             ],
-            bagType: ROUND_HEAVY_BAG
+            bagType: ROUND_DOUBLE_ENDED_BAG
         },
     ]
 ];

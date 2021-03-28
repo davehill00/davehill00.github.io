@@ -132,9 +132,6 @@ export class Glove extends THREE.Group
 
         // Try to move from current position to controller position
         this.controller.getWorldPosition(dest);
-        // dest.x = 0.0;
-        // dest.y = 1.0;
-        // dest.z = -2.0;
 
         // Update velocity (i.e., how fast is controller we're slaved to moving)
         const oneOverDt = 1.0 / dt;
@@ -144,23 +141,21 @@ export class Glove extends THREE.Group
 
         
 
-        // Check for collisions from current position to goal position
-
-        
+        // Check for collisions from current position to goal position    
         let hit = false;
         let bag = null;
         if (this.heavyBag.visible)
         {
             bag = this.heavyBag;
-            hit = doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         }
         else if (this.doubleEndedBag.visible)
         {
             bag = this.doubleEndedBag;
-            hit = doesSphereCollideWithOtherSphere(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
-
         }
+
+        hit = (bag != null) && 
+            doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         if ( hit )
         {
@@ -175,16 +170,6 @@ export class Glove extends THREE.Group
             }
 
             bag.processHit(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
-            
-            /*if (bag == this.doubleEndedBag)
-            {
-                bag.processHit(this, velocity, hitResult.hitPoint, hitResult.hitNormal, accumulatedTime);
-            }
-            else
-            {
-                bag.processHit(velocity, hitResult.hitPoint, hitResult.hitNormal, this.whichHand, !this.inContactWithBag);
-            }
-            */
 
             this.position.copy(hitResult.hitPoint);
         }
