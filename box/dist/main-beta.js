@@ -116398,11 +116398,12 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
                 else if (hitLeft || hitRight)
                 {
                     let glove = hitLeft ? this.leftGlove : this.rightGlove;
-                    tVec0.subVectors(desiredVelocity, glove.velocity);
+                    //tVec0.subVectors(desiredVelocity, glove.velocity);
+
                     hr.hitNormal.negate(); // because we want this WRT the bag (and it's actually WRT the glove right now)
                     this.processCollisionEffects(
                         glove,
-                        tVec0.length(),
+                        desiredVelocity.length(),
                         hr.hitPoint,
                         hr.hitNormal,
                         accumulatedTime,
@@ -116436,10 +116437,11 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
                 glove.playImpactHaptic();
             }
 
-            glove.registerBagContact(accumulatedTime);
             
             if (isPunch)
             {
+                glove.registerBagContact(accumulatedTime);
+            
                 let speedBasedVolume = 0.0 + Math.min(collisionSpeed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
                 this.hitSound.play(hitPoint, speedBasedVolume);
 
@@ -116448,6 +116450,10 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
                     cb(glove.whichHand, collisionSpeed);
                 }
             }
+            // else
+            // {
+            //     this.hitSound.play(hitPoint, 0.02);
+            // }
         }     
     }
 
@@ -116469,7 +116475,7 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
         tVec0.multiplyScalar(2.0); // scale it up to give the punch more weight
         this.velocity.add(tVec0);
 
-        this.processCollisionEffects(glove, collisionSpeed, hitPoint, hitNormalWRTBag, accumulatedTime);
+        this.processCollisionEffects(glove, gloveVelocity.length(), hitPoint, hitNormalWRTBag, accumulatedTime);
 
     }
 
@@ -117410,7 +117416,7 @@ class Glove extends THREE.Group
         if (gamepad != null && gamepad.hapticActuators != null)
         {
             let kIntensity = 1.0;
-            let kMilliseconds = 16;
+            let kMilliseconds = 20; //16;
             let hapticActuator = gamepad.hapticActuators[0];
             if( hapticActuator != null)
             {
@@ -118361,8 +118367,12 @@ function doesSphereCollideWithOtherSphere(
                 // we're trying to push in, since the other collision point is ahead in the direction of the ray
                 result.hitPoint.copy(startPos);
 
-                result.hitNormal.copy(rayDirection);
-                result.hitNormal.negate();
+                // result.hitNormal.copy(rayDirection);
+                // result.hitNormal.negate();
+                // result.hitNormal.normalize();
+
+                result.hitNormal.copy(result.hitPoint);
+                result.hitNormal.sub(stationaryPos);
                 result.hitNormal.normalize();
 
                 result.hitT = 0.0;

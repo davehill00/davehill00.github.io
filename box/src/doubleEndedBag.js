@@ -398,11 +398,12 @@ export class DoubleEndedBag extends Bag
                 else if (hitLeft || hitRight)
                 {
                     let glove = hitLeft ? this.leftGlove : this.rightGlove;
-                    tVec0.subVectors(desiredVelocity, glove.velocity);
+                    //tVec0.subVectors(desiredVelocity, glove.velocity);
+
                     hr.hitNormal.negate(); // because we want this WRT the bag (and it's actually WRT the glove right now)
                     this.processCollisionEffects(
                         glove,
-                        tVec0.length(),
+                        desiredVelocity.length(),
                         hr.hitPoint,
                         hr.hitNormal,
                         accumulatedTime,
@@ -436,10 +437,11 @@ export class DoubleEndedBag extends Bag
                 glove.playImpactHaptic();
             }
 
-            glove.registerBagContact(accumulatedTime);
             
             if (isPunch)
             {
+                glove.registerBagContact(accumulatedTime);
+            
                 let speedBasedVolume = 0.0 + Math.min(collisionSpeed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
                 this.hitSound.play(hitPoint, speedBasedVolume);
 
@@ -448,6 +450,10 @@ export class DoubleEndedBag extends Bag
                     cb(glove.whichHand, collisionSpeed);
                 }
             }
+            // else
+            // {
+            //     this.hitSound.play(hitPoint, 0.02);
+            // }
         }     
     }
 
@@ -469,7 +475,7 @@ export class DoubleEndedBag extends Bag
         tVec0.multiplyScalar(2.0); // scale it up to give the punch more weight
         this.velocity.add(tVec0);
 
-        this.processCollisionEffects(glove, collisionSpeed, hitPoint, hitNormalWRTBag, accumulatedTime);
+        this.processCollisionEffects(glove, gloveVelocity.length(), hitPoint, hitNormalWRTBag, accumulatedTime);
 
     }
 

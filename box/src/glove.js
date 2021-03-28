@@ -110,7 +110,7 @@ export class Glove extends THREE.Group
         if (gamepad != null && gamepad.hapticActuators != null)
         {
             let kIntensity = 1.0;
-            let kMilliseconds = 16;
+            let kMilliseconds = 20; //16;
             let hapticActuator = gamepad.hapticActuators[0];
             if( hapticActuator != null)
             {

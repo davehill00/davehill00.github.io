@@ -134,8 +134,12 @@ export function doesSphereCollideWithOtherSphere(
                 // we're trying to push in, since the other collision point is ahead in the direction of the ray
                 result.hitPoint.copy(startPos);
 
-                result.hitNormal.copy(rayDirection);
-                result.hitNormal.negate();
+                // result.hitNormal.copy(rayDirection);
+                // result.hitNormal.negate();
+                // result.hitNormal.normalize();
+
+                result.hitNormal.copy(result.hitPoint);
+                result.hitNormal.sub(stationaryPos);
                 result.hitNormal.normalize();
 
                 result.hitT = 0.0;
