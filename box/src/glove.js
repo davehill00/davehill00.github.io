@@ -147,15 +147,14 @@ export class Glove extends THREE.Group
         if (this.heavyBag.visible)
         {
             bag = this.heavyBag;
+            hit = doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         }
         else if (this.doubleEndedBag.visible)
         {
             bag = this.doubleEndedBag;
+            hit = doesSphereCollideWithOtherSphere(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
         }
-
-        hit = (bag != null) && 
-            doesCircleCollideWithOtherCircle(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
 
         if ( hit )
         {

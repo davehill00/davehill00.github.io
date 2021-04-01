@@ -198,7 +198,7 @@ export class DoubleEndedBag extends Bag
 
 
 
-            const kRestLength = 0.4; //0.8;
+            const kRestLength = 1.0; //0.8;
             const kPositionOffset = 1.51; //10 feet ceiling, suspend in the middle
 
             tVec0.copy(this.targetPosition);
@@ -214,8 +214,12 @@ export class DoubleEndedBag extends Bag
             }
 
 
-            const kSpringConstant = 150.0;
-            const kSpringDamping = -2.0;
+            // Fairly tight/fast settings, paired with 0.4 kRestLength, -1.4 kOverallDamping
+            // const kSpringConstant = 150.0;
+            // const kSpringDamping = -2.0;
+
+            const kSpringConstant = 135.0;
+            const kSpringDamping = -1.0;
                       
             tVec0.multiplyScalar(kSpringConstant); // this is now the "Hooke-ian" force (-k*x)
             // now apply velocity damping
@@ -249,7 +253,7 @@ export class DoubleEndedBag extends Bag
             //add the forces together
             tVec0.add(tVec2); 
 
-            const kOverallDamping = -1.4; // 1.5
+            const kOverallDamping = -0.75; // 1.5
             tVec0.addScaledVector(desiredVelocity, kOverallDamping);
 
             // Apply the resulting force as an acceleration
@@ -397,6 +401,7 @@ export class DoubleEndedBag extends Bag
                 }
                 else if (hitLeft || hitRight)
                 {
+                    /*
                     let glove = hitLeft ? this.leftGlove : this.rightGlove;
                     //tVec0.subVectors(desiredVelocity, glove.velocity);
 
@@ -409,6 +414,7 @@ export class DoubleEndedBag extends Bag
                         accumulatedTime,
                         false
                     );
+                    */
                 }
             }
             else
@@ -450,10 +456,6 @@ export class DoubleEndedBag extends Bag
                     cb(glove.whichHand, collisionSpeed);
                 }
             }
-            // else
-            // {
-            //     this.hitSound.play(hitPoint, 0.02);
-            // }
         }     
     }
 
