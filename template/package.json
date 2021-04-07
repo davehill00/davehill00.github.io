@@ -1,0 +1,22 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@webxr-input-profiles/assets": "^1.0.5",
+    "@webxr-input-profiles/motion-controllers": "^1.0.0",
+    "@webxr-input-profiles/registry": "^1.0.1",
+    "three": "^0.127.0",
+    "webpack": "4"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "6.4",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "serve": "webpack serve --config webpack.config.js"
+  }
+}
