@@ -1,4 +1,5 @@
-import * as THREE from 'three';
+import {workoutData} from "./workoutData.js";
+
 
 const kMaxLogo = "40%";
 const kMinLogo = "20%";
@@ -12,6 +13,10 @@ export class PageUI
         this.roundTime = 120;
         this.roundCount = 3;
         this.restTime = 30;
+        this.workoutType = 1;
+        this.whichScriptedWorkout = 0;
+        this.numScriptedWorkouts = workoutData.length;
+        
         this.bagType = 1;
         this.doBagSwap = true;
 
@@ -23,29 +28,63 @@ export class PageUI
             window.localStorage.setItem("cfg_restTime", this.restTime);
             window.localStorage.setItem("cfg_bagType", this.bagType);
             window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
+            window.localStorage.setItem("cfg_workoutType", this.workoutType);
+            window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.whichScriptedWorkout][0].uid);
         }
         else
         {
             let val;
             val = window.localStorage.getItem("cfg_roundTime");
             if (val)
+            {
                 this.roundTime = parseInt(val);
+            }
 
             val = window.localStorage.getItem("cfg_roundCount");
             if (val)
+            {
                 this.roundCount = parseInt(val);
+            }
 
             val = window.localStorage.getItem("cfg_restTime");
             if (val)
+            {
                 this.restTime = parseInt(val);
+            }
 
             val = window.localStorage.getItem("cfg_bagType");
             if (val)
+            {
                 this.bagType = parseInt(val);
+            }
 
             val = window.localStorage.getItem("cfg_bagSwap");
             if (val)
+            {
                 this.doBagSwap = (parseInt(val) == 1);
+            }
+            
+            val = window.localStorage.getItem("cfg_workoutType")
+            if (val)
+            {
+                this.workoutType = parseInt(val);
+            }
+            
+            val = window.localStorage.getItem("cfg_scriptedWorkoutId");
+            if (val)
+            {
+                let matchCfgId = (element) => element[0].uid == val;
+                let matchedIndex = workoutData.findIndex(matchCfgId);
+                if (matchedIndex < 0)
+                {
+                    //failed to match
+                    this.whichScriptedWorkout = 0;
+                }
+                else
+                {
+                    this.whichScriptedWorkout = matchedIndex;
+                }
+            }
         }
 
 
@@ -161,38 +200,7 @@ export class PageUI
         roundTimePlusButton.onclick = () => {this.onRoundTimeChanged(30)};
         div.appendChild(roundTimePlusButton);
 
-        //
-        // ROUNDS
-        //
-        div = document.createElement("div");
-        div.className = "plus_minus_container";
-        this.uiConfigurationGroup.appendChild(div);
-
-        let roundCount = document.createElement("p");
-        roundCount.innerHTML = "ROUNDS:";
-        roundCount.className = "configuration_label";
-        div.appendChild(roundCount);
-
-        let roundCountMinusButton = document.createElement("button");
-        roundCountMinusButton.innerHTML = "-";
-        roundCountMinusButton.className = "plus_minus_button";
-        val = div.clientWidth - roundCount.clientWidth - 300;
-        roundCountMinusButton.style.marginLeft = val.toString() + "px";
-        roundCountMinusButton.onclick = () => {this.onRoundCountChanged(-1)};
-        div.appendChild(roundCountMinusButton);
-        
-        this.uiRoundCountDisplay = document.createElement("p");
-        this.uiRoundCountDisplay.innerHTML = this.roundCount.toString();
-        this.uiRoundCountDisplay.className = "configuration_label";
-        this.uiRoundCountDisplay.style.marginLeft = "auto";
-        div.appendChild(this.uiRoundCountDisplay);
-
-        let roundCountPlusButton = document.createElement("button");
-        roundCountPlusButton.innerHTML = "+";
-        roundCountPlusButton.className = "plus_minus_button";
-        roundCountPlusButton.style.marginLeft = "auto";
-        roundCountPlusButton.onclick = () => {this.onRoundCountChanged(1)};
-        div.appendChild(roundCountPlusButton);
+ 
 
         //
         // REST TIME
@@ -227,10 +235,80 @@ export class PageUI
         restTimePlusButton.onclick = () => {this.onRestTimeChanged(5)};
         div.appendChild(restTimePlusButton);
 
-        // Bag Type
+        //
+        // Workout Type: Timed vs. Scripted
+        //
         div = document.createElement("div");
         div.className = "plus_minus_container";
         this.uiConfigurationGroup.appendChild(div);
+
+        let workoutType = document.createElement("p");
+        workoutType.innerHTML = "WORKOUT:";
+        workoutType.className = "configuration_label";
+        div.appendChild(workoutType);
+
+        let workoutTypeLeftButton = document.createElement("button");
+        workoutTypeLeftButton.innerHTML = "<";
+        workoutTypeLeftButton.className = "plus_minus_button";
+        val = div.clientWidth - workoutType.clientWidth - 300;
+        workoutTypeLeftButton.style.marginLeft = val.toString() + "px";
+        workoutTypeLeftButton.onclick = () => {this.onWorkoutTypeChanged(-1)};
+        div.appendChild(workoutTypeLeftButton);
+        
+        this.uiWorkoutTypeDisplay = document.createElement("p");
+        this.uiWorkoutTypeDisplay.innerHTML = this.getWorkoutTypeString();
+        this.uiWorkoutTypeDisplay.className = "configuration_label";
+        this.uiWorkoutTypeDisplay.style.marginLeft = "auto";
+        div.appendChild(this.uiWorkoutTypeDisplay);
+
+        let workoutTypeRightButton = document.createElement("button");
+        workoutTypeRightButton.innerHTML = ">";
+        workoutTypeRightButton.className = "plus_minus_button";
+        workoutTypeRightButton.style.marginLeft = "auto";
+        workoutTypeRightButton.onclick = () => {this.onWorkoutTypeChanged(1)};
+        div.appendChild(workoutTypeRightButton);
+
+        //
+        // ROUNDS
+        //
+        this.uiTimedRoundGroup = document.createElement("div"); //create a group so we can show/hide easily
+        this.uiConfigurationGroup.appendChild(this.uiTimedRoundGroup);
+
+        
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiTimedRoundGroup.appendChild(div);
+
+        let roundCount = document.createElement("p");
+        roundCount.innerHTML = "ROUNDS:";
+        roundCount.className = "configuration_label";
+        div.appendChild(roundCount);
+
+        let roundCountMinusButton = document.createElement("button");
+        roundCountMinusButton.innerHTML = "-";
+        roundCountMinusButton.className = "plus_minus_button";
+        val = div.clientWidth - roundCount.clientWidth - 300;
+        roundCountMinusButton.style.marginLeft = val.toString() + "px";
+        roundCountMinusButton.onclick = () => {this.onRoundCountChanged(-1)};
+        div.appendChild(roundCountMinusButton);
+        
+        this.uiRoundCountDisplay = document.createElement("p");
+        this.uiRoundCountDisplay.innerHTML = this.roundCount.toString();
+        this.uiRoundCountDisplay.className = "configuration_label";
+        this.uiRoundCountDisplay.style.marginLeft = "auto";
+        div.appendChild(this.uiRoundCountDisplay);
+
+        let roundCountPlusButton = document.createElement("button");
+        roundCountPlusButton.innerHTML = "+";
+        roundCountPlusButton.className = "plus_minus_button";
+        roundCountPlusButton.style.marginLeft = "auto";
+        roundCountPlusButton.onclick = () => {this.onRoundCountChanged(1)};
+        div.appendChild(roundCountPlusButton);
+
+        // BAG TYPE
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiTimedRoundGroup.appendChild(div);
 
         let bagType = document.createElement("p");
         bagType.innerHTML = "BAG TYPE:";
@@ -259,11 +337,11 @@ export class PageUI
         div.appendChild(bagTypeRightButton);
 
 
-        // Switch bag each round
+        // SWAP BAG EACH ROUND
         
         div = document.createElement("div");
         div.className = "plus_minus_container";
-        this.uiConfigurationGroup.appendChild(div);
+        this.uiTimedRoundGroup.appendChild(div);
 
         let swapBagType = document.createElement("p");
         swapBagType.innerHTML = "SWAP BAG EACH ROUND:";
@@ -274,13 +352,64 @@ export class PageUI
         this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
         this.uiSwapBagTypeButton.className = "plus_minus_button";
         this.uiSwapBagTypeButton.style.marginLeft = "auto";
-        // this.uiSwapBagTypeButton.style.fontSize = "32px";
         this.uiSwapBagTypeButton.style.borderRadius = "30%";
         
         this.uiSwapBagTypeButton.onclick = () => {this.onSwapBagTypeChecked()};
         div.appendChild(this.uiSwapBagTypeButton);
 
-         // OK & CANCEL 
+
+        if (this.workoutType != 0)
+        {
+            this.uiConfigurationGroup.removeChild(this.uiTimedRoundGroup);
+        }
+
+
+
+        //
+        // Create the scripted workout selector UI
+        // 
+
+        this.uiScriptedWorkoutGroup = document.createElement("div"); //create a group so we can show/hide easily
+
+        if (this.workoutType == 1)
+        {
+            this.uiConfigurationGroup.appendChild(this.uiScriptedWorkoutGroup);
+        }
+        
+        // LEFT
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiScriptedWorkoutGroup.appendChild(div);
+
+        // DESCRIPTION
+        let workoutLeftButton = document.createElement("button");
+        workoutLeftButton.innerHTML = "<";
+        workoutLeftButton.className = "next_prev_button";
+        //val = div.clientWidth - bagType.clientWidth - 300;
+        //bagTypeLeftButton.style.marginLeft = val.toString() + "px";
+        workoutLeftButton.onclick = () => {this.onWorkoutSelectionChanged(-1)};
+        div.appendChild(workoutLeftButton);
+        
+        this.uiWorkoutDescription = document.createElement("p");
+        // this.uiWorkoutDescription.innerHTML = "DOUBLE-END BAG INSANITY:<br>6 rounds of drills. All double-end, all the time!"
+        this.uiWorkoutDescription.innerHTML = workoutData[this.whichScriptedWorkout][0].uiText;
+        this.uiWorkoutDescription.className = "workout_description_text"; //"configuration_label";
+        // this.uiWorkoutDescription.style.marginLeft = "auto";
+        // this.uiWorkoutDescription.style.height = "100%";
+        div.appendChild(this.uiWorkoutDescription);
+
+        let workoutRightButton = document.createElement("button");
+        workoutRightButton.innerHTML = ">";
+        workoutRightButton.className = "next_prev_button";
+        workoutRightButton.onclick = () => {this.onWorkoutSelectionChanged(1)};
+        div.appendChild(workoutRightButton);
+
+        // RIGHT
+
+
+
+
+        // OK & CANCEL 
         this.uiConfigurationGroup.appendChild(document.createElement("br"));
         this.uiConfigurationGroup.appendChild(document.createElement("br"));
 
@@ -303,8 +432,6 @@ export class PageUI
         okButton.style.boxShadow = "";
         okButton.onclick = () => { this.onOkClicked(); }
         div.appendChild(okButton);
-
-
 
     }
 
@@ -376,6 +503,12 @@ export class PageUI
         this.oldRoundTime = this.roundTime;
         this.oldRoundCount = this.roundCount;
         this.oldRestTime = this.restTime;
+        this.oldBagType = this.bagType;
+        this.oldBagSwap = this.doBagSwap;
+        this.oldWorkoutType = this.workoutType;
+        this.oldWhichScriptedWorkout = this.whichScriptedWorkout;
+
+
 
         this.uiRoundCountDisplay.innerHTML = this.roundCount.toString();
         this.uiRoundTimeDisplay.innerHTML = this.formatTime(this.roundTime);
@@ -430,6 +563,9 @@ export class PageUI
         this.roundCount = this.oldRoundCount;
         this.roundTime = this.oldRoundTime;
         this.restTime = this.oldRestTime;
+        this.doBagSwap = this.oldBagSwap;
+        this.workoutType = this.oldWorkoutType;
+        this.whichScriptedWorkout = this.oldWhichScriptedWorkout;
 
         this.hideConfigurationUI();
     }
@@ -442,6 +578,8 @@ export class PageUI
         window.localStorage.setItem("cfg_restTime", this.restTime);
         window.localStorage.setItem("cfg_bagType", this.bagType);
         window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
+        window.localStorage.setItem("cfg_workoutType", this.workoutType);
+        window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.whichScriptedWorkout][0].uid);
     }
 
     hideConfigurationUI()
@@ -459,10 +597,21 @@ export class PageUI
 
     getMatchConfigString()
     {
-        let roundOrRounds = (this.roundCount > 1) ? 
+        let matchDescription;
+        if (this.workoutType == 0)
+        {
+            let roundOrRounds = (this.roundCount > 1) ? 
             (" Rounds,<br>" + this.formatTime(this.restTime) + " Rest") : " Round";
 
-        return this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
+            matchDescription = this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
+        }
+        else
+        {
+            matchDescription = workoutData[this.whichScriptedWorkout][0].uiShortText + 
+            "<br>" + this.formatTime(this.roundTime) + " Round, " + this.formatTime(this.restTime) + " Rest";
+        }
+
+        return matchDescription; //this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
     }
 
     onBagTypeChanged(val)
@@ -492,6 +641,55 @@ export class PageUI
     getBagSwapString()
     {
         return this.doBagSwap ? "&#x2713;" : "";
+    }
+
+    getWorkoutTypeString()
+    {
+        if (this.workoutType == 0)
+        {
+            return "TIMED";
+        }
+        else if (this.workoutType == 1)
+        {
+            return "SCRIPTED";
+        }
+    }
+
+    onWorkoutTypeChanged(val)
+    {
+        this.workoutType = (this.workoutType + val + 2) % 2;
+        this.uiWorkoutTypeDisplay.innerHTML = this.getWorkoutTypeString();
+
+        if (this.workoutType == 0)
+        {
+            /*
+            this.uiTimedRoundGroup.style.visibility = "visible";
+            this.uiTimedRoundGroup.style.height = "auto";
+
+            this.uiScriptedWorkoutGroup.style.visibility = "hidden";
+            this.uiScriptedWorkoutGroup.style.height = "0%";
+            */
+
+            this.uiConfigurationGroup.replaceChild(this.uiTimedRoundGroup, this.uiScriptedWorkoutGroup);
+            
+        }
+        else
+        {
+            /*
+            this.uiConfigurationGroup.removeChild(this.uiTimedRoundGroup);
+            this.uiTimedRoundGroup.style.visibility = "hidden";
+            this.uiTimedRoundGroup.style.height = "0%";
+            this.uiConfigurationGroup.appendChild(this.uiScriptedWorkoutGroup);
+            this.uiScriptedWorkoutGroup.style.visibility = "visible";
+            this.uiScriptedWorkoutGroup.style.height = "auto";
+            */
+            this.uiConfigurationGroup.replaceChild(this.uiScriptedWorkoutGroup, this.uiTimedRoundGroup);
+        }
+    }
+    onWorkoutSelectionChanged(val)
+    {
+        this.whichScriptedWorkout = (this.whichScriptedWorkout + val + this.numScriptedWorkouts) % this.numScriptedWorkouts;
+        this.uiWorkoutDescription.innerHTML = workoutData[this.whichScriptedWorkout][0].uiText;
     }
     
 }

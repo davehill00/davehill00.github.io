@@ -29,6 +29,9 @@ export function doesCircleCollideWithOtherCircle(
     if (hit)
     {
         result.hitPoint.lerpVectors(startPos, endPos, result.hitT);
+
+        result.hitNormal.subVectors(endPos, startPos);
+        result.hitNormal.normalize();
     }
     return hit;
 }

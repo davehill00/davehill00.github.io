@@ -54964,7 +54964,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()(_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default.a);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, "html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n    font-size: 3vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":["html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n    font-size: 3vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, "html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n    font-size: 3vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #303030;\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 150px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"AAAA;IACI,gBAAgB;EAClB;;AAEF;IACI,kCAAkC;IAClC,eAAe;IACf,aAAa;AACjB;AACA;IACI,kCAAkC;IAClC,eAAe;IACf,cAAc;AAClB;AACA;IACI,yBAAyB;IACzB,aAAa;IACb,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;IAChB,mBAAmB;IACnB,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,QAAQ;AACZ;AACA;IACI,yBAAyB;IACzB,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;IAChB,mBAAmB;IACnB,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,aAAa;AACjB;AACA;IACI,yBAAyB;IACzB,aAAa;IACb,YAAY;IACZ,WAAW;IACX,aAAa;IACb,kBAAkB;IAClB,kBAAkB;IAClB,QAAQ;AACZ;AACA;IACI,yBAAyB;IACzB,WAAW;AACf;;AAEA;;IAEI,6BAA6B;IAC7B,eAAe;IACf,aAAa;IACb,qBAAqB;IACrB,iBAAiB;IACjB,UAAU;IACV,WAAW;IACX,kBAAkB;IAClB,YAAY;AAChB;;AAEA;IACI,cAAc;AAClB;AACA;IACI,cAAc;AAClB;AACA;IACI,cAAc;AAClB;AACA;;IAEI,kBAAkB;IAClB,OAAO;IACP,UAAU;IACV,YAAY;IACZ,UAAU;AACd;AACA;;IAEI,yBAAyB;IACzB,aAAa;IACb,kBAAkB;IAClB;;;iBAGa;IACb,QAAQ;IACR,SAAS;IACT,YAAY;IACZ,WAAW;IACX;yBACqB;AACzB;AACA;IACI,eAAe;IACf,cAAc;IACd,iBAAiB;IACjB,kBAAkB;IAClB,uBAAuB;IACvB,iBAAiB;IACjB,UAAU;IACV,YAAY;IACZ,mCAAmC;IACnC,uCAAuC;IACvC,4EAA4E;AAChF;AACA;;IAEI,kCAAkC;IAClC,eAAe;IACf,UAAU;IACV,aAAa;IACb,yBAAyB;;IAEzB,YAAY;IACZ,gBAAgB;IAChB,gBAAgB;IAChB,mBAAmB;IACnB,cAAc;AAClB;AACA;;IAEI,aAAa;IACb,uBAAuB;IACvB,mBAAmB;IACnB,iBAAiB;IACjB,WAAW;IACX,iBAAiB;IACjB,6BAA6B;AACjC;AACA;;IAEI,cAAc;IACd,UAAU;IACV,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,qBAAqB;IACrB,mBAAmB;IACnB,mBAAmB;IACnB,YAAY;IACZ,4EAA4E;IAC5E,iBAAiB;AACrB;AACA;;IAEI,kCAAkC;IAClC,eAAe;IACf,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,iBAAiB;IACjB,mBAAmB;IACnB,iBAAiB;IACjB,UAAU;IACV,iBAAiB;AACrB;AACA;;IAEI,aAAa;IACb,uBAAuB;IACvB,mBAAmB;IACnB,UAAU;IACV,gBAAgB;IAChB,eAAe;IACf,6BAA6B;AACjC;AACA;;IAEI,UAAU;IACV,cAAc;IACd,2BAA2B;AAC/B;AACA;;IAEI,kCAAkC;IAClC,qBAAqB;IACrB,cAAc;IACd,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,mBAAmB;IACnB,SAAS;IACT,mBAAmB;IACnB,WAAW;IACX,WAAW;IACX,WAAW;IACX,4EAA4E;AAChF;AACA;;IAEI,aAAa;IACb,qBAAqB;AACzB;AACA;;IAEI,aAAa;IACb,qBAAqB;IACrB,cAAc;AAClB;;AAEA;;IAEI,kCAAkC;IAClC,eAAe;IACf,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,iBAAiB;IACjB,mBAAmB;IACnB,kBAAkB;IAClB,iBAAiB;IACjB,WAAW;IACX,YAAY;AAChB;;AAEA;;IAEI,aAAa;IACb,2BAA2B;IAC3B,UAAU;IACV,eAAe;IACf,2BAA2B;AAC/B;AACA;;IAEI,yBAAyB;AAC7B;;AAEA;;IAEI,kCAAkC;IAClC,eAAe;IACf,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,iBAAiB;IACjB,mBAAmB;IACnB,wBAAwB;IACxB,iBAAiB;IACjB,qBAAqB;IACrB,WAAW;IACX,YAAY;AAChB;AACA;;IAEI,kCAAkC;IAClC,eAAe;IACf,aAAa;IACb,yBAAyB;IACzB,qBAAqB;IACrB,iBAAiB;IACjB,mBAAmB;IACnB,wBAAwB;IACxB,iBAAiB;IACjB,WAAW;IACX,WAAW;IACX,aAAa;IACb,YAAY;IACZ,iBAAiB;IACjB,kBAAkB;;AAEtB;AACA;;IAEI,2BAA2B;IAC3B,SAAS;IACT,gBAAgB;AACpB;;AAEA;;IAEI,iBAAiB;AACrB;AACA;;IAEI,aAAa;IACb,uBAAuB;IACvB,yBAAyB;IACzB,WAAW;IACX,WAAW;IACX,aAAa;IACb,uBAAuB;AAC3B;AACA;;IAEI,cAAc;IACd,6BAA6B;IAC7B,UAAU;IACV,YAAY;;IAEZ,cAAc;IACd,mBAAmB;IACnB,iBAAiB;IACjB,uBAAuB;;IAEvB,eAAe;AACnB;AACA;;IAEI,iBAAiB;IACjB,WAAW;IACX,gBAAgB;;IAEhB;;0BAEsB;AAC1B;AACA;;IAEI,eAAe;IACf,cAAc;IACd,YAAY;IACZ,UAAU;IACV,gBAAgB;IAChB,iBAAiB;IACjB,uBAAuB;IACvB,gBAAgB;AACpB;;;AAGA;;IAEI,oBAAoB;IACpB,kBAAkB;;IAElB,aAAa;IACb,uBAAuB;;IAEvB,kCAAkC;IAClC,eAAe;IACf,aAAa;AACjB","sourcesContent":["html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    color:#cc1010;\r\n    border-color: #cc1010;\r\n    font-size: 3vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #303030;\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 150px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
@@ -115221,6 +115221,7 @@ class HeavyBag extends Bag
                 this.velocity.reflect(hr.hitNormal);
                 this.velocity.multiplyScalar(0.5);
 
+                /*
                 // Play the hit effects
                 tVec0.subVectors(desiredVelocity, glove.velocity);
                 hr.hitNormal.negate(); // because we want this WRT the bag (and it's actually WRT the glove right now)
@@ -115232,6 +115233,7 @@ class HeavyBag extends Bag
                     accumulatedTime,
                     false
                 );
+                */
 
             }
             else
@@ -115302,9 +115304,10 @@ class HeavyBag extends Bag
                 // get the position -- use getWorldPosition because the bag is parented into a scene
                 // and "position" just gives the local position relative to parent
                 this.mesh.getWorldPosition(tVec0);
+
+
                 //set the position of the punch effect, plus a slight tweak to make it appear
                 //more directly under the glove
-
                 let kAdjust = -0.05;
                 // if (velocity.y > 1.0)
                 // {
@@ -115559,6 +115562,7 @@ function initialize()
     envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
     envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
     envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
+    envMapObjects['Screen'] = {intensity: 0.2, roughness: 0.8};
     
     
     // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};
@@ -115625,7 +115629,17 @@ function initialize()
 
                     if (obj.name == "Screen")
                     {
-                        obj.material.emissiveIntensity = 1.25;
+                        //obj.material.emissiveIntensity = 1.25;
+                        //obj.material = new THREE.MeshStandardMaterial({color: 0xAAB0BF});
+                        //obj.material.color.convertSRGBToLinear();
+                        //obj.material.color.multiplyScalar(1.25);
+                        let loader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
+                        let tvBkgd = loader.load("./content/tv_background2.png");
+                        tvBkgd.flipY = false;
+                
+                        obj.material.name = "TVSCREEN";
+                        obj.material.map = tvBkgd;
+        
                     }
                     else if (obj.name =="Floor")
                     {
@@ -115785,7 +115799,7 @@ function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX,
 function onSessionStart()
 {
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
-    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap);
+    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
     gameLogic.start();
 }
 
@@ -116020,6 +116034,9 @@ function doesCircleCollideWithOtherCircle(
     if (hit)
     {
         result.hitPoint.lerpVectors(startPos, endPos, result.hitT);
+
+        result.hitNormal.subVectors(endPos, startPos);
+        result.hitNormal.normalize();
     }
     return hit;
 }
@@ -116198,9 +116215,13 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
 
 
 
-            const kRestLength = 1.0; //0.8;
-            const kPositionOffset = 1.51; //10 feet ceiling, suspend in the middle
+            // Sloppy bag -- doesn't feel good yet
+            // const kRestLength = 1.0; //0.8;
+            // const kPositionOffset = 1.51; //10 feet ceiling, suspend in the middle
 
+            const kRestLength = 0.4;
+            const kPositionOffset = 1.51;
+            
             tVec0.copy(this.targetPosition);
             tVec0.y += kPositionOffset;
             tVec0.sub(desiredPosition);
@@ -116215,11 +116236,12 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
 
 
             // Fairly tight/fast settings, paired with 0.4 kRestLength, -1.4 kOverallDamping
-            // const kSpringConstant = 150.0;
-            // const kSpringDamping = -2.0;
+            const kSpringConstant = 170.0;
+            const kSpringDamping = -2.0;
 
-            const kSpringConstant = 135.0;
-            const kSpringDamping = -1.0;
+            // Sloppy bag -- doesn't feel good yet
+            // const kSpringConstant = 135.0;
+            // const kSpringDamping = -1.0;
                       
             tVec0.multiplyScalar(kSpringConstant); // this is now the "Hooke-ian" force (-k*x)
             // now apply velocity damping
@@ -116253,7 +116275,9 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
             //add the forces together
             tVec0.add(tVec2); 
 
-            const kOverallDamping = -0.75; // 1.5
+            // Sloppy bag -- doesn't feel good yet
+            // const kOverallDamping = -0.75;
+            const kOverallDamping = -1.65;
             tVec0.addScaledVector(desiredVelocity, kOverallDamping);
 
             // Apply the resulting force as an acceleration
@@ -116272,7 +116296,7 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
             const kOutsideRadiusSq = kOutsideRadius * kOutsideRadius;
             if (tVec0.lengthSq() > kOutsideRadiusSq)
             {
-                console.log("MOVING OUTSIDE RADIUS");
+                // console.log("MOVING OUTSIDE RADIUS");
                 let length = tVec0.length();
                 let t = kOutsideRadius/length; // what percentage of the way have we moved.
 
@@ -116469,12 +116493,25 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
     {
         // Compute the delta speed between the bag and the glove
         tVec0.subVectors(this.velocity, gloveVelocity);
-        let collisionSpeed = tVec0.length();
+        // let collisionSpeed = tVec0.length();
 
-        // Apply the glove velocity to the bag
+        // Apply the glove velocity to the bag. We want to blend between projected velocity (which gives the bag
+        // some erratic movement based on where you hit it) and straight glove velocity (which makes it feel
+        // a bit more predictable).
+
+        // Projected velocity
         tVec0.copy(gloveVelocity);
         tVec0.projectOnVector(hitNormalWRTBag);
-        tVec0.multiplyScalar(2.0); // scale it up to give the punch more weight
+        tVec0.multiplyScalar(0.3);
+        
+        // Scaled glove velocity -- scale to reduce the contribution
+        tVec1.copy(gloveVelocity);
+        tVec1.multiplyScalar(0.8);
+
+        // Combined velocity
+        tVec0.add(tVec1);
+        // tVec0.multiplyScalar(1.3); // Scale it up to give the punch more weight
+
         this.velocity.add(tVec0);
 
         this.processCollisionEffects(glove, gloveVelocity.length(), hitPoint, hitNormalWRTBag, accumulatedTime);
@@ -116528,14 +116565,21 @@ const SESSION_PAUSED = 6;
 
 
 
-const kIntroDuration = 2.0;
-const kIntroGetReadyDuration = 3.0;
+const kIntroDuration = 5.0;
+const kIntroGetReadyDuration = 5.0;
 const kRestGetReadyDuration = 5.0;
 const kRoundAlmostDoneTime = 10.0;
 // const kGetReadyDuration = 3.0;
 
 const kWorkoutTextBoxSmallFontSize = 470;
 const kWorkoutTextBoxBigFontSize = 350;
+
+const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
+const kRedColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x5D1719);
+kRedColor.multiplyScalar(1.5);
+const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x606060);
+
+// kRedColor.convertSRGBToLinear();
 
 /*
 
@@ -116564,6 +116608,15 @@ Boxing Session:
 3. Play "Almost Done" sound - thump, thump, thump
 
 */
+
+function formatTimeString(timeInSeconds)
+{
+    let hours = Math.floor(timeInSeconds / 3600);
+    let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
+    let seconds = timeInSeconds - (hours * 3600) - (minutes * 60);
+
+    return minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+}
 
 class BoxingRound
 {
@@ -116618,24 +116671,30 @@ class BoxingRound
         return (this.bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"]) ? "Heavy Bag" : "Double-end Bag";
     }
 
-    getTimeString(timeInSeconds)
-    {
-        let hours = Math.floor(timeInSeconds / 3600);
-        let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
-        let seconds = timeInSeconds - (hours * 3600) - (minutes * 60);
+    
 
-        return minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+    onBagHit(whichHand, speed)
+    {
+
     }
 
 }
 
 class TimedBoxingRound extends BoxingRound
 {
-    constructor(duration, roundNumber, maxRounds, bagType)
+    constructor(duration, roundNumber, maxRounds, bagType, introText = null)
     {
         super(roundNumber, maxRounds, bagType);
         this.roundDuration = duration;
         
+        if (introText === null)
+        {
+            this.introText = "Freestyle round:\n \u2022 " + this.getBagTypeString() + ", " + formatTimeString(this.roundDuration) + " duration";
+        }
+        else
+        {
+            this.introText = introText;
+        }
     }
 
     start(session, elapsedTime)
@@ -116670,8 +116729,7 @@ class TimedBoxingRound extends BoxingRound
 
     getIntroText()
     {
-        return "Freestyle round:\n \u2022 " + this.getBagTypeString() + ", " + this.getTimeString(this.roundDuration) + " duration" + 
-        "\n \u2022 Focus on form, go for speed, or try some new moves.";
+        return this.introText;
     }
 }
 
@@ -116734,19 +116792,73 @@ class ScriptedBoxingRound extends TimedBoxingRound
     }
 }
 
+class NumberOfPunchesBoxingRound extends BoxingRound
+{
+    constructor(numPunches, roundNumber, maxRounds, bagType, introText = null)
+    {
+        super(roundNumber, maxRounds, bagType);
+        this.numPunches = numPunches;
+        this.almostDonePunchCount = Math.floor(numPunches * 0.25);
+        //console.log("Almost Done Count: " + this.almostDonePunchCount);
+
+        if (introText === null)
+        {
+            this.introText = "Throw " + this.numPunches + " punches on the " + this.getBagTypeString() + ".";
+        }
+        else
+        {
+            this.introText = introText;
+        }
+    }
+
+    start(session, elapsedTime)
+    {
+        session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false);
+        this.startTime = elapsedTime;
+        this.session = session;
+    }
+
+    update(session, elapsedTime)
+    {
+        session.updateTimer(elapsedTime - this.startTime, false);
+    }
+
+    isOver(elapsedTime)
+    {
+        return this.numPunches <= 0;
+    }
+
+    onBagHit(whichHand, speed)
+    {
+        this.numPunches--;
+        this.session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false );
+
+        if(this.numPunches == this.almostDonePunchCount)
+        {
+            this.session.playGetReadySound();
+        }
+    }
+
+    getIntroText()
+    {
+        return this.introText;
+    }
+}
 
 class BoxingSession
 {
-    constructor(scene, audioListener, heavyBag, doubleEndedBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
+    constructor(scene, audioListener, heavyBag, doubleEndBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
     {
         this.scene = scene;
         this.audioListener = audioListener;
         this.heavyBag = heavyBag;
-        this.doubleEndedBag = doubleEndedBag;
+        this.doubleEndBag = doubleEndBag;
         this.TV = null;
 
-        this.initialize(numRounds, roundDuration, restDuration);
+        // this.initialize(numRounds, roundDuration, restDuration);
 
+        heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
+        doubleEndBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
         
         //load assets here
         
@@ -116827,12 +116939,22 @@ class BoxingSession
 
         this.currentTimeInWholeSeconds = -1.0;
 
+
+        let loader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
+        let tvBkgd = loader.load("./content/tv_background2.png");
+        tvBkgd.flipY = false;
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
             {
-                node.material.emissiveIntensity = 0.35;
-                node.material.emissive.set(0xAAAAAA);
+                node.material = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({color: 0xAAB0BF});
+                node.material.color.convertSRGBToLinear();
+                node.material.color.multiplyScalar(1.25);
+                node.material.name = "TVSCREEN";
+                node.material.map = tvBkgd;
+                // node.material.emissiveIntensity = 0.35;
+                // node.material.emissive.set(0x406080);
+                // node.material.map = tvBkgd;
                 this.TV = node;
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
@@ -116845,8 +116967,8 @@ class BoxingSession
                 this.TV.add(this.soundGetReady);
                 this.TV.add(this.soundNewInstructions);
 
-                this.updateTimer();
-                this.updateRoundsMessage();
+                // this.updateTimer();
+                // this.updateRoundsMessage();
             }
         });
 
@@ -116858,7 +116980,7 @@ class BoxingSession
         
     }
 
-    initialize(numRounds, roundDuration, restDuration, bagType, bagSwap)
+    initialize(numRounds, roundDuration, restDuration, bagType, bagSwap, workoutType, whichScriptedWorkout)
     {
         // this.numRounds = numRounds;
         this.roundDuration = roundDuration;
@@ -116874,11 +116996,17 @@ class BoxingSession
 
         if (this.heavyBag.visible)
             this.heavyBag.hide();
-        if (this.doubleEndedBag.visible)
-            this.doubleEndedBag.hide();
+        if (this.doubleEndBag.visible)
+            this.doubleEndBag.hide();
 
-        this.initializeTimedWorkout(numRounds, roundDuration, bagType, bagSwap);
-        // this.initializeScriptedWorkout(workoutData[1], roundDuration);
+        if (workoutType == 0)
+        {
+            this.initializeTimedWorkout(numRounds, roundDuration, bagType, bagSwap);
+        }
+        else
+        {
+            this.initializeScriptedWorkout(_workoutData_js__WEBPACK_IMPORTED_MODULE_2__["workoutData"][whichScriptedWorkout], roundDuration);
+        }
 
         //this.boxingRoundInfo = new BoxingRound(roundDuration);
         this.boxingRoundInfo = this.boxingRounds[0];
@@ -116892,14 +117020,21 @@ class BoxingSession
         this.currentRound = 0;
         this.boxingRounds = [null];
 
+        //Set up this message before we start swapping bags
+        this.workoutIntroMessage = "FREESTYLE " + (bagSwap ? "ALTERNATING BAGS" : (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"] ? "HEAVY BAG" : "DOUBLE-END BAG")) + ":\n"+
+        " \u2022 " + numRounds + " rounds, " + formatTimeString(roundDuration) + " per round.\n" + 
+        " \u2022 Focus on form, go for speed, or try some new moves.";
+
+
         for (let i = 0; i < this.numRounds; i++)
         {
-            this.boxingRounds.push(new TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
+            this.boxingRounds.push(
+                new TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
             if (bagSwap)
             {
                 if (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"])
                 {
-                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_ENDED_BAG"];
+                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_END_BAG"];
                 }
                 else
                 {
@@ -116916,9 +117051,24 @@ class BoxingSession
         this.boxingRounds = [null];
         for (let i = 0; i < this.numRounds; i++)
         {
-            let round = new ScriptedBoxingRound(info, roundDuration, i+1);
+            let round;
+            let roundNumber = i+1;
+            let roundInfo = info[roundNumber];
+            if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUNDTYPE_SCRIPTED"])
+            {
+                round = new ScriptedBoxingRound(info, roundDuration, roundNumber);
+            }
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUNDTYPE_NUM_PUNCHES"])
+            {
+                round = new NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+            }
+            else
+            {
+                round = new TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+            }
             this.boxingRounds.push(round);
         }
+        this.workoutIntroMessage = info[0].introText;
         //this.workoutInfo = info;
     }
 
@@ -116928,10 +117078,12 @@ class BoxingSession
         this.elapsedTime = 0.0;
         this.currentRound = 0;
         this.updateRoundsMessage();
+        this.updateTimer();
 
         this.workoutStageTextBox.visible = false;
         this.workoutIntroTextBox.visible = true;
         //this.updateWorkoutMessage();
+        this.displayIntroMessage(this.workoutIntroMessage);
     }
 
     pause()
@@ -116949,9 +117101,9 @@ class BoxingSession
 
     update(dt, accumulatedTime)
     {
-        if (this.doubleEndedBag.visible)
+        if (this.doubleEndBag.visible)
         {
-            this.doubleEndedBag.update(dt, accumulatedTime);
+            this.doubleEndBag.update(dt, accumulatedTime);
         }
         else if (this.heavyBag.visible)
         {
@@ -116974,7 +117126,7 @@ class BoxingSession
                 // COUNTING DOWN THE INTRO
                 else
                 {
-                    this.updateTimer(kIntroDuration + kIntroGetReadyDuration - this.elapsedTime);
+                    this.updateTimer(kIntroDuration /*+ kIntroGetReadyDuration*/ - this.elapsedTime);
                 }
                 break;
             case SESSION_GET_READY:
@@ -116995,18 +117147,11 @@ class BoxingSession
                     // play "starting bell" sound
                     this.sound321.play();
 
-
                     this.currentRound++;
-
-                    this.boxingRoundInfo.start(this, this.elapsedTime);
-
-
                     this.workoutIntroTextBox.visible = false;
                     this.workoutStageTextBox.visible = true;
 
-                    // let roundInfo = this.workoutInfo[this.currentRound];
-                    // this.nextWorkoutStageTime = roundInfo.stages[0].startTimePercent * this.roundDuration;
-                    // this.nextWorkoutStage = 0;
+                    this.boxingRoundInfo.start(this, this.elapsedTime);
 
                     // update the TV screen
                     this.updateRoundsMessage();
@@ -117021,32 +117166,11 @@ class BoxingSession
                 this.elapsedTime += dt;
 
                 this.boxingRoundInfo.update(this, this.elapsedTime);
-                // round.update(session); //this.elapsedTime);
-                // if(round.isOver())
- 
-
-                //ALMOST DONE THE ROUND
-                /*if (!this.playedAlmostDoneAlert && (this.roundDuration - this.elapsedTime) < kRoundAlmostDoneTime)
-                {
-                    this.playedAlmostDoneAlert = true;
-                    this.soundGetReady.play();
-                }
-                */
 
                 // END OF THE ROUND
-                if (this.boxingRoundInfo.isOver(this.elapsedTime)) //this.elapsedTime > this.roundDuration)
+                if (this.boxingRoundInfo.isOver(this.elapsedTime))
                 {
                     this.boxingRoundInfo.end(this);
-
-                    if (this.boxingRoundInfo.didPlayerFail() || this.boxingRoundInfo.isFinalRound()) //this.currentRound < this.numRounds)
-                    {
-                        this.state = SESSION_OUTRO;
-                    }
-                    else
-                    {
-                        this.hideBag();
-                        this.state = SESSION_REST;
-                    }
 
                     this.elapsedTime = 0.0;
                     this.playedAlmostDoneAlert = false;
@@ -117055,15 +117179,26 @@ class BoxingSession
                     this.soundEndOfRound.play();
                     this.updateRoundsMessage();
 
-                    //this.workoutTextBox.setFontPixelsPerMeter(kWorkoutTextBoxSmallFontSize)
-
-                    //this.updateWorkoutMessage(); //END OF ROUND
+                    if (this.boxingRoundInfo.didPlayerFail() || this.boxingRoundInfo.isFinalRound())
+                    {
+                        if (this.boxingRoundInfo.didPlayerFail())
+                        {
+                            this.displayWorkoutInfoMessage("Better luck next time!", false);
+                        }
+                        else
+                        {
+                            this.displayWorkoutInfoMessage("Great job!", false);
+                        }
+                        this.state = SESSION_OUTRO;
+                    }
+                    else
+                    {
+                        this.displayWorkoutInfoMessage("Take a breather!", false);
+                        this.hideBag();
+                        this.state = SESSION_REST;
+                    }
+                    
                 }
-                // else
-                // {
-                //     this.updateTimer(this.roundDuration - this.elapsedTime);
-                //     this.updateWorkoutMessage(); //DURING ROUND
-                // }
                 break;
             case SESSION_REST:
                 this.elapsedTime += dt;
@@ -117111,8 +117246,8 @@ class BoxingSession
                 case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"]:
                     this.heavyBag.fadeOut();
                     break;
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_ENDED_BAG"]:
-                    this.doubleEndedBag.fadeOut();
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_END_BAG"]:
+                    this.doubleEndBag.fadeOut();
                     break;
             }
             this.currentBagType = null;
@@ -117129,23 +117264,21 @@ class BoxingSession
                     this.heavyBag.fadeIn();
                     this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"];
                     break;
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_ENDED_BAG"]:
-                    this.doubleEndedBag.fadeIn();
-                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_ENDED_BAG"];
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_END_BAG"]:
+                    this.doubleEndBag.fadeIn();
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_DOUBLE_END_BAG"];
                     break;
             }
             
         }
     }
 
-    updateTimer(value)
+    updateTimer(value, bChangeColorOnFinalTenSeconds=true)
     {
         let message;
-        let messageColor = null;
-        let odd = false;
         if (this.state == SESSION_NULL || this.state == SESSION_OUTRO)
         {
-            this.timerTextBox.setMessageColor(0x000000);
+            this.timerTextBox.setMessageColor(kGreyColor);
             message = "0:00";
         }
         else
@@ -117158,28 +117291,24 @@ class BoxingSession
             this.currentTimeInWholeSeconds = newTimeInWholeSeconds;
 
 
-            let hours = Math.floor(newTimeInWholeSeconds / 3600);
-            let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
-            let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
-
-            if (this.state == SESSION_ROUND && newTimeInWholeSeconds <= 10.0)
+            if (bChangeColorOnFinalTenSeconds && this.state == SESSION_ROUND && newTimeInWholeSeconds <= 10.0)
             {
-                this.timerTextBox.setMessageColor(0xaa0000);
+                this.timerTextBox.setMessageColor(kRedColor);
+            }
+            else if(this.state == SESSION_INTRO)
+            {
+                this.timerTextBox.setMessageColor(kGreyColor);
             }
             else
             {
-                this.timerTextBox.setMessageColor(0x000000);
+                this.timerTextBox.setMessageColor(kBlackColor);
             }
-            if (seconds % 2)
-            {
-                odd = true;
-            }
-
-            message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+            message = formatTimeString(newTimeInWholeSeconds);
+            //message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
         }
         this.timerTextBox.displayMessage(message);
-
     }
+
     updateRoundsMessage()
     {
         let roundMessage;
@@ -117216,68 +117345,17 @@ class BoxingSession
         this.stateTextBox.displayMessage(stateMessage);
 
     }
-    updateWorkoutMessage()
+    
+    displayIntroMessage(message)
     {
-        return;
-
-        console.assert(this.workoutInfo);
-        switch(this.state)
-        {
-            case SESSION_INTRO:
-                {
-                    console.assert(!this.workoutStageTextBox.visible && this.workoutIntroTextBox.visible);
-                    this.workoutIntroTextBox.displayMessage(this.workoutInfo[0].introText);
-                }
-                break;
-            case SESSION_GET_READY:
-                {
-                    console.assert(!this.workoutStageTextBox.visible && this.workoutIntroTextBox.visible);
-                    console.assert(this.workoutInfo.length > (this.currentRound + 1));
-                    let roundInfo = this.workoutInfo[this.currentRound + 1];
-                    this.workoutIntroTextBox.displayMessage(roundInfo.introText);
-                    this.nextWorkoutStageTime = roundInfo.stages[0].startTimePercent * this.roundDuration;
-                    this.nextWorkoutStage = 0;
-                }
-                break;
-            case SESSION_ROUND:
-                {
-                    console.assert(this.workoutStageTextBox.visible && !this.workoutIntroTextBox.visible);
-                    if (this.elapsedTime >= this.nextWorkoutStageTime)
-                    {
-                        if (this.nextWorkoutStage != 0)
-                        {
-                            this.soundNewInstructions.play();
-                        }
-                        let roundInfo = this.workoutInfo[this.currentRound];
-                        this.workoutStageTextBox.displayMessage(roundInfo.stages[this.nextWorkoutStage].descriptionText);
-                        this.nextWorkoutStage++;
-                        if (this.nextWorkoutStage < roundInfo.stages.length)
-                        {
-                            this.nextWorkoutStageTime = roundInfo.stages[this.nextWorkoutStage].startTimePercent * this.roundDuration;
-                        }
-                        else
-                        {
-                            this.nextWorkoutStageTime = Number.MAX_VALUE;
-                        }
-                        
-                    }
-                }
-                break;
-            case SESSION_REST:
-                {
-                    console.assert(this.workoutStageTextBox.visible && !this.workoutIntroTextBox.visible);
-                    this.workoutStageTextBox.displayMessage("TAKE A BREATHER!");
-                }
-                break;
-            case SESSION_OUTRO:
-                this.workoutIntroTextBox.visible = false;
-                this.workoutStageTextBox.visible = false;
-                break;
-        }
+        console.assert(this.workoutIntroTextBox.visible);
+        this.workoutIntroTextBox.displayMessage(message);
     }
-
+    
     displayWorkoutInfoMessage(message, wantUpdateSound = true)
     {
+        console.assert(this.workoutStageTextBox.visible);
+        //console.log("display workout info message: " + message);
         if (wantUpdateSound)
         {
             this.soundNewInstructions.play();
@@ -117289,6 +117367,15 @@ class BoxingSession
     {
         this.soundGetReady.play();
     }
+
+    onBagHit(whichHand, speed)
+    {
+        if (this.state == SESSION_ROUND)
+        {
+            this.boxingRoundInfo.onBagHit(whichHand, speed);
+        }
+
+    }
 }
 
 class PunchingStats
@@ -117299,11 +117386,6 @@ class PunchingStats
         this.scene = scene;
         this.TV = null;
       
-
-        // @TODO -- swap out punch stats with a Text Box
-
-
-
         this.punches = 0;
         this.lastPunchTime = -1.0;
         this.averagePunchRate = 1.0;
@@ -117744,7 +117826,8 @@ class MultiInstanceSound extends three__WEBPACK_IMPORTED_MODULE_0__["Group"]
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageUI", function() { return PageUI; });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
+
 
 
 const kMaxLogo = "40%";
@@ -117759,6 +117842,10 @@ class PageUI
         this.roundTime = 120;
         this.roundCount = 3;
         this.restTime = 30;
+        this.workoutType = 1;
+        this.whichScriptedWorkout = 0;
+        this.numScriptedWorkouts = _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["workoutData"].length;
+        
         this.bagType = 1;
         this.doBagSwap = true;
 
@@ -117770,29 +117857,63 @@ class PageUI
             window.localStorage.setItem("cfg_restTime", this.restTime);
             window.localStorage.setItem("cfg_bagType", this.bagType);
             window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
+            window.localStorage.setItem("cfg_workoutType", this.workoutType);
+            window.localStorage.setItem("cfg_scriptedWorkoutId", _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["workoutData"][this.whichScriptedWorkout][0].uid);
         }
         else
         {
             let val;
             val = window.localStorage.getItem("cfg_roundTime");
             if (val)
+            {
                 this.roundTime = parseInt(val);
+            }
 
             val = window.localStorage.getItem("cfg_roundCount");
             if (val)
+            {
                 this.roundCount = parseInt(val);
+            }
 
             val = window.localStorage.getItem("cfg_restTime");
             if (val)
+            {
                 this.restTime = parseInt(val);
+            }
 
             val = window.localStorage.getItem("cfg_bagType");
             if (val)
+            {
                 this.bagType = parseInt(val);
+            }
 
             val = window.localStorage.getItem("cfg_bagSwap");
             if (val)
+            {
                 this.doBagSwap = (parseInt(val) == 1);
+            }
+            
+            val = window.localStorage.getItem("cfg_workoutType")
+            if (val)
+            {
+                this.workoutType = parseInt(val);
+            }
+            
+            val = window.localStorage.getItem("cfg_scriptedWorkoutId");
+            if (val)
+            {
+                let matchCfgId = (element) => element[0].uid == val;
+                let matchedIndex = _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["workoutData"].findIndex(matchCfgId);
+                if (matchedIndex < 0)
+                {
+                    //failed to match
+                    this.whichScriptedWorkout = 0;
+                }
+                else
+                {
+                    this.whichScriptedWorkout = matchedIndex;
+                }
+            }
         }
 
 
@@ -117908,38 +118029,7 @@ class PageUI
         roundTimePlusButton.onclick = () => {this.onRoundTimeChanged(30)};
         div.appendChild(roundTimePlusButton);
 
-        //
-        // ROUNDS
-        //
-        div = document.createElement("div");
-        div.className = "plus_minus_container";
-        this.uiConfigurationGroup.appendChild(div);
-
-        let roundCount = document.createElement("p");
-        roundCount.innerHTML = "ROUNDS:";
-        roundCount.className = "configuration_label";
-        div.appendChild(roundCount);
-
-        let roundCountMinusButton = document.createElement("button");
-        roundCountMinusButton.innerHTML = "-";
-        roundCountMinusButton.className = "plus_minus_button";
-        val = div.clientWidth - roundCount.clientWidth - 300;
-        roundCountMinusButton.style.marginLeft = val.toString() + "px";
-        roundCountMinusButton.onclick = () => {this.onRoundCountChanged(-1)};
-        div.appendChild(roundCountMinusButton);
-        
-        this.uiRoundCountDisplay = document.createElement("p");
-        this.uiRoundCountDisplay.innerHTML = this.roundCount.toString();
-        this.uiRoundCountDisplay.className = "configuration_label";
-        this.uiRoundCountDisplay.style.marginLeft = "auto";
-        div.appendChild(this.uiRoundCountDisplay);
-
-        let roundCountPlusButton = document.createElement("button");
-        roundCountPlusButton.innerHTML = "+";
-        roundCountPlusButton.className = "plus_minus_button";
-        roundCountPlusButton.style.marginLeft = "auto";
-        roundCountPlusButton.onclick = () => {this.onRoundCountChanged(1)};
-        div.appendChild(roundCountPlusButton);
+ 
 
         //
         // REST TIME
@@ -117974,10 +118064,80 @@ class PageUI
         restTimePlusButton.onclick = () => {this.onRestTimeChanged(5)};
         div.appendChild(restTimePlusButton);
 
-        // Bag Type
+        //
+        // Workout Type: Timed vs. Scripted
+        //
         div = document.createElement("div");
         div.className = "plus_minus_container";
         this.uiConfigurationGroup.appendChild(div);
+
+        let workoutType = document.createElement("p");
+        workoutType.innerHTML = "WORKOUT:";
+        workoutType.className = "configuration_label";
+        div.appendChild(workoutType);
+
+        let workoutTypeLeftButton = document.createElement("button");
+        workoutTypeLeftButton.innerHTML = "<";
+        workoutTypeLeftButton.className = "plus_minus_button";
+        val = div.clientWidth - workoutType.clientWidth - 300;
+        workoutTypeLeftButton.style.marginLeft = val.toString() + "px";
+        workoutTypeLeftButton.onclick = () => {this.onWorkoutTypeChanged(-1)};
+        div.appendChild(workoutTypeLeftButton);
+        
+        this.uiWorkoutTypeDisplay = document.createElement("p");
+        this.uiWorkoutTypeDisplay.innerHTML = this.getWorkoutTypeString();
+        this.uiWorkoutTypeDisplay.className = "configuration_label";
+        this.uiWorkoutTypeDisplay.style.marginLeft = "auto";
+        div.appendChild(this.uiWorkoutTypeDisplay);
+
+        let workoutTypeRightButton = document.createElement("button");
+        workoutTypeRightButton.innerHTML = ">";
+        workoutTypeRightButton.className = "plus_minus_button";
+        workoutTypeRightButton.style.marginLeft = "auto";
+        workoutTypeRightButton.onclick = () => {this.onWorkoutTypeChanged(1)};
+        div.appendChild(workoutTypeRightButton);
+
+        //
+        // ROUNDS
+        //
+        this.uiTimedRoundGroup = document.createElement("div"); //create a group so we can show/hide easily
+        this.uiConfigurationGroup.appendChild(this.uiTimedRoundGroup);
+
+        
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiTimedRoundGroup.appendChild(div);
+
+        let roundCount = document.createElement("p");
+        roundCount.innerHTML = "ROUNDS:";
+        roundCount.className = "configuration_label";
+        div.appendChild(roundCount);
+
+        let roundCountMinusButton = document.createElement("button");
+        roundCountMinusButton.innerHTML = "-";
+        roundCountMinusButton.className = "plus_minus_button";
+        val = div.clientWidth - roundCount.clientWidth - 300;
+        roundCountMinusButton.style.marginLeft = val.toString() + "px";
+        roundCountMinusButton.onclick = () => {this.onRoundCountChanged(-1)};
+        div.appendChild(roundCountMinusButton);
+        
+        this.uiRoundCountDisplay = document.createElement("p");
+        this.uiRoundCountDisplay.innerHTML = this.roundCount.toString();
+        this.uiRoundCountDisplay.className = "configuration_label";
+        this.uiRoundCountDisplay.style.marginLeft = "auto";
+        div.appendChild(this.uiRoundCountDisplay);
+
+        let roundCountPlusButton = document.createElement("button");
+        roundCountPlusButton.innerHTML = "+";
+        roundCountPlusButton.className = "plus_minus_button";
+        roundCountPlusButton.style.marginLeft = "auto";
+        roundCountPlusButton.onclick = () => {this.onRoundCountChanged(1)};
+        div.appendChild(roundCountPlusButton);
+
+        // BAG TYPE
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiTimedRoundGroup.appendChild(div);
 
         let bagType = document.createElement("p");
         bagType.innerHTML = "BAG TYPE:";
@@ -118006,11 +118166,11 @@ class PageUI
         div.appendChild(bagTypeRightButton);
 
 
-        // Switch bag each round
+        // SWAP BAG EACH ROUND
         
         div = document.createElement("div");
         div.className = "plus_minus_container";
-        this.uiConfigurationGroup.appendChild(div);
+        this.uiTimedRoundGroup.appendChild(div);
 
         let swapBagType = document.createElement("p");
         swapBagType.innerHTML = "SWAP BAG EACH ROUND:";
@@ -118021,13 +118181,64 @@ class PageUI
         this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
         this.uiSwapBagTypeButton.className = "plus_minus_button";
         this.uiSwapBagTypeButton.style.marginLeft = "auto";
-        // this.uiSwapBagTypeButton.style.fontSize = "32px";
         this.uiSwapBagTypeButton.style.borderRadius = "30%";
         
         this.uiSwapBagTypeButton.onclick = () => {this.onSwapBagTypeChecked()};
         div.appendChild(this.uiSwapBagTypeButton);
 
-         // OK & CANCEL 
+
+        if (this.workoutType != 0)
+        {
+            this.uiConfigurationGroup.removeChild(this.uiTimedRoundGroup);
+        }
+
+
+
+        //
+        // Create the scripted workout selector UI
+        // 
+
+        this.uiScriptedWorkoutGroup = document.createElement("div"); //create a group so we can show/hide easily
+
+        if (this.workoutType == 1)
+        {
+            this.uiConfigurationGroup.appendChild(this.uiScriptedWorkoutGroup);
+        }
+        
+        // LEFT
+        div = document.createElement("div");
+        div.className = "plus_minus_container";
+        this.uiScriptedWorkoutGroup.appendChild(div);
+
+        // DESCRIPTION
+        let workoutLeftButton = document.createElement("button");
+        workoutLeftButton.innerHTML = "<";
+        workoutLeftButton.className = "next_prev_button";
+        //val = div.clientWidth - bagType.clientWidth - 300;
+        //bagTypeLeftButton.style.marginLeft = val.toString() + "px";
+        workoutLeftButton.onclick = () => {this.onWorkoutSelectionChanged(-1)};
+        div.appendChild(workoutLeftButton);
+        
+        this.uiWorkoutDescription = document.createElement("p");
+        // this.uiWorkoutDescription.innerHTML = "DOUBLE-END BAG INSANITY:<br>6 rounds of drills. All double-end, all the time!"
+        this.uiWorkoutDescription.innerHTML = _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["workoutData"][this.whichScriptedWorkout][0].uiText;
+        this.uiWorkoutDescription.className = "workout_description_text"; //"configuration_label";
+        // this.uiWorkoutDescription.style.marginLeft = "auto";
+        // this.uiWorkoutDescription.style.height = "100%";
+        div.appendChild(this.uiWorkoutDescription);
+
+        let workoutRightButton = document.createElement("button");
+        workoutRightButton.innerHTML = ">";
+        workoutRightButton.className = "next_prev_button";
+        workoutRightButton.onclick = () => {this.onWorkoutSelectionChanged(1)};
+        div.appendChild(workoutRightButton);
+
+        // RIGHT
+
+
+
+
+        // OK & CANCEL 
         this.uiConfigurationGroup.appendChild(document.createElement("br"));
         this.uiConfigurationGroup.appendChild(document.createElement("br"));
 
@@ -118050,8 +118261,6 @@ class PageUI
         okButton.style.boxShadow = "";
         okButton.onclick = () => { this.onOkClicked(); }
         div.appendChild(okButton);
-
-
 
     }
 
@@ -118123,6 +118332,12 @@ class PageUI
         this.oldRoundTime = this.roundTime;
         this.oldRoundCount = this.roundCount;
         this.oldRestTime = this.restTime;
+        this.oldBagType = this.bagType;
+        this.oldBagSwap = this.doBagSwap;
+        this.oldWorkoutType = this.workoutType;
+        this.oldWhichScriptedWorkout = this.whichScriptedWorkout;
+
+
 
         this.uiRoundCountDisplay.innerHTML = this.roundCount.toString();
         this.uiRoundTimeDisplay.innerHTML = this.formatTime(this.roundTime);
@@ -118177,6 +118392,9 @@ class PageUI
         this.roundCount = this.oldRoundCount;
         this.roundTime = this.oldRoundTime;
         this.restTime = this.oldRestTime;
+        this.doBagSwap = this.oldBagSwap;
+        this.workoutType = this.oldWorkoutType;
+        this.whichScriptedWorkout = this.oldWhichScriptedWorkout;
 
         this.hideConfigurationUI();
     }
@@ -118189,6 +118407,8 @@ class PageUI
         window.localStorage.setItem("cfg_restTime", this.restTime);
         window.localStorage.setItem("cfg_bagType", this.bagType);
         window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
+        window.localStorage.setItem("cfg_workoutType", this.workoutType);
+        window.localStorage.setItem("cfg_scriptedWorkoutId", _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["workoutData"][this.whichScriptedWorkout][0].uid);
     }
 
     hideConfigurationUI()
@@ -118206,10 +118426,21 @@ class PageUI
 
     getMatchConfigString()
     {
-        let roundOrRounds = (this.roundCount > 1) ? 
+        let matchDescription;
+        if (this.workoutType == 0)
+        {
+            let roundOrRounds = (this.roundCount > 1) ? 
             (" Rounds,<br>" + this.formatTime(this.restTime) + " Rest") : " Round";
 
-        return this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
+            matchDescription = this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
+        }
+        else
+        {
+            matchDescription = _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["workoutData"][this.whichScriptedWorkout][0].uiShortText + 
+            "<br>" + this.formatTime(this.roundTime) + " Round, " + this.formatTime(this.restTime) + " Rest";
+        }
+
+        return matchDescription; //this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
     }
 
     onBagTypeChanged(val)
@@ -118239,6 +118470,55 @@ class PageUI
     getBagSwapString()
     {
         return this.doBagSwap ? "&#x2713;" : "";
+    }
+
+    getWorkoutTypeString()
+    {
+        if (this.workoutType == 0)
+        {
+            return "TIMED";
+        }
+        else if (this.workoutType == 1)
+        {
+            return "SCRIPTED";
+        }
+    }
+
+    onWorkoutTypeChanged(val)
+    {
+        this.workoutType = (this.workoutType + val + 2) % 2;
+        this.uiWorkoutTypeDisplay.innerHTML = this.getWorkoutTypeString();
+
+        if (this.workoutType == 0)
+        {
+            /*
+            this.uiTimedRoundGroup.style.visibility = "visible";
+            this.uiTimedRoundGroup.style.height = "auto";
+
+            this.uiScriptedWorkoutGroup.style.visibility = "hidden";
+            this.uiScriptedWorkoutGroup.style.height = "0%";
+            */
+
+            this.uiConfigurationGroup.replaceChild(this.uiTimedRoundGroup, this.uiScriptedWorkoutGroup);
+            
+        }
+        else
+        {
+            /*
+            this.uiConfigurationGroup.removeChild(this.uiTimedRoundGroup);
+            this.uiTimedRoundGroup.style.visibility = "hidden";
+            this.uiTimedRoundGroup.style.height = "0%";
+            this.uiConfigurationGroup.appendChild(this.uiScriptedWorkoutGroup);
+            this.uiScriptedWorkoutGroup.style.visibility = "visible";
+            this.uiScriptedWorkoutGroup.style.height = "auto";
+            */
+            this.uiConfigurationGroup.replaceChild(this.uiScriptedWorkoutGroup, this.uiTimedRoundGroup);
+        }
+    }
+    onWorkoutSelectionChanged(val)
+    {
+        this.whichScriptedWorkout = (this.whichScriptedWorkout + val + this.numScriptedWorkouts) % this.numScriptedWorkouts;
+        this.uiWorkoutDescription.innerHTML = _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["workoutData"][this.whichScriptedWorkout][0].uiText;
     }
     
 }
@@ -119717,70 +119997,92 @@ function monospace(text, start, end, width) {
 /*!****************************!*\
   !*** ./src/workoutData.js ***!
   \****************************/
-/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_ENDED_BAG, workoutData */
+/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, workoutData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUND_HEAVY_BAG", function() { return ROUND_HEAVY_BAG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUND_DOUBLE_ENDED_BAG", function() { return ROUND_DOUBLE_ENDED_BAG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUND_DOUBLE_END_BAG", function() { return ROUND_DOUBLE_END_BAG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_SCRIPTED", function() { return ROUNDTYPE_SCRIPTED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_NUM_PUNCHES", function() { return ROUNDTYPE_NUM_PUNCHES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_TIMED", function() { return ROUNDTYPE_TIMED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "workoutData", function() { return workoutData; });
 const ROUND_HEAVY_BAG = 0;
-const ROUND_DOUBLE_ENDED_BAG = 1;
+const ROUND_DOUBLE_END_BAG = 1;
+
+const ROUNDTYPE_SCRIPTED = 0;
+const ROUNDTYPE_NUM_PUNCHES = 1;
+const ROUNDTYPE_TIMED = 2;
 let workoutData = [
 
     // WORKOUT 0
-    [
+    // [
     
-        {
-            introText: "TEST WORKOUT #1:\n \u2022 Round 1: Do two things.\n \u2022 Round 2: Do three things.",
-            stages:[],
-            bagType: null
-        },
-        {
-            introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2",
-            stages: [
-                {
-                    startTimePercent: 0.0,
-                    descriptionText: "THINGS TO DO DURING THE FIRST HALF"
-                },
-                {
-                    startTimePercent: 0.5,
-                    descriptionText: "THINGS TO DO DURING THE SECOND HALF"
-                }
-            ],
-            bagType: ROUND_HEAVY_BAG
-        },
-        {
-            introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2\n \u2022 Thing 3",
-            stages: [
-                {
-                    startTimePercent: 0.0,
-                    descriptionText: "THINGS TO DO DURING THE FIRST 33%"
-                },
-                {
-                    startTimePercent: 0.33,
-                    descriptionText: "THINGS TO DO DURING THE SECOND 33%"
-                },
-                {
-                    startTimePercent: 0.67,
-                    descriptionText: "THINGS TO DO DURING THE FINAL 33%"
-                }
-            ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
-        }
-    ],
+    //     {
+    //         introText: "TEST WORKOUT #1:\n \u2022 Round 1: Do two things.\n \u2022 Round 2: Do three things.",
+    //         uiShortText: "TEST WORKOUT #1",
+    //         uiText: "TEST WORKOUT #1:<ul><li>Garbage in, garbage out!</li><li>MOAR GARBAGE!</li></ul>",
+    //         uid: 0,
+    //         stages:[],
+    //         bagType: null
+    //     },
+    //     {
+    //         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2",
+    //         stages: [
+    //             {
+    //                 startTimePercent: 0.0,
+    //                 descriptionText: "THINGS TO DO DURING THE FIRST HALF"
+    //             },
+    //             {
+    //                 startTimePercent: 0.5,
+    //                 descriptionText: "THINGS TO DO DURING THE SECOND HALF"
+    //             }
+    //         ],
+    //         bagType: ROUND_HEAVY_BAG,
+    //         roundType: ROUNDTYPE_SCRIPTED
+    //     },
+    //     {
+    //         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2\n \u2022 Thing 3",
+    //         stages: [
+    //             {
+    //                 startTimePercent: 0.0,
+    //                 descriptionText: "THINGS TO DO DURING THE FIRST 33%"
+    //             },
+    //             {
+    //                 startTimePercent: 0.33,
+    //                 descriptionText: "THINGS TO DO DURING THE SECOND 33%"
+    //             },
+    //             {
+    //                 startTimePercent: 0.67,
+    //                 descriptionText: "THINGS TO DO DURING THE FINAL 33%"
+    //             }
+    //         ],
+    //         bagType: ROUND_DOUBLE_END_BAG,
+    //         roundType: ROUNDTYPE_SCRIPTED
+    //     }
+    // ],
 
     // WORKOUT 1
     [
         {
             introText: "DOUBLE-END BAG #1:\n" +
-                " \u2022 5 rounds of double-end bag drills.\n" +
+                " \u2022 6 rounds of double-end bag drills.\n" +
                 " \u2022 Focus on accuracy then speed.\n" +
                 " \u2022 The double-end bag can hit back, so keep your guard up!",
+            uiShortText: "D.E.B. INSANITY",
+            uiText: "DOUBLE-END BAG INSANITY:<br>6 rounds of drills. All double-end, all the time!<br>So much good stuff to do...<br><br> it'll blow your mind right out of your ear holes!!!",
+            uid: 1,
             stages:[],
             bagType: null
         },
+        {
+            introText: "THROW 100 PUNCHES",
+            numPunches: 100,
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_NUM_PUNCHES
+        },
+
         {
             introText: 
                 "JAB THEN STRAIGHT:\n" +
@@ -119796,7 +120098,8 @@ let workoutData = [
                     descriptionText: "STRAIGHT(2) and move around the bag."
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED
         },
         {
             introText: 
@@ -119813,7 +120116,8 @@ let workoutData = [
                     descriptionText: "STRAIGHT(2) then LEFT HOOK(3)"
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED
         },
         {
             introText: 
@@ -119830,11 +120134,12 @@ let workoutData = [
                     descriptionText: "JAB(1), JAB(1), STRAIGHT(2)."
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED
         },
         {
             introText: 
-                "ROUND 4 - CAPTAIN HOOK:\n" +
+                "CAPTAIN HOOK:\n" +
                 " \u2022 Throw LEFT HOOKs(3) and move around the bag for the first half.\n" +
                 " \u2022 Throw RIGHT HOOKs(4) and move around the bag for the second half.\n",
             stages: [
@@ -119847,11 +120152,12 @@ let workoutData = [
                     descriptionText: "RIGHT HOOK(4) and move around the bag."
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED
         },
         {
             introText: 
-                "ROUND 5 - JAB-STRAIGHT COMBOS:\n" +
+                "JAB-STRAIGHT COMBOS:\n" +
                 " \u2022 Throw 2 JABs(1), then a STRAIGHT(2), then a JAB (1), then a STRAIGHT(2).\n",
             stages: [
                 {
@@ -119859,9 +120165,105 @@ let workoutData = [
                     descriptionText: "JAB(1), JAB(1), STRAIGHT(2), JAB(1), STRAIGHT (2)."
                 }
             ],
-            bagType: ROUND_DOUBLE_ENDED_BAG
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED
         },
+    ],
+
+    [
+        {
+            introText: "BASIC WORKOUT #1:\n" +
+                " \u2022 5 rounds of drills.\n" +
+                " \u2022 Heavy Bag + Double-End Bag",
+            uiShortText: "BASIC WORKOUT #1",
+            uiText: "BASIC WORKOUT #1:<ul><li>5 rounds of drills.</li><li>Mostly heavy bag with a dash of double-end mixed in.</li></ul>",
+            uid: 2,
+            stages:[],
+            bagType: null
+        },
+        {
+            introText: "WARM UP - THROW 200 PUNCHES",
+            numPunches: 200,
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_NUM_PUNCHES
+        },
+        {
+            introText: 
+                "SPEED ROUND:\n" + 
+                " \u2022 Alternate JAB(1) & STRAIGHT(2).\n" +
+                " \u2022 Try for for 300+PPM.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "Start at 300PPM"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "Increase to 350PPM"
+                },
+                {
+                    startTimePercent: 0.85,
+                    descriptionText: "Try for 400PPM!"
+                },
+            ]
+        },
+        {
+            introText: 
+                "DOUBLE-END COMBOS:\n" +
+                " \u2022 Throw 1-2 and 1-1-2 combos.\n" +
+                " \u2022 Move around the bag.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "JAB(1) then STRAIGHT(2)"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "JAB(1), JAB(1), STRAIGHT(2)"
+                }
+            ],
+        },
+        {
+            introText: 
+                "HEAVY BAG COMBOS:\n" +
+                " \u2022 Try some different combos.\n" +
+                " \u2022 Focus on form, then increase speed.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-2, 1-1-2"
+                },
+                {
+                    startTimePercent: 0.2,
+                    descriptionText: "1-2-3, 1-1-4-3"
+                },
+                {
+                    startTimePercent: 0.6,
+                    descriptionText: "1-2-3-2, 1-2-1-4"
+                },
+            ],
+        },
+        {
+            introText:
+                "HEAVY BAG FREESTYLE:\n"+
+                " \u2022 Close it out however you want.",
+            // stages: [
+            //     {
+            //         startTimePercent: 0.0,
+            //         descriptionText: "Heavy Bag Freestyle"
+            //     }
+            // ],
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_TIMED,
+        }
     ]
+
 ];
 
 /***/ })

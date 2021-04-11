@@ -173,6 +173,7 @@ function initialize()
     envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
     envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
     envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
+    envMapObjects['Screen'] = {intensity: 0.2, roughness: 0.8};
     
     
     // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};
@@ -244,7 +245,17 @@ function initialize()
 
                     if (obj.name == "Screen")
                     {
-                        obj.material.emissiveIntensity = 1.25;
+                        //obj.material.emissiveIntensity = 1.25;
+                        //obj.material = new THREE.MeshStandardMaterial({color: 0xAAB0BF});
+                        //obj.material.color.convertSRGBToLinear();
+                        //obj.material.color.multiplyScalar(1.25);
+                        let loader = new THREE.TextureLoader();
+                        let tvBkgd = loader.load("./content/tv_background2.png");
+                        tvBkgd.flipY = false;
+                
+                        obj.material.name = "TVSCREEN";
+                        obj.material.map = tvBkgd;
+        
                     }
                     else if (obj.name =="Floor")
                     {
@@ -404,7 +415,7 @@ export function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, 
 function onSessionStart()
 {
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
-    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap);
+    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
     gameLogic.start();
 }
 

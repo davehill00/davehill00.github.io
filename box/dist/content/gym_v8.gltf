@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.3.48",
+        "generator" : "Khronos glTF Blender I/O v1.5.17",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -192,12 +192,7 @@
     "materials" : [
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "TV",
+            "name" : "TV.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     0.06071940064430237,
@@ -212,16 +207,16 @@
         {
             "doubleSided" : true,
             "emissiveFactor" : [
-                1,
-                1,
-                1
+                0.5,
+                0.5,
+                0.5
             ],
             "name" : "TV Screen",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
-                    0.800000011920929,
-                    0.800000011920929,
-                    0.800000011920929,
+                    0.5,
+                    0.5,
+                    0.5,
                     1
                 ],
                 "metallicFactor" : 0,
@@ -238,12 +233,7 @@
             "pbrMetallicRoughness" : {}
         },
         {
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Accent.Wall",
+            "name" : "Accent.Wall.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     0.10984731465578079,
@@ -256,35 +246,22 @@
             }
         },
         {
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Floor",
+            "name" : "Floor.001",
             "normalTexture" : {
-                "index" : 0,
-                "texCoord" : 0
+                "index" : 0
             },
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 1,
-                    "texCoord" : 0
+                    "index" : 1
                 },
                 "metallicFactor" : 0,
                 "metallicRoughnessTexture" : {
-                    "index" : 2,
-                    "texCoord" : 0
+                    "index" : 2
                 }
             }
         },
         {
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Ceiling",
+            "name" : "Ceiling.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     0.03310476616024971,
@@ -297,12 +274,7 @@
             }
         },
         {
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Baseboard",
+            "name" : "Baseboard.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     0.09083697944879532,
@@ -315,12 +287,7 @@
             }
         },
         {
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Walls",
+            "name" : "Walls.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     0.7874122262001038,
@@ -334,12 +301,7 @@
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Dumbell.Handle",
+            "name" : "Dumbell.Handle.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     0.20071370899677277,
@@ -353,12 +315,7 @@
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Dumbell",
+            "name" : "Dumbell.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     0.045950744301080704,
@@ -372,12 +329,7 @@
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Shelf.Legs.000",
+            "name" : "Shelf.Legs.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     0.7874122262001038,
@@ -391,11 +343,6 @@
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
             "name" : "FloorMarkings",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -601,12 +548,15 @@
     ],
     "textures" : [
         {
+            "sampler" : 0,
             "source" : 0
         },
         {
+            "sampler" : 0,
             "source" : 1
         },
         {
+            "sampler" : 0,
             "source" : 2
         }
     ],
@@ -1497,6 +1447,12 @@
             "buffer" : 0,
             "byteLength" : 96,
             "byteOffset" : 126460
+        }
+    ],
+    "samplers" : [
+        {
+            "magFilter" : 9729,
+            "minFilter" : 9987
         }
     ],
     "buffers" : [

@@ -335,6 +335,7 @@ export class HeavyBag extends Bag
                 this.velocity.reflect(hr.hitNormal);
                 this.velocity.multiplyScalar(0.5);
 
+                /*
                 // Play the hit effects
                 tVec0.subVectors(desiredVelocity, glove.velocity);
                 hr.hitNormal.negate(); // because we want this WRT the bag (and it's actually WRT the glove right now)
@@ -346,6 +347,7 @@ export class HeavyBag extends Bag
                     accumulatedTime,
                     false
                 );
+                */
 
             }
             else
@@ -416,9 +418,10 @@ export class HeavyBag extends Bag
                 // get the position -- use getWorldPosition because the bag is parented into a scene
                 // and "position" just gives the local position relative to parent
                 this.mesh.getWorldPosition(tVec0);
+
+
                 //set the position of the punch effect, plus a slight tweak to make it appear
                 //more directly under the glove
-
                 let kAdjust = -0.05;
                 // if (velocity.y > 1.0)
                 // {

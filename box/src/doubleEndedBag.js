@@ -198,9 +198,13 @@ export class DoubleEndedBag extends Bag
 
 
 
-            const kRestLength = 1.0; //0.8;
-            const kPositionOffset = 1.51; //10 feet ceiling, suspend in the middle
+            // Sloppy bag -- doesn't feel good yet
+            // const kRestLength = 1.0; //0.8;
+            // const kPositionOffset = 1.51; //10 feet ceiling, suspend in the middle
 
+            const kRestLength = 0.4;
+            const kPositionOffset = 1.51;
+            
             tVec0.copy(this.targetPosition);
             tVec0.y += kPositionOffset;
             tVec0.sub(desiredPosition);
@@ -215,11 +219,12 @@ export class DoubleEndedBag extends Bag
 
 
             // Fairly tight/fast settings, paired with 0.4 kRestLength, -1.4 kOverallDamping
-            // const kSpringConstant = 150.0;
-            // const kSpringDamping = -2.0;
+            const kSpringConstant = 170.0;
+            const kSpringDamping = -2.0;
 
-            const kSpringConstant = 135.0;
-            const kSpringDamping = -1.0;
+            // Sloppy bag -- doesn't feel good yet
+            // const kSpringConstant = 135.0;
+            // const kSpringDamping = -1.0;
                       
             tVec0.multiplyScalar(kSpringConstant); // this is now the "Hooke-ian" force (-k*x)
             // now apply velocity damping
@@ -253,7 +258,9 @@ export class DoubleEndedBag extends Bag
             //add the forces together
             tVec0.add(tVec2); 
 
-            const kOverallDamping = -0.75; // 1.5
+            // Sloppy bag -- doesn't feel good yet
+            // const kOverallDamping = -0.75;
+            const kOverallDamping = -1.65;
             tVec0.addScaledVector(desiredVelocity, kOverallDamping);
 
             // Apply the resulting force as an acceleration
@@ -272,7 +279,7 @@ export class DoubleEndedBag extends Bag
             const kOutsideRadiusSq = kOutsideRadius * kOutsideRadius;
             if (tVec0.lengthSq() > kOutsideRadiusSq)
             {
-                console.log("MOVING OUTSIDE RADIUS");
+                // console.log("MOVING OUTSIDE RADIUS");
                 let length = tVec0.length();
                 let t = kOutsideRadius/length; // what percentage of the way have we moved.
 
@@ -469,12 +476,25 @@ export class DoubleEndedBag extends Bag
     {
         // Compute the delta speed between the bag and the glove
         tVec0.subVectors(this.velocity, gloveVelocity);
-        let collisionSpeed = tVec0.length();
+        // let collisionSpeed = tVec0.length();
 
-        // Apply the glove velocity to the bag
+        // Apply the glove velocity to the bag. We want to blend between projected velocity (which gives the bag
+        // some erratic movement based on where you hit it) and straight glove velocity (which makes it feel
+        // a bit more predictable).
+
+        // Projected velocity
         tVec0.copy(gloveVelocity);
         tVec0.projectOnVector(hitNormalWRTBag);
-        tVec0.multiplyScalar(2.0); // scale it up to give the punch more weight
+        tVec0.multiplyScalar(0.3);
+        
+        // Scaled glove velocity -- scale to reduce the contribution
+        tVec1.copy(gloveVelocity);
+        tVec1.multiplyScalar(0.8);
+
+        // Combined velocity
+        tVec0.add(tVec1);
+        // tVec0.multiplyScalar(1.3); // Scale it up to give the punch more weight
+
         this.velocity.add(tVec0);
 
         this.processCollisionEffects(glove, gloveVelocity.length(), hitPoint, hitNormalWRTBag, accumulatedTime);

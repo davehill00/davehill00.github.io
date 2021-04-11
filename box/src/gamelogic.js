@@ -13,17 +13,24 @@ const SESSION_REST = 4;
 const SESSION_OUTRO = 5;
 const SESSION_PAUSED = 6;
 
-import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_ENDED_BAG} from "./workoutData.js";
+import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES} from "./workoutData.js";
 
 
-const kIntroDuration = 2.0;
-const kIntroGetReadyDuration = 3.0;
+const kIntroDuration = 5.0;
+const kIntroGetReadyDuration = 5.0;
 const kRestGetReadyDuration = 5.0;
 const kRoundAlmostDoneTime = 10.0;
 // const kGetReadyDuration = 3.0;
 
 const kWorkoutTextBoxSmallFontSize = 470;
 const kWorkoutTextBoxBigFontSize = 350;
+
+const kBlackColor = new THREE.Color(0x000000);
+const kRedColor = new THREE.Color(0x5D1719);
+kRedColor.multiplyScalar(1.5);
+const kGreyColor = new THREE.Color(0x606060);
+
+// kRedColor.convertSRGBToLinear();
 
 /*
 
@@ -52,6 +59,15 @@ Boxing Session:
 3. Play "Almost Done" sound - thump, thump, thump
 
 */
+
+function formatTimeString(timeInSeconds)
+{
+    let hours = Math.floor(timeInSeconds / 3600);
+    let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
+    let seconds = timeInSeconds - (hours * 3600) - (minutes * 60);
+
+    return minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+}
 
 class BoxingRound
 {
@@ -106,24 +122,30 @@ class BoxingRound
         return (this.bagType == ROUND_HEAVY_BAG) ? "Heavy Bag" : "Double-end Bag";
     }
 
-    getTimeString(timeInSeconds)
-    {
-        let hours = Math.floor(timeInSeconds / 3600);
-        let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
-        let seconds = timeInSeconds - (hours * 3600) - (minutes * 60);
+    
 
-        return minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+    onBagHit(whichHand, speed)
+    {
+
     }
 
 }
 
 class TimedBoxingRound extends BoxingRound
 {
-    constructor(duration, roundNumber, maxRounds, bagType)
+    constructor(duration, roundNumber, maxRounds, bagType, introText = null)
     {
         super(roundNumber, maxRounds, bagType);
         this.roundDuration = duration;
         
+        if (introText === null)
+        {
+            this.introText = "Freestyle round:\n \u2022 " + this.getBagTypeString() + ", " + formatTimeString(this.roundDuration) + " duration";
+        }
+        else
+        {
+            this.introText = introText;
+        }
     }
 
     start(session, elapsedTime)
@@ -158,8 +180,7 @@ class TimedBoxingRound extends BoxingRound
 
     getIntroText()
     {
-        return "Freestyle round:\n \u2022 " + this.getBagTypeString() + ", " + this.getTimeString(this.roundDuration) + " duration" + 
-        "\n \u2022 Focus on form, go for speed, or try some new moves.";
+        return this.introText;
     }
 }
 
@@ -222,19 +243,73 @@ class ScriptedBoxingRound extends TimedBoxingRound
     }
 }
 
+class NumberOfPunchesBoxingRound extends BoxingRound
+{
+    constructor(numPunches, roundNumber, maxRounds, bagType, introText = null)
+    {
+        super(roundNumber, maxRounds, bagType);
+        this.numPunches = numPunches;
+        this.almostDonePunchCount = Math.floor(numPunches * 0.25);
+        //console.log("Almost Done Count: " + this.almostDonePunchCount);
+
+        if (introText === null)
+        {
+            this.introText = "Throw " + this.numPunches + " punches on the " + this.getBagTypeString() + ".";
+        }
+        else
+        {
+            this.introText = introText;
+        }
+    }
+
+    start(session, elapsedTime)
+    {
+        session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false);
+        this.startTime = elapsedTime;
+        this.session = session;
+    }
+
+    update(session, elapsedTime)
+    {
+        session.updateTimer(elapsedTime - this.startTime, false);
+    }
+
+    isOver(elapsedTime)
+    {
+        return this.numPunches <= 0;
+    }
+
+    onBagHit(whichHand, speed)
+    {
+        this.numPunches--;
+        this.session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false );
+
+        if(this.numPunches == this.almostDonePunchCount)
+        {
+            this.session.playGetReadySound();
+        }
+    }
+
+    getIntroText()
+    {
+        return this.introText;
+    }
+}
 
 export class BoxingSession
 {
-    constructor(scene, audioListener, heavyBag, doubleEndedBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
+    constructor(scene, audioListener, heavyBag, doubleEndBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
     {
         this.scene = scene;
         this.audioListener = audioListener;
         this.heavyBag = heavyBag;
-        this.doubleEndedBag = doubleEndedBag;
+        this.doubleEndBag = doubleEndBag;
         this.TV = null;
 
-        this.initialize(numRounds, roundDuration, restDuration);
+        // this.initialize(numRounds, roundDuration, restDuration);
 
+        heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
+        doubleEndBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
         
         //load assets here
         
@@ -315,12 +390,22 @@ export class BoxingSession
 
         this.currentTimeInWholeSeconds = -1.0;
 
+
+        let loader = new THREE.TextureLoader();
+        let tvBkgd = loader.load("./content/tv_background2.png");
+        tvBkgd.flipY = false;
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
             {
-                node.material.emissiveIntensity = 0.35;
-                node.material.emissive.set(0xAAAAAA);
+                node.material = new THREE.MeshBasicMaterial({color: 0xAAB0BF});
+                node.material.color.convertSRGBToLinear();
+                node.material.color.multiplyScalar(1.25);
+                node.material.name = "TVSCREEN";
+                node.material.map = tvBkgd;
+                // node.material.emissiveIntensity = 0.35;
+                // node.material.emissive.set(0x406080);
+                // node.material.map = tvBkgd;
                 this.TV = node;
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
@@ -333,8 +418,8 @@ export class BoxingSession
                 this.TV.add(this.soundGetReady);
                 this.TV.add(this.soundNewInstructions);
 
-                this.updateTimer();
-                this.updateRoundsMessage();
+                // this.updateTimer();
+                // this.updateRoundsMessage();
             }
         });
 
@@ -346,7 +431,7 @@ export class BoxingSession
         
     }
 
-    initialize(numRounds, roundDuration, restDuration, bagType, bagSwap)
+    initialize(numRounds, roundDuration, restDuration, bagType, bagSwap, workoutType, whichScriptedWorkout)
     {
         // this.numRounds = numRounds;
         this.roundDuration = roundDuration;
@@ -362,11 +447,17 @@ export class BoxingSession
 
         if (this.heavyBag.visible)
             this.heavyBag.hide();
-        if (this.doubleEndedBag.visible)
-            this.doubleEndedBag.hide();
+        if (this.doubleEndBag.visible)
+            this.doubleEndBag.hide();
 
-        this.initializeTimedWorkout(numRounds, roundDuration, bagType, bagSwap);
-        // this.initializeScriptedWorkout(workoutData[1], roundDuration);
+        if (workoutType == 0)
+        {
+            this.initializeTimedWorkout(numRounds, roundDuration, bagType, bagSwap);
+        }
+        else
+        {
+            this.initializeScriptedWorkout(workoutData[whichScriptedWorkout], roundDuration);
+        }
 
         //this.boxingRoundInfo = new BoxingRound(roundDuration);
         this.boxingRoundInfo = this.boxingRounds[0];
@@ -380,14 +471,21 @@ export class BoxingSession
         this.currentRound = 0;
         this.boxingRounds = [null];
 
+        //Set up this message before we start swapping bags
+        this.workoutIntroMessage = "FREESTYLE " + (bagSwap ? "ALTERNATING BAGS" : (bagType == ROUND_HEAVY_BAG ? "HEAVY BAG" : "DOUBLE-END BAG")) + ":\n"+
+        " \u2022 " + numRounds + " rounds, " + formatTimeString(roundDuration) + " per round.\n" + 
+        " \u2022 Focus on form, go for speed, or try some new moves.";
+
+
         for (let i = 0; i < this.numRounds; i++)
         {
-            this.boxingRounds.push(new TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
+            this.boxingRounds.push(
+                new TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
             if (bagSwap)
             {
                 if (bagType == ROUND_HEAVY_BAG)
                 {
-                    bagType = ROUND_DOUBLE_ENDED_BAG;
+                    bagType = ROUND_DOUBLE_END_BAG;
                 }
                 else
                 {
@@ -404,9 +502,24 @@ export class BoxingSession
         this.boxingRounds = [null];
         for (let i = 0; i < this.numRounds; i++)
         {
-            let round = new ScriptedBoxingRound(info, roundDuration, i+1);
+            let round;
+            let roundNumber = i+1;
+            let roundInfo = info[roundNumber];
+            if (roundInfo.roundType == ROUNDTYPE_SCRIPTED)
+            {
+                round = new ScriptedBoxingRound(info, roundDuration, roundNumber);
+            }
+            else if (roundInfo.roundType == ROUNDTYPE_NUM_PUNCHES)
+            {
+                round = new NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+            }
+            else
+            {
+                round = new TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+            }
             this.boxingRounds.push(round);
         }
+        this.workoutIntroMessage = info[0].introText;
         //this.workoutInfo = info;
     }
 
@@ -416,10 +529,12 @@ export class BoxingSession
         this.elapsedTime = 0.0;
         this.currentRound = 0;
         this.updateRoundsMessage();
+        this.updateTimer();
 
         this.workoutStageTextBox.visible = false;
         this.workoutIntroTextBox.visible = true;
         //this.updateWorkoutMessage();
+        this.displayIntroMessage(this.workoutIntroMessage);
     }
 
     pause()
@@ -437,9 +552,9 @@ export class BoxingSession
 
     update(dt, accumulatedTime)
     {
-        if (this.doubleEndedBag.visible)
+        if (this.doubleEndBag.visible)
         {
-            this.doubleEndedBag.update(dt, accumulatedTime);
+            this.doubleEndBag.update(dt, accumulatedTime);
         }
         else if (this.heavyBag.visible)
         {
@@ -462,7 +577,7 @@ export class BoxingSession
                 // COUNTING DOWN THE INTRO
                 else
                 {
-                    this.updateTimer(kIntroDuration + kIntroGetReadyDuration - this.elapsedTime);
+                    this.updateTimer(kIntroDuration /*+ kIntroGetReadyDuration*/ - this.elapsedTime);
                 }
                 break;
             case SESSION_GET_READY:
@@ -483,18 +598,11 @@ export class BoxingSession
                     // play "starting bell" sound
                     this.sound321.play();
 
-
                     this.currentRound++;
-
-                    this.boxingRoundInfo.start(this, this.elapsedTime);
-
-
                     this.workoutIntroTextBox.visible = false;
                     this.workoutStageTextBox.visible = true;
 
-                    // let roundInfo = this.workoutInfo[this.currentRound];
-                    // this.nextWorkoutStageTime = roundInfo.stages[0].startTimePercent * this.roundDuration;
-                    // this.nextWorkoutStage = 0;
+                    this.boxingRoundInfo.start(this, this.elapsedTime);
 
                     // update the TV screen
                     this.updateRoundsMessage();
@@ -509,32 +617,11 @@ export class BoxingSession
                 this.elapsedTime += dt;
 
                 this.boxingRoundInfo.update(this, this.elapsedTime);
-                // round.update(session); //this.elapsedTime);
-                // if(round.isOver())
- 
-
-                //ALMOST DONE THE ROUND
-                /*if (!this.playedAlmostDoneAlert && (this.roundDuration - this.elapsedTime) < kRoundAlmostDoneTime)
-                {
-                    this.playedAlmostDoneAlert = true;
-                    this.soundGetReady.play();
-                }
-                */
 
                 // END OF THE ROUND
-                if (this.boxingRoundInfo.isOver(this.elapsedTime)) //this.elapsedTime > this.roundDuration)
+                if (this.boxingRoundInfo.isOver(this.elapsedTime))
                 {
                     this.boxingRoundInfo.end(this);
-
-                    if (this.boxingRoundInfo.didPlayerFail() || this.boxingRoundInfo.isFinalRound()) //this.currentRound < this.numRounds)
-                    {
-                        this.state = SESSION_OUTRO;
-                    }
-                    else
-                    {
-                        this.hideBag();
-                        this.state = SESSION_REST;
-                    }
 
                     this.elapsedTime = 0.0;
                     this.playedAlmostDoneAlert = false;
@@ -543,15 +630,26 @@ export class BoxingSession
                     this.soundEndOfRound.play();
                     this.updateRoundsMessage();
 
-                    //this.workoutTextBox.setFontPixelsPerMeter(kWorkoutTextBoxSmallFontSize)
-
-                    //this.updateWorkoutMessage(); //END OF ROUND
+                    if (this.boxingRoundInfo.didPlayerFail() || this.boxingRoundInfo.isFinalRound())
+                    {
+                        if (this.boxingRoundInfo.didPlayerFail())
+                        {
+                            this.displayWorkoutInfoMessage("Better luck next time!", false);
+                        }
+                        else
+                        {
+                            this.displayWorkoutInfoMessage("Great job!", false);
+                        }
+                        this.state = SESSION_OUTRO;
+                    }
+                    else
+                    {
+                        this.displayWorkoutInfoMessage("Take a breather!", false);
+                        this.hideBag();
+                        this.state = SESSION_REST;
+                    }
+                    
                 }
-                // else
-                // {
-                //     this.updateTimer(this.roundDuration - this.elapsedTime);
-                //     this.updateWorkoutMessage(); //DURING ROUND
-                // }
                 break;
             case SESSION_REST:
                 this.elapsedTime += dt;
@@ -599,8 +697,8 @@ export class BoxingSession
                 case ROUND_HEAVY_BAG:
                     this.heavyBag.fadeOut();
                     break;
-                case ROUND_DOUBLE_ENDED_BAG:
-                    this.doubleEndedBag.fadeOut();
+                case ROUND_DOUBLE_END_BAG:
+                    this.doubleEndBag.fadeOut();
                     break;
             }
             this.currentBagType = null;
@@ -617,23 +715,21 @@ export class BoxingSession
                     this.heavyBag.fadeIn();
                     this.currentBagType = ROUND_HEAVY_BAG;
                     break;
-                case ROUND_DOUBLE_ENDED_BAG:
-                    this.doubleEndedBag.fadeIn();
-                    this.currentBagType = ROUND_DOUBLE_ENDED_BAG;
+                case ROUND_DOUBLE_END_BAG:
+                    this.doubleEndBag.fadeIn();
+                    this.currentBagType = ROUND_DOUBLE_END_BAG;
                     break;
             }
             
         }
     }
 
-    updateTimer(value)
+    updateTimer(value, bChangeColorOnFinalTenSeconds=true)
     {
         let message;
-        let messageColor = null;
-        let odd = false;
         if (this.state == SESSION_NULL || this.state == SESSION_OUTRO)
         {
-            this.timerTextBox.setMessageColor(0x000000);
+            this.timerTextBox.setMessageColor(kGreyColor);
             message = "0:00";
         }
         else
@@ -646,28 +742,24 @@ export class BoxingSession
             this.currentTimeInWholeSeconds = newTimeInWholeSeconds;
 
 
-            let hours = Math.floor(newTimeInWholeSeconds / 3600);
-            let minutes = Math.floor((newTimeInWholeSeconds - (hours * 3600)) / 60);
-            let seconds = newTimeInWholeSeconds - (hours * 3600) - (minutes * 60);
-
-            if (this.state == SESSION_ROUND && newTimeInWholeSeconds <= 10.0)
+            if (bChangeColorOnFinalTenSeconds && this.state == SESSION_ROUND && newTimeInWholeSeconds <= 10.0)
             {
-                this.timerTextBox.setMessageColor(0xaa0000);
+                this.timerTextBox.setMessageColor(kRedColor);
+            }
+            else if(this.state == SESSION_INTRO)
+            {
+                this.timerTextBox.setMessageColor(kGreyColor);
             }
             else
             {
-                this.timerTextBox.setMessageColor(0x000000);
+                this.timerTextBox.setMessageColor(kBlackColor);
             }
-            if (seconds % 2)
-            {
-                odd = true;
-            }
-
-            message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+            message = formatTimeString(newTimeInWholeSeconds);
+            //message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
         }
         this.timerTextBox.displayMessage(message);
-
     }
+
     updateRoundsMessage()
     {
         let roundMessage;
@@ -704,68 +796,17 @@ export class BoxingSession
         this.stateTextBox.displayMessage(stateMessage);
 
     }
-    updateWorkoutMessage()
+    
+    displayIntroMessage(message)
     {
-        return;
-
-        console.assert(this.workoutInfo);
-        switch(this.state)
-        {
-            case SESSION_INTRO:
-                {
-                    console.assert(!this.workoutStageTextBox.visible && this.workoutIntroTextBox.visible);
-                    this.workoutIntroTextBox.displayMessage(this.workoutInfo[0].introText);
-                }
-                break;
-            case SESSION_GET_READY:
-                {
-                    console.assert(!this.workoutStageTextBox.visible && this.workoutIntroTextBox.visible);
-                    console.assert(this.workoutInfo.length > (this.currentRound + 1));
-                    let roundInfo = this.workoutInfo[this.currentRound + 1];
-                    this.workoutIntroTextBox.displayMessage(roundInfo.introText);
-                    this.nextWorkoutStageTime = roundInfo.stages[0].startTimePercent * this.roundDuration;
-                    this.nextWorkoutStage = 0;
-                }
-                break;
-            case SESSION_ROUND:
-                {
-                    console.assert(this.workoutStageTextBox.visible && !this.workoutIntroTextBox.visible);
-                    if (this.elapsedTime >= this.nextWorkoutStageTime)
-                    {
-                        if (this.nextWorkoutStage != 0)
-                        {
-                            this.soundNewInstructions.play();
-                        }
-                        let roundInfo = this.workoutInfo[this.currentRound];
-                        this.workoutStageTextBox.displayMessage(roundInfo.stages[this.nextWorkoutStage].descriptionText);
-                        this.nextWorkoutStage++;
-                        if (this.nextWorkoutStage < roundInfo.stages.length)
-                        {
-                            this.nextWorkoutStageTime = roundInfo.stages[this.nextWorkoutStage].startTimePercent * this.roundDuration;
-                        }
-                        else
-                        {
-                            this.nextWorkoutStageTime = Number.MAX_VALUE;
-                        }
-                        
-                    }
-                }
-                break;
-            case SESSION_REST:
-                {
-                    console.assert(this.workoutStageTextBox.visible && !this.workoutIntroTextBox.visible);
-                    this.workoutStageTextBox.displayMessage("TAKE A BREATHER!");
-                }
-                break;
-            case SESSION_OUTRO:
-                this.workoutIntroTextBox.visible = false;
-                this.workoutStageTextBox.visible = false;
-                break;
-        }
+        console.assert(this.workoutIntroTextBox.visible);
+        this.workoutIntroTextBox.displayMessage(message);
     }
-
+    
     displayWorkoutInfoMessage(message, wantUpdateSound = true)
     {
+        console.assert(this.workoutStageTextBox.visible);
+        //console.log("display workout info message: " + message);
         if (wantUpdateSound)
         {
             this.soundNewInstructions.play();
@@ -777,6 +818,15 @@ export class BoxingSession
     {
         this.soundGetReady.play();
     }
+
+    onBagHit(whichHand, speed)
+    {
+        if (this.state == SESSION_ROUND)
+        {
+            this.boxingRoundInfo.onBagHit(whichHand, speed);
+        }
+
+    }
 }
 
 export class PunchingStats
@@ -787,11 +837,6 @@ export class PunchingStats
         this.scene = scene;
         this.TV = null;
       
-
-        // @TODO -- swap out punch stats with a Text Box
-
-
-
         this.punches = 0;
         this.lastPunchTime = -1.0;
         this.averagePunchRate = 1.0;
