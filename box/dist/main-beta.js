@@ -115926,79 +115926,95 @@ function initialize()
     loadingManager.addHandler(/\.basis$/i, basisLoader);
     loadingManager.addHandler( /\.tga$/i, new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_6__["TGALoader"]() );
 
-    let loaderPromise = new Promise( (resolve) => {
-        let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"](loadingManager);
-        loader.load('./content/gym_v8.gltf', resolve);
-    });
+    // let loaderPromise = new Promise( (resolve) => {
+    //     let loader = new GLTFLoader(loadingManager);
+    //     loader.load('./content/gym_v8.gltf', resolve);
+    // });
 
-    Promise.all(lightmapPromises).then(
-        () => {
-        loaderPromise.then(
+    Promise.all(lightmapPromises)
+        .then( 
+            () => {
+                return new Promise( (resolve) => {
+                    console.log("LOAD GLTF");
+                    let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"](loadingManager);
+                    loader.load('./content/gym_v8.gltf', resolve);
+                })
+            })
+        .then(
             (gltf) => {
+                // console.log("GLTF is: " + gltf);
+                return new Promise(
+                    (resolve) => {
+                    console.log("DO GLTF FIXUPS")
+                    for (let i = 0; i < gltf.scene.children.length; i++)
+                    {                
+                        let obj = gltf.scene.children[i];       
+                        obj.traverse(function (node) {
 
-                for (let i = 0; i < gltf.scene.children.length; i++)
-                {                
-                    let obj = gltf.scene.children[i];       
-                    obj.traverse(function (node) {
+                            if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
+                            {}
 
-                        if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
-                        {}
+                            // console.log("NODE: " + node.name);
+                            let nodeLightmap = lightmaps[node.name];
+                            if (nodeLightmap && node.material && 'lightMap' in node.material) {
+                                // console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                                node.material.lightMap = nodeLightmap;
+                                node.material.lightMapIntensity = 1.0;
+                                node.material.needsUpdate = true;
+                            }
 
-                        // console.log("NODE: " + node.name);
-                        let nodeLightmap = lightmaps[node.name];
-                        if (nodeLightmap && node.material && 'lightMap' in node.material) {
-                            // console.log("--> LIGHTMAP: " + nodeLightmap.name);
-                            node.material.lightMap = nodeLightmap;
-                            node.material.lightMapIntensity = 1.0;
-                            node.material.needsUpdate = true;
-                        }
+                            let nodeAomap = aomaps[node.name];
+                            if(nodeAomap && node.material && 'aoMap' in node.material) {
+                                node.material.aoMap = nodeAomap;
+                                node.material.aoMapIntensity = 0.5;
+                                node.material.needsUpdate = true;
+                            }
 
-                        let nodeAomap = aomaps[node.name];
-                        if(nodeAomap && node.material && 'aoMap' in node.material) {
-                            node.material.aoMap = nodeAomap;
-                            node.material.aoMapIntensity = 0.5;
-                            node.material.needsUpdate = true;
-                        }
+                            let emo = envMapObjects[node.name];
+                                
+                            if (emo)
+                            {
+                                node.material.envMap = scene.envMap;
+                                node.material.envMapIntensity = emo.intensity;
+                                node.material.roughness = emo.roughness;
+                            }
+                        });
 
-                        let emo = envMapObjects[node.name];
-                            
-                        if (emo)
+                        // console.log("OBJECT: " + obj.name);
+                        if (obj.name == "Screen")
                         {
-                            node.material.envMap = scene.envMap;
-                            node.material.envMapIntensity = emo.intensity;
-                            node.material.roughness = emo.roughness;
+                            console.log
+                            obj.material.emissiveIntensity = 0.03;
+                            obj.material.color.setRGB(0.86, 0.86, 0.965);
+                            let loader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
+                            let tvBkgd = loader.load("./content/tv_background2.png");
+                            tvBkgd.flipY = false;
+                    
+                            // obj.material.name = "TVSCREEN";
+                            obj.material.map = tvBkgd;
+            
                         }
-                    });
-
-                    // console.log("OBJECT: " + obj.name);
-                    if (obj.name == "Screen")
-                    {
-                        console.log
-                        obj.material.emissiveIntensity = 0.03;
-                         obj.material.color.setRGB(0.86, 0.86, 0.965);
-                        let loader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
-                        let tvBkgd = loader.load("./content/tv_background2.png");
-                        tvBkgd.flipY = false;
-                
-                        // obj.material.name = "TVSCREEN";
-                        obj.material.map = tvBkgd;
-        
+                        else if (obj.name =="Floor")
+                        {
+                            obj.material.lightMapIntensity = 2.0;
+                            obj.material.metalness = 0.5;
+                        }
+                        else if (obj.name == "AccentWall")
+                        {
+                            obj.material.lightMapIntensity = 1.5;
+                        }
                     }
-                    else if (obj.name =="Floor")
-                    {
-                        obj.material.lightMapIntensity = 2.0;
-                        obj.material.metalness = 0.5;
-                    }
-                    else if (obj.name == "AccentWall")
-                    {
-                        obj.material.lightMapIntensity = 1.5;
-                    }
-                }
-                scene.add(gltf.scene);
-                initScene(scene, camera, renderer);
-
+                    scene.add(gltf.scene);
+                    initScene(scene, camera, renderer);
+                    console.log("DONE LOADING AND FIXUPS");
+                    resolve();
+                });
+            })
+        .then(() =>
+            {
+                console.log("CHECK FOR XR");
+                pageUI.checkForXR(); 
             });
-        });
 
 
 
@@ -118048,7 +118064,7 @@ class PageUI
 
 
         this.createUIElements();
-        this.checkForXR();
+        //this.checkForXR();
     }
 
     createUIElements()
@@ -118080,7 +118096,7 @@ class PageUI
 
 
         this.uiStartButton = document.createElement("button");
-        this.uiStartButton.innerHTML = "START";
+        this.uiStartButton.innerHTML = "LOADING";
         this.uiStartButton.disabled = true;
         this.uiStartButton.onclick = () => {this.onStartClicked()};
         this.uiButtonGroup.appendChild(this.uiStartButton);
@@ -118089,7 +118105,7 @@ class PageUI
         this.uiConfigureButton = document.createElement("button");
         this.uiConfigureButton.style.fontSize = "2.25vw"
         this.uiConfigureButton.style.borderWidth = "0.4vw";
-        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
+        this.uiConfigureButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; // ... with bullet chars instead of periods
         this.uiConfigureButton.disabled = true;
         this.uiConfigureButton.onclick = () => {this.onConfigureClicked()};
         this.uiButtonGroup.appendChild(this.uiConfigureButton);
@@ -118408,7 +118424,9 @@ class PageUI
     onWebXRSupported()
     {
         this.uiStartButton.disabled = false;
+        this.uiStartButton.innerHTML = "START";
         this.uiConfigureButton.disabled = false;
+        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
 
     }
     

@@ -90,7 +90,7 @@ export class PageUI
 
 
         this.createUIElements();
-        this.checkForXR();
+        //this.checkForXR();
     }
 
     createUIElements()
@@ -122,7 +122,7 @@ export class PageUI
 
 
         this.uiStartButton = document.createElement("button");
-        this.uiStartButton.innerHTML = "START";
+        this.uiStartButton.innerHTML = "LOADING";
         this.uiStartButton.disabled = true;
         this.uiStartButton.onclick = () => {this.onStartClicked()};
         this.uiButtonGroup.appendChild(this.uiStartButton);
@@ -131,7 +131,7 @@ export class PageUI
         this.uiConfigureButton = document.createElement("button");
         this.uiConfigureButton.style.fontSize = "2.25vw"
         this.uiConfigureButton.style.borderWidth = "0.4vw";
-        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
+        this.uiConfigureButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; // ... with bullet chars instead of periods
         this.uiConfigureButton.disabled = true;
         this.uiConfigureButton.onclick = () => {this.onConfigureClicked()};
         this.uiButtonGroup.appendChild(this.uiConfigureButton);
@@ -450,7 +450,9 @@ export class PageUI
     onWebXRSupported()
     {
         this.uiStartButton.disabled = false;
+        this.uiStartButton.innerHTML = "START";
         this.uiConfigureButton.disabled = false;
+        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
 
     }
     

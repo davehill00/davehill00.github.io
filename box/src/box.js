@@ -193,84 +193,100 @@ function initialize()
     loadingManager.addHandler(/\.basis$/i, basisLoader);
     loadingManager.addHandler( /\.tga$/i, new TGALoader() );
 
-    let loaderPromise = new Promise( (resolve) => {
-        let loader = new GLTFLoader(loadingManager);
-        loader.load('./content/gym_v8.gltf', resolve);
-    });
+    // let loaderPromise = new Promise( (resolve) => {
+    //     let loader = new GLTFLoader(loadingManager);
+    //     loader.load('./content/gym_v8.gltf', resolve);
+    // });
 
-    Promise.all(lightmapPromises).then(
-        () => {
-        loaderPromise.then(
+    Promise.all(lightmapPromises)
+        .then( 
+            () => {
+                return new Promise( (resolve) => {
+                    console.log("LOAD GLTF");
+                    let loader = new GLTFLoader(loadingManager);
+                    loader.load('./content/gym_v8.gltf', resolve);
+                })
+            })
+        .then(
             (gltf) => {
+                // console.log("GLTF is: " + gltf);
+                return new Promise(
+                    (resolve) => {
+                    console.log("DO GLTF FIXUPS")
+                    for (let i = 0; i < gltf.scene.children.length; i++)
+                    {                
+                        let obj = gltf.scene.children[i];       
+                        obj.traverse(function (node) {
 
-                for (let i = 0; i < gltf.scene.children.length; i++)
-                {                
-                    let obj = gltf.scene.children[i];       
-                    obj.traverse(function (node) {
+                            if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
+                            {
+                                let simpleMat = new THREE.MeshLambertMaterial();
+                                simpleMat.color = node.material.color;
+                                simpleMat.emissive = node.material.emissive;
+                                node.material = simpleMat;
+                            }
 
-                        if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
+                            // console.log("NODE: " + node.name);
+                            let nodeLightmap = lightmaps[node.name];
+                            if (nodeLightmap && node.material && 'lightMap' in node.material) {
+                                // console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                                node.material.lightMap = nodeLightmap;
+                                node.material.lightMapIntensity = 1.0;
+                                node.material.needsUpdate = true;
+                            }
+
+                            let nodeAomap = aomaps[node.name];
+                            if(nodeAomap && node.material && 'aoMap' in node.material) {
+                                node.material.aoMap = nodeAomap;
+                                node.material.aoMapIntensity = 0.5;
+                                node.material.needsUpdate = true;
+                            }
+
+                            let emo = envMapObjects[node.name];
+                                
+                            if (emo)
+                            {
+                                node.material.envMap = scene.envMap;
+                                node.material.envMapIntensity = emo.intensity;
+                                node.material.roughness = emo.roughness;
+                            }
+                        });
+
+                        // console.log("OBJECT: " + obj.name);
+                        if (obj.name == "Screen")
                         {
-                            let simpleMat = new THREE.MeshLambertMaterial();
-                            simpleMat.color = node.material.color;
-                            simpleMat.emissive = node.material.emissive;
-                            node.material = simpleMat;
+                            console.log
+                            obj.material.emissiveIntensity = 0.03;
+                            obj.material.color.setRGB(0.86, 0.86, 0.965);
+                            let loader = new THREE.TextureLoader();
+                            let tvBkgd = loader.load("./content/tv_background2.png");
+                            tvBkgd.flipY = false;
+                    
+                            // obj.material.name = "TVSCREEN";
+                            obj.material.map = tvBkgd;
+            
                         }
-
-                        // console.log("NODE: " + node.name);
-                        let nodeLightmap = lightmaps[node.name];
-                        if (nodeLightmap && node.material && 'lightMap' in node.material) {
-                            // console.log("--> LIGHTMAP: " + nodeLightmap.name);
-                            node.material.lightMap = nodeLightmap;
-                            node.material.lightMapIntensity = 1.0;
-                            node.material.needsUpdate = true;
-                        }
-
-                        let nodeAomap = aomaps[node.name];
-                        if(nodeAomap && node.material && 'aoMap' in node.material) {
-                            node.material.aoMap = nodeAomap;
-                            node.material.aoMapIntensity = 0.5;
-                            node.material.needsUpdate = true;
-                        }
-
-                        let emo = envMapObjects[node.name];
-                            
-                        if (emo)
+                        else if (obj.name =="Floor")
                         {
-                            node.material.envMap = scene.envMap;
-                            node.material.envMapIntensity = emo.intensity;
-                            node.material.roughness = emo.roughness;
+                            obj.material.lightMapIntensity = 2.0;
+                            obj.material.metalness = 0.5;
                         }
-                    });
-
-                    // console.log("OBJECT: " + obj.name);
-                    if (obj.name == "Screen")
-                    {
-                        console.log
-                        obj.material.emissiveIntensity = 0.03;
-                         obj.material.color.setRGB(0.86, 0.86, 0.965);
-                        let loader = new THREE.TextureLoader();
-                        let tvBkgd = loader.load("./content/tv_background2.png");
-                        tvBkgd.flipY = false;
-                
-                        // obj.material.name = "TVSCREEN";
-                        obj.material.map = tvBkgd;
-        
+                        else if (obj.name == "AccentWall")
+                        {
+                            obj.material.lightMapIntensity = 1.5;
+                        }
                     }
-                    else if (obj.name =="Floor")
-                    {
-                        obj.material.lightMapIntensity = 2.0;
-                        obj.material.metalness = 0.5;
-                    }
-                    else if (obj.name == "AccentWall")
-                    {
-                        obj.material.lightMapIntensity = 1.5;
-                    }
-                }
-                scene.add(gltf.scene);
-                initScene(scene, camera, renderer);
-
+                    scene.add(gltf.scene);
+                    initScene(scene, camera, renderer);
+                    console.log("DONE LOADING AND FIXUPS");
+                    resolve();
+                });
+            })
+        .then(() =>
+            {
+                console.log("CHECK FOR XR");
+                pageUI.checkForXR(); 
             });
-        });
 
 
 
