@@ -114769,6 +114769,350 @@ function extend() {
 
 /***/ }),
 
+/***/ "./src/BoxingRounds.js":
+/*!*****************************!*\
+  !*** ./src/BoxingRounds.js ***!
+  \*****************************/
+/*! exports provided: TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TimedBoxingRound", function() { return TimedBoxingRound; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScriptedBoxingRound", function() { return ScriptedBoxingRound; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NumberOfPunchesBoxingRound", function() { return NumberOfPunchesBoxingRound; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SpeedRound", function() { return SpeedRound; });
+/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
+/* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
+
+
+
+const kRoundAlmostDoneTime = 10.0;
+
+class BoxingRound
+{
+    constructor(roundNumber, maxRounds, bagType)
+    {
+        this.roundNumber = roundNumber;
+        this.maxRounds = maxRounds;
+        this.bagType = bagType;
+
+        console.log("Initialize Round " + roundNumber + "/" + maxRounds);
+    }
+
+    start(session, elapsedTime)
+    {
+    }
+
+    update(session, elapsedTime)
+    {
+    }
+
+    end(session)
+    {
+    }
+
+    isOver(elapsedTime)
+    {
+        return false;
+    }
+
+    didPlayerFail()
+    {
+        return false;
+    }
+
+    isFinalRound()
+    {
+        return this.roundNumber == this.maxRounds;
+    }
+
+    getBagType()
+    {
+        return this.bagType;
+    }
+
+    getIntroText()
+    {
+        return "";
+    }
+
+    getBagTypeString()
+    {
+        return (this.bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["ROUND_HEAVY_BAG"]) ? "Heavy Bag" : "Double-end Bag";
+    }
+
+    onBagHit(whichHand, speed)
+    {
+
+    }
+
+}
+
+class TimedBoxingRound extends BoxingRound
+{
+    constructor(duration, roundNumber, maxRounds, bagType, introText = null)
+    {
+        super(roundNumber, maxRounds, bagType);
+        this.roundDuration = duration;
+        
+        if (introText === null)
+        {
+            this.introText = "Freestyle round:\n \u2022 " + this.getBagTypeString() + ", " + Object(_gamelogic_js__WEBPACK_IMPORTED_MODULE_1__["formatTimeString"])(this.roundDuration) + " duration";
+        }
+        else
+        {
+            this.introText = introText;
+        }
+    }
+
+    start(session, elapsedTime)
+    {
+        this.startTime = elapsedTime;
+        this.endTime = this.startTime + this.roundDuration;
+        this.playedAlmostDoneAlert = false;
+
+        session.displayWorkoutInfoMessage(
+            this.getBagTypeString() + "\nFreestyle", false);
+    }
+
+    update(session, elapsedTime)
+    {
+        if (!this.playedAlmostDoneAlert && (this.roundDuration - elapsedTime) < kRoundAlmostDoneTime)
+        {
+            this.playedAlmostDoneAlert = true;
+            session.playGetReadySound();
+        }
+
+        session.updateTimer(this.roundDuration - elapsedTime);
+    }
+
+    end(session)
+    {
+    }
+
+    isOver(elapsedTime)
+    {
+         return elapsedTime > this.roundDuration;
+    }
+
+    getIntroText()
+    {
+        return this.introText;
+    }
+}
+
+class ScriptedBoxingRound extends TimedBoxingRound
+{
+    constructor(info, duration, roundNumber)
+    {
+        super(duration, roundNumber, info.length - 1, info[roundNumber].bagType);
+        this.roundInfo = info[roundNumber];
+    }
+
+    start(session, elapsedTime)
+    {
+        this.startTime = elapsedTime;
+        this.endTime = this.startTime + this.roundDuration;
+        this.playedAlmostDoneAlert = false;
+
+        // display the stage[0] description
+        session.displayWorkoutInfoMessage(this.roundInfo.stages[0].descriptionText, false);
+
+        // prep for stage 1 message (if any)
+        this.nextWorkoutStage = 1;
+        this.updateNextWorkoutStageTime(this.nextWorkoutStage);
+    }
+
+    update(session, elapsedTime)
+    {
+        if (!this.playedAlmostDoneAlert && (this.roundDuration - elapsedTime) < kRoundAlmostDoneTime)
+        {
+            this.playedAlmostDoneAlert = true;
+            session.playGetReadySound();
+        }
+
+        session.updateTimer(this.roundDuration - elapsedTime);
+        
+        if (elapsedTime >= this.nextWorkoutStageTime)
+        {
+            session.displayWorkoutInfoMessage(this.roundInfo.stages[this.nextWorkoutStage].descriptionText);
+            this.nextWorkoutStage++;
+
+            this.updateNextWorkoutStageTime(this.nextWorkoutStage);
+        }
+    }
+
+    updateNextWorkoutStageTime(stage)
+    {
+        if (stage < this.roundInfo.stages.length)
+        {
+            this.nextWorkoutStageTime = this.roundInfo.stages[stage].startTimePercent * this.roundDuration;
+        }
+        else
+        {
+            this.nextWorkoutStageTime = Number.MAX_VALUE;
+        }
+    }
+
+    getIntroText()
+    {
+        return this.roundInfo.introText;
+    }
+}
+
+class NumberOfPunchesBoxingRound extends BoxingRound
+{
+    constructor(numPunches, roundNumber, maxRounds, bagType, introText = null)
+    {
+        super(roundNumber, maxRounds, bagType);
+        this.numPunches = numPunches;
+        this.almostDonePunchCount = Math.floor(numPunches * 0.25);
+        //console.log("Almost Done Count: " + this.almostDonePunchCount);
+
+        if (introText === null)
+        {
+            this.introText = "Throw " + this.numPunches + " punches on the " + this.getBagTypeString() + ".";
+        }
+        else
+        {
+            this.introText = introText;
+        }
+    }
+
+    start(session, elapsedTime)
+    {
+        session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false);
+        this.startTime = elapsedTime;
+        this.session = session;
+    }
+
+    update(session, elapsedTime)
+    {
+        session.updateTimer(elapsedTime - this.startTime, false);
+    }
+
+    isOver(elapsedTime)
+    {
+        return this.numPunches <= 0;
+    }
+
+    onBagHit(whichHand, speed)
+    {
+        this.numPunches--;
+        this.session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false );
+
+        if(this.numPunches == this.almostDonePunchCount)
+        {
+            this.session.playGetReadySound();
+        }
+    }
+
+    getIntroText()
+    {
+        return this.introText;
+    }
+}
+
+class SpeedRound extends TimedBoxingRound
+{
+    //roundInfo, roundDuration, roundNumber, this.numRounds
+    constructor(roundInfo, duration, roundNumber, maxRounds)
+    {
+        super(duration, roundNumber, maxRounds, roundInfo.bagType, roundInfo.introText);
+        this.roundInfo = roundInfo;
+    }
+
+    start(session, elapsedTime)
+    {
+        this.startTime = elapsedTime;
+        this.endTime = this.startTime + this.roundDuration;
+        this.playedAlmostDoneAlert = false;
+
+        this.targetPPM = this.roundInfo.stages[0].targetPPM;
+        this.nextSpeedCheckTime = elapsedTime + 5.0;
+        this.isShowingHurryUp = false;
+        this.hurryUpCount = 0;
+        this.nextHurryUpMessageTime = 0.0;
+
+        // display the stage[0] description
+        this.currentDescriptionText = this.roundInfo.stages[0].descriptionText;
+        session.displayWorkoutInfoMessage(this.currentDescriptionText, false);
+
+        // prep for stage 1 message (if any)
+        this.nextWorkoutStage = 1;
+        this.updateNextWorkoutStageTime(this.nextWorkoutStage);
+    }
+
+    update(session, elapsedTime)
+    {
+        if (!this.playedAlmostDoneAlert && (this.roundDuration - elapsedTime) < kRoundAlmostDoneTime)
+        {
+            this.playedAlmostDoneAlert = true;
+            session.playGetReadySound();
+        }
+
+        session.updateTimer(this.roundDuration - elapsedTime);
+
+        if (elapsedTime >= this.nextWorkoutStageTime)
+        {    
+            this.currentDescriptionText = this.roundInfo.stages[this.nextWorkoutStage].descriptionText;
+            session.displayWorkoutInfoMessage(this.currentDescriptionText);
+
+            this.targetPPM = this.roundInfo.stages[this.nextWorkoutStage].targetPPM;
+            this.nextSpeedCheckTime = elapsedTime + 3.0;
+
+            this.nextWorkoutStage++;
+            this.updateNextWorkoutStageTime(this.nextWorkoutStage);
+        }
+        else if (elapsedTime > this.nextSpeedCheckTime)
+        {
+            let ppm = session.punchingStats.getCurrentPPM();
+            if ((this.targetPPM - ppm) > 5)
+            {
+                if (elapsedTime > this.nextHurryUpMessageTime)
+                {
+                    session.displayWorkoutInfoMessage("Pick up the pace!\nGet back to " + this.targetPPM + " PPM.");
+                    this.isShowingHurryUp = true;
+                    this.hurryUpCount++;
+                    this.nextHurryUpMessageTime = elapsedTime + 1.0 + this.hurryUpCount * 2.0;
+                }
+                this.nextSpeedCheckTime = elapsedTime + 1.0; // check frequently if we're too slow
+            }
+            else if (this.isShowingHurryUp)
+            {
+                this.isShowingHurryUp = false;
+                this.hurryUpCount = 0;
+                this.nextHurryUpMessageTime = 0.0;
+                session.displayWorkoutInfoMessage(this.currentDescriptionText, false);
+                this.nextSpeedCheckTime = elapsedTime + 3.0; // check less frequently if we're currently on pace
+                
+            }
+            
+        }
+    }
+
+    updateNextWorkoutStageTime(stage)
+    {
+        if (stage < this.roundInfo.stages.length)
+        {
+            this.nextWorkoutStageTime = this.roundInfo.stages[stage].startTimePercent * this.roundDuration;
+
+        }
+        else
+        {
+            this.nextWorkoutStageTime = Number.MAX_VALUE;
+        }
+    }
+
+    // getIntroText()
+    // {
+    //     return this.roundInfo.introText;
+    // }
+}
+
+/***/ }),
+
 /***/ "./src/StatsHud.js":
 /*!*************************!*\
   !*** ./src/StatsHud.js ***!
@@ -115471,7 +115815,6 @@ let heavyBag  = null;
 let doubleEndedBag = null;
 
 let gameLogic = null;
-let punchingStats = null;
 
 let playerHud = null;
 
@@ -115562,7 +115905,7 @@ function initialize()
     envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
     envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
     envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
-    envMapObjects['Screen'] = {intensity: 0.2, roughness: 0.8};
+    envMapObjects['Screen'] = {intensity: 0.3, roughness: 0.82};
     
     
     // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};
@@ -115627,17 +115970,17 @@ function initialize()
                         }
                     });
 
+                    // console.log("OBJECT: " + obj.name);
                     if (obj.name == "Screen")
                     {
-                        //obj.material.emissiveIntensity = 1.25;
-                        //obj.material = new THREE.MeshStandardMaterial({color: 0xAAB0BF});
-                        //obj.material.color.convertSRGBToLinear();
-                        //obj.material.color.multiplyScalar(1.25);
+                        console.log
+                        obj.material.emissiveIntensity = 0.03;
+                         obj.material.color.setRGB(0.86, 0.86, 0.965);
                         let loader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
                         let tvBkgd = loader.load("./content/tv_background2.png");
                         tvBkgd.flipY = false;
                 
-                        obj.material.name = "TVSCREEN";
+                        // obj.material.name = "TVSCREEN";
                         obj.material.map = tvBkgd;
         
                     }
@@ -115777,11 +116120,9 @@ function render() {
     // TWEEN.update(accumulatedTime);
 
     updateHands(dt, accumulatedTime);
-    if (gameLogic && punchingStats)
+    if (gameLogic)
     {
-        //bag.update(dt, accumulatedTime);
         gameLogic.update(dt, accumulatedTime);
-        punchingStats.update(dt, accumulatedTime);
     }
     if(playerHud) 
         playerHud.update(dt);
@@ -115834,7 +116175,6 @@ function initScene(scene, camera, renderer)
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
 
     gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_10__["BoxingSession"](scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
-    punchingStats = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_10__["PunchingStats"](scene, heavyBag, doubleEndedBag);
 
 
 }
@@ -116537,16 +116877,18 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
 /*!**************************!*\
   !*** ./src/gamelogic.js ***!
   \**************************/
-/*! exports provided: BoxingSession, PunchingStats */
+/*! exports provided: formatTimeString, BoxingSession, PunchingStats */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatTimeString", function() { return formatTimeString; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BoxingSession", function() { return BoxingSession; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PunchingStats", function() { return PunchingStats; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var _textBox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./textBox */ "./src/textBox.js");
 /* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
+/* harmony import */ var _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BoxingRounds.js */ "./src/BoxingRounds.js");
 var createGeometry = __webpack_require__(/*! ./thirdparty/three-bmfont-text/ */ "./src/thirdparty/three-bmfont-text/index.js")
 var loadFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js")
 
@@ -116568,7 +116910,7 @@ const SESSION_PAUSED = 6;
 const kIntroDuration = 5.0;
 const kIntroGetReadyDuration = 5.0;
 const kRestGetReadyDuration = 5.0;
-const kRoundAlmostDoneTime = 10.0;
+
 // const kGetReadyDuration = 3.0;
 
 const kWorkoutTextBoxSmallFontSize = 470;
@@ -116577,7 +116919,7 @@ const kWorkoutTextBoxBigFontSize = 350;
 const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
 const kRedColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x5D1719);
 kRedColor.multiplyScalar(1.5);
-const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x606060);
+const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x404040);
 
 // kRedColor.convertSRGBToLinear();
 
@@ -116618,232 +116960,6 @@ function formatTimeString(timeInSeconds)
     return minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
 }
 
-class BoxingRound
-{
-    constructor(roundNumber, maxRounds, bagType)
-    {
-        this.roundNumber = roundNumber;
-        this.maxRounds = maxRounds;
-        this.bagType = bagType;
-
-        console.log("Initialize Round " + roundNumber + "/" + maxRounds);
-    }
-
-    start(session, elapsedTime)
-    {
-    }
-
-    update(session, elapsedTime)
-    {
-    }
-
-    end(session)
-    {
-    }
-
-    isOver(elapsedTime)
-    {
-        return false;
-    }
-
-    didPlayerFail()
-    {
-        return false;
-    }
-
-    isFinalRound()
-    {
-        return this.roundNumber == this.maxRounds;
-    }
-
-    getBagType()
-    {
-        return this.bagType;
-    }
-
-    getIntroText()
-    {
-        return "";
-    }
-
-    getBagTypeString()
-    {
-        return (this.bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"]) ? "Heavy Bag" : "Double-end Bag";
-    }
-
-    
-
-    onBagHit(whichHand, speed)
-    {
-
-    }
-
-}
-
-class TimedBoxingRound extends BoxingRound
-{
-    constructor(duration, roundNumber, maxRounds, bagType, introText = null)
-    {
-        super(roundNumber, maxRounds, bagType);
-        this.roundDuration = duration;
-        
-        if (introText === null)
-        {
-            this.introText = "Freestyle round:\n \u2022 " + this.getBagTypeString() + ", " + formatTimeString(this.roundDuration) + " duration";
-        }
-        else
-        {
-            this.introText = introText;
-        }
-    }
-
-    start(session, elapsedTime)
-    {
-        this.startTime = elapsedTime;
-        this.endTime = this.startTime + this.roundDuration;
-        this.playedAlmostDoneAlert = false;
-
-        session.displayWorkoutInfoMessage(
-            this.getBagTypeString() + "\nFreestyle", false);
-    }
-
-    update(session, elapsedTime)
-    {
-        if (!this.playedAlmostDoneAlert && (this.roundDuration - elapsedTime) < kRoundAlmostDoneTime)
-        {
-            this.playedAlmostDoneAlert = true;
-            session.playGetReadySound();
-        }
-
-        session.updateTimer(this.roundDuration - elapsedTime);
-    }
-
-    end(session)
-    {
-    }
-
-    isOver(elapsedTime)
-    {
-         return elapsedTime > this.roundDuration;
-    }
-
-    getIntroText()
-    {
-        return this.introText;
-    }
-}
-
-class ScriptedBoxingRound extends TimedBoxingRound
-{
-    constructor(info, duration, roundNumber)
-    {
-        super(duration, roundNumber, info.length - 1, info[roundNumber].bagType);
-        this.roundInfo = info[roundNumber];
-    }
-
-    start(session, elapsedTime)
-    {
-        this.startTime = elapsedTime;
-        this.endTime = this.startTime + this.roundDuration;
-        this.playedAlmostDoneAlert = false;
-
-        // display the stage[0] description
-        session.displayWorkoutInfoMessage(this.roundInfo.stages[0].descriptionText, false);
-
-        // prep for stage 1 message (if any)
-        this.nextWorkoutStage = 1;
-        this.updateNextWorkoutStageTime(this.nextWorkoutStage);
-    }
-
-    update(session, elapsedTime)
-    {
-        if (!this.playedAlmostDoneAlert && (this.roundDuration - elapsedTime) < kRoundAlmostDoneTime)
-        {
-            this.playedAlmostDoneAlert = true;
-            session.playGetReadySound();
-        }
-
-        session.updateTimer(this.roundDuration - elapsedTime);
-        
-        if (elapsedTime >= this.nextWorkoutStageTime)
-        {
-            session.displayWorkoutInfoMessage(this.roundInfo.stages[this.nextWorkoutStage].descriptionText);
-            this.nextWorkoutStage++;
-
-            this.updateNextWorkoutStageTime(this.nextWorkoutStage);
-        }
-    }
-
-    updateNextWorkoutStageTime(stage)
-    {
-        if (stage < this.roundInfo.stages.length)
-        {
-            this.nextWorkoutStageTime = this.roundInfo.stages[stage].startTimePercent * this.roundDuration;
-        }
-        else
-        {
-            this.nextWorkoutStageTime = Number.MAX_VALUE;
-        }
-    }
-
-    getIntroText()
-    {
-        return this.roundInfo.introText;
-    }
-}
-
-class NumberOfPunchesBoxingRound extends BoxingRound
-{
-    constructor(numPunches, roundNumber, maxRounds, bagType, introText = null)
-    {
-        super(roundNumber, maxRounds, bagType);
-        this.numPunches = numPunches;
-        this.almostDonePunchCount = Math.floor(numPunches * 0.25);
-        //console.log("Almost Done Count: " + this.almostDonePunchCount);
-
-        if (introText === null)
-        {
-            this.introText = "Throw " + this.numPunches + " punches on the " + this.getBagTypeString() + ".";
-        }
-        else
-        {
-            this.introText = introText;
-        }
-    }
-
-    start(session, elapsedTime)
-    {
-        session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false);
-        this.startTime = elapsedTime;
-        this.session = session;
-    }
-
-    update(session, elapsedTime)
-    {
-        session.updateTimer(elapsedTime - this.startTime, false);
-    }
-
-    isOver(elapsedTime)
-    {
-        return this.numPunches <= 0;
-    }
-
-    onBagHit(whichHand, speed)
-    {
-        this.numPunches--;
-        this.session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false );
-
-        if(this.numPunches == this.almostDonePunchCount)
-        {
-            this.session.playGetReadySound();
-        }
-    }
-
-    getIntroText()
-    {
-        return this.introText;
-    }
-}
 
 class BoxingSession
 {
@@ -116860,6 +116976,7 @@ class BoxingSession
         heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
         doubleEndBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
         
+        this.punchingStats = new PunchingStats(scene);
         //load assets here
         
         // sounds
@@ -116940,18 +117057,16 @@ class BoxingSession
         this.currentTimeInWholeSeconds = -1.0;
 
 
-        let loader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
-        let tvBkgd = loader.load("./content/tv_background2.png");
-        tvBkgd.flipY = false;
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
             {
-                node.material = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({color: 0xAAB0BF});
-                node.material.color.convertSRGBToLinear();
-                node.material.color.multiplyScalar(1.25);
-                node.material.name = "TVSCREEN";
-                node.material.map = tvBkgd;
+                // node.material = new THREE.MeshStandardMaterial({color: 0xAAB0BF});
+                // node.material.color.convertSRGBToLinear();
+                // node.material.color.multiplyScalar(1.25);
+                // node.material.name = "TVSCREEN";
+                // node.material.map = tvBkgd;
+
                 // node.material.emissiveIntensity = 0.35;
                 // node.material.emissive.set(0x406080);
                 // node.material.map = tvBkgd;
@@ -117029,7 +117144,7 @@ class BoxingSession
         for (let i = 0; i < this.numRounds; i++)
         {
             this.boxingRounds.push(
-                new TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
+                new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_3__["TimedBoxingRound"](roundDuration, i + 1, this.numRounds, bagType));
             if (bagSwap)
             {
                 if (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUND_HEAVY_BAG"])
@@ -117056,15 +117171,24 @@ class BoxingSession
             let roundInfo = info[roundNumber];
             if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUNDTYPE_SCRIPTED"])
             {
-                round = new ScriptedBoxingRound(info, roundDuration, roundNumber);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_3__["ScriptedBoxingRound"](info, roundDuration, roundNumber);
             }
             else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUNDTYPE_NUM_PUNCHES"])
             {
-                round = new NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_3__["NumberOfPunchesBoxingRound"](roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+            }
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUNDTYPE_TIMED"])
+            {
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_3__["TimedBoxingRound"](roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+            }
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_2__["ROUNDTYPE_SPEED"])
+            {
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_3__["SpeedRound"](roundInfo, roundDuration, roundNumber, this.numRounds);
             }
             else
             {
-                round = new TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+                console.assert("UNKNOWN ROUNDTYPE - " + roundInfo.roundType);
+                break;
             }
             this.boxingRounds.push(round);
         }
@@ -117078,7 +117202,7 @@ class BoxingSession
         this.elapsedTime = 0.0;
         this.currentRound = 0;
         this.updateRoundsMessage();
-        this.updateTimer();
+        this.updateTimer(this.elapsedTime);
 
         this.workoutStageTextBox.visible = false;
         this.workoutIntroTextBox.visible = true;
@@ -117109,6 +117233,8 @@ class BoxingSession
         {
             this.heavyBag.update(dt, accumulatedTime);
         }
+
+        this.punchingStats.update(dt, accumulatedTime);
 
         switch(this.state)
         {
@@ -117236,6 +117362,7 @@ class BoxingSession
         this.workoutIntroTextBox.displayMessage(this.boxingRoundInfo.getIntroText()); //roundInfo.introText);
         //this.updateWorkoutMessage();
     }
+
     hideBag()
     {
         let desiredBagType = this.boxingRounds[this.currentRound + 1].bagType;
@@ -117253,6 +117380,7 @@ class BoxingSession
             this.currentBagType = null;
         }
     }
+
     showBagForNextRound()
     {
         let desiredBagType = this.boxingRounds[this.currentRound + 1].bagType; // this.workoutInfo[this.currentRound + 1].bagType;
@@ -117373,14 +117501,14 @@ class BoxingSession
         if (this.state == SESSION_ROUND)
         {
             this.boxingRoundInfo.onBagHit(whichHand, speed);
+            this.punchingStats.onBagHit(whichHand, speed);
         }
-
     }
 }
 
 class PunchingStats
 {
-    constructor(scene, heavyBag, doubleEndedBag)
+    constructor(scene)
     {
 
         this.scene = scene;
@@ -117394,10 +117522,6 @@ class PunchingStats
 
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
-
-        heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
-        doubleEndedBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
-
 
         this.textBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](520, "left", 1.55, "bottom", 0.25, 0x000000);
         // this.textBox.position.x = 0.12;
@@ -117437,10 +117561,15 @@ class PunchingStats
         this.updateStatsDisplay(true);
     }
 
+    getCurrentPPM()
+    {
+        return this.cachedPPM;
+    }
 
     updateStatsDisplay(isPunch=false)
     {       
         let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
+        this.cachedPPM = ppm;
 
 
         let message = 
@@ -117534,7 +117663,7 @@ class MovingAverage
 
         let totalTime = timestamp - this.data[this.indexOfOldestSample].timestamp;
 
-        if (totalTime == 0)
+        if (totalTime < 0.3)
             return 0;
 
         let rate = this.numSamples / totalTime * 60.0;
@@ -119997,7 +120126,7 @@ function monospace(text, start, end, width) {
 /*!****************************!*\
   !*** ./src/workoutData.js ***!
   \****************************/
-/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, workoutData */
+/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED, workoutData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -120007,6 +120136,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_SCRIPTED", function() { return ROUNDTYPE_SCRIPTED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_NUM_PUNCHES", function() { return ROUNDTYPE_NUM_PUNCHES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_TIMED", function() { return ROUNDTYPE_TIMED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_SPEED", function() { return ROUNDTYPE_SPEED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "workoutData", function() { return workoutData; });
 const ROUND_HEAVY_BAG = 0;
 const ROUND_DOUBLE_END_BAG = 1;
@@ -120014,6 +120144,8 @@ const ROUND_DOUBLE_END_BAG = 1;
 const ROUNDTYPE_SCRIPTED = 0;
 const ROUNDTYPE_NUM_PUNCHES = 1;
 const ROUNDTYPE_TIMED = 2;
+const ROUNDTYPE_SPEED = 3;
+
 let workoutData = [
 
     // WORKOUT 0
@@ -120232,7 +120364,7 @@ let workoutData = [
                 "HEAVY BAG COMBOS:\n" +
                 " \u2022 Try some different combos.\n" +
                 " \u2022 Focus on form, then increase speed.",
-            bagType: ROUND_DOUBLE_END_BAG,
+            bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages: [
                 {
@@ -120261,6 +120393,70 @@ let workoutData = [
             // ],
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_TIMED,
+        }
+    ],
+    [
+        {
+            introText: "NEED FOR SPEED:\n" +
+                " \u2022 2 rounds of speed drills.\n" +
+                " \u2022 Heavy Bag, then Double-End Bag.",
+            uiShortText: "NEED FOR SPEED",
+            uiText: "NEED FOR SPEED:<ul><li>3 rounds of speed drills.</li><li>Heavy Bag + Double-End Bag.</li></ul>",
+            uid: 3,
+            stages:[],
+            bagType: null
+        },
+        // {
+        //     introText: 
+        //         "HEAVY BAG SPEED:\n" +
+        //         " \u2022 Start at 350PPM\n" + 
+        //         " \u2022 Ramp up to 400PPM\n" + 
+        //         " \u2022 Finish off at 450PPM\n",
+        //     stages:[
+        //         {
+        //             startTimePercent: 0.0,
+        //             descriptionText: "Stay above 350 PPM",
+        //             targetPPM: 350,
+        //         },
+        //         {
+        //             startTimePercent: 0.25,
+        //             descriptionText: "Go for 400 PPM",
+        //             targetPPM: 400,
+        //         },
+        //         {
+        //             startTimePercent: 0.75,
+        //             descriptionText: "Finish at 450PPM",
+        //             targetPPM: 450,
+        //         }
+        //     ],
+        //     bagType: ROUND_HEAVY_BAG,
+        //     roundType: ROUNDTYPE_SPEED
+        // },
+        {
+            introText: 
+                "DOUBLE-END SPEED:\n" +
+                " \u2022 Start at 300PPM\n" + 
+                " \u2022 Ramp up to 350PPM\n" + 
+                " \u2022 Finish off at 400PPM\n",
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "Stay above 300 PPM",
+                    targetPPM: 300,
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "Go for 350 PPM",
+                    targetPPM: 350,
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "Finish at 400PPM",
+                    targetPPM: 400,
+                }
+            ],
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SPEED
         }
     ]
 

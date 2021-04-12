@@ -13,13 +13,13 @@ const SESSION_REST = 4;
 const SESSION_OUTRO = 5;
 const SESSION_PAUSED = 6;
 
-import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES} from "./workoutData.js";
-
+import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED} from "./workoutData.js";
+import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound} from "./BoxingRounds.js";
 
 const kIntroDuration = 5.0;
 const kIntroGetReadyDuration = 5.0;
 const kRestGetReadyDuration = 5.0;
-const kRoundAlmostDoneTime = 10.0;
+
 // const kGetReadyDuration = 3.0;
 
 const kWorkoutTextBoxSmallFontSize = 470;
@@ -28,7 +28,7 @@ const kWorkoutTextBoxBigFontSize = 350;
 const kBlackColor = new THREE.Color(0x000000);
 const kRedColor = new THREE.Color(0x5D1719);
 kRedColor.multiplyScalar(1.5);
-const kGreyColor = new THREE.Color(0x606060);
+const kGreyColor = new THREE.Color(0x404040);
 
 // kRedColor.convertSRGBToLinear();
 
@@ -60,7 +60,7 @@ Boxing Session:
 
 */
 
-function formatTimeString(timeInSeconds)
+export function formatTimeString(timeInSeconds)
 {
     let hours = Math.floor(timeInSeconds / 3600);
     let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
@@ -69,232 +69,6 @@ function formatTimeString(timeInSeconds)
     return minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
 }
 
-class BoxingRound
-{
-    constructor(roundNumber, maxRounds, bagType)
-    {
-        this.roundNumber = roundNumber;
-        this.maxRounds = maxRounds;
-        this.bagType = bagType;
-
-        console.log("Initialize Round " + roundNumber + "/" + maxRounds);
-    }
-
-    start(session, elapsedTime)
-    {
-    }
-
-    update(session, elapsedTime)
-    {
-    }
-
-    end(session)
-    {
-    }
-
-    isOver(elapsedTime)
-    {
-        return false;
-    }
-
-    didPlayerFail()
-    {
-        return false;
-    }
-
-    isFinalRound()
-    {
-        return this.roundNumber == this.maxRounds;
-    }
-
-    getBagType()
-    {
-        return this.bagType;
-    }
-
-    getIntroText()
-    {
-        return "";
-    }
-
-    getBagTypeString()
-    {
-        return (this.bagType == ROUND_HEAVY_BAG) ? "Heavy Bag" : "Double-end Bag";
-    }
-
-    
-
-    onBagHit(whichHand, speed)
-    {
-
-    }
-
-}
-
-class TimedBoxingRound extends BoxingRound
-{
-    constructor(duration, roundNumber, maxRounds, bagType, introText = null)
-    {
-        super(roundNumber, maxRounds, bagType);
-        this.roundDuration = duration;
-        
-        if (introText === null)
-        {
-            this.introText = "Freestyle round:\n \u2022 " + this.getBagTypeString() + ", " + formatTimeString(this.roundDuration) + " duration";
-        }
-        else
-        {
-            this.introText = introText;
-        }
-    }
-
-    start(session, elapsedTime)
-    {
-        this.startTime = elapsedTime;
-        this.endTime = this.startTime + this.roundDuration;
-        this.playedAlmostDoneAlert = false;
-
-        session.displayWorkoutInfoMessage(
-            this.getBagTypeString() + "\nFreestyle", false);
-    }
-
-    update(session, elapsedTime)
-    {
-        if (!this.playedAlmostDoneAlert && (this.roundDuration - elapsedTime) < kRoundAlmostDoneTime)
-        {
-            this.playedAlmostDoneAlert = true;
-            session.playGetReadySound();
-        }
-
-        session.updateTimer(this.roundDuration - elapsedTime);
-    }
-
-    end(session)
-    {
-    }
-
-    isOver(elapsedTime)
-    {
-         return elapsedTime > this.roundDuration;
-    }
-
-    getIntroText()
-    {
-        return this.introText;
-    }
-}
-
-class ScriptedBoxingRound extends TimedBoxingRound
-{
-    constructor(info, duration, roundNumber)
-    {
-        super(duration, roundNumber, info.length - 1, info[roundNumber].bagType);
-        this.roundInfo = info[roundNumber];
-    }
-
-    start(session, elapsedTime)
-    {
-        this.startTime = elapsedTime;
-        this.endTime = this.startTime + this.roundDuration;
-        this.playedAlmostDoneAlert = false;
-
-        // display the stage[0] description
-        session.displayWorkoutInfoMessage(this.roundInfo.stages[0].descriptionText, false);
-
-        // prep for stage 1 message (if any)
-        this.nextWorkoutStage = 1;
-        this.updateNextWorkoutStageTime(this.nextWorkoutStage);
-    }
-
-    update(session, elapsedTime)
-    {
-        if (!this.playedAlmostDoneAlert && (this.roundDuration - elapsedTime) < kRoundAlmostDoneTime)
-        {
-            this.playedAlmostDoneAlert = true;
-            session.playGetReadySound();
-        }
-
-        session.updateTimer(this.roundDuration - elapsedTime);
-        
-        if (elapsedTime >= this.nextWorkoutStageTime)
-        {
-            session.displayWorkoutInfoMessage(this.roundInfo.stages[this.nextWorkoutStage].descriptionText);
-            this.nextWorkoutStage++;
-
-            this.updateNextWorkoutStageTime(this.nextWorkoutStage);
-        }
-    }
-
-    updateNextWorkoutStageTime(stage)
-    {
-        if (stage < this.roundInfo.stages.length)
-        {
-            this.nextWorkoutStageTime = this.roundInfo.stages[stage].startTimePercent * this.roundDuration;
-        }
-        else
-        {
-            this.nextWorkoutStageTime = Number.MAX_VALUE;
-        }
-    }
-
-    getIntroText()
-    {
-        return this.roundInfo.introText;
-    }
-}
-
-class NumberOfPunchesBoxingRound extends BoxingRound
-{
-    constructor(numPunches, roundNumber, maxRounds, bagType, introText = null)
-    {
-        super(roundNumber, maxRounds, bagType);
-        this.numPunches = numPunches;
-        this.almostDonePunchCount = Math.floor(numPunches * 0.25);
-        //console.log("Almost Done Count: " + this.almostDonePunchCount);
-
-        if (introText === null)
-        {
-            this.introText = "Throw " + this.numPunches + " punches on the " + this.getBagTypeString() + ".";
-        }
-        else
-        {
-            this.introText = introText;
-        }
-    }
-
-    start(session, elapsedTime)
-    {
-        session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false);
-        this.startTime = elapsedTime;
-        this.session = session;
-    }
-
-    update(session, elapsedTime)
-    {
-        session.updateTimer(elapsedTime - this.startTime, false);
-    }
-
-    isOver(elapsedTime)
-    {
-        return this.numPunches <= 0;
-    }
-
-    onBagHit(whichHand, speed)
-    {
-        this.numPunches--;
-        this.session.displayWorkoutInfoMessage("THROW " + this.numPunches + " PUNCHES.", false );
-
-        if(this.numPunches == this.almostDonePunchCount)
-        {
-            this.session.playGetReadySound();
-        }
-    }
-
-    getIntroText()
-    {
-        return this.introText;
-    }
-}
 
 export class BoxingSession
 {
@@ -311,6 +85,7 @@ export class BoxingSession
         heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
         doubleEndBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
         
+        this.punchingStats = new PunchingStats(scene);
         //load assets here
         
         // sounds
@@ -391,18 +166,16 @@ export class BoxingSession
         this.currentTimeInWholeSeconds = -1.0;
 
 
-        let loader = new THREE.TextureLoader();
-        let tvBkgd = loader.load("./content/tv_background2.png");
-        tvBkgd.flipY = false;
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
             {
-                node.material = new THREE.MeshBasicMaterial({color: 0xAAB0BF});
-                node.material.color.convertSRGBToLinear();
-                node.material.color.multiplyScalar(1.25);
-                node.material.name = "TVSCREEN";
-                node.material.map = tvBkgd;
+                // node.material = new THREE.MeshStandardMaterial({color: 0xAAB0BF});
+                // node.material.color.convertSRGBToLinear();
+                // node.material.color.multiplyScalar(1.25);
+                // node.material.name = "TVSCREEN";
+                // node.material.map = tvBkgd;
+
                 // node.material.emissiveIntensity = 0.35;
                 // node.material.emissive.set(0x406080);
                 // node.material.map = tvBkgd;
@@ -513,9 +286,18 @@ export class BoxingSession
             {
                 round = new NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
             }
-            else
+            else if (roundInfo.roundType == ROUNDTYPE_TIMED)
             {
                 round = new TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+            }
+            else if (roundInfo.roundType == ROUNDTYPE_SPEED)
+            {
+                round = new SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds);
+            }
+            else
+            {
+                console.assert("UNKNOWN ROUNDTYPE - " + roundInfo.roundType);
+                break;
             }
             this.boxingRounds.push(round);
         }
@@ -529,7 +311,7 @@ export class BoxingSession
         this.elapsedTime = 0.0;
         this.currentRound = 0;
         this.updateRoundsMessage();
-        this.updateTimer();
+        this.updateTimer(this.elapsedTime);
 
         this.workoutStageTextBox.visible = false;
         this.workoutIntroTextBox.visible = true;
@@ -560,6 +342,8 @@ export class BoxingSession
         {
             this.heavyBag.update(dt, accumulatedTime);
         }
+
+        this.punchingStats.update(dt, accumulatedTime);
 
         switch(this.state)
         {
@@ -687,6 +471,7 @@ export class BoxingSession
         this.workoutIntroTextBox.displayMessage(this.boxingRoundInfo.getIntroText()); //roundInfo.introText);
         //this.updateWorkoutMessage();
     }
+
     hideBag()
     {
         let desiredBagType = this.boxingRounds[this.currentRound + 1].bagType;
@@ -704,6 +489,7 @@ export class BoxingSession
             this.currentBagType = null;
         }
     }
+
     showBagForNextRound()
     {
         let desiredBagType = this.boxingRounds[this.currentRound + 1].bagType; // this.workoutInfo[this.currentRound + 1].bagType;
@@ -824,14 +610,14 @@ export class BoxingSession
         if (this.state == SESSION_ROUND)
         {
             this.boxingRoundInfo.onBagHit(whichHand, speed);
+            this.punchingStats.onBagHit(whichHand, speed);
         }
-
     }
 }
 
 export class PunchingStats
 {
-    constructor(scene, heavyBag, doubleEndedBag)
+    constructor(scene)
     {
 
         this.scene = scene;
@@ -845,10 +631,6 @@ export class PunchingStats
 
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
-
-        heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
-        doubleEndedBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
-
 
         this.textBox = new TextBox(520, "left", 1.55, "bottom", 0.25, 0x000000);
         // this.textBox.position.x = 0.12;
@@ -888,10 +670,15 @@ export class PunchingStats
         this.updateStatsDisplay(true);
     }
 
+    getCurrentPPM()
+    {
+        return this.cachedPPM;
+    }
 
     updateStatsDisplay(isPunch=false)
     {       
         let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
+        this.cachedPPM = ppm;
 
 
         let message = 
@@ -985,7 +772,7 @@ class MovingAverage
 
         let totalTime = timestamp - this.data[this.indexOfOldestSample].timestamp;
 
-        if (totalTime == 0)
+        if (totalTime < 0.3)
             return 0;
 
         let rate = this.numSamples / totalTime * 60.0;

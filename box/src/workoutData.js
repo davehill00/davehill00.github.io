@@ -4,6 +4,8 @@ export const ROUND_DOUBLE_END_BAG = 1;
 export const ROUNDTYPE_SCRIPTED = 0;
 export const ROUNDTYPE_NUM_PUNCHES = 1;
 export const ROUNDTYPE_TIMED = 2;
+export const ROUNDTYPE_SPEED = 3;
+
 export let workoutData = [
 
     // WORKOUT 0
@@ -222,7 +224,7 @@ export let workoutData = [
                 "HEAVY BAG COMBOS:\n" +
                 " \u2022 Try some different combos.\n" +
                 " \u2022 Focus on form, then increase speed.",
-            bagType: ROUND_DOUBLE_END_BAG,
+            bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages: [
                 {
@@ -251,6 +253,70 @@ export let workoutData = [
             // ],
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_TIMED,
+        }
+    ],
+    [
+        {
+            introText: "NEED FOR SPEED:\n" +
+                " \u2022 2 rounds of speed drills.\n" +
+                " \u2022 Heavy Bag, then Double-End Bag.",
+            uiShortText: "NEED FOR SPEED",
+            uiText: "NEED FOR SPEED:<ul><li>3 rounds of speed drills.</li><li>Heavy Bag + Double-End Bag.</li></ul>",
+            uid: 3,
+            stages:[],
+            bagType: null
+        },
+        // {
+        //     introText: 
+        //         "HEAVY BAG SPEED:\n" +
+        //         " \u2022 Start at 350PPM\n" + 
+        //         " \u2022 Ramp up to 400PPM\n" + 
+        //         " \u2022 Finish off at 450PPM\n",
+        //     stages:[
+        //         {
+        //             startTimePercent: 0.0,
+        //             descriptionText: "Stay above 350 PPM",
+        //             targetPPM: 350,
+        //         },
+        //         {
+        //             startTimePercent: 0.25,
+        //             descriptionText: "Go for 400 PPM",
+        //             targetPPM: 400,
+        //         },
+        //         {
+        //             startTimePercent: 0.75,
+        //             descriptionText: "Finish at 450PPM",
+        //             targetPPM: 450,
+        //         }
+        //     ],
+        //     bagType: ROUND_HEAVY_BAG,
+        //     roundType: ROUNDTYPE_SPEED
+        // },
+        {
+            introText: 
+                "DOUBLE-END SPEED:\n" +
+                " \u2022 Start at 300PPM\n" + 
+                " \u2022 Ramp up to 350PPM\n" + 
+                " \u2022 Finish off at 400PPM\n",
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "Stay above 300 PPM",
+                    targetPPM: 300,
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "Go for 350 PPM",
+                    targetPPM: 350,
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "Finish at 400PPM",
+                    targetPPM: 400,
+                }
+            ],
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SPEED
         }
     ]
 

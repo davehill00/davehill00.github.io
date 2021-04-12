@@ -16,7 +16,7 @@ var inputProfilesList = require( "@webxr-input-profiles/registry/dist/profilesLi
 import {Glove} from './glove.js';
 import {HeavyBag} from './bag.js';
 import {DoubleEndedBag} from './doubleEndedBag.js';
-import {BoxingSession, PunchingStats} from './gamelogic.js';
+import {BoxingSession} from './gamelogic.js';
 import {PlayerHud} from './playerHud.js';
 
 import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-controllers';
@@ -45,7 +45,6 @@ let heavyBag  = null;
 let doubleEndedBag = null;
 
 let gameLogic = null;
-let punchingStats = null;
 
 let playerHud = null;
 
@@ -173,7 +172,7 @@ function initialize()
     envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
     envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
     envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
-    envMapObjects['Screen'] = {intensity: 0.2, roughness: 0.8};
+    envMapObjects['Screen'] = {intensity: 0.3, roughness: 0.82};
     
     
     // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};
@@ -243,17 +242,17 @@ function initialize()
                         }
                     });
 
+                    // console.log("OBJECT: " + obj.name);
                     if (obj.name == "Screen")
                     {
-                        //obj.material.emissiveIntensity = 1.25;
-                        //obj.material = new THREE.MeshStandardMaterial({color: 0xAAB0BF});
-                        //obj.material.color.convertSRGBToLinear();
-                        //obj.material.color.multiplyScalar(1.25);
+                        console.log
+                        obj.material.emissiveIntensity = 0.03;
+                         obj.material.color.setRGB(0.86, 0.86, 0.965);
                         let loader = new THREE.TextureLoader();
                         let tvBkgd = loader.load("./content/tv_background2.png");
                         tvBkgd.flipY = false;
                 
-                        obj.material.name = "TVSCREEN";
+                        // obj.material.name = "TVSCREEN";
                         obj.material.map = tvBkgd;
         
                     }
@@ -393,11 +392,9 @@ function render() {
     // TWEEN.update(accumulatedTime);
 
     updateHands(dt, accumulatedTime);
-    if (gameLogic && punchingStats)
+    if (gameLogic)
     {
-        //bag.update(dt, accumulatedTime);
         gameLogic.update(dt, accumulatedTime);
-        punchingStats.update(dt, accumulatedTime);
     }
     if(playerHud) 
         playerHud.update(dt);
@@ -450,7 +447,6 @@ function initScene(scene, camera, renderer)
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
 
     gameLogic = new BoxingSession(scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
-    punchingStats = new PunchingStats(scene, heavyBag, doubleEndedBag);
 
 
 }
