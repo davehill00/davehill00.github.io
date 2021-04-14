@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+// import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+import {VRButton} from "./vrButton.js";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import * as TWEEN from '@tweenjs/tween.js';
 import * as ZONE from './zone.js';
 import * as HUD from './StatsHud.js';
 import { InputManager } from './inputManager.js';
-
-//import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 
 let clock = null;
 let accumulatedTime = 0.0;
@@ -52,8 +52,8 @@ function initialize()
     renderer.toneMappingExposure = 1.1;
 
     document.body.appendChild(renderer.domElement);
-    let button = VRButton.createButton(renderer);
-    document.body.appendChild(button);
+    let button = new VRButton(renderer); //.createButton(renderer);
+    // document.body.appendChild(button);
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
@@ -90,8 +90,10 @@ function initialize()
     zone = new ZONE.ZoneIntro(scene, renderer, camera);
     zone.onStart(accumulatedTime);
 
-    loadEnvMap();
+    // loadEnvMap();
 
+    LoadEnvMapPromise().then(()=>{button.checkForXR()});
+    //button.checkForXR();
     renderer.setAnimationLoop(render);     
 };
 
@@ -161,4 +163,32 @@ function loadEnvMap()
 
 
 
+}
+
+function LoadEnvMapPromise()
+{
+    pmremGenerator = new THREE.PMREMGenerator( renderer );
+    pmremGenerator.compileEquirectangularShader();
+
+    // THREE.DefaultLoadingManager.onLoad = function ( ) {
+
+    //     this.pmremGenerator.dispose();
+    //     this.pmremGenerator = null;
+
+    // };
+
+    return new Promise( (resolve, reject) => {
+        
+        new EXRLoader()
+            .setDataType( THREE.HalfFloatType )
+            .load( './content/envmap2.exr',  ( texture ) => {
+
+                let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
+                // scene.envMap = exrCubeRenderTarget.texture;
+                renderer.envMapCube = exrCubeRenderTarget.texture;
+
+                resolve();
+
+            } );
+        });
 }

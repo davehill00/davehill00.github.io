@@ -515,17 +515,23 @@ export class ZoneDefault extends Zone
             this.renderer.envMapCube && this.setMonolithEnvMap == false)
         {
             this.monolithObject.material.envMap = this.renderer.envMapCube;
-            this.monolithObject.material.envMapIntensity = 1.2;
+            this.monolithObject.material.envMapIntensity = 1.0; //1.2;
             this.monolithObject.material.metalness = 0.8;
-            this.monolithObject.material.roughness = 0.46;
+            this.monolithObject.material.roughness = 0.26;
             this.monolithObject.material.needsUpdate = true;
             this.monolithObject.material.color.set(0xffffff);
 
+            this.sphere.name = "SPHERE";
+            this.sphere.material.name = "SPHERE MATERIAL";
             this.sphere.material.color.convertSRGBToLinear();
             this.sphere.material.envMap = this.renderer.envMapCube;
-            this.sphere.material.envMapIntensity = 1.0; //1.9;
-            this.sphere.material.metalness = 0.96;
+            this.sphere.material.envMapIntensity = 1.4; //2.5; //1.9;
+            this.sphere.material.metalness = 0.96; //1.0; //0.96;
             this.sphere.material.roughness = 0.5;
+            // this.sphere.material.clearcoat = 1.0;
+            // this.sphere.material.clearcoatMap = this.renderer.envMapCube;
+            // this.sphere.material.clearcoatRoughness = 0.1;
+            // this.sphere.material.reflectivity = 1.0;
             this.sphere.material.needsUpdate = true;
 
             this.setMonolithEnvMap = true;

@@ -35,6 +35,14 @@ module.exports = {
     new webpack.ProvidePlugin({
       THREE: 'three'
     })
-  ]
-
+  ],
+  
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
 };

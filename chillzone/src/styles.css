@@ -1,0 +1,30 @@
+html, body {
+    overflow: hidden;
+  }
+
+  .vr_button
+{
+    display:unset;
+    position:absolute;
+    
+    bottom:20px;
+    height: 120px;
+    left:calc(50% - 60px);
+    width:120px;
+    z-index: 999;
+    
+    color:  #d68678;
+    /* background: #fdede8; */
+    background: radial-gradient(circle farthest-corner at 75% 30%, #fce5e2 15%, #fdd8d3 40%, #db8681 100%);
+    border-color: #fde4df;
+
+    border-width: 6px;
+    border-style: solid;
+    border-radius: 50%;
+    
+    font-family: 'Varela Round', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+
+    outline: 0;
+}
