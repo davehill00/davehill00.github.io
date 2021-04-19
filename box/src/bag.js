@@ -170,7 +170,7 @@ export class HeavyBag extends Bag
                     let obj = gltf.scene.children[i];
                     
                     
-                    console.log("BAG " + i + ":" + obj.name);
+                    //console.log("BAG " + i + ":" + obj.name);
 
 
                     if (obj.name == "Bag")
@@ -216,6 +216,7 @@ export class HeavyBag extends Bag
                     }
                 }
                 // gltf.scene.scale.set(0.5, 0.5, 0.5);
+                gltf.scene.renderOrder = 3; //render after gloves
                 this.add(gltf.scene);
 
                 // this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
@@ -375,14 +376,15 @@ export class HeavyBag extends Bag
     }
 
     processCollisionEffects(
-        glove, 
-        collisionSpeed,
+        glove,
+        gloveVelocity,
         hitPoint,
         hitNormalWRTBag,
         accumulatedTime,
         isPunch = true
     )
     {
+        let collisionSpeed = gloveVelocity.length();
         if (collisionSpeed > kMinPunchSoundVelocity && !glove.isInContactWithBag())
         {
             if (collisionSpeed > 1.0)
@@ -400,7 +402,7 @@ export class HeavyBag extends Bag
 
                 for(let cb of this.punchCallbacks)
                 {
-                    cb(glove.whichHand, collisionSpeed);
+                    cb(glove.whichHand, collisionSpeed, gloveVelocity);
                 }
 
                 //
@@ -452,8 +454,8 @@ export class HeavyBag extends Bag
     )
     {
         // Compute the delta speed between the bag and the glove
-        tVec0.subVectors(this.velocity, gloveVelocity);
-        let collisionSpeed = tVec0.length();
+        //tVec0.subVectors(this.velocity, gloveVelocity);
+        // let collisionSpeed = gloveVelocity.length(); //tVec0.length();
 
         // Apply the glove velocity to the bag
         tVec0.copy(gloveVelocity);
@@ -461,7 +463,7 @@ export class HeavyBag extends Bag
         tVec0.multiplyScalar(0.95); // scale it up to give the punch more weight
         this.velocity.add(tVec0);
 
-        this.processCollisionEffects(glove, collisionSpeed, hitPoint, hitNormalWRTBag, accumulatedTime);
+        this.processCollisionEffects(glove, gloveVelocity, hitPoint, hitNormalWRTBag, accumulatedTime);
 
     }
 

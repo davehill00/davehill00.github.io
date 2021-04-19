@@ -215,7 +215,10 @@ function initialize()
                     console.log("DO GLTF FIXUPS")
                     for (let i = 0; i < gltf.scene.children.length; i++)
                     {                
-                        let obj = gltf.scene.children[i];       
+                        let obj = gltf.scene.children[i];
+                        
+                        obj.renderOrder = 10; //render after gloves and bag
+
                         obj.traverse(function (node) {
 
                             if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
@@ -462,7 +465,7 @@ function initScene(scene, camera, renderer)
     heavyBag.setGloves(leftHand.glove, rightHand.glove);
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
 
-    gameLogic = new BoxingSession(scene, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
+    gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
 
 }

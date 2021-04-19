@@ -2,6 +2,7 @@ var createGeometry = require('./thirdparty/three-bmfont-text/')
 var loadFont = require('load-bmfont')
 import * as THREE from 'three';
 import { TextBox } from './textBox';
+import {MovingAverageEventsPerMinute} from './movingAverage.js';
 
 var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
 
@@ -13,8 +14,18 @@ const SESSION_REST = 4;
 const SESSION_OUTRO = 5;
 const SESSION_PAUSED = 6;
 
+const kPunchNames = 
+[
+    "???",
+    "JAB(1)",
+    "STRAIGHT(2)",
+    "LEFT HOOK(3)",
+    "RIGHT HOOK(4)"
+];
+
 import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED} from "./workoutData.js";
 import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound} from "./BoxingRounds.js";
+import { PunchDetector } from './punchDetector';
 
 const kIntroDuration = 5.0;
 const kIntroGetReadyDuration = 5.0;
@@ -29,6 +40,8 @@ const kBlackColor = new THREE.Color(0x000000);
 const kRedColor = new THREE.Color(0x5D1719);
 kRedColor.multiplyScalar(1.5);
 const kGreyColor = new THREE.Color(0x404040);
+
+let tVec0 = new THREE.Vector3();
 
 // kRedColor.convertSRGBToLinear();
 
@@ -72,20 +85,25 @@ export function formatTimeString(timeInSeconds)
 
 export class BoxingSession
 {
-    constructor(scene, audioListener, heavyBag, doubleEndBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
+    constructor(scene, camera, renderer, audioListener, heavyBag, doubleEndBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
     {
         this.scene = scene;
         this.audioListener = audioListener;
         this.heavyBag = heavyBag;
         this.doubleEndBag = doubleEndBag;
         this.TV = null;
+        this.forceRoundOver = false;
+        this.camera = camera;
+        this.renderer = renderer;
 
         // this.initialize(numRounds, roundDuration, restDuration);
 
-        heavyBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
-        doubleEndBag.punchCallbacks.push((whichHand, speed) => {this.onBagHit(whichHand, speed)});
+        heavyBag.punchCallbacks.push((whichHand, speed, velocity) => {this.onBagHit(whichHand, speed, velocity)});
+        doubleEndBag.punchCallbacks.push((whichHand, speed, velocity) => {this.onBagHit(whichHand, speed, velocity)});
         
         this.punchingStats = new PunchingStats(scene);
+        this.punchDetector = new PunchDetector();
+        this.lastPunchType = null;
         //load assets here
         
         // sounds
@@ -166,6 +184,13 @@ export class BoxingSession
         this.currentTimeInWholeSeconds = -1.0;
 
 
+        this.headingArrow = new THREE.Mesh(
+            new THREE.BoxGeometry(0.1, 0.1, 1.0),
+            new THREE.MeshBasicMaterial({color: 0x804080})
+        );
+
+        this.headingArrow.position.set(0.0, 0.1, 0.0);
+        //this.scene.add(this.headingArrow);
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
@@ -201,7 +226,7 @@ export class BoxingSession
 
         // models?
 
-        
+        document.addEventListener('keypress', (event) => {this.onKeyPress(event)});
     }
 
     initialize(numRounds, roundDuration, restDuration, bagType, bagSwap, workoutType, whichScriptedWorkout)
@@ -312,6 +337,7 @@ export class BoxingSession
         this.currentRound = 0;
         this.updateRoundsMessage();
         this.updateTimer(this.elapsedTime);
+        this.forceRoundOver = false;
 
         this.workoutStageTextBox.visible = false;
         this.workoutIntroTextBox.visible = true;
@@ -344,6 +370,21 @@ export class BoxingSession
         }
 
         this.punchingStats.update(dt, accumulatedTime);
+
+        
+        if (this.renderer && this.renderer.xr && this.renderer.xr.isPresenting)
+        {
+            let xrCamera = this.renderer.xr.getCamera(this.camera);
+            xrCamera.getWorldPosition(tVec0);
+            this.punchDetector.update(dt, tVec0);
+
+
+            this.punchDetector.getAverageDirection(tVec0);
+            let cosTheta = tVec0.x;
+            // console.log("ANGLE = ", Math.acos(cosTheta) * 180.0 / Math.PI);
+            this.headingArrow.rotation.set(0.0, Math.acos(cosTheta) - 1.57, 0.0);
+    
+        }
 
         switch(this.state)
         {
@@ -403,8 +444,10 @@ export class BoxingSession
                 this.boxingRoundInfo.update(this, this.elapsedTime);
 
                 // END OF THE ROUND
-                if (this.boxingRoundInfo.isOver(this.elapsedTime))
+                if (this.boxingRoundInfo.isOver(this.elapsedTime) || this.forceRoundOver == true )
                 {
+                    
+
                     this.boxingRoundInfo.end(this);
 
                     this.elapsedTime = 0.0;
@@ -412,9 +455,8 @@ export class BoxingSession
 
                     //play "end of round" sound
                     this.soundEndOfRound.play();
-                    this.updateRoundsMessage();
 
-                    if (this.boxingRoundInfo.didPlayerFail() || this.boxingRoundInfo.isFinalRound())
+                    if ( this.boxingRoundInfo.didPlayerFail() || this.boxingRoundInfo.isFinalRound())
                     {
                         if (this.boxingRoundInfo.didPlayerFail())
                         {
@@ -432,6 +474,11 @@ export class BoxingSession
                         this.hideBag();
                         this.state = SESSION_REST;
                     }
+
+                    
+                    this.updateRoundsMessage();
+
+                    this.forceRoundOver = false;
                     
                 }
                 break;
@@ -470,6 +517,7 @@ export class BoxingSession
         this.boxingRoundInfo = this.boxingRounds[this.currentRound+1];
         this.workoutIntroTextBox.displayMessage(this.boxingRoundInfo.getIntroText()); //roundInfo.introText);
         //this.updateWorkoutMessage();
+        this.updateRoundsMessage();
     }
 
     hideBag()
@@ -508,9 +556,17 @@ export class BoxingSession
             }
             
         }
+        if (this.currentBagType == ROUND_HEAVY_BAG)
+        {
+            this.punchDetector.initialize(this.heavyBag);
+        }
+        else
+        {
+            this.punchDetector.initialize(this.doubleEndBag);
+        }
     }
 
-    updateTimer(value, bChangeColorOnFinalTenSeconds=true)
+    updateTimer(value, bRoundUp = true, bChangeColorOnFinalTenSeconds=true)
     {
         let message;
         if (this.state == SESSION_NULL || this.state == SESSION_OUTRO)
@@ -520,7 +576,7 @@ export class BoxingSession
         }
         else
         {
-            let newTimeInWholeSeconds = Math.ceil(value);
+            let newTimeInWholeSeconds = bRoundUp ? Math.ceil(value) : Math.floor(value);
             if (newTimeInWholeSeconds == this.currentTimeInWholeSeconds)
             {
                 return;
@@ -565,7 +621,7 @@ export class BoxingSession
                     stateMessage = "";
                     break;
                 case SESSION_GET_READY:
-                    stateMessage = "GET READY"; //(this.currentRound == 0) : "GET READY" ? "REST";
+                    stateMessage = "GET READY";
                     break;
                 case SESSION_ROUND:
                     stateMessage = "FIGHT";
@@ -605,12 +661,27 @@ export class BoxingSession
         this.soundGetReady.play();
     }
 
-    onBagHit(whichHand, speed)
+    onBagHit(whichHand, speed, velocity)
     {
+        this.lastPunchType = this.punchDetector.analyzePunch(whichHand, velocity);
+
         if (this.state == SESSION_ROUND)
         {
-            this.boxingRoundInfo.onBagHit(whichHand, speed);
-            this.punchingStats.onBagHit(whichHand, speed);
+            this.boxingRoundInfo.onBagHit(whichHand, speed, velocity);
+            this.punchingStats.onBagHit(whichHand, speed, velocity, this.lastPunchType);
+        }
+    }
+
+    onKeyPress(event)
+    {
+        if (event.code == 'Period')
+        {
+            if (this.state == SESSION_ROUND)
+            {
+                this.forceRoundOver = true;
+            }
+
+            this.elapsedTime += 60.0;
         }
     }
 }
@@ -626,21 +697,28 @@ export class PunchingStats
         this.punches = 0;
         this.lastPunchTime = -1.0;
         this.averagePunchRate = 1.0;
+        this.lastPunchType = 0;
+        this.lastPunchTypeCount = 0;
   
-        this.punchRateNew = new MovingAverage(32, 4.0); //, 1.0);
+        this.punchRateNew = new MovingAverageEventsPerMinute(32, 4.0); //, 1.0);
 
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
 
-        this.textBox = new TextBox(520, "left", 1.55, "bottom", 0.25, 0x000000);
+        this.statsTextBox = new TextBox(520, "left", 1.55, "bottom", 0.25, 0x000000);
         // this.textBox.position.x = 0.12;
-        this.textBox.position.y = -0.35;
+        this.statsTextBox.position.y = -0.35;
+
+        this.punchTextBox = new TextBox(520, "right", 0.85, "center", 0.25, 0x000000);
+        this.punchTextBox.position.x = 0.375;
+        this.punchTextBox.position.y = -0.35;
 
         this.scene.traverse((node) => {
             if (node.name == "Screen")
             {
                 this.TV = node;
-                this.TV.add(this.textBox);
+                this.TV.add(this.statsTextBox);
+                this.TV.add(this.punchTextBox);
             }
         });
 
@@ -660,13 +738,23 @@ export class PunchingStats
         this.accumulatedTime = accumulatedTime;
     }
 
-    onBagHit(whichHand, speed)
+    onBagHit(whichHand, speed, velocity, lastPunchType)
     {
         this.punches++;
         this.lastPunchTime = this.accumulatedTime;
-        this.punchRateNew.recordPunch(this.accumulatedTime);
+        this.punchRateNew.recordEntry(this.accumulatedTime);
 
         this.lastPunchSpeed = speed; //velocity.length();
+
+        if (this.lastPunchType != lastPunchType)
+        {
+            this.lastPunchType = lastPunchType;
+            this.lastPunchTypeCount = 1;
+        }
+        else
+        {
+            this.lastPunchTypeCount++;
+        }
         this.updateStatsDisplay(true);
     }
 
@@ -677,7 +765,7 @@ export class PunchingStats
 
     updateStatsDisplay(isPunch=false)
     {       
-        let ppm = this.punchRateNew.getAverage(this.accumulatedTime);
+        let ppm = this.punchRateNew.getAverageEPM(this.accumulatedTime);
         this.cachedPPM = ppm;
 
 
@@ -685,6 +773,7 @@ export class PunchingStats
             "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 
             "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
             "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---");
+            
 
         /*
         this.fontGeometry.computeBoundingBox();
@@ -694,88 +783,29 @@ export class PunchingStats
         let quantizedMaxX = Math.floor(box.max.x * this.fontMesh.scale.x * 10.0) * 0.1;
         this.fontMesh.position.x += quantizedMaxX * -0.5;
         */
-        this.textBox.displayMessage(message);
+        this.statsTextBox.displayMessage(message);
+
+        if (isPunch)
+        {
+            this.punchTextBox.visible = true;
+            if (this.lastPunchTypeCount == 1)
+            {
+                this.punchTextBox.displayMessage(kPunchNames[this.lastPunchType]);
+            }
+            else
+            {
+                message = kPunchNames[this.lastPunchType] + " x " + this.lastPunchTypeCount.toFixed(0);
+                this.punchTextBox.displayMessage(message);
+            }
+        }
+        else
+        {
+            this.punchTextBox.visible = false;
+            this.lastPunchType = -1;
+            this.lastPunchTypeCount = 0;
+        }
         
         this.nextStatsUpdate = this.accumulatedTime + 1.5;
     }
 }
 
-class MovingAverage
-{
-    constructor(size, timeWindow)
-    {
-        this.data = new Array(size);
-        for(let i = 0; i < size; i++)
-        {
-            this.data[i] = {value: -1, timestamp: -1};
-        }
-        this.size = size;
-        this.timeWindow = timeWindow;
-        this.numSamples = 0;
-        this.indexOfNextSample = 0;
-        this.indexOfOldestSample = 0;
-    }
-    recordPunch(timestamp)
-    {
-        //if full, remove the old one -- descrement sum
-        if (this.numSamples == this.size)
-        {
-            this.remove(this.indexOfOldestSample);
-        }
-
-        //write the new one
-        this.numSamples++;
-
-        let newEntry = this.data[this.indexOfNextSample];
-        newEntry.timestamp = timestamp;
-
-        // update index -- I don't think I need to update the "oldest" index because it
-        // should already be correct
-        this.indexOfNextSample = (this.indexOfNextSample + 1) % this.size;
-    }
-
-    remove(index)
-    {
-        let entry = this.data[index];
-        this.numSamples--;
-
-        if (index == this.indexOfOldestSample)
-        {
-            this.indexOfOldestSample = (this.indexOfOldestSample + 1) % this.size;
-        }
-    }
-    update(accumulatedTime)
-    {
-        let result = false;
-        while(this.numSamples > 0)
-        {
-            let lifetime = accumulatedTime - this.data[this.indexOfOldestSample].timestamp;
-            if (lifetime > this.timeWindow)
-            {
-                this.indexOfOldestSample = (this.indexOfOldestSample + 1) % this.size;
-                this.numSamples--;
-                result = true;
-            }
-            else
-            {
-                break;
-            }
-        }
-        return result;
-    }
-
-    getAverage(timestamp)
-    {
-        if (this.numSamples == 0) 
-            return 0;
-
-
-        let totalTime = timestamp - this.data[this.indexOfOldestSample].timestamp;
-
-        if (totalTime < 0.3)
-            return 0;
-
-        let rate = this.numSamples / totalTime * 60.0;
-        return rate; 
-    }
-}

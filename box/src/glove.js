@@ -65,6 +65,7 @@ export class Glove extends THREE.Group
                     obj.material.roughness = 0.4;
                     obj.material.envMapIntensity = 0.7;
                 }
+                gltf.scene.renderOrder = 0; // render before everything else
                 this.add(gltf.scene);
                 this.mesh = gltf.scene.children[0];
                 // this.mesh.visible = false;

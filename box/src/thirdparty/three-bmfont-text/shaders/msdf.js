@@ -22,7 +22,7 @@ module.exports = function createMSDFShader (opt) {
   let fragmentShaderCode;
   if (webGL2)
   {
-    console.log("BUILDING WebGL2 Shaders");
+    //console.log("BUILDING WebGL2 Shaders");
     vertexShaderCode = [
       '#version 300 es',
       'in vec2 uv;',

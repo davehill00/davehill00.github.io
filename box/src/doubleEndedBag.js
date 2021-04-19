@@ -62,12 +62,13 @@ export class DoubleEndedBag extends Bag
                     let obj = gltf.scene.children[i];
                     
                     
-                    console.log("BAG " + i + ":" + obj.name);
+                    //console.log("BAG " + i + ":" + obj.name);
 
 
                     if (obj.name == "Bag")
                     {
                         this.mesh = obj;
+                        obj.renderOrder = 3; //render after gloves
                         obj.name = "BAG " + i;
                         obj.material.roughness = 0.25;
                         obj.material.envMapIntensity = 0.5;
@@ -435,13 +436,14 @@ export class DoubleEndedBag extends Bag
 
     processCollisionEffects(
         glove, 
-        collisionSpeed,
+        gloveVelocity,
         hitPoint,
         hitNormalWRTBag,
         accumulatedTime,
         isPunch = true
     )
     {
+        let collisionSpeed = gloveVelocity.length();
         if (collisionSpeed > kMinPunchSoundVelocity && !glove.isInContactWithBag())
         {
             if (collisionSpeed > 1.0)
@@ -460,7 +462,7 @@ export class DoubleEndedBag extends Bag
 
                 for(let cb of this.punchCallbacks)
                 {
-                    cb(glove.whichHand, collisionSpeed);
+                    cb(glove.whichHand, collisionSpeed, gloveVelocity);
                 }
             }
         }     
@@ -497,7 +499,7 @@ export class DoubleEndedBag extends Bag
 
         this.velocity.add(tVec0);
 
-        this.processCollisionEffects(glove, gloveVelocity.length(), hitPoint, hitNormalWRTBag, accumulatedTime);
+        this.processCollisionEffects(glove, gloveVelocity, hitPoint, hitNormalWRTBag, accumulatedTime);
 
     }
 

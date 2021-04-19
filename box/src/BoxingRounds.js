@@ -203,7 +203,7 @@ export class NumberOfPunchesBoxingRound extends BoxingRound
 
     update(session, elapsedTime)
     {
-        session.updateTimer(elapsedTime - this.startTime, false);
+        session.updateTimer(elapsedTime - this.startTime, false, false);
     }
 
     isOver(elapsedTime)
