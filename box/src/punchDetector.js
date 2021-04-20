@@ -18,6 +18,7 @@ export class PunchDetector
     {
         this.averageDirectionTracker = new MovingAverageDirectionVector(90);
         this.bag = null;
+        this.lastPunchDirection = new THREE.Vector3();
     }
 
     initialize(bag)
@@ -41,7 +42,7 @@ export class PunchDetector
     }
 
     // Return punch type
-    analyzePunch(whichHand, velocity)
+    analyzePunch(glove, velocity)
     {
         // Read the average forward direction so we can use this for punch-direction checks
         this.averageDirectionTracker.getAverageDirection(tVec0);
@@ -56,22 +57,42 @@ export class PunchDetector
         tVec2.setY(0.0);
         tVec2.normalize();
 
-        if (whichHand == 1) // Left hand
+        this.lastPunchDirection.copy(tVec2);
+
+        let bUseAngularY = glove.controller.hasAngularVelocity;
+        let angularY = 0.0;
+        if (bUseAngularY)
+            angularY = glove.controller.angularVelocity.y;
+
+        if (glove.whichHand == 1) // Left hand
         {
             let dotFwd = tVec2.dot(tVec0);
             let dotRight = tVec2.dot(tVec1);
+
+            
+
             if (dotFwd > 0.95)
             {
+                console.log("JAB **************")
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 return PUNCH_JAB;
             }
-            else if (dotRight > 0.8)
+            else if ((dotRight > 0.8) || (bUseAngularY && dotRight > 0.5 && angularY < -5.0))
             {
+                console.log("LEFT HOOK **************")
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 return PUNCH_LEFT_HOOK;
             }
             else
             {
                 console.log("Undetermined LEFT -- fwd = " + dotFwd + ", right = " + dotRight);
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+
             }
+
         }
         else // Right hand
         {
@@ -79,15 +100,25 @@ export class PunchDetector
             let dotRight = tVec2.dot(tVec1);
             if (dotFwd > 0.85)
             {
+                console.log("STRAIGHT **************")
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 return PUNCH_STRAIGHT;
             }
-            else if (dotRight < -0.707)
+            else if ((dotRight < -0.707) || (bUseAngularY && dotRight < -0.5 && angularY > 5.0))
             {
+                console.log("RIGHT HOOK **************")
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+
                 return PUNCH_RIGHT_HOOK;
             }
             else
             {
                 console.log("Undetermined RIGHT -- fwd = " + dotFwd + ", right = " + dotRight);
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+
             }
         }
 
@@ -97,5 +128,9 @@ export class PunchDetector
     getAverageDirection(vec)
     {
         return this.averageDirectionTracker.getAverageDirection(vec);
+    }
+    getLastPunchDirection(vec)
+    {
+        vec.copy(this.lastPunchDirection);
     }
 }

@@ -115632,7 +115632,7 @@ class HeavyBag extends Bag
 
                 for(let cb of this.punchCallbacks)
                 {
-                    cb(glove.whichHand, collisionSpeed, gloveVelocity);
+                    cb(glove, collisionSpeed, gloveVelocity);
                 }
 
                 //
@@ -115695,44 +115695,6 @@ class HeavyBag extends Bag
 
         this.processCollisionEffects(glove, gloveVelocity, hitPoint, hitNormalWRTBag, accumulatedTime);
 
-    }
-
-    OLDprocessHit(velocity, position, normal, whichHand, isNewHit)
-    {
-        // normal.negate(); //because normal's pointing the wrong way
-
-        tVec0.copy(velocity);
-        tVec0.projectOnVector(normal);
-        tVec0.multiplyScalar(0.5);
-        this.velocity.add(tVec0);
-
-        this.cooldownAfterHit = 0.0;
-
-        if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
-        {
-            // let hitSound = this.hitSounds[this.nextSoundIndex];
-            // if (hitSound.isPlaying)
-            //     hitSound.stop();
-
-            // hitSound.position.copy(position);
-            // let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
-            // hitSound.buffer = this.hitSoundBuffers[whichSound];
-
-            let speed = velocity.length();
-            let speedBasedVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
-            this.hitSound.play(position, speedBasedVolume);
-
-            // hitSound.setVolume(speedBaseVolume);
-            // hitSound.play();
-            // this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
-
-            for(let cb of this.punchCallbacks)
-            {
-                cb(whichHand, velocity);
-            }
-
-
-        }
     }
 }
 
@@ -115849,6 +115811,7 @@ function initialize()
 
     renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
     //renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
     let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
@@ -116351,6 +116314,11 @@ function OnStartButton()
     });
 }
 
+function opaqueSort(obj1, obj2)
+{
+    return 0;
+}
+
 /***/ }),
 
 /***/ "./src/circleCircleIntersection.js":
@@ -116840,7 +116808,7 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
 
                 for(let cb of this.punchCallbacks)
                 {
-                    cb(glove.whichHand, collisionSpeed, gloveVelocity);
+                    cb(glove, collisionSpeed, gloveVelocity);
                 }
             }
         }     
@@ -117014,8 +116982,8 @@ class BoxingSession
 
         // this.initialize(numRounds, roundDuration, restDuration);
 
-        heavyBag.punchCallbacks.push((whichHand, speed, velocity) => {this.onBagHit(whichHand, speed, velocity)});
-        doubleEndBag.punchCallbacks.push((whichHand, speed, velocity) => {this.onBagHit(whichHand, speed, velocity)});
+        heavyBag.punchCallbacks.push((glove, speed, velocity) => {this.onBagHit(glove, speed, velocity)});
+        doubleEndBag.punchCallbacks.push((glove, speed, velocity) => {this.onBagHit(glove, speed, velocity)});
         
         this.punchingStats = new PunchingStats(scene);
         this.punchDetector = new _punchDetector__WEBPACK_IMPORTED_MODULE_5__["PunchDetector"]();
@@ -117081,45 +117049,28 @@ class BoxingSession
 
         this.workoutStageTextBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](kWorkoutTextBoxBigFontSize, "center", 1.55, "center", 0.48, 0x000000)
         this.workoutStageTextBox.position.y = 0.01;
-        this.workoutStageTextBox.visible = false;
-
-        //this.workoutTextBox.displayMessage("FREESTYLE ROUND:\nTry out different punches and combos. Start slow to get the feel of it, then focus on increasing your speed.");
-        //this.workoutTextBox.displayMessage("SPEED ROUND:\nQuickly alternate between jabs and straights. Try to stay above 300PPM for the entire round. Your shoulders will really feel the burn on this one!");
-        //this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nAlternate punches.\nKeep your guard up, because the double-end bag can hit back!");
-        // this.workoutTextBox.displayMessage("JAB THEN STRAIGHT:\nFor the first two minutes, throw the jab while circling around the bag.\nFor the last minute, throw the straight instead. Keep moving around the bag.");
-        // this.workoutTextBox.displayMessage("RIGHT HOOK THEN LEFT HOOK:\nFor the first two minutes, throw the left hook while circling around the bag.\nFor the last minute, throw the right hook instead. Keep moving around the bag.");
-        // this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\n \u2022 Throw two jabs, followed by the straight. Keep your hands moving the entire round.\n \u2022 Watch out! The double-end bag can hit back, so keep your guard up.");
-        // this.workoutTextBox.displayMessage("STRAIGHT THEN HOOK:\nThrow the straight, followed by the left hook.\nThis will be tricky, because the bag is going to move in different directions.");
-        // this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nThrow two jabs, followed by the right hook.\nThe bag is going to move around a lot, so stay focused.");
-        // this.workoutTextBox.displayMessage("JAB STRAIGHT HOOK:\nThrow the jab, followed by the straight, followed by the left hook.\nDouble-up your jab for the last minute.");
-        // this.workoutTextBox.displayMessage("JAB STRAIGHT SLIP:\nThrow the jab, then the striaght, then move your head side-to-side.\nUse your core muscles to move your head, not your neck.\nDouble-up the jab for the last minute.");
-        // this.workoutTextBox.displayMessage("DOUBLE-JAB\u2022STRAIGHT\u2022JAB\u2022STRAIGHT:\nYou know the drill.");
-        //jab-straight-slip
-        
+        this.workoutStageTextBox.visible = false;     
 
         this.currentTimeInWholeSeconds = -1.0;
 
-
         this.headingArrow = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
-            new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.1, 0.1, 1.0),
+            new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.05, 0.05, 0.5),
             new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({color: 0x804080})
         );
+        this.punchArrow = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
+            new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.05, 0.05, 0.5),
+            new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({color: 0x408040})
+        );
 
-        this.headingArrow.position.set(0.0, 0.1, 0.0);
-        //this.scene.add(this.headingArrow);
+        this.headingArrow.position.set(0.0, 0.1, -1.0);
+        this.punchArrow.position.set(0.0, 0.15, -1.0);
+
+        this.scene.add(this.headingArrow);
+        this.scene.add(this.punchArrow);
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
             {
-                // node.material = new THREE.MeshStandardMaterial({color: 0xAAB0BF});
-                // node.material.color.convertSRGBToLinear();
-                // node.material.color.multiplyScalar(1.25);
-                // node.material.name = "TVSCREEN";
-                // node.material.map = tvBkgd;
-
-                // node.material.emissiveIntensity = 0.35;
-                // node.material.emissive.set(0x406080);
-                // node.material.map = tvBkgd;
                 this.TV = node;
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
@@ -117299,6 +117250,11 @@ class BoxingSession
             let cosTheta = tVec0.x;
             // console.log("ANGLE = ", Math.acos(cosTheta) * 180.0 / Math.PI);
             this.headingArrow.rotation.set(0.0, Math.acos(cosTheta) - 1.57, 0.0);
+
+            this.punchDetector.getLastPunchDirection(tVec0);
+            cosTheta = tVec0.x;
+
+            this.punchArrow.rotation.set(0.0, Math.acos(cosTheta) - 1.57, 0.0);
     
         }
 
@@ -117577,14 +117533,14 @@ class BoxingSession
         this.soundGetReady.play();
     }
 
-    onBagHit(whichHand, speed, velocity)
-    {
-        this.lastPunchType = this.punchDetector.analyzePunch(whichHand, velocity);
+    onBagHit(glove, speed, velocity)
+    {           
+        this.lastPunchType = this.punchDetector.analyzePunch(glove, velocity);
 
         if (this.state == SESSION_ROUND)
         {
-            this.boxingRoundInfo.onBagHit(whichHand, speed, velocity);
-            this.punchingStats.onBagHit(whichHand, speed, velocity, this.lastPunchType);
+            this.boxingRoundInfo.onBagHit(glove.whichHand, speed, velocity);
+            this.punchingStats.onBagHit(glove.whichHand, speed, velocity, this.lastPunchType);
         }
     }
 
@@ -117615,6 +117571,7 @@ class PunchingStats
         this.averagePunchRate = 1.0;
         this.lastPunchType = 0;
         this.lastPunchTypeCount = 0;
+        this.clearLastPunchTime = 0.0;
   
         this.punchRateNew = new _movingAverage_js__WEBPACK_IMPORTED_MODULE_2__["MovingAverageEventsPerMinute"](32, 4.0); //, 1.0);
 
@@ -117650,6 +117607,10 @@ class PunchingStats
             this.nextStatsUpdate = this.accumulatedTime + 0.5;
 
         }
+        if(this.clearLastPunchTime < accumulatedTime)
+        {
+            this.lastPunchType = -1;
+        }
         
         this.accumulatedTime = accumulatedTime;
     }
@@ -117662,6 +117623,7 @@ class PunchingStats
 
         this.lastPunchSpeed = speed; //velocity.length();
 
+        console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
         if (this.lastPunchType != lastPunchType)
         {
             this.lastPunchType = lastPunchType;
@@ -117671,6 +117633,12 @@ class PunchingStats
         {
             this.lastPunchTypeCount++;
         }
+        // A repeated punch will only count as an xN if it happens within this window of time.
+        // This allows for Jab-Straight-Jab, Jab-Straight-Jab without getting an x2 on the second Jab.
+        // Kind of counter-intuitive, but it doesn't feel great if you see the x2 when you feel like
+        // you're starting a new flurry of punches.
+        this.clearLastPunchTime = this.accumulatedTime + 0.75;
+
         this.updateStatsDisplay(true);
     }
 
@@ -117690,15 +117658,6 @@ class PunchingStats
             "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
             "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---");
             
-
-        /*
-        this.fontGeometry.computeBoundingBox();
-        let box = this.fontGeometry.boundingBox;
-        this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;
-
-        let quantizedMaxX = Math.floor(box.max.x * this.fontMesh.scale.x * 10.0) * 0.1;
-        this.fontMesh.position.x += quantizedMaxX * -0.5;
-        */
         this.statsTextBox.displayMessage(message);
 
         if (isPunch)
@@ -119039,6 +118998,7 @@ class PunchDetector
     {
         this.averageDirectionTracker = new _movingAverage__WEBPACK_IMPORTED_MODULE_0__["MovingAverageDirectionVector"](90);
         this.bag = null;
+        this.lastPunchDirection = new THREE.Vector3();
     }
 
     initialize(bag)
@@ -119062,7 +119022,7 @@ class PunchDetector
     }
 
     // Return punch type
-    analyzePunch(whichHand, velocity)
+    analyzePunch(glove, velocity)
     {
         // Read the average forward direction so we can use this for punch-direction checks
         this.averageDirectionTracker.getAverageDirection(tVec0);
@@ -119077,22 +119037,42 @@ class PunchDetector
         tVec2.setY(0.0);
         tVec2.normalize();
 
-        if (whichHand == 1) // Left hand
+        this.lastPunchDirection.copy(tVec2);
+
+        let bUseAngularY = glove.controller.hasAngularVelocity;
+        let angularY = 0.0;
+        if (bUseAngularY)
+            angularY = glove.controller.angularVelocity.y;
+
+        if (glove.whichHand == 1) // Left hand
         {
             let dotFwd = tVec2.dot(tVec0);
             let dotRight = tVec2.dot(tVec1);
+
+            
+
             if (dotFwd > 0.95)
             {
+                console.log("JAB **************")
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 return PUNCH_JAB;
             }
-            else if (dotRight > 0.8)
+            else if ((dotRight > 0.8) || (bUseAngularY && dotRight > 0.5 && angularY < -5.0))
             {
+                console.log("LEFT HOOK **************")
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 return PUNCH_LEFT_HOOK;
             }
             else
             {
                 console.log("Undetermined LEFT -- fwd = " + dotFwd + ", right = " + dotRight);
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+
             }
+
         }
         else // Right hand
         {
@@ -119100,15 +119080,25 @@ class PunchDetector
             let dotRight = tVec2.dot(tVec1);
             if (dotFwd > 0.85)
             {
+                console.log("STRAIGHT **************")
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 return PUNCH_STRAIGHT;
             }
-            else if (dotRight < -0.707)
+            else if ((dotRight < -0.707) || (bUseAngularY && dotRight < -0.5 && angularY > 5.0))
             {
+                console.log("RIGHT HOOK **************")
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+
                 return PUNCH_RIGHT_HOOK;
             }
             else
             {
                 console.log("Undetermined RIGHT -- fwd = " + dotFwd + ", right = " + dotRight);
+                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+
             }
         }
 
@@ -119118,6 +119108,10 @@ class PunchDetector
     getAverageDirection(vec)
     {
         return this.averageDirectionTracker.getAverageDirection(vec);
+    }
+    getLastPunchDirection(vec)
+    {
+        vec.copy(this.lastPunchDirection);
     }
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))

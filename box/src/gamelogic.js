@@ -98,8 +98,8 @@ export class BoxingSession
 
         // this.initialize(numRounds, roundDuration, restDuration);
 
-        heavyBag.punchCallbacks.push((whichHand, speed, velocity) => {this.onBagHit(whichHand, speed, velocity)});
-        doubleEndBag.punchCallbacks.push((whichHand, speed, velocity) => {this.onBagHit(whichHand, speed, velocity)});
+        heavyBag.punchCallbacks.push((glove, speed, velocity) => {this.onBagHit(glove, speed, velocity)});
+        doubleEndBag.punchCallbacks.push((glove, speed, velocity) => {this.onBagHit(glove, speed, velocity)});
         
         this.punchingStats = new PunchingStats(scene);
         this.punchDetector = new PunchDetector();
@@ -165,45 +165,28 @@ export class BoxingSession
 
         this.workoutStageTextBox = new TextBox(kWorkoutTextBoxBigFontSize, "center", 1.55, "center", 0.48, 0x000000)
         this.workoutStageTextBox.position.y = 0.01;
-        this.workoutStageTextBox.visible = false;
-
-        //this.workoutTextBox.displayMessage("FREESTYLE ROUND:\nTry out different punches and combos. Start slow to get the feel of it, then focus on increasing your speed.");
-        //this.workoutTextBox.displayMessage("SPEED ROUND:\nQuickly alternate between jabs and straights. Try to stay above 300PPM for the entire round. Your shoulders will really feel the burn on this one!");
-        //this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nAlternate punches.\nKeep your guard up, because the double-end bag can hit back!");
-        // this.workoutTextBox.displayMessage("JAB THEN STRAIGHT:\nFor the first two minutes, throw the jab while circling around the bag.\nFor the last minute, throw the straight instead. Keep moving around the bag.");
-        // this.workoutTextBox.displayMessage("RIGHT HOOK THEN LEFT HOOK:\nFor the first two minutes, throw the left hook while circling around the bag.\nFor the last minute, throw the right hook instead. Keep moving around the bag.");
-        // this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\n \u2022 Throw two jabs, followed by the straight. Keep your hands moving the entire round.\n \u2022 Watch out! The double-end bag can hit back, so keep your guard up.");
-        // this.workoutTextBox.displayMessage("STRAIGHT THEN HOOK:\nThrow the straight, followed by the left hook.\nThis will be tricky, because the bag is going to move in different directions.");
-        // this.workoutTextBox.displayMessage("DOUBLE-JAB STRAIGHT:\nThrow two jabs, followed by the right hook.\nThe bag is going to move around a lot, so stay focused.");
-        // this.workoutTextBox.displayMessage("JAB STRAIGHT HOOK:\nThrow the jab, followed by the straight, followed by the left hook.\nDouble-up your jab for the last minute.");
-        // this.workoutTextBox.displayMessage("JAB STRAIGHT SLIP:\nThrow the jab, then the striaght, then move your head side-to-side.\nUse your core muscles to move your head, not your neck.\nDouble-up the jab for the last minute.");
-        // this.workoutTextBox.displayMessage("DOUBLE-JAB\u2022STRAIGHT\u2022JAB\u2022STRAIGHT:\nYou know the drill.");
-        //jab-straight-slip
-        
+        this.workoutStageTextBox.visible = false;     
 
         this.currentTimeInWholeSeconds = -1.0;
 
-
         this.headingArrow = new THREE.Mesh(
-            new THREE.BoxGeometry(0.1, 0.1, 1.0),
+            new THREE.BoxGeometry(0.05, 0.05, 0.5),
             new THREE.MeshBasicMaterial({color: 0x804080})
         );
+        this.punchArrow = new THREE.Mesh(
+            new THREE.BoxGeometry(0.05, 0.05, 0.5),
+            new THREE.MeshBasicMaterial({color: 0x408040})
+        );
 
-        this.headingArrow.position.set(0.0, 0.1, 0.0);
-        //this.scene.add(this.headingArrow);
+        this.headingArrow.position.set(0.0, 0.1, -1.0);
+        this.punchArrow.position.set(0.0, 0.15, -1.0);
+
+        this.scene.add(this.headingArrow);
+        this.scene.add(this.punchArrow);
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
             {
-                // node.material = new THREE.MeshStandardMaterial({color: 0xAAB0BF});
-                // node.material.color.convertSRGBToLinear();
-                // node.material.color.multiplyScalar(1.25);
-                // node.material.name = "TVSCREEN";
-                // node.material.map = tvBkgd;
-
-                // node.material.emissiveIntensity = 0.35;
-                // node.material.emissive.set(0x406080);
-                // node.material.map = tvBkgd;
                 this.TV = node;
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
@@ -383,6 +366,11 @@ export class BoxingSession
             let cosTheta = tVec0.x;
             // console.log("ANGLE = ", Math.acos(cosTheta) * 180.0 / Math.PI);
             this.headingArrow.rotation.set(0.0, Math.acos(cosTheta) - 1.57, 0.0);
+
+            this.punchDetector.getLastPunchDirection(tVec0);
+            cosTheta = tVec0.x;
+
+            this.punchArrow.rotation.set(0.0, Math.acos(cosTheta) - 1.57, 0.0);
     
         }
 
@@ -661,14 +649,14 @@ export class BoxingSession
         this.soundGetReady.play();
     }
 
-    onBagHit(whichHand, speed, velocity)
-    {
-        this.lastPunchType = this.punchDetector.analyzePunch(whichHand, velocity);
+    onBagHit(glove, speed, velocity)
+    {           
+        this.lastPunchType = this.punchDetector.analyzePunch(glove, velocity);
 
         if (this.state == SESSION_ROUND)
         {
-            this.boxingRoundInfo.onBagHit(whichHand, speed, velocity);
-            this.punchingStats.onBagHit(whichHand, speed, velocity, this.lastPunchType);
+            this.boxingRoundInfo.onBagHit(glove.whichHand, speed, velocity);
+            this.punchingStats.onBagHit(glove.whichHand, speed, velocity, this.lastPunchType);
         }
     }
 
@@ -699,6 +687,7 @@ export class PunchingStats
         this.averagePunchRate = 1.0;
         this.lastPunchType = 0;
         this.lastPunchTypeCount = 0;
+        this.clearLastPunchTime = 0.0;
   
         this.punchRateNew = new MovingAverageEventsPerMinute(32, 4.0); //, 1.0);
 
@@ -734,6 +723,10 @@ export class PunchingStats
             this.nextStatsUpdate = this.accumulatedTime + 0.5;
 
         }
+        if(this.clearLastPunchTime < accumulatedTime)
+        {
+            this.lastPunchType = -1;
+        }
         
         this.accumulatedTime = accumulatedTime;
     }
@@ -746,6 +739,7 @@ export class PunchingStats
 
         this.lastPunchSpeed = speed; //velocity.length();
 
+        console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
         if (this.lastPunchType != lastPunchType)
         {
             this.lastPunchType = lastPunchType;
@@ -755,6 +749,12 @@ export class PunchingStats
         {
             this.lastPunchTypeCount++;
         }
+        // A repeated punch will only count as an xN if it happens within this window of time.
+        // This allows for Jab-Straight-Jab, Jab-Straight-Jab without getting an x2 on the second Jab.
+        // Kind of counter-intuitive, but it doesn't feel great if you see the x2 when you feel like
+        // you're starting a new flurry of punches.
+        this.clearLastPunchTime = this.accumulatedTime + 0.75;
+
         this.updateStatsDisplay(true);
     }
 
@@ -774,15 +774,6 @@ export class PunchingStats
             "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
             "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---");
             
-
-        /*
-        this.fontGeometry.computeBoundingBox();
-        let box = this.fontGeometry.boundingBox;
-        this.fontMesh.position.x = box.min.x * this.fontMesh.scale.x;
-
-        let quantizedMaxX = Math.floor(box.max.x * this.fontMesh.scale.x * 10.0) * 0.1;
-        this.fontMesh.position.x += quantizedMaxX * -0.5;
-        */
         this.statsTextBox.displayMessage(message);
 
         if (isPunch)

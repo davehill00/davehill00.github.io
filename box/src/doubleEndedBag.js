@@ -462,7 +462,7 @@ export class DoubleEndedBag extends Bag
 
                 for(let cb of this.punchCallbacks)
                 {
-                    cb(glove.whichHand, collisionSpeed, gloveVelocity);
+                    cb(glove, collisionSpeed, gloveVelocity);
                 }
             }
         }     

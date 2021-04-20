@@ -77,6 +77,7 @@ function initialize()
 
     renderer = new THREE.WebGLRenderer( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
     //renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
     let color = new THREE.Color(0x000000);
@@ -619,4 +620,9 @@ export function OnStartButton()
     navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( (session) => {
         renderer.xr.setSession(session);
     });
+}
+
+function opaqueSort(obj1, obj2)
+{
+    return 0;
 }

@@ -402,7 +402,7 @@ export class HeavyBag extends Bag
 
                 for(let cb of this.punchCallbacks)
                 {
-                    cb(glove.whichHand, collisionSpeed, gloveVelocity);
+                    cb(glove, collisionSpeed, gloveVelocity);
                 }
 
                 //
@@ -465,44 +465,6 @@ export class HeavyBag extends Bag
 
         this.processCollisionEffects(glove, gloveVelocity, hitPoint, hitNormalWRTBag, accumulatedTime);
 
-    }
-
-    OLDprocessHit(velocity, position, normal, whichHand, isNewHit)
-    {
-        // normal.negate(); //because normal's pointing the wrong way
-
-        tVec0.copy(velocity);
-        tVec0.projectOnVector(normal);
-        tVec0.multiplyScalar(0.5);
-        this.velocity.add(tVec0);
-
-        this.cooldownAfterHit = 0.0;
-
-        if (isNewHit && velocity.lengthSq() > kMinPunchSoundVelocitySq)
-        {
-            // let hitSound = this.hitSounds[this.nextSoundIndex];
-            // if (hitSound.isPlaying)
-            //     hitSound.stop();
-
-            // hitSound.position.copy(position);
-            // let whichSound = Math.floor(Math.random() * this.hitSoundBuffers.length);
-            // hitSound.buffer = this.hitSoundBuffers[whichSound];
-
-            let speed = velocity.length();
-            let speedBasedVolume = 0.00 + Math.min(speed, 6.0) * 0.167; // ramp from 0-1 over a range of 6
-            this.hitSound.play(position, speedBasedVolume);
-
-            // hitSound.setVolume(speedBaseVolume);
-            // hitSound.play();
-            // this.nextSoundIndex = (this.nextSoundIndex + 1) % this.hitSounds.length;
-
-            for(let cb of this.punchCallbacks)
-            {
-                cb(whichHand, velocity);
-            }
-
-
-        }
     }
 }
 
