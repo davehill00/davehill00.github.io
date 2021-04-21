@@ -44,6 +44,7 @@ export class PunchDetector
     // Return punch type
     analyzePunch(glove, velocity)
     {
+        const bLogging = false;
         // Read the average forward direction so we can use this for punch-direction checks
         this.averageDirectionTracker.getAverageDirection(tVec0);
 
@@ -71,25 +72,34 @@ export class PunchDetector
 
             
 
-            if (dotFwd > 0.95)
+            if (dotFwd > 0.85)
             {
-                console.log("JAB **************")
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("JAB **************")
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
                 return PUNCH_JAB;
             }
-            else if ((dotRight > 0.8) || (bUseAngularY && dotRight > 0.5 && angularY < -5.0))
+            else if ((dotRight > 0.707) || (bUseAngularY && dotRight > 0.5 && angularY < -5.0))
             {
-                console.log("LEFT HOOK **************")
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("LEFT HOOK **************")
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
                 return PUNCH_LEFT_HOOK;
             }
             else
             {
-                console.log("Undetermined LEFT -- fwd = " + dotFwd + ", right = " + dotRight);
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("Undetermined LEFT -- fwd = " + dotFwd + ", right = " + dotRight);
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
 
             }
 
@@ -100,25 +110,33 @@ export class PunchDetector
             let dotRight = tVec2.dot(tVec1);
             if (dotFwd > 0.85)
             {
-                console.log("STRAIGHT **************")
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("STRAIGHT **************")
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
                 return PUNCH_STRAIGHT;
             }
             else if ((dotRight < -0.707) || (bUseAngularY && dotRight < -0.5 && angularY > 5.0))
             {
-                console.log("RIGHT HOOK **************")
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("RIGHT HOOK **************")
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
 
                 return PUNCH_RIGHT_HOOK;
             }
             else
             {
-                console.log("Undetermined RIGHT -- fwd = " + dotFwd + ", right = " + dotRight);
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
-
+                if (bLogging)
+                {
+                    console.log("Undetermined RIGHT -- fwd = " + dotFwd + ", right = " + dotRight);
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
             }
         }
 

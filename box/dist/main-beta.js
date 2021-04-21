@@ -115017,9 +115017,37 @@ class NumberOfPunchesBoxingRound extends BoxingRound
 class SpeedRound extends TimedBoxingRound
 {
     //roundInfo, roundDuration, roundNumber, this.numRounds
-    constructor(roundInfo, duration, roundNumber, maxRounds)
+    constructor(roundInfo, duration, roundNumber, maxRounds, introText = null)
     {
-        super(duration, roundNumber, maxRounds, roundInfo.bagType, roundInfo.introText);
+        super(duration, roundNumber, maxRounds, roundInfo.bagType); //roundInfo.introText);
+        if (introText != null)
+        {
+            this.introText = introText;
+        }
+        else
+        {
+            this.introText = (this.bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["ROUND_HEAVY_BAG"]) ? "HEAVY BAG SPEED:\n" : "DOUBLE-END SPEED:\n";
+            for(let i = 0; i < roundInfo.stages.length; i++)
+            {
+                this.introText += " \u2022 ";
+                if (i == 0)
+                {
+                    this.introText += "Start at " + roundInfo.stages[i].targetPPM + " PPM\n";
+                }
+                else if (i == (roundInfo.stages.length - 1))
+                {
+                    this.introText += "Finish at " + roundInfo.stages[i].targetPPM + " PPM";
+                }
+                else
+                {
+                    this.introText += "Ramp to " + roundInfo.stages[i].targetPPM + " PPM\n";
+                }
+            }
+            // "DOUBLE-END SPEED:\n" +
+            // " \u2022 Start at 300PPM\n" + 
+            // " \u2022 Ramp up to 350PPM\n" + 
+            // " \u2022 Finish off at 400PPM\n",
+        }
         this.roundInfo = roundInfo;
     }
 
@@ -115036,7 +115064,8 @@ class SpeedRound extends TimedBoxingRound
         this.nextHurryUpMessageTime = 0.0;
 
         // display the stage[0] description
-        this.currentDescriptionText = this.roundInfo.stages[0].descriptionText;
+        let descriptionText = "Start at " + this.roundInfo.stages[0].targetPPM + " PPM.";
+        this.currentDescriptionText = descriptionText; //this.roundInfo.stages[0].descriptionText;
         session.displayWorkoutInfoMessage(this.currentDescriptionText, false);
 
         // prep for stage 1 message (if any)
@@ -115056,11 +115085,18 @@ class SpeedRound extends TimedBoxingRound
 
         if (elapsedTime >= this.nextWorkoutStageTime)
         {    
-            this.currentDescriptionText = this.roundInfo.stages[this.nextWorkoutStage].descriptionText;
-            session.displayWorkoutInfoMessage(this.currentDescriptionText);
+            let bIsLastStage = (this.nextWorkoutStageTime + 1) == this.roundInfo.stages.length;
 
             this.targetPPM = this.roundInfo.stages[this.nextWorkoutStage].targetPPM;
             this.nextSpeedCheckTime = elapsedTime + 3.0;
+
+            let descriptionText = 
+                bIsLastStage ? 
+                    "Finish at " + this.targetPPM + "PPM!" :
+                    "Go for " + this.targetPPM + " PPM.";
+
+            this.currentDescriptionText = descriptionText; //this.roundInfo.stages[this.nextWorkoutStage].descriptionText;
+            session.displayWorkoutInfoMessage(this.currentDescriptionText);
 
             this.nextWorkoutStage++;
             this.updateNextWorkoutStageTime(this.nextWorkoutStage);
@@ -115104,11 +115140,6 @@ class SpeedRound extends TimedBoxingRound
             this.nextWorkoutStageTime = Number.MAX_VALUE;
         }
     }
-
-    // getIntroText()
-    // {
-    //     return this.roundInfo.introText;
-    // }
 }
 
 /***/ }),
@@ -116900,7 +116931,7 @@ const SESSION_PAUSED = 6;
 
 const kPunchNames = 
 [
-    "???",
+    "UNRECOGNIZED",
     "JAB(1)",
     "STRAIGHT(2)",
     "LEFT HOOK(3)",
@@ -116926,36 +116957,6 @@ kRedColor.multiplyScalar(1.5);
 const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x404040);
 
 let tVec0 = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
-
-// kRedColor.convertSRGBToLinear();
-
-/*
-
-// I want the workout to only contain the logic and trigger the events.
-// I want the Boxing Session to be the interface to the world -- setting screen messages,
-// playing sound effects, hiding/showing the appropriate bag, etc.
-
-// What are the events a workout needs to have callbacks for?
-1. Display message
-2. Update timer
-3. Play various sounds
-4. Shw/Hide bag
-
-
-
-Really just drive this at the round level -- keep the overall structure in "Boxing Session" and just let the round determine:
-1. What bag do I need
-2. Am I still running, or have I completed
-3. Did the user pass (go on to next round) or fail (stop the session)
-4. What info to display on the timer and on the info panel (and, eventually, on the stats panel)
-
-
-Boxing Session:
-1. Display workout instruction - this can have the sound effect baked in
-2. Update Timer - this does the filtering of changes to minimize actual text mesh updates
-3. Play "Almost Done" sound - thump, thump, thump
-
-*/
 
 function formatTimeString(timeInSeconds)
 {
@@ -117062,8 +117063,8 @@ class BoxingSession
             new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({color: 0x408040})
         );
 
-        this.headingArrow.position.set(0.0, 0.1, -1.0);
-        this.punchArrow.position.set(0.0, 0.15, -1.0);
+        // this.headingArrow.position.set(0.0, 0.1, -1.0);
+        // this.punchArrow.position.set(0.0, 0.15, -1.0);
 
         this.scene.add(this.headingArrow);
         this.scene.add(this.punchArrow);
@@ -117184,7 +117185,7 @@ class BoxingSession
             }
             else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__["ROUNDTYPE_SPEED"])
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__["SpeedRound"](roundInfo, roundDuration, roundNumber, this.numRounds);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__["SpeedRound"](roundInfo, roundDuration, roundNumber, this.numRounds, roundInfo.introText);
             }
             else
             {
@@ -117624,7 +117625,7 @@ class PunchingStats
         this.lastPunchSpeed = speed; //velocity.length();
 
         console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
-        if (this.lastPunchType != lastPunchType)
+        if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_UNKNOWN"]))
         {
             this.lastPunchType = lastPunchType;
             this.lastPunchTypeCount = 1;
@@ -119024,6 +119025,7 @@ class PunchDetector
     // Return punch type
     analyzePunch(glove, velocity)
     {
+        const bLogging = false;
         // Read the average forward direction so we can use this for punch-direction checks
         this.averageDirectionTracker.getAverageDirection(tVec0);
 
@@ -119051,25 +119053,34 @@ class PunchDetector
 
             
 
-            if (dotFwd > 0.95)
+            if (dotFwd > 0.85)
             {
-                console.log("JAB **************")
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("JAB **************")
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
                 return PUNCH_JAB;
             }
-            else if ((dotRight > 0.8) || (bUseAngularY && dotRight > 0.5 && angularY < -5.0))
+            else if ((dotRight > 0.707) || (bUseAngularY && dotRight > 0.5 && angularY < -5.0))
             {
-                console.log("LEFT HOOK **************")
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("LEFT HOOK **************")
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
                 return PUNCH_LEFT_HOOK;
             }
             else
             {
-                console.log("Undetermined LEFT -- fwd = " + dotFwd + ", right = " + dotRight);
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("Undetermined LEFT -- fwd = " + dotFwd + ", right = " + dotRight);
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
 
             }
 
@@ -119080,25 +119091,33 @@ class PunchDetector
             let dotRight = tVec2.dot(tVec1);
             if (dotFwd > 0.85)
             {
-                console.log("STRAIGHT **************")
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("STRAIGHT **************")
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
                 return PUNCH_STRAIGHT;
             }
             else if ((dotRight < -0.707) || (bUseAngularY && dotRight < -0.5 && angularY > 5.0))
             {
-                console.log("RIGHT HOOK **************")
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                if (bLogging)
+                {
+                    console.log("RIGHT HOOK **************")
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
 
                 return PUNCH_RIGHT_HOOK;
             }
             else
             {
-                console.log("Undetermined RIGHT -- fwd = " + dotFwd + ", right = " + dotRight);
-                console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
-
+                if (bLogging)
+                {
+                    console.log("Undetermined RIGHT -- fwd = " + dotFwd + ", right = " + dotRight);
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
             }
         }
 
@@ -120643,26 +120662,26 @@ let workoutData = [
             roundType: ROUNDTYPE_NUM_PUNCHES
         },
         {
-            introText: 
-                "SPEED ROUND:\n" + 
-                " \u2022 Alternate JAB(1) & STRAIGHT(2).\n" +
-                " \u2022 Start at 350PPM, ramp to 375PPM, finish at 400PPM\n",
+            // introText: 
+            //     "SPEED ROUND:\n" + 
+            //     " \u2022 Alternate JAB(1) & STRAIGHT(2).\n" +
+            //     " \u2022 Start at 350PPM, ramp to 375PPM, finish at 400PPM\n",
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SPEED,
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "Target is 350+PPM",
+                    // descriptionText: "Target is 350+PPM",
                     targetPPM: 350,
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "Target is 375+PPM",
+                    // descriptionText: "Target is 375+PPM",
                     targetPPM: 375,
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "Finish at 400+PPM",
+                    // descriptionText: "Finish at 400+PPM",
                     targetPPM: 400,
                 }
             ]
@@ -120715,7 +120734,7 @@ let workoutData = [
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "1-2-1-4"
+                    descriptionText: "1-2-3"
                 },
             ],
         },
@@ -120739,25 +120758,25 @@ let workoutData = [
             bagType: null
         },
         {
-            introText: 
-                "HEAVY BAG SPEED:\n" +
-                " \u2022 Start at 350PPM\n" + 
-                " \u2022 Ramp up to 400PPM\n" + 
-                " \u2022 Finish off at 450PPM\n",
+            // introText: null,
+                // "HEAVY BAG SPEED:\n" +
+                // " \u2022 Start at 350PPM\n" + 
+                // " \u2022 Ramp up to 400PPM\n" + 
+                // " \u2022 Finish off at 450PPM\n",
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "Stay above 350 PPM",
+                    // descriptionText: "Stay above 350 PPM",
                     targetPPM: 350,
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "Go for 400 PPM",
+                    // descriptionText: "Go for 400 PPM",
                     targetPPM: 400,
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "Finish at 450PPM",
+                    // descriptionText: "Finish at 450PPM",
                     targetPPM: 450,
                 }
             ],
@@ -120765,25 +120784,25 @@ let workoutData = [
             roundType: ROUNDTYPE_SPEED
         },
         {
-            introText: 
-                "DOUBLE-END SPEED:\n" +
-                " \u2022 Start at 300PPM\n" + 
-                " \u2022 Ramp up to 350PPM\n" + 
-                " \u2022 Finish off at 400PPM\n",
+            // introText: null,
+                // "DOUBLE-END SPEED:\n" +
+                // " \u2022 Start at 300PPM\n" + 
+                // " \u2022 Ramp up to 350PPM\n" + 
+                // " \u2022 Finish off at 400PPM\n",
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "Stay above 300 PPM",
+                    // descriptionText: "Stay above 300 PPM",
                     targetPPM: 300,
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "Go for 350 PPM",
+                    // descriptionText: "Go for 350 PPM",
                     targetPPM: 350,
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "Finish at 400PPM",
+                    // descriptionText: "Finish at 400PPM",
                     targetPPM: 400,
                 }
             ],
@@ -120805,7 +120824,7 @@ let workoutData = [
         {
             introText: "WARM UP - THROW 100 PUNCHES",
             numPunches: 100,
-            bagType: ROUND_DOUBLE_END_BAG,
+            bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_NUM_PUNCHES
         },
         {
@@ -120821,12 +120840,18 @@ let workoutData = [
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "1-2-1"
+                    descriptionText: "1-2-3"
                 },
                 {
                     startTimePercent: 0.5,
+                    descriptionText: "1-2-1"
+                },
+
+                {
+                    startTimePercent: 0.75,
                     descriptionText: "1-2-1-4"
                 }
+
             ]
         },
         {
@@ -120849,25 +120874,25 @@ let workoutData = [
             ]
         },
         {
-            introText: 
-                "DOUBLE-END SPEED:\n" +
-                " \u2022 Start at 300PPM\n" + 
-                " \u2022 Ramp up to 350PPM\n" + 
-                " \u2022 Finish off at 400PPM\n",
+            // introText: 
+            //     "DOUBLE-END SPEED:\n" +
+            //     " \u2022 Start at 300PPM\n" + 
+            //     " \u2022 Ramp up to 350PPM\n" + 
+            //     " \u2022 Finish off at 400PPM\n",
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "Stay above 300 PPM",
+                    // descriptionText: "Stay above 300 PPM",
                     targetPPM: 300,
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "Go for 350 PPM",
+                    // descriptionText: "Go for 350 PPM",
                     targetPPM: 350,
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "Finish at 400PPM",
+                    // descriptionText: "Finish at 400PPM",
                     targetPPM: 400,
                 }
             ],

@@ -180,26 +180,26 @@ export let workoutData = [
             roundType: ROUNDTYPE_NUM_PUNCHES
         },
         {
-            introText: 
-                "SPEED ROUND:\n" + 
-                " \u2022 Alternate JAB(1) & STRAIGHT(2).\n" +
-                " \u2022 Start at 350PPM, ramp to 375PPM, finish at 400PPM\n",
+            // introText: 
+            //     "SPEED ROUND:\n" + 
+            //     " \u2022 Alternate JAB(1) & STRAIGHT(2).\n" +
+            //     " \u2022 Start at 350PPM, ramp to 375PPM, finish at 400PPM\n",
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SPEED,
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "Target is 350+PPM",
+                    // descriptionText: "Target is 350+PPM",
                     targetPPM: 350,
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "Target is 375+PPM",
+                    // descriptionText: "Target is 375+PPM",
                     targetPPM: 375,
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "Finish at 400+PPM",
+                    // descriptionText: "Finish at 400+PPM",
                     targetPPM: 400,
                 }
             ]
@@ -252,7 +252,7 @@ export let workoutData = [
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "1-2-1-4"
+                    descriptionText: "1-2-3"
                 },
             ],
         },
@@ -276,25 +276,25 @@ export let workoutData = [
             bagType: null
         },
         {
-            introText: 
-                "HEAVY BAG SPEED:\n" +
-                " \u2022 Start at 350PPM\n" + 
-                " \u2022 Ramp up to 400PPM\n" + 
-                " \u2022 Finish off at 450PPM\n",
+            // introText: null,
+                // "HEAVY BAG SPEED:\n" +
+                // " \u2022 Start at 350PPM\n" + 
+                // " \u2022 Ramp up to 400PPM\n" + 
+                // " \u2022 Finish off at 450PPM\n",
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "Stay above 350 PPM",
+                    // descriptionText: "Stay above 350 PPM",
                     targetPPM: 350,
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "Go for 400 PPM",
+                    // descriptionText: "Go for 400 PPM",
                     targetPPM: 400,
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "Finish at 450PPM",
+                    // descriptionText: "Finish at 450PPM",
                     targetPPM: 450,
                 }
             ],
@@ -302,25 +302,25 @@ export let workoutData = [
             roundType: ROUNDTYPE_SPEED
         },
         {
-            introText: 
-                "DOUBLE-END SPEED:\n" +
-                " \u2022 Start at 300PPM\n" + 
-                " \u2022 Ramp up to 350PPM\n" + 
-                " \u2022 Finish off at 400PPM\n",
+            // introText: null,
+                // "DOUBLE-END SPEED:\n" +
+                // " \u2022 Start at 300PPM\n" + 
+                // " \u2022 Ramp up to 350PPM\n" + 
+                // " \u2022 Finish off at 400PPM\n",
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "Stay above 300 PPM",
+                    // descriptionText: "Stay above 300 PPM",
                     targetPPM: 300,
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "Go for 350 PPM",
+                    // descriptionText: "Go for 350 PPM",
                     targetPPM: 350,
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "Finish at 400PPM",
+                    // descriptionText: "Finish at 400PPM",
                     targetPPM: 400,
                 }
             ],
@@ -342,7 +342,7 @@ export let workoutData = [
         {
             introText: "WARM UP - THROW 100 PUNCHES",
             numPunches: 100,
-            bagType: ROUND_DOUBLE_END_BAG,
+            bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_NUM_PUNCHES
         },
         {
@@ -358,12 +358,18 @@ export let workoutData = [
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "1-2-1"
+                    descriptionText: "1-2-3"
                 },
                 {
                     startTimePercent: 0.5,
+                    descriptionText: "1-2-1"
+                },
+
+                {
+                    startTimePercent: 0.75,
                     descriptionText: "1-2-1-4"
                 }
+
             ]
         },
         {
@@ -386,25 +392,25 @@ export let workoutData = [
             ]
         },
         {
-            introText: 
-                "DOUBLE-END SPEED:\n" +
-                " \u2022 Start at 300PPM\n" + 
-                " \u2022 Ramp up to 350PPM\n" + 
-                " \u2022 Finish off at 400PPM\n",
+            // introText: 
+            //     "DOUBLE-END SPEED:\n" +
+            //     " \u2022 Start at 300PPM\n" + 
+            //     " \u2022 Ramp up to 350PPM\n" + 
+            //     " \u2022 Finish off at 400PPM\n",
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "Stay above 300 PPM",
+                    // descriptionText: "Stay above 300 PPM",
                     targetPPM: 300,
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "Go for 350 PPM",
+                    // descriptionText: "Go for 350 PPM",
                     targetPPM: 350,
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "Finish at 400PPM",
+                    // descriptionText: "Finish at 400PPM",
                     targetPPM: 400,
                 }
             ],

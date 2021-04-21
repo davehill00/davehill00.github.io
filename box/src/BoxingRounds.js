@@ -231,9 +231,37 @@ export class NumberOfPunchesBoxingRound extends BoxingRound
 export class SpeedRound extends TimedBoxingRound
 {
     //roundInfo, roundDuration, roundNumber, this.numRounds
-    constructor(roundInfo, duration, roundNumber, maxRounds)
+    constructor(roundInfo, duration, roundNumber, maxRounds, introText = null)
     {
-        super(duration, roundNumber, maxRounds, roundInfo.bagType, roundInfo.introText);
+        super(duration, roundNumber, maxRounds, roundInfo.bagType); //roundInfo.introText);
+        if (introText != null)
+        {
+            this.introText = introText;
+        }
+        else
+        {
+            this.introText = (this.bagType == ROUND_HEAVY_BAG) ? "HEAVY BAG SPEED:\n" : "DOUBLE-END SPEED:\n";
+            for(let i = 0; i < roundInfo.stages.length; i++)
+            {
+                this.introText += " \u2022 ";
+                if (i == 0)
+                {
+                    this.introText += "Start at " + roundInfo.stages[i].targetPPM + " PPM\n";
+                }
+                else if (i == (roundInfo.stages.length - 1))
+                {
+                    this.introText += "Finish at " + roundInfo.stages[i].targetPPM + " PPM";
+                }
+                else
+                {
+                    this.introText += "Ramp to " + roundInfo.stages[i].targetPPM + " PPM\n";
+                }
+            }
+            // "DOUBLE-END SPEED:\n" +
+            // " \u2022 Start at 300PPM\n" + 
+            // " \u2022 Ramp up to 350PPM\n" + 
+            // " \u2022 Finish off at 400PPM\n",
+        }
         this.roundInfo = roundInfo;
     }
 
@@ -250,7 +278,8 @@ export class SpeedRound extends TimedBoxingRound
         this.nextHurryUpMessageTime = 0.0;
 
         // display the stage[0] description
-        this.currentDescriptionText = this.roundInfo.stages[0].descriptionText;
+        let descriptionText = "Start at " + this.roundInfo.stages[0].targetPPM + " PPM.";
+        this.currentDescriptionText = descriptionText; //this.roundInfo.stages[0].descriptionText;
         session.displayWorkoutInfoMessage(this.currentDescriptionText, false);
 
         // prep for stage 1 message (if any)
@@ -270,11 +299,18 @@ export class SpeedRound extends TimedBoxingRound
 
         if (elapsedTime >= this.nextWorkoutStageTime)
         {    
-            this.currentDescriptionText = this.roundInfo.stages[this.nextWorkoutStage].descriptionText;
-            session.displayWorkoutInfoMessage(this.currentDescriptionText);
+            let bIsLastStage = (this.nextWorkoutStageTime + 1) == this.roundInfo.stages.length;
 
             this.targetPPM = this.roundInfo.stages[this.nextWorkoutStage].targetPPM;
             this.nextSpeedCheckTime = elapsedTime + 3.0;
+
+            let descriptionText = 
+                bIsLastStage ? 
+                    "Finish at " + this.targetPPM + "PPM!" :
+                    "Go for " + this.targetPPM + " PPM.";
+
+            this.currentDescriptionText = descriptionText; //this.roundInfo.stages[this.nextWorkoutStage].descriptionText;
+            session.displayWorkoutInfoMessage(this.currentDescriptionText);
 
             this.nextWorkoutStage++;
             this.updateNextWorkoutStageTime(this.nextWorkoutStage);
@@ -318,9 +354,4 @@ export class SpeedRound extends TimedBoxingRound
             this.nextWorkoutStageTime = Number.MAX_VALUE;
         }
     }
-
-    // getIntroText()
-    // {
-    //     return this.roundInfo.introText;
-    // }
 }

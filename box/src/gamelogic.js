@@ -16,7 +16,7 @@ const SESSION_PAUSED = 6;
 
 const kPunchNames = 
 [
-    "???",
+    "UNRECOGNIZED",
     "JAB(1)",
     "STRAIGHT(2)",
     "LEFT HOOK(3)",
@@ -25,7 +25,7 @@ const kPunchNames =
 
 import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED} from "./workoutData.js";
 import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound} from "./BoxingRounds.js";
-import { PunchDetector } from './punchDetector';
+import { PunchDetector, PUNCH_UNKNOWN } from './punchDetector';
 
 const kIntroDuration = 5.0;
 const kIntroGetReadyDuration = 5.0;
@@ -42,36 +42,6 @@ kRedColor.multiplyScalar(1.5);
 const kGreyColor = new THREE.Color(0x404040);
 
 let tVec0 = new THREE.Vector3();
-
-// kRedColor.convertSRGBToLinear();
-
-/*
-
-// I want the workout to only contain the logic and trigger the events.
-// I want the Boxing Session to be the interface to the world -- setting screen messages,
-// playing sound effects, hiding/showing the appropriate bag, etc.
-
-// What are the events a workout needs to have callbacks for?
-1. Display message
-2. Update timer
-3. Play various sounds
-4. Shw/Hide bag
-
-
-
-Really just drive this at the round level -- keep the overall structure in "Boxing Session" and just let the round determine:
-1. What bag do I need
-2. Am I still running, or have I completed
-3. Did the user pass (go on to next round) or fail (stop the session)
-4. What info to display on the timer and on the info panel (and, eventually, on the stats panel)
-
-
-Boxing Session:
-1. Display workout instruction - this can have the sound effect baked in
-2. Update Timer - this does the filtering of changes to minimize actual text mesh updates
-3. Play "Almost Done" sound - thump, thump, thump
-
-*/
 
 export function formatTimeString(timeInSeconds)
 {
@@ -178,8 +148,8 @@ export class BoxingSession
             new THREE.MeshBasicMaterial({color: 0x408040})
         );
 
-        this.headingArrow.position.set(0.0, 0.1, -1.0);
-        this.punchArrow.position.set(0.0, 0.15, -1.0);
+        // this.headingArrow.position.set(0.0, 0.1, -1.0);
+        // this.punchArrow.position.set(0.0, 0.15, -1.0);
 
         this.scene.add(this.headingArrow);
         this.scene.add(this.punchArrow);
@@ -300,7 +270,7 @@ export class BoxingSession
             }
             else if (roundInfo.roundType == ROUNDTYPE_SPEED)
             {
-                round = new SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds);
+                round = new SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds, roundInfo.introText);
             }
             else
             {
@@ -740,7 +710,7 @@ export class PunchingStats
         this.lastPunchSpeed = speed; //velocity.length();
 
         console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
-        if (this.lastPunchType != lastPunchType)
+        if ((this.lastPunchType != lastPunchType) || (lastPunchType == PUNCH_UNKNOWN))
         {
             this.lastPunchType = lastPunchType;
             this.lastPunchTypeCount = 1;
