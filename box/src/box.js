@@ -203,7 +203,7 @@ function initialize()
         .then( 
             () => {
                 return new Promise( (resolve) => {
-                    console.log("LOAD GLTF");
+                    //console.log("LOAD GLTF");
                     let loader = new GLTFLoader(loadingManager);
                     loader.load('./content/gym_v8.gltf', resolve);
                 })
@@ -213,7 +213,7 @@ function initialize()
                 // console.log("GLTF is: " + gltf);
                 return new Promise(
                     (resolve) => {
-                    console.log("DO GLTF FIXUPS")
+                    //console.log("DO GLTF FIXUPS")
                     for (let i = 0; i < gltf.scene.children.length; i++)
                     {                
                         let obj = gltf.scene.children[i];
@@ -282,13 +282,13 @@ function initialize()
                     }
                     scene.add(gltf.scene);
                     initScene(scene, camera, renderer);
-                    console.log("DONE LOADING AND FIXUPS");
+                    //console.log("DONE LOADING AND FIXUPS");
                     resolve();
                 });
             })
         .then(() =>
             {
-                console.log("CHECK FOR XR");
+                //console.log("CHECK FOR XR");
                 pageUI.checkForXR(); 
             });
 
@@ -384,7 +384,7 @@ function initialize()
 
 function setupHandForController(id, evt)
 {
-    console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
+    //console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
     controllers[id].gamepad = evt.data.gamepad;
     if (evt.data.handedness == "left")
     {

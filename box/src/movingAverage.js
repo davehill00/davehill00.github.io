@@ -132,3 +132,19 @@ export class MovingAverageDirectionVector
         }
     }
 }
+
+// export class CircularArray
+// {
+//     constructor(length)
+//     {
+//         this.data = Array.size(length);
+//         this.curLength = 0;
+//         this.maxLength = length;
+//         this.startElement = 0;
+//     }
+//     add(value)
+//     {
+
+//     }
+
+// }

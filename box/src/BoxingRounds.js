@@ -11,7 +11,7 @@ class BoxingRound
         this.maxRounds = maxRounds;
         this.bagType = bagType;
 
-        console.log("Initialize Round " + roundNumber + "/" + maxRounds);
+        // console.log("Initialize Round " + roundNumber + "/" + maxRounds);
     }
 
     start(session, elapsedTime)

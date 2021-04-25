@@ -148,11 +148,11 @@ export class BoxingSession
             new THREE.MeshBasicMaterial({color: 0x408040})
         );
 
-        // this.headingArrow.position.set(0.0, 0.1, -1.0);
-        // this.punchArrow.position.set(0.0, 0.15, -1.0);
+        this.headingArrow.position.set(0.0, 0.1, -1.0);
+        this.punchArrow.position.set(0.0, 0.15, -1.0);
 
-        this.scene.add(this.headingArrow);
-        this.scene.add(this.punchArrow);
+        // this.scene.add(this.headingArrow);
+        // this.scene.add(this.punchArrow);
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
@@ -655,9 +655,12 @@ export class PunchingStats
         this.punches = 0;
         this.lastPunchTime = -1.0;
         this.averagePunchRate = 1.0;
+        this.lastPunchSpeed = 0.0;
         this.lastPunchType = 0;
         this.lastPunchTypeCount = 0;
         this.clearLastPunchTime = 0.0;
+        this.punchRecord = [];
+        this.punchRecordLength = 0;
   
         this.punchRateNew = new MovingAverageEventsPerMinute(32, 4.0); //, 1.0);
 
@@ -693,9 +696,12 @@ export class PunchingStats
             this.nextStatsUpdate = this.accumulatedTime + 0.5;
 
         }
-        if(this.clearLastPunchTime < accumulatedTime)
+        if(this.lastPunchType != -1 && this.clearLastPunchTime < accumulatedTime)
         {
             this.lastPunchType = -1;
+            this.punchRecordLength = 0;
+            this.updateStatsDisplay(false, true);
+            // console.log("CLEAR LAST PUNCH");
         }
         
         this.accumulatedTime = accumulatedTime;
@@ -709,7 +715,7 @@ export class PunchingStats
 
         this.lastPunchSpeed = speed; //velocity.length();
 
-        console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
+        //console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
         if ((this.lastPunchType != lastPunchType) || (lastPunchType == PUNCH_UNKNOWN))
         {
             this.lastPunchType = lastPunchType;
@@ -719,6 +725,13 @@ export class PunchingStats
         {
             this.lastPunchTypeCount++;
         }
+        // Reset if this gets too long
+        if (this.punchRecordLength > 8)
+        {
+            this.punchRecordLength = 0;
+        }
+        this.punchRecord[this.punchRecordLength++] = (lastPunchType == PUNCH_UNKNOWN) ? "?" : lastPunchType;
+
         // A repeated punch will only count as an xN if it happens within this window of time.
         // This allows for Jab-Straight-Jab, Jab-Straight-Jab without getting an x2 on the second Jab.
         // Kind of counter-intuitive, but it doesn't feel great if you see the x2 when you feel like
@@ -733,31 +746,54 @@ export class PunchingStats
         return this.cachedPPM;
     }
 
-    updateStatsDisplay(isPunch=false)
+    updateStatsDisplay(isPunch=false, onlyPunchRecord=false)
     {       
-        let ppm = this.punchRateNew.getAverageEPM(this.accumulatedTime);
-        this.cachedPPM = ppm;
 
 
-        let message = 
+        let message; 
+
+        if (!onlyPunchRecord)
+        {
+            let ppm = this.punchRateNew.getAverageEPM(this.accumulatedTime);
+            this.cachedPPM = ppm;
+
+            message = 
             "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 
             "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
             "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---");
-            
-        this.statsTextBox.displayMessage(message);
+           
+            this.statsTextBox.displayMessage(message);
+        }
 
-        if (isPunch)
+        if (isPunch || onlyPunchRecord)
         {
             this.punchTextBox.visible = true;
-            if (this.lastPunchTypeCount == 1)
+            
+            if (onlyPunchRecord)
             {
-                this.punchTextBox.displayMessage(kPunchNames[this.lastPunchType]);
+                message = "";
             }
             else
             {
-                message = kPunchNames[this.lastPunchType] + " x " + this.lastPunchTypeCount.toFixed(0);
-                this.punchTextBox.displayMessage(message);
+                if (this.lastPunchTypeCount == 1)
+                {
+                    message = kPunchNames[this.lastPunchType];
+                }
+                else
+                {
+                    message = kPunchNames[this.lastPunchType] + " x " + this.lastPunchTypeCount.toFixed(0);
+                }
             }
+            message += "\n";
+            for(let i = 0; i < this.punchRecordLength; i++)
+            {
+                if (i > 0)
+                {
+                    message += "-";
+                }
+                message += this.punchRecord[i];
+            }
+            this.punchTextBox.displayMessage(message);
         }
         else
         {
