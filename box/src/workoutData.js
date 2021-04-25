@@ -161,9 +161,8 @@ export let workoutData = [
         {
             introText: 
                 "DOUBLE-END HOOKS:\n" +
-                " \u2022 Focus on form, then ramp up the speed." +
-                " \u2022 JAB(1), followed by a quick HOOK(4)." +
-                " \u2022 STRAIGHT(2), followed by a quick HOOK(3).",
+                " \u2022 JAB(1) then quick HOOK(4).\n" +
+                " \u2022 STRAIGHT(2) then quick HOOK(3).",
             bagType: ROUND_DOUBLE_END_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:[
