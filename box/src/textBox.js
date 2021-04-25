@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { MeshBasicMaterial, PlaneBufferGeometry } from 'three';
 
-var createGeometry = require('./thirdparty/three-bmfont-text/')
+import {createTextGeometry} from "./thirdparty/three-bmfont-text";
+
 var loadFont = require('load-bmfont')
 var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
 
@@ -47,7 +48,7 @@ export class TextBox extends THREE.Group
         gInitPromise.then(() => {
 
             
-            this.fontGeometry = createGeometry({
+            this.fontGeometry = createTextGeometry({
                 align: horizontalAlign,
                 font: gFont,
                 flipY: true,

@@ -18,7 +18,7 @@
     "copy-webpack-plugin": "6.4.0",
     "live-moving-average": "^1.1.0",
     "load-bmfont": "^1.4.1",
-    "three": "file:.yalc/three",
+    "three": "^0.128.0",
     "webpack": "4",
     "xtend": "^4.0.2"
   },

@@ -1,6 +1,6 @@
 //import { DDSLoader } from 'three/examples/jsm/loaders/DDSLoader.js';
 
-var createGeometry = require('three-bmfont-text')
+import {createTextGeometry} from "./thirdparty/three-bmfont-text";
 var loadFont = require('load-bmfont')
 
 const kFpsSmoothing = 0.10;
@@ -19,7 +19,7 @@ export class StatsHud {
             function (err, font) {
                 // create a geometry of packed bitmap glyphs,
                 // word wrapped to 300px and right-aligned
-                self.fontGeometry = createGeometry({
+                self.fontGeometry = createTextGeometry({
                     width: 800,
                     align: 'left',
                     font: font

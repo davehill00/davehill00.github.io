@@ -1,5 +1,3 @@
-var createGeometry = require('./thirdparty/three-bmfont-text/')
-var loadFont = require('load-bmfont')
 import * as THREE from 'three';
 import { TextBox } from './textBox';
 import {MovingAverageEventsPerMinute} from './movingAverage.js';

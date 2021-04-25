@@ -39,7 +39,7 @@ export class PlayerHud
             // FONT
             loadFont('./content/ROCKB.TTF-msdf.json',
             (err, font) => {
-                this.fontGeometry = createGeometry({
+                this.fontGeometry = createTextGeometry({
                     align: 'center',
                     font: font,
                     flipY: true,
