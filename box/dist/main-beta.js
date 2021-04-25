@@ -114797,7 +114797,7 @@ class BoxingRound
         this.maxRounds = maxRounds;
         this.bagType = bagType;
 
-        console.log("Initialize Round " + roundNumber + "/" + maxRounds);
+        // console.log("Initialize Round " + roundNumber + "/" + maxRounds);
     }
 
     start(session, elapsedTime)
@@ -115931,7 +115931,7 @@ function initialize()
         .then( 
             () => {
                 return new Promise( (resolve) => {
-                    console.log("LOAD GLTF");
+                    //console.log("LOAD GLTF");
                     let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__["GLTFLoader"](loadingManager);
                     loader.load('./content/gym_v8.gltf', resolve);
                 })
@@ -115941,7 +115941,7 @@ function initialize()
                 // console.log("GLTF is: " + gltf);
                 return new Promise(
                     (resolve) => {
-                    console.log("DO GLTF FIXUPS")
+                    //console.log("DO GLTF FIXUPS")
                     for (let i = 0; i < gltf.scene.children.length; i++)
                     {                
                         let obj = gltf.scene.children[i];
@@ -116005,13 +116005,13 @@ function initialize()
                     }
                     scene.add(gltf.scene);
                     initScene(scene, camera, renderer);
-                    console.log("DONE LOADING AND FIXUPS");
+                    //console.log("DONE LOADING AND FIXUPS");
                     resolve();
                 });
             })
         .then(() =>
             {
-                console.log("CHECK FOR XR");
+                //console.log("CHECK FOR XR");
                 pageUI.checkForXR(); 
             });
 
@@ -116107,7 +116107,7 @@ function initialize()
 
 function setupHandForController(id, evt)
 {
-    console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
+    //console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
     controllers[id].gamepad = evt.data.gamepad;
     if (evt.data.handedness == "left")
     {
@@ -117063,11 +117063,11 @@ class BoxingSession
             new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]({color: 0x408040})
         );
 
-        // this.headingArrow.position.set(0.0, 0.1, -1.0);
-        // this.punchArrow.position.set(0.0, 0.15, -1.0);
+        this.headingArrow.position.set(0.0, 0.1, -1.0);
+        this.punchArrow.position.set(0.0, 0.15, -1.0);
 
-        this.scene.add(this.headingArrow);
-        this.scene.add(this.punchArrow);
+        // this.scene.add(this.headingArrow);
+        // this.scene.add(this.punchArrow);
   
         this.scene.traverse((node) => {
             if (node.name == "Screen")
@@ -117570,9 +117570,12 @@ class PunchingStats
         this.punches = 0;
         this.lastPunchTime = -1.0;
         this.averagePunchRate = 1.0;
+        this.lastPunchSpeed = 0.0;
         this.lastPunchType = 0;
         this.lastPunchTypeCount = 0;
         this.clearLastPunchTime = 0.0;
+        this.punchRecord = [];
+        this.punchRecordLength = 0;
   
         this.punchRateNew = new _movingAverage_js__WEBPACK_IMPORTED_MODULE_2__["MovingAverageEventsPerMinute"](32, 4.0); //, 1.0);
 
@@ -117608,9 +117611,12 @@ class PunchingStats
             this.nextStatsUpdate = this.accumulatedTime + 0.5;
 
         }
-        if(this.clearLastPunchTime < accumulatedTime)
+        if(this.lastPunchType != -1 && this.clearLastPunchTime < accumulatedTime)
         {
             this.lastPunchType = -1;
+            this.punchRecordLength = 0;
+            this.updateStatsDisplay(false, true);
+            // console.log("CLEAR LAST PUNCH");
         }
         
         this.accumulatedTime = accumulatedTime;
@@ -117624,7 +117630,7 @@ class PunchingStats
 
         this.lastPunchSpeed = speed; //velocity.length();
 
-        console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
+        //console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
         if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_UNKNOWN"]))
         {
             this.lastPunchType = lastPunchType;
@@ -117634,6 +117640,13 @@ class PunchingStats
         {
             this.lastPunchTypeCount++;
         }
+        // Reset if this gets too long
+        if (this.punchRecordLength > 8)
+        {
+            this.punchRecordLength = 0;
+        }
+        this.punchRecord[this.punchRecordLength++] = (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_UNKNOWN"]) ? "?" : lastPunchType;
+
         // A repeated punch will only count as an xN if it happens within this window of time.
         // This allows for Jab-Straight-Jab, Jab-Straight-Jab without getting an x2 on the second Jab.
         // Kind of counter-intuitive, but it doesn't feel great if you see the x2 when you feel like
@@ -117648,31 +117661,54 @@ class PunchingStats
         return this.cachedPPM;
     }
 
-    updateStatsDisplay(isPunch=false)
+    updateStatsDisplay(isPunch=false, onlyPunchRecord=false)
     {       
-        let ppm = this.punchRateNew.getAverageEPM(this.accumulatedTime);
-        this.cachedPPM = ppm;
 
 
-        let message = 
+        let message; 
+
+        if (!onlyPunchRecord)
+        {
+            let ppm = this.punchRateNew.getAverageEPM(this.accumulatedTime);
+            this.cachedPPM = ppm;
+
+            message = 
             "PUNCHES:  " + this.punches.toString().padStart(3, '0') + "\n" + 
             "PPM:  " + ppm.toFixed(0).toString().padStart(3, '0') + "\n" + 
             "SPEED:  " + (isPunch ? this.lastPunchSpeed.toFixed(1) : "---");
-            
-        this.statsTextBox.displayMessage(message);
+           
+            this.statsTextBox.displayMessage(message);
+        }
 
-        if (isPunch)
+        if (isPunch || onlyPunchRecord)
         {
             this.punchTextBox.visible = true;
-            if (this.lastPunchTypeCount == 1)
+            
+            if (onlyPunchRecord)
             {
-                this.punchTextBox.displayMessage(kPunchNames[this.lastPunchType]);
+                message = "";
             }
             else
             {
-                message = kPunchNames[this.lastPunchType] + " x " + this.lastPunchTypeCount.toFixed(0);
-                this.punchTextBox.displayMessage(message);
+                if (this.lastPunchTypeCount == 1)
+                {
+                    message = kPunchNames[this.lastPunchType];
+                }
+                else
+                {
+                    message = kPunchNames[this.lastPunchType] + " x " + this.lastPunchTypeCount.toFixed(0);
+                }
             }
+            message += "\n";
+            for(let i = 0; i < this.punchRecordLength; i++)
+            {
+                if (i > 0)
+                {
+                    message += "-";
+                }
+                message += this.punchRecord[i];
+            }
+            this.punchTextBox.displayMessage(message);
         }
         else
         {
@@ -118028,6 +118064,22 @@ class MovingAverageDirectionVector
         }
     }
 }
+
+// export class CircularArray
+// {
+//     constructor(length)
+//     {
+//         this.data = Array.size(length);
+//         this.curLength = 0;
+//         this.maxLength = length;
+//         this.startElement = 0;
+//     }
+//     add(value)
+//     {
+
+//     }
+
+// }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js")))
 
 /***/ }),
@@ -118269,8 +118321,8 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.4&beta;";
-        //appVersionText.innerHTML = "Version 0.3";
+        appVersionText.innerHTML = "Version 0.5&beta;";
+        // appVersionText.innerHTML = "Version 0.4";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -120490,53 +120542,6 @@ const ROUNDTYPE_SPEED = 3;
 
 let workoutData = [
 
-    // WORKOUT 0
-    // [
-    
-    //     {
-    //         introText: "TEST WORKOUT #1:\n \u2022 Round 1: Do two things.\n \u2022 Round 2: Do three things.",
-    //         uiShortText: "TEST WORKOUT #1",
-    //         uiText: "TEST WORKOUT #1:<ul><li>Garbage in, garbage out!</li><li>MOAR GARBAGE!</li></ul>",
-    //         uid: 0,
-    //         stages:[],
-    //         bagType: null
-    //     },
-    //     {
-    //         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2",
-    //         stages: [
-    //             {
-    //                 startTimePercent: 0.0,
-    //                 descriptionText: "THINGS TO DO DURING THE FIRST HALF"
-    //             },
-    //             {
-    //                 startTimePercent: 0.5,
-    //                 descriptionText: "THINGS TO DO DURING THE SECOND HALF"
-    //             }
-    //         ],
-    //         bagType: ROUND_HEAVY_BAG,
-    //         roundType: ROUNDTYPE_SCRIPTED
-    //     },
-    //     {
-    //         introText: "TITLE:\n \u2022 Thing 1\n \u2022 Thing 2\n \u2022 Thing 3",
-    //         stages: [
-    //             {
-    //                 startTimePercent: 0.0,
-    //                 descriptionText: "THINGS TO DO DURING THE FIRST 33%"
-    //             },
-    //             {
-    //                 startTimePercent: 0.33,
-    //                 descriptionText: "THINGS TO DO DURING THE SECOND 33%"
-    //             },
-    //             {
-    //                 startTimePercent: 0.67,
-    //                 descriptionText: "THINGS TO DO DURING THE FINAL 33%"
-    //             }
-    //         ],
-    //         bagType: ROUND_DOUBLE_END_BAG,
-    //         roundType: ROUNDTYPE_SCRIPTED
-    //     }
-    // ],
-
     // WORKOUT 1
     //[
     //     {
@@ -120643,14 +120648,110 @@ let workoutData = [
     //         roundType: ROUNDTYPE_SCRIPTED
     //     },
     // ],
-
     [
         {
-            introText: "COMBO WORKOUT #1:\n" +
+            introText: "BASIC WORKOUT:\n" +
+                " \u2022 5 rounds of drills.\n" +
+                " \u2022 A little of everything to keep it interesting.",
+            uiShortText: "BASIC WORKOUT",
+            uiText: "BASIC WORKOUT:<ul><li>5 rounds of drills.</li><li>A little of everything to keep it interesting.</li></ul>",
+            uid: 4,
+            stages:[],
+            bagType: null
+        },
+        {
+            introText: "WARM UP - THROW 100 PUNCHES",
+            numPunches: 100,
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_NUM_PUNCHES
+        },
+        {
+            introText: 
+                "BASIC COMBOS:\n" +
+                " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-2, 1-1-2"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-3"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-2-1"
+                },
+
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-1-4"
+                }
+
+            ]
+        },
+        {
+            introText: 
+                "DOUBLE-END HOOKS:\n" +
+                " \u2022 Focus on form, then ramp up the speed." +
+                " \u2022 JAB(1), followed by a quick HOOK(4)." +
+                " \u2022 STRAIGHT(2), followed by a quick HOOK(3).",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-4"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "2-3"
+                }
+            ]
+        },
+        {
+            // introText: 
+            //     "DOUBLE-END SPEED:\n" +
+            //     " \u2022 Start at 300PPM\n" + 
+            //     " \u2022 Ramp up to 350PPM\n" + 
+            //     " \u2022 Finish off at 400PPM\n",
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    // descriptionText: "Stay above 300 PPM",
+                    targetPPM: 300,
+                },
+                {
+                    startTimePercent: 0.25,
+                    // descriptionText: "Go for 350 PPM",
+                    targetPPM: 350,
+                },
+                {
+                    startTimePercent: 0.75,
+                    // descriptionText: "Finish at 400PPM",
+                    targetPPM: 400,
+                }
+            ],
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SPEED
+        },
+        {
+            introText:
+                "HEAVY BAG FREESTYLE:\n"+
+                " \u2022 Close it out however you want.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_TIMED,
+        }
+    ],
+    [
+        {
+            introText: "COMBO WORKOUT:\n" +
                 " \u2022 5 round of drills.\n" +
                 " \u2022 Warm up, then focus on combos.",
-            uiShortText: "COMBOS #1",
-            uiText: "COMBO WORKOUT #1:<ul><li>5 rounds of drills.</li><li>Warm up, then focus on combos.</li><li>Mostly heavy bag with a dash of double-end mixed in.</li></ul>",
+            uiShortText: "COMBO WORKOUT",
+            uiText: "COMBO WORKOUT:<ul><li>5 rounds of drills.</li><li>Warm up, then focus on combos.</li><li>Mostly heavy bag with a dash of double-end mixed in.</li></ul>",
             uid: 2,
             stages:[],
             bagType: null
@@ -120810,103 +120911,7 @@ let workoutData = [
             roundType: ROUNDTYPE_SPEED
         }
     ],
-    [
-        {
-            introText: "BASIC WORKOUT #1:\n" +
-                " \u2022 5 rounds of drills.\n" +
-                " \u2022 A little of everything to keep it interesting.",
-            uiShortText: "BASIC #1",
-            uiText: "BASIC WORKOUT #1:<ul><li>5 rounds of drills.</li><li>A little of everything to keep it interesting.</li></ul>",
-            uid: 4,
-            stages:[],
-            bagType: null
-        },
-        {
-            introText: "WARM UP - THROW 100 PUNCHES",
-            numPunches: 100,
-            bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_NUM_PUNCHES
-        },
-        {
-            introText: 
-                "BASIC COMBOS:\n" +
-                " \u2022 Focus on form, then ramp up the speed.",
-            bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_SCRIPTED,
-            stages:[
-                {
-                    startTimePercent: 0.0,
-                    descriptionText: "1-2, 1-1-2"
-                },
-                {
-                    startTimePercent: 0.25,
-                    descriptionText: "1-2-3"
-                },
-                {
-                    startTimePercent: 0.5,
-                    descriptionText: "1-2-1"
-                },
-
-                {
-                    startTimePercent: 0.75,
-                    descriptionText: "1-2-1-4"
-                }
-
-            ]
-        },
-        {
-            introText: 
-                "DOUBLE-END HOOKS:\n" +
-                " \u2022 Focus on form, then ramp up the speed." +
-                " \u2022 JAB(1), followed by a quick HOOK(4)." +
-                " \u2022 STRAIGHT(2), followed by a quick HOOK(3).",
-            bagType: ROUND_DOUBLE_END_BAG,
-            roundType: ROUNDTYPE_SCRIPTED,
-            stages:[
-                {
-                    startTimePercent: 0.0,
-                    descriptionText: "1-4"
-                },
-                {
-                    startTimePercent: 0.5,
-                    descriptionText: "2-3"
-                }
-            ]
-        },
-        {
-            // introText: 
-            //     "DOUBLE-END SPEED:\n" +
-            //     " \u2022 Start at 300PPM\n" + 
-            //     " \u2022 Ramp up to 350PPM\n" + 
-            //     " \u2022 Finish off at 400PPM\n",
-            stages:[
-                {
-                    startTimePercent: 0.0,
-                    // descriptionText: "Stay above 300 PPM",
-                    targetPPM: 300,
-                },
-                {
-                    startTimePercent: 0.25,
-                    // descriptionText: "Go for 350 PPM",
-                    targetPPM: 350,
-                },
-                {
-                    startTimePercent: 0.75,
-                    // descriptionText: "Finish at 400PPM",
-                    targetPPM: 400,
-                }
-            ],
-            bagType: ROUND_DOUBLE_END_BAG,
-            roundType: ROUNDTYPE_SPEED
-        },
-        {
-            introText:
-                "HEAVY BAG FREESTYLE:\n"+
-                " \u2022 Close it out however you want.",
-            bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_TIMED,
-        }
-    ]
+    
 ];
 
 /***/ })

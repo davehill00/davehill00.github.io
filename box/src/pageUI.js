@@ -145,8 +145,8 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        // appVersionText.innerHTML = "Version 0.4&beta;";
-        appVersionText.innerHTML = "Version 0.4";
+        appVersionText.innerHTML = "Version 0.5&beta;";
+        // appVersionText.innerHTML = "Version 0.4";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
