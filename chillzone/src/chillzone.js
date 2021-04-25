@@ -52,19 +52,13 @@ function initialize()
     renderer.toneMappingExposure = 1.1;
 
     document.body.appendChild(renderer.domElement);
-    let button = new VRButton(renderer); //.createButton(renderer);
-    // document.body.appendChild(button);
-
+    let button = new VRButton(renderer);
+    
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
 
     if (bShowHud) hud = new HUD.StatsHud(camera);
-
-    // const controls = new OrbitControls(camera, renderer.domElement);
-    // controls.target.set(0.0, 0.0, -3.0);
-    // controls.update();
-
 
     controllers.push(renderer.xr.getController( 0 ));
     scene.add( controllers[0] );
@@ -90,10 +84,7 @@ function initialize()
     zone = new ZONE.ZoneIntro(scene, renderer, camera);
     zone.onStart(accumulatedTime);
 
-    // loadEnvMap();
-
     LoadEnvMapPromise().then(()=>{button.checkForXR()});
-    //button.checkForXR();
     renderer.setAnimationLoop(render);     
 };
 
