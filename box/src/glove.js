@@ -116,7 +116,7 @@ export class Glove extends THREE.Group
             if( hapticActuator != null)
             {
                 hapticActuator.pulse( kIntensity, kMilliseconds );
-                console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
+                // console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
             }
         }
     }

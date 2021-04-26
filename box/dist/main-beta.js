@@ -66307,6 +66307,11 @@ function initialize()
     });
     renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 0");
+        console.table(evt.data);
+
+        if (evt.data == null)
+            return;
+
         controllers[0].gamepad = null;
         if (evt.data.handedness == "left")
         {
@@ -66355,6 +66360,11 @@ function initialize()
     });
     renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 1");
+        console.table(evt.data);
+        
+        if (evt.data == null)
+            return;
+
         controllers[1].gamepad = null;
 
         if (evt.data.handedness == "left")
@@ -66383,7 +66393,7 @@ function initialize()
 
 function setupHandForController(id, evt)
 {
-    //console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
+    console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
     controllers[id].gamepad = evt.data.gamepad;
     if (evt.data.handedness == "left")
     {
@@ -67238,7 +67248,7 @@ function formatTimeString(timeInSeconds)
     let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
     let seconds = timeInSeconds - (hours * 3600) - (minutes * 60);
 
-    return minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+    return minutes.toString().padStart(1, '0') + ':' + seconds.toFixed(0).toString().padStart(2, '0');
 }
 
 
@@ -67326,6 +67336,10 @@ class BoxingSession
         this.workoutStageTextBox.position.y = 0.01;
         this.workoutStageTextBox.visible = false;     
 
+        this.workoutSummaryTextBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](520, "left", 1.55, "top", 0.48, 0x000000);
+        this.workoutSummaryTextBox.position.y = 0.01;
+        this.workoutSummaryTextBox.visible = false;
+
         this.currentTimeInWholeSeconds = -1.0;
 
         this.headingArrow = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
@@ -67352,6 +67366,7 @@ class BoxingSession
                 this.TV.add(this.stateTextBox);
                 this.TV.add(this.workoutIntroTextBox);
                 this.TV.add(this.workoutStageTextBox);
+                this.TV.add(this.workoutSummaryTextBox);
 
                 this.TV.add(this.sound321);
                 this.TV.add(this.soundEndOfRound);
@@ -67401,6 +67416,8 @@ class BoxingSession
 
         //this.boxingRoundInfo = new BoxingRound(roundDuration);
         this.boxingRoundInfo = this.boxingRounds[0];
+
+        this.punchingStats.initialize();
 
         
     }
@@ -67485,6 +67502,8 @@ class BoxingSession
         this.workoutIntroTextBox.visible = true;
         //this.updateWorkoutMessage();
         this.displayIntroMessage(this.workoutIntroMessage);
+
+        this.punchingStats.start();
     }
 
     pause()
@@ -67611,7 +67630,11 @@ class BoxingSession
                         }
                         else
                         {
-                            this.displayWorkoutInfoMessage("Great job!", false);
+                            let message = this.punchingStats.getEndOfRoundSummaryString();
+                            //this.displayWorkoutInfoMessage(message); //"Great job!", false);
+                            this.workoutStageTextBox.visible = false;
+                            this.workoutSummaryTextBox.displayMessage(message);
+                            this.workoutSummaryTextBox.visible = true;
                         }
                         this.state = SESSION_OUTRO;
                     }
@@ -67856,6 +67879,16 @@ class PunchingStats
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
 
+
+        // Summary stats
+        this.startTime = 0.0;
+        this.punchCounts = [0,0,0,0,0];
+        this.maxSpeed = 0.0;
+        this.accumulatedSpeedForAverage = 0.0;
+
+
+
+
         this.statsTextBox = new _textBox__WEBPACK_IMPORTED_MODULE_1__["TextBox"](520, "left", 1.55, "bottom", 0.25, 0x000000);
         // this.textBox.position.x = 0.12;
         this.statsTextBox.position.y = -0.35;
@@ -67876,6 +67909,29 @@ class PunchingStats
         this.updateStatsDisplay();
     }
 
+    initialize()
+    {
+        this.startTime = -1.0;
+        this.punchCounts = [0,0,0,0,0];
+        this.maxSpeed = 0.0;
+        this.accumulatedSpeedForAverage = 0.0;
+    }
+    start()
+    {
+        this.startTime = -1.0;
+    }
+
+    getEndOfRoundSummaryString()
+    {
+        let message;
+        message = "WORKOUT COMPLETE:\n"
+        message += " \u2022 Total time:\u00a0" + formatTimeString(this.accumulatedTime - this.startTime) + "\n";
+        message += " \u2022 Jab:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_JAB"]] + ", Straight:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_STRAIGHT"]] 
+                + ", L\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_LEFT_HOOK"]] + ", R\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_RIGHT_HOOK"]] + ", Other:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_UNKNOWN"]] + "\n";
+        message += " \u2022 Max:\u00a0" + this.maxSpeed.toFixed(1) + "\u00a0m/s, Avg:\u00a0" + (this.accumulatedSpeedForAverage/Math.max(this.punches,1)).toFixed(1) + "\u00a0m/s";
+        return message;
+    }
+
     update(dt, accumulatedTime)
     {
         this.punchRateNew.update(accumulatedTime);
@@ -67894,6 +67950,11 @@ class PunchingStats
         }
         
         this.accumulatedTime = accumulatedTime;
+
+        if (this.startTime < 0.0)
+        {
+            this.startTime = accumulatedTime;
+        }
     }
 
     onBagHit(whichHand, speed, velocity, lastPunchType)
@@ -67903,6 +67964,11 @@ class PunchingStats
         this.punchRateNew.recordEntry(this.accumulatedTime);
 
         this.lastPunchSpeed = speed; //velocity.length();
+
+        this.maxSpeed = Math.max(this.maxSpeed, speed);
+        this.accumulatedSpeedForAverage += speed;
+        this.punchCounts[lastPunchType]++;
+
 
         //console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
         if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_5__["PUNCH_UNKNOWN"]))
@@ -67994,6 +68060,9 @@ class PunchingStats
         this.nextStatsUpdate = this.accumulatedTime + 1.5;
     }
 }
+
+
+
 
 
 
@@ -68121,7 +68190,7 @@ class Glove extends THREE.Group
             if( hapticActuator != null)
             {
                 hapticActuator.pulse( kIntensity, kMilliseconds );
-                console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
+                // console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
             }
         }
     }
@@ -68596,7 +68665,7 @@ class PageUI
 
         let appVersionText = document.createElement("span");
         appVersionText.innerHTML = "Version 0.5&beta;";
-        // appVersionText.innerHTML = "Version 0.4.1";
+        // appVersionText.innerHTML = "Version 0.4.2";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -69890,6 +69959,8 @@ var CAP_HEIGHTS = ['H', 'I', 'N', 'E', 'F', 'K', 'L', 'T', 'U', 'V', 'W', 'X', '
 
 var TAB_ID = '\t'.charCodeAt(0)
 var SPACE_ID = ' '.charCodeAt(0)
+var NBSPACE_ID = '\u00a0'.charCodeAt(0);
+
 var ALIGN_LEFT = 0, 
     ALIGN_CENTER = 1, 
     ALIGN_RIGHT = 2
@@ -70031,7 +70102,7 @@ TextLayout.prototype.getGlyph = function(font, id) {
     return glyph
   else if (id === TAB_ID) 
     return this._fallbackTabGlyph
-  else if (id === SPACE_ID) 
+  else if (id === SPACE_ID || id == NBSPACE_ID) 
     return this._fallbackSpaceGlyph
   return null
 }
@@ -70603,7 +70674,7 @@ module.exports = function createMSDFShader (opt) {
 
 var newline = /\n/
 var newlineChar = '\n'
-var whitespace = /\s/
+var whitespace = /[\u0009\u0020(\r|\n|\r\n)]/ // /\s/
 
 var bulletRegex = /[\u2022\u2023\u25E6\u2043\u2219]/
 const kBulletedIndent = 3;

@@ -9,6 +9,8 @@ var CAP_HEIGHTS = ['H', 'I', 'N', 'E', 'F', 'K', 'L', 'T', 'U', 'V', 'W', 'X', '
 
 var TAB_ID = '\t'.charCodeAt(0)
 var SPACE_ID = ' '.charCodeAt(0)
+var NBSPACE_ID = '\u00a0'.charCodeAt(0);
+
 var ALIGN_LEFT = 0, 
     ALIGN_CENTER = 1, 
     ALIGN_RIGHT = 2
@@ -150,7 +152,7 @@ TextLayout.prototype.getGlyph = function(font, id) {
     return glyph
   else if (id === TAB_ID) 
     return this._fallbackTabGlyph
-  else if (id === SPACE_ID) 
+  else if (id === SPACE_ID || id == NBSPACE_ID) 
     return this._fallbackSpaceGlyph
   return null
 }

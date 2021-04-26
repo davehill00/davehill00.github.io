@@ -23,7 +23,7 @@ const kPunchNames =
 
 import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED} from "./workoutData.js";
 import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound} from "./BoxingRounds.js";
-import { PunchDetector, PUNCH_UNKNOWN } from './punchDetector';
+import { PunchDetector, PUNCH_JAB, PUNCH_LEFT_HOOK, PUNCH_RIGHT_HOOK, PUNCH_STRAIGHT, PUNCH_UNKNOWN } from './punchDetector';
 
 const kIntroDuration = 5.0;
 const kIntroGetReadyDuration = 5.0;
@@ -47,7 +47,7 @@ export function formatTimeString(timeInSeconds)
     let minutes = Math.floor((timeInSeconds - (hours * 3600)) / 60);
     let seconds = timeInSeconds - (hours * 3600) - (minutes * 60);
 
-    return minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
+    return minutes.toString().padStart(1, '0') + ':' + seconds.toFixed(0).toString().padStart(2, '0');
 }
 
 
@@ -135,6 +135,10 @@ export class BoxingSession
         this.workoutStageTextBox.position.y = 0.01;
         this.workoutStageTextBox.visible = false;     
 
+        this.workoutSummaryTextBox = new TextBox(520, "left", 1.55, "top", 0.48, 0x000000);
+        this.workoutSummaryTextBox.position.y = 0.01;
+        this.workoutSummaryTextBox.visible = false;
+
         this.currentTimeInWholeSeconds = -1.0;
 
         this.headingArrow = new THREE.Mesh(
@@ -161,6 +165,7 @@ export class BoxingSession
                 this.TV.add(this.stateTextBox);
                 this.TV.add(this.workoutIntroTextBox);
                 this.TV.add(this.workoutStageTextBox);
+                this.TV.add(this.workoutSummaryTextBox);
 
                 this.TV.add(this.sound321);
                 this.TV.add(this.soundEndOfRound);
@@ -210,6 +215,8 @@ export class BoxingSession
 
         //this.boxingRoundInfo = new BoxingRound(roundDuration);
         this.boxingRoundInfo = this.boxingRounds[0];
+
+        this.punchingStats.initialize();
 
         
     }
@@ -294,6 +301,8 @@ export class BoxingSession
         this.workoutIntroTextBox.visible = true;
         //this.updateWorkoutMessage();
         this.displayIntroMessage(this.workoutIntroMessage);
+
+        this.punchingStats.start();
     }
 
     pause()
@@ -420,7 +429,11 @@ export class BoxingSession
                         }
                         else
                         {
-                            this.displayWorkoutInfoMessage("Great job!", false);
+                            let message = this.punchingStats.getEndOfRoundSummaryString();
+                            //this.displayWorkoutInfoMessage(message); //"Great job!", false);
+                            this.workoutStageTextBox.visible = false;
+                            this.workoutSummaryTextBox.displayMessage(message);
+                            this.workoutSummaryTextBox.visible = true;
                         }
                         this.state = SESSION_OUTRO;
                     }
@@ -665,6 +678,16 @@ export class PunchingStats
         this.smoothAvgPPM = 0;
         this.nextStatsUpdate = 0;
 
+
+        // Summary stats
+        this.startTime = 0.0;
+        this.punchCounts = [0,0,0,0,0];
+        this.maxSpeed = 0.0;
+        this.accumulatedSpeedForAverage = 0.0;
+
+
+
+
         this.statsTextBox = new TextBox(520, "left", 1.55, "bottom", 0.25, 0x000000);
         // this.textBox.position.x = 0.12;
         this.statsTextBox.position.y = -0.35;
@@ -685,6 +708,29 @@ export class PunchingStats
         this.updateStatsDisplay();
     }
 
+    initialize()
+    {
+        this.startTime = -1.0;
+        this.punchCounts = [0,0,0,0,0];
+        this.maxSpeed = 0.0;
+        this.accumulatedSpeedForAverage = 0.0;
+    }
+    start()
+    {
+        this.startTime = -1.0;
+    }
+
+    getEndOfRoundSummaryString()
+    {
+        let message;
+        message = "WORKOUT COMPLETE:\n"
+        message += " \u2022 Total time:\u00a0" + formatTimeString(this.accumulatedTime - this.startTime) + "\n";
+        message += " \u2022 Jab:\u00a0" + this.punchCounts[PUNCH_JAB] + ", Straight:\u00a0" + this.punchCounts[PUNCH_STRAIGHT] 
+                + ", L\u00a0Hook:\u00a0" + this.punchCounts[PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[PUNCH_RIGHT_HOOK] + ", Other:\u00a0" + this.punchCounts[PUNCH_UNKNOWN] + "\n";
+        message += " \u2022 Max:\u00a0" + this.maxSpeed.toFixed(1) + "\u00a0m/s, Avg:\u00a0" + (this.accumulatedSpeedForAverage/Math.max(this.punches,1)).toFixed(1) + "\u00a0m/s";
+        return message;
+    }
+
     update(dt, accumulatedTime)
     {
         this.punchRateNew.update(accumulatedTime);
@@ -703,6 +749,11 @@ export class PunchingStats
         }
         
         this.accumulatedTime = accumulatedTime;
+
+        if (this.startTime < 0.0)
+        {
+            this.startTime = accumulatedTime;
+        }
     }
 
     onBagHit(whichHand, speed, velocity, lastPunchType)
@@ -712,6 +763,11 @@ export class PunchingStats
         this.punchRateNew.recordEntry(this.accumulatedTime);
 
         this.lastPunchSpeed = speed; //velocity.length();
+
+        this.maxSpeed = Math.max(this.maxSpeed, speed);
+        this.accumulatedSpeedForAverage += speed;
+        this.punchCounts[lastPunchType]++;
+
 
         //console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
         if ((this.lastPunchType != lastPunchType) || (lastPunchType == PUNCH_UNKNOWN))
@@ -803,4 +859,7 @@ export class PunchingStats
         this.nextStatsUpdate = this.accumulatedTime + 1.5;
     }
 }
+
+
+
 

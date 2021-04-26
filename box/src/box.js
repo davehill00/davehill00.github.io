@@ -308,6 +308,11 @@ function initialize()
     });
     renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 0");
+        console.table(evt.data);
+
+        if (evt.data == null)
+            return;
+
         controllers[0].gamepad = null;
         if (evt.data.handedness == "left")
         {
@@ -356,6 +361,11 @@ function initialize()
     });
     renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 1");
+        console.table(evt.data);
+        
+        if (evt.data == null)
+            return;
+
         controllers[1].gamepad = null;
 
         if (evt.data.handedness == "left")
@@ -384,7 +394,7 @@ function initialize()
 
 function setupHandForController(id, evt)
 {
-    //console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
+    console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
     controllers[id].gamepad = evt.data.gamepad;
     if (evt.data.handedness == "left")
     {

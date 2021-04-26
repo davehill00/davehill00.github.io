@@ -1,6 +1,6 @@
 var newline = /\n/
 var newlineChar = '\n'
-var whitespace = /\s/
+var whitespace = /[\u0009\u0020(\r|\n|\r\n)]/ // /\s/
 
 var bulletRegex = /[\u2022\u2023\u25E6\u2043\u2219]/
 const kBulletedIndent = 3;
