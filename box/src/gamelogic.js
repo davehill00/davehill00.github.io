@@ -18,12 +18,14 @@ const kPunchNames =
     "JAB(1)",
     "STRAIGHT(2)",
     "LEFT HOOK(3)",
-    "RIGHT HOOK(4)"
+    "RIGHT HOOK(4)",
+    "LEFT UPPER(5)",
+    "RIGHT UPPER(6)"
 ];
 
 import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED} from "./workoutData.js";
 import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound} from "./BoxingRounds.js";
-import { PunchDetector, PUNCH_JAB, PUNCH_LEFT_HOOK, PUNCH_RIGHT_HOOK, PUNCH_STRAIGHT, PUNCH_UNKNOWN } from './punchDetector';
+import { PunchDetector, PUNCH_JAB, PUNCH_LEFT_HOOK, PUNCH_RIGHT_HOOK, PUNCH_STRAIGHT, PUNCH_UNKNOWN, PUNCH_LEFT_UPPERCUT, PUNCH_RIGHT_UPPERCUT } from './punchDetector';
 
 const kIntroDuration = 5.0;
 const kIntroGetReadyDuration = 5.0;
@@ -744,8 +746,10 @@ export class PunchingStats
         {
             this.lastPunchType = -1;
             this.punchRecordLength = 0;
-            this.updateStatsDisplay(false, true);
+            //this.updateStatsDisplay(false, true);
             // console.log("CLEAR LAST PUNCH");
+
+            this.clearLastPunchTime = this.accumulatedTime + 1.0;
         }
         
         this.accumulatedTime = accumulatedTime;

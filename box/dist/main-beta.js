@@ -67219,7 +67219,9 @@ const kPunchNames =
     "JAB(1)",
     "STRAIGHT(2)",
     "LEFT HOOK(3)",
-    "RIGHT HOOK(4)"
+    "RIGHT HOOK(4)",
+    "LEFT UPPER(5)",
+    "RIGHT UPPER(6)"
 ];
 
 
@@ -67945,8 +67947,10 @@ class PunchingStats
         {
             this.lastPunchType = -1;
             this.punchRecordLength = 0;
-            this.updateStatsDisplay(false, true);
+            //this.updateStatsDisplay(false, true);
             // console.log("CLEAR LAST PUNCH");
+
+            this.clearLastPunchTime = this.accumulatedTime + 1.0;
         }
         
         this.accumulatedTime = accumulatedTime;
@@ -69362,7 +69366,7 @@ class PlayerHud
 /*!******************************!*\
   !*** ./src/punchDetector.js ***!
   \******************************/
-/*! exports provided: PUNCH_UNKNOWN, PUNCH_JAB, PUNCH_STRAIGHT, PUNCH_LEFT_HOOK, PUNCH_RIGHT_HOOK, PunchDetector */
+/*! exports provided: PUNCH_UNKNOWN, PUNCH_JAB, PUNCH_STRAIGHT, PUNCH_LEFT_HOOK, PUNCH_RIGHT_HOOK, PUNCH_LEFT_UPPERCUT, PUNCH_RIGHT_UPPERCUT, PunchDetector */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -69372,6 +69376,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PUNCH_STRAIGHT", function() { return PUNCH_STRAIGHT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PUNCH_LEFT_HOOK", function() { return PUNCH_LEFT_HOOK; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PUNCH_RIGHT_HOOK", function() { return PUNCH_RIGHT_HOOK; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PUNCH_LEFT_UPPERCUT", function() { return PUNCH_LEFT_UPPERCUT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PUNCH_RIGHT_UPPERCUT", function() { return PUNCH_RIGHT_UPPERCUT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PunchDetector", function() { return PunchDetector; });
 /* harmony import */ var _movingAverage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./movingAverage */ "./src/movingAverage.js");
 
@@ -69381,12 +69387,17 @@ const PUNCH_JAB = 1;
 const PUNCH_STRAIGHT = 2;
 const PUNCH_LEFT_HOOK = 3;
 const PUNCH_RIGHT_HOOK = 4;
+const PUNCH_LEFT_UPPERCUT = 5;
+const PUNCH_RIGHT_UPPERCUT = 6;
 // export const PUNCH_LEFT_UPPERCUT = 5;
 // export const PUNCH_RIGHT_UPPERCUT = 6;
 
 let tVec0 = new THREE.Vector3();
 let tVec1 = new THREE.Vector3();
 let tVec2 = new THREE.Vector3();
+
+let tPunchDirection2D = new THREE.Vector3();
+let tPunchDirection = new THREE.Vector3();
 
 class PunchDetector
 {
@@ -69430,9 +69441,12 @@ class PunchDetector
         tVec1.normalize();
 
         // compute punch directtion
-        tVec2.copy(velocity);
-        tVec2.setY(0.0);
-        tVec2.normalize();
+        tPunchDirection.copy(velocity);
+        tPunchDirection.normalize();
+
+        tPunchDirection2D.copy(velocity);
+        tPunchDirection2D.setY(0.0);
+        tPunchDirection2D.normalize();
 
         this.lastPunchDirection.copy(tVec2);
 
@@ -69441,31 +69455,48 @@ class PunchDetector
         if (bUseAngularY)
             angularY = glove.controller.angularVelocity.y;
 
+        let dotFwd2D = tPunchDirection2D.dot(tVec0);
+        let dotRight2D = tPunchDirection2D.dot(tVec1);
+        let dotUp = tPunchDirection.y;
+        
         if (glove.whichHand == 1) // Left hand
         {
-            let dotFwd = tVec2.dot(tVec0);
-            let dotRight = tVec2.dot(tVec1);
 
             
+            // console.log("*** LEFT: " + dotUp);
 
-            if (dotFwd > 0.85)
+            if (dotFwd2D > 0.85)
             {
                 if (bLogging)
                 {
-                    console.log("JAB **************")
+                    console.log("LEFT JAB/UPPER **************")
                     console.log("LINEAR"); console.table(glove.controller.linearVelocity);
                     console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 }
                 return PUNCH_JAB;
             }
-            else if ((dotRight > 0.707) || (bUseAngularY && dotRight > 0.5 && angularY < -5.0))
+            else if ((dotRight2D > 0.707) || (bUseAngularY && dotRight2D > 0.5 && angularY < -5.0))
             {
-                if (bLogging)
+                let bUpper = dotUp > 0.55;
+
+                if (true) //bLogging)
                 {
-                    console.log("LEFT HOOK **************")
+                    if (bUpper) {
+                        console.log("LEFT UPPER ************");
+                    }
+                    else
+                    {
+                        console.log("LEFT HOOK **************");
+                    }
                     console.log("LINEAR"); console.table(glove.controller.linearVelocity);
                     console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 }
+
+                if (bUpper)
+                {
+                    return PUNCH_LEFT_UPPERCUT;
+                }
+
                 return PUNCH_LEFT_HOOK;
             }
             else
@@ -69482,26 +69513,63 @@ class PunchDetector
         }
         else // Right hand
         {
-            let dotFwd = tVec2.dot(tVec0);
-            let dotRight = tVec2.dot(tVec1);
+            let dotFwd = tPunchDirection2D.dot(tVec0);
+            let dotRight = tPunchDirection2D.dot(tVec1);
             if (dotFwd > 0.85)
             {
+                let bUpper = dotUp > 0.55;
+
+                if (true) //bLogging)
+                {
+                    if (bUpper) {
+                        console.log("RIGHT UPPER ************");
+                    }
+                    else
+                    {
+                        console.log("RIGHT STRAIGHT **************");
+                    }
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
+
+
                 if (bLogging)
                 {
                     console.log("STRAIGHT **************")
                     console.log("LINEAR"); console.table(glove.controller.linearVelocity);
                     console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 }
+                if (bUpper)
+                    return PUNCH_RIGHT_UPPERCUT;
+
                 return PUNCH_STRAIGHT;
             }
             else if ((dotRight < -0.707) || (bUseAngularY && dotRight < -0.5 && angularY > 5.0))
             {
+                let bUpper = dotUp > 0.55;
+
+                if (true) //bLogging)
+                {
+                    if (bUpper) {
+                        console.log("RIGHT UPPER ************");
+                    }
+                    else
+                    {
+                        console.log("RIGHT HOOK **************");
+                    }
+                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
+                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
+                }
+
                 if (bLogging)
                 {
                     console.log("RIGHT HOOK **************")
                     console.log("LINEAR"); console.table(glove.controller.linearVelocity);
                     console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
                 }
+
+                if (bUpper)
+                    return PUNCH_RIGHT_UPPERCUT;
 
                 return PUNCH_RIGHT_HOOK;
             }
