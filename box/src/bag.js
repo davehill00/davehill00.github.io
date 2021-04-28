@@ -180,6 +180,7 @@ export class HeavyBag extends Bag
                         obj.material.roughness = 0.2;
                         obj.material.envMapIntensity = 0.8;
                         obj.material.envMap = this.scene.envMap;
+                        obj.renderOrder = 3;
                     }
                     else if (obj.name == "PunchEffectMesh")
                     {
@@ -209,6 +210,7 @@ export class HeavyBag extends Bag
                             pe.scale.set(1.00, 1.00, 1.00);
                             //pe.position.setY(i*0.1);
                             pe.visible = false;
+                            pe.renderOrder = 4;
                             bag.add(pe);
                             this.punchEffects[i] = pe;
                         }
@@ -216,7 +218,7 @@ export class HeavyBag extends Bag
                     }
                 }
                 // gltf.scene.scale.set(0.5, 0.5, 0.5);
-                gltf.scene.renderOrder = 3; //render after gloves
+                // gltf.scene.renderOrder = 3; //render after gloves
                 this.add(gltf.scene);
 
                 // this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));

@@ -65720,6 +65720,7 @@ class HeavyBag extends Bag
                         obj.material.roughness = 0.2;
                         obj.material.envMapIntensity = 0.8;
                         obj.material.envMap = this.scene.envMap;
+                        obj.renderOrder = 3;
                     }
                     else if (obj.name == "PunchEffectMesh")
                     {
@@ -65749,6 +65750,7 @@ class HeavyBag extends Bag
                             pe.scale.set(1.00, 1.00, 1.00);
                             //pe.position.setY(i*0.1);
                             pe.visible = false;
+                            pe.renderOrder = 4;
                             bag.add(pe);
                             this.punchEffects[i] = pe;
                         }
@@ -65756,7 +65758,7 @@ class HeavyBag extends Bag
                     }
                 }
                 // gltf.scene.scale.set(0.5, 0.5, 0.5);
-                gltf.scene.renderOrder = 3; //render after gloves
+                // gltf.scene.renderOrder = 3; //render after gloves
                 this.add(gltf.scene);
 
                 // this.add(new THREE.Mesh(new THREE.SphereBufferGeometry(kBagRadius, 32, 16), new THREE.MeshStandardMaterial({color: 0x000000, envMap: this.scene.envMap, envMapIntensity: 0.5, roughness: 0.25})));
@@ -66118,7 +66120,7 @@ function initialize()
 
     renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setOpaqueSort(opaqueSort);
+    // renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
     //renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
     let color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
@@ -66222,10 +66224,11 @@ function initialize()
                     {                
                         let obj = gltf.scene.children[i];
                         
-                        obj.renderOrder = 10; //render after gloves and bag
+                        // obj.renderOrder = 10; //render after gloves and bag
 
                         obj.traverse(function (node) {
 
+                            node.renderOrder = 10;
                             if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
                             {}
 
@@ -66631,10 +66634,10 @@ function OnStartButton()
     });
 }
 
-function opaqueSort(obj1, obj2)
-{
-    return 0;
-}
+// function opaqueSort(obj1, obj2)
+// {
+//     return 0;
+// }
 
 /***/ }),
 

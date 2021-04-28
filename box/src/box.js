@@ -77,7 +77,7 @@ function initialize()
 
     renderer = new THREE.WebGLRenderer( {antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setOpaqueSort(opaqueSort);
+    // renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
     //renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
     let color = new THREE.Color(0x000000);
@@ -218,10 +218,11 @@ function initialize()
                     {                
                         let obj = gltf.scene.children[i];
                         
-                        obj.renderOrder = 10; //render after gloves and bag
+                        // obj.renderOrder = 10; //render after gloves and bag
 
                         obj.traverse(function (node) {
 
+                            node.renderOrder = 10;
                             if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
                             {
                                 let simpleMat = new THREE.MeshLambertMaterial();
@@ -632,7 +633,7 @@ export function OnStartButton()
     });
 }
 
-function opaqueSort(obj1, obj2)
-{
-    return 0;
-}
+// function opaqueSort(obj1, obj2)
+// {
+//     return 0;
+// }
