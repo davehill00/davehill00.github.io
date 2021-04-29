@@ -137,8 +137,8 @@ export class BoxingSession
         this.workoutStageTextBox.position.y = 0.01;
         this.workoutStageTextBox.visible = false;     
 
-        this.workoutSummaryTextBox = new TextBox(520, "left", 1.55, "top", 0.48, 0x000000);
-        this.workoutSummaryTextBox.position.y = 0.01;
+        this.workoutSummaryTextBox = new TextBox(570, "left", 1.55, "top", 0.53, 0x000000);
+        this.workoutSummaryTextBox.position.y = 0.007;
         this.workoutSummaryTextBox.visible = false;
 
         this.currentTimeInWholeSeconds = -1.0;
@@ -189,6 +189,8 @@ export class BoxingSession
 
     initialize(numRounds, roundDuration, restDuration, bagType, bagSwap, workoutType, whichScriptedWorkout)
     {
+        // roundDuration = 10;
+        // restDuration = 5;
         // this.numRounds = numRounds;
         this.roundDuration = roundDuration;
         // this.introDuration = kIntroDuration;
@@ -304,7 +306,7 @@ export class BoxingSession
         //this.updateWorkoutMessage();
         this.displayIntroMessage(this.workoutIntroMessage);
 
-        this.punchingStats.start();
+
     }
 
     pause()
@@ -378,6 +380,15 @@ export class BoxingSession
                 if (this.elapsedTime > readyDuration)
                 {
 
+                    if (this.currentRound == 0)
+                    {
+                        // Start the "elapsed time" timer now so that it doesn't record the intro. 
+                        this.punchingStats.start(); 
+                    }
+                    else
+                    {
+                        this.punchingStats.resume();
+                    }
                     
                     //START THE ROUND
                     this.state = SESSION_ROUND;
@@ -413,9 +424,8 @@ export class BoxingSession
                 // END OF THE ROUND
                 if (this.boxingRoundInfo.isOver(this.elapsedTime) || this.forceRoundOver == true )
                 {
-                    
-
                     this.boxingRoundInfo.end(this);
+                    this.punchingStats.pause();
 
                     this.elapsedTime = 0.0;
                     this.playedAlmostDoneAlert = false;
@@ -443,6 +453,7 @@ export class BoxingSession
                     {
                         this.displayWorkoutInfoMessage("Take a breather!", false);
                         this.hideBag();
+
                         this.state = SESSION_REST;
                     }
 
@@ -683,7 +694,7 @@ export class PunchingStats
 
         // Summary stats
         this.startTime = 0.0;
-        this.punchCounts = [0,0,0,0,0];
+        this.punchCounts = [0,0,0,0,0,0,0];
         this.maxSpeed = 0.0;
         this.accumulatedSpeedForAverage = 0.0;
 
@@ -713,22 +724,39 @@ export class PunchingStats
     initialize()
     {
         this.startTime = -1.0;
-        this.punchCounts = [0,0,0,0,0];
+        for (let i = 0; i < this.punchCounts.length; i++)
+        {
+            this.punchCounts[i] = 100;
+        }
         this.maxSpeed = 0.0;
         this.accumulatedSpeedForAverage = 0.0;
     }
+
     start()
     {
         this.startTime = -1.0;
+        this.elapsedWorkoutTime = 0.0;
+    }
+
+    pause()
+    {
+        this.elapsedWorkoutTime += this.accumulatedTime - this.startTime;
+    }
+
+    resume()
+    {
+        this.startTime = this.accumulatedTime;
     }
 
     getEndOfRoundSummaryString()
     {
         let message;
         message = "WORKOUT COMPLETE:\n"
-        message += " \u2022 Total time:\u00a0" + formatTimeString(this.accumulatedTime - this.startTime) + "\n";
+        message += " \u2022 Total time:\u00a0" + formatTimeString(this.elapsedWorkoutTime) + "\n";
         message += " \u2022 Jab:\u00a0" + this.punchCounts[PUNCH_JAB] + ", Straight:\u00a0" + this.punchCounts[PUNCH_STRAIGHT] 
-                + ", L\u00a0Hook:\u00a0" + this.punchCounts[PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[PUNCH_RIGHT_HOOK] + ", Other:\u00a0" + this.punchCounts[PUNCH_UNKNOWN] + "\n";
+                + ", L\u00a0Hook:\u00a0" + this.punchCounts[PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[PUNCH_RIGHT_HOOK] 
+                + ", L\u00a0Upper:\u00a0" + this.punchCounts[PUNCH_LEFT_UPPERCUT] + ", R\u00a0Upper:\u00a0" + this.punchCounts[PUNCH_RIGHT_UPPERCUT] + 
+                ", Other:\u00a0" + this.punchCounts[PUNCH_UNKNOWN] + "\n";
         message += " \u2022 Max:\u00a0" + this.maxSpeed.toFixed(1) + "\u00a0m/s, Avg:\u00a0" + (this.accumulatedSpeedForAverage/Math.max(this.punches,1)).toFixed(1) + "\u00a0m/s";
         return message;
     }
