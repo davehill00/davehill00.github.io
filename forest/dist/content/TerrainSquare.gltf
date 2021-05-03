@@ -1,0 +1,299 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "name" : "Light",
+            "rotation" : [
+                0.16907575726509094,
+                0.7558803558349609,
+                -0.27217137813568115,
+                0.570947527885437
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903861999511719,
+                -1.0054539442062378
+            ]
+        },
+        {
+            "name" : "Camera",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.358891487121582,
+                4.958309173583984,
+                6.925790786743164
+            ]
+        },
+        {
+            "mesh" : 0,
+            "name" : "Grid"
+        },
+        {
+            "name" : "TreeInstance_000",
+            "translation" : [
+                -26.699447631835938,
+                0,
+                -32.212310791015625
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.001",
+            "translation" : [
+                32.701942443847656,
+                -0.23991632461547852,
+                -29.337261199951172
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.002",
+            "translation" : [
+                49.80045700073242,
+                -0.4916667938232422,
+                -3.2549781799316406
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.003",
+            "translation" : [
+                -7.337497711181641,
+                -0.3671534061431885,
+                4.403528213500977
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.004",
+            "translation" : [
+                21.409122467041016,
+                -0.2396864891052246,
+                -10.99203872680664
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.005",
+            "translation" : [
+                -55.00550842285156,
+                0,
+                -2.857879638671875
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.006",
+            "translation" : [
+                -53.118438720703125,
+                0,
+                -47.518550872802734
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.007",
+            "translation" : [
+                9.78390884399414,
+                0,
+                -68.90534973144531
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.008",
+            "translation" : [
+                52.76718521118164,
+                0,
+                -60.099021911621094
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.009",
+            "translation" : [
+                71.00886535644531,
+                0,
+                -6.632022857666016
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.010",
+            "translation" : [
+                67.23472595214844,
+                0,
+                51.65748596191406
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.011",
+            "translation" : [
+                33.686805725097656,
+                0,
+                60.044464111328125
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.012",
+            "translation" : [
+                15.025775909423828,
+                0,
+                53.75423049926758
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.013",
+            "translation" : [
+                27.815921783447266,
+                0,
+                33.83515167236328
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.014",
+            "translation" : [
+                3.074331283569336,
+                0,
+                31.10938262939453
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.015",
+            "translation" : [
+                -10.764185905456543,
+                0,
+                47.46399688720703
+            ]
+        },
+        {
+            "name" : "TreeInstance_000.016",
+            "translation" : [
+                -29.00586700439453,
+                0,
+                38.02864456176758
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "Forest Floor",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.10247410088777542,
+                    0.10247410088777542,
+                    0.10247410088777542,
+                    1
+                ],
+                "metallicFactor" : 0
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Grid",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 25,
+            "max" : [
+                100,
+                0,
+                100
+            ],
+            "min" : [
+                -100,
+                0,
+                -100
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 25,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 25,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 96,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 300,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 300,
+            "byteOffset" : 300
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 200,
+            "byteOffset" : 600
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 192,
+            "byteOffset" : 800
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 992,
+            "uri" : "TerrainSquare.bin"
+        }
+    ]
+}
