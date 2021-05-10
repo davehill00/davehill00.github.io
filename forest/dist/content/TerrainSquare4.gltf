@@ -1,0 +1,282 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "name" : "Light",
+            "rotation" : [
+                0.16907575726509094,
+                0.7558803558349609,
+                -0.27217137813568115,
+                0.570947527885437
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903861999511719,
+                -1.0054539442062378
+            ]
+        },
+        {
+            "name" : "Camera",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.358891487121582,
+                4.958309173583984,
+                6.925790786743164
+            ]
+        },
+        {
+            "mesh" : 0,
+            "name" : "Grid"
+        },
+        {
+            "mesh" : 1,
+            "name" : "RockInstance",
+            "scale" : [
+                1.1135799884796143,
+                1.0286463499069214,
+                1.0941450595855713
+            ],
+            "translation" : [
+                -7.490145206451416,
+                0.04233396053314209,
+                7.580417633056641
+            ]
+        },
+        {
+            "mesh" : 1,
+            "name" : "RockInstance.001",
+            "rotation" : [
+                0,
+                0.9998233318328857,
+                0,
+                0.018797677010297775
+            ],
+            "scale" : [
+                0.5649682283401489,
+                1.0286463499069214,
+                0.5551080107688904
+            ],
+            "translation" : [
+                7.548536777496338,
+                0.04233396053314209,
+                -8.101943969726562
+            ]
+        },
+        {
+            "mesh" : 1,
+            "name" : "RockInstance.002",
+            "rotation" : [
+                0,
+                0.6426862478256226,
+                0,
+                -0.7661294937133789
+            ],
+            "scale" : [
+                0.9526669979095459,
+                2.362032890319824,
+                1.2520607709884644
+            ],
+            "translation" : [
+                -7.665693759918213,
+                0.04233396053314209,
+                -8.453042030334473
+            ]
+        },
+        {
+            "mesh" : 1,
+            "name" : "RockInstance.003",
+            "rotation" : [
+                0,
+                -0.7745642066001892,
+                0,
+                -0.6324953436851501
+            ],
+            "scale" : [
+                1.1248151063919067,
+                0.7223271131515503,
+                1.478310227394104
+            ],
+            "translation" : [
+                7.841119289398193,
+                0.04233396053314209,
+                8.282612800598145
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "Ground",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.18208731710910797,
+                    0.1901775747537613,
+                    0.10333496332168579,
+                    1
+                ],
+                "metallicFactor" : 0
+            }
+        },
+        {
+            "doubleSided" : true,
+            "name" : "Material",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.14240087568759918,
+                    0.14240087568759918,
+                    0.14240087568759918,
+                    1
+                ],
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.4000000059604645
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Grid",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1
+                    },
+                    "indices" : 2,
+                    "material" : 0
+                }
+            ]
+        },
+        {
+            "name" : "Icosphere",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 3,
+                        "NORMAL" : 4
+                    },
+                    "indices" : 5,
+                    "material" : 1
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 1369,
+            "max" : [
+                12.5,
+                1.4511306285858154,
+                12.5
+            ],
+            "min" : [
+                -12.5,
+                -0.6785265207290649,
+                -12.5
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 1369,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5123,
+            "count" : 7776,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5126,
+            "count" : 480,
+            "max" : [
+                3.3050646781921387,
+                1.87666916847229,
+                2.7775094509124756
+            ],
+            "min" : [
+                -2.9008567333221436,
+                -0.1401340365409851,
+                -2.7615203857421875
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 480,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5123,
+            "count" : 480,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 16428,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 16428,
+            "byteOffset" : 16428
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 15552,
+            "byteOffset" : 32856
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 5760,
+            "byteOffset" : 48408
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 5760,
+            "byteOffset" : 54168
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 960,
+            "byteOffset" : 59928
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 60888,
+            "uri" : "TerrainSquare4.bin"
+        }
+    ]
+}

@@ -9,7 +9,8 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "three": "^0.128.0"
+    "three": "^0.128.0",
+    "three-mesh-bvh": "^0.3.7"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js",

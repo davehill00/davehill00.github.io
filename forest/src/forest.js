@@ -1,18 +1,33 @@
 import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
-import { MeshBasicMaterial, MeshStandardMaterial } from 'three';
-import { InitializeGridAssetManager, InitializeLevelGrid, UpdateLevelGrid } from './levelGrid';
+import { InitializeGridAssetManager, InitializeLevelGrid, UpdateLevelGrid, LevelGridRaycast } from './levelGrid';
 import {Flare} from './flare.js';
+import { GrassSystem } from './grass';
+import { KDTree } from './kdTree';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+// MESH BVH SETUP
+import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast, CENTER, AVERAGE, SAH } from 'three-mesh-bvh';
+// BVH: Add the extension functions
+THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
+THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
+THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
 let scene;
 let camera;
-let cameraGroup;
+let cameraTranslationGroup;
+let cameraRotationGroup;
 let renderer;
 let clock;
 let moon;
+let grass;
+let kdTree;
+let hr = {};
+
+
+let gSimpleKDTree = false;
 
 let rightHand = null;
 let rightController = null;
@@ -42,21 +57,24 @@ function initialize()
     
     
 
-    cameraGroup = new THREE.Group();
-    cameraGroup.add(camera);
+    cameraTranslationGroup = new THREE.Group();
+    cameraRotationGroup = new THREE.Group();
+
+    cameraTranslationGroup.add(cameraRotationGroup);
+    cameraRotationGroup.add(camera);
     // add camera to scene so that objects attached to the camera get rendered
-    scene.add(cameraGroup);
+    scene.add(cameraTranslationGroup);
 
     //stencil:false doesn't appear to do anything by itself... if both stencil and depth are false, you get neither depth nor stencil
     renderer = new THREE.WebGLRenderer( {antialias: true}); //, stencil:false, depth:false}); 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    //renderer.xr.setFramebufferScaleFactor(1.0);
+    // renderer.xr.setFramebufferScaleFactor(1.0);
 
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.285;
+    renderer.toneMappingExposure = 1.0; //0.285;
 
     let clearColor = new THREE.Color(0x202045); // new THREE.Color(0.97, 0.98, 1.0);
     clearColor.convertSRGBToLinear();
@@ -67,13 +85,13 @@ function initialize()
 
     let sunColor = new THREE.Color(0.87, 0.88, 1.0);
     sunColor.convertSRGBToLinear();
-    let moonLight = new THREE.DirectionalLight(sunColor, 1.185); //1.25); //2.0);
-    moonLight.position.set(1.0, 2.0, 1.0);
+    let moonLight = new THREE.DirectionalLight(sunColor, 2.3); //1.185); //1.25); //2.0);
+    moonLight.position.set(0.0, 1.0, 1.0);
     scene.add(moonLight);
 
-    let ambientColor = new THREE.Color(0.1, 0.1, 1.0); //(0.05, 0.05, 0.3); //1.0, 0.88, 0.87);
+    let ambientColor = new THREE.Color(0.31, 0.31, 0.7); //(0.05, 0.05, 0.3); //1.0, 0.88, 0.87);
     ambientColor.convertSRGBToLinear();
-    let ambient = new THREE.AmbientLight(ambientColor, 0.37); //0.25); //1.85);
+    let ambient = new THREE.AmbientLight(ambientColor, 0.6315); //0.25); //1.85);
     scene.add(ambient);
 
     let fog = new THREE.FogExp2(clearColor.getHex(), 0.023);
@@ -86,163 +104,56 @@ function initialize()
     moon = new Flare(moonDirectionVector, scene, camera, renderer);
 
 
+    // grass = new GrassSystem(scene, renderer);
+    
     // let treeAssets = [];
     // let treeInstanceMesh;
 
-    // let loader = new GLTFLoader();
     // let envMapPromise = LoadEnvMapPromise('./content/environment_map.exr');
 
-    let assetManagerPromise = InitializeGridAssetManager();
+    if (!gSimpleKDTree)
+    {
+        let assetManagerPromise = InitializeGridAssetManager();
 
-    assetManagerPromise.then( 
-        ()=>{
-            return InitializeLevelGrid(scene);
-        }
-    );
+        assetManagerPromise.then( 
+            ()=>{
+                return InitializeLevelGrid(scene);
+            }
+        );
+    }
+    else
+    {
+        let loader = new GLTFLoader();
+        loader.load("./content/test_level.gltf", (gltf) => 
+            {
+                let objects = [];
+                gltf.scene.traverse(
+                    function (node) {
+                        if (node.geometry)
+                        {
+                            objects.push(node);
+                            node.geometry.computeBoundsTree(
+                                {
+                                    lazyGeneration: false,
+                                    strategy: AVERAGE,
+                                    packData: false
+                                }
+                            );
+                        }
+                    });
 
-    // let loadTreePromise = new Promise((resolve) => {
-    //     loader.load('./content/dead_tree_1.gltf', (gltf) => 
-    //         {
-    //             treeAssets.push(gltf.scene.children[0]);
-    //             resolve();
-    //         });
-    // });
+                let box = new THREE.Box3(new THREE.Vector3(-300, -50, -300), new THREE.Vector3(300, 50, 300) );
+                kdTree = new KDTree(box, []); // objects);
+                objects.forEach((object) => {
+                    kdTree.insert(object);
+                })
 
-    // let loadScenePromise = new Promise( (resolve) => {
-        
-    //     loader.load('./content/TerrainSquare2.gltf', resolve);
-    // });
-
-    
-    // loadTreePromise.then(()=>{return loadScenePromise}).then(
-    //         (gltf) => {
-    //             //let terrainSquare = gltf.scene;
-
-    //             //scene.add(gltf.scene);
-    //             treeInstanceMesh = new THREE.InstancedMesh(
-    //                 treeAssets[0].geometry,
-    //                 new THREE.MeshPhongMaterial({color: 0x808080}),
-    //                 100
-    //             );
-
-    //             let treeInstanceCount = 0;
-    //             let matrix = new THREE.Matrix4();
-    //             const kTreeInstanceName = "TreeInstance";
-    //             let terrainSquare = new THREE.Group();
-    //             for (let i = 0; i < gltf.scene.children.length; i++)
-    //             {
-    //                 let obj = gltf.scene.children[i];
-    //                 if (obj.name.startsWith(kTreeInstanceName))
-    //                     {
-    //                         matrix.compose(obj.position, obj.quaternion, obj.scale);
-    //                         treeInstanceMesh.setMatrixAt(treeInstanceCount++, matrix);
-    //                     }
-    //                     else
-    //                     {
-    //                         terrainSquare.add(obj);
-    //                     }
-    //             }
-    //             /*gltf.scene.traverse(
-    //                 function (node) {
-    //                     if (node.name.startsWith(kTreeInstanceName))
-    //                     {
-    //                         matrix.compose(node.position, node.quaternion, node.scale);
-    //                         treeInstanceMesh.setMatrixAt(treeInstanceCount++, matrix);
-    //                     }
-    //                     else
-    //                     {
-    //                         terrainSquare.add(node);
-    //                     }
-    //                 });
-    //             */
-    //             treeInstanceMesh.instanceMatrix.needsUpdate = true;
-    //             treeInstanceMesh.count = treeInstanceCount;
-    //             terrainSquare.add(treeInstanceMesh);
-
-    //             let terrainInst;
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.renderOrder = 0;
-    //             scene.add(terrainInst);
-
-    //             let kOffset = 25.0;
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.position.set(kOffset, 0.0, 0.0);
-    //             terrainInst.renderOrder = 1;
-    //             scene.add(terrainInst);
-
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.position.set(kOffset, 0.0, kOffset);
-    //             terrainInst.renderOrder = 1;
-    //             scene.add(terrainInst);
-
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.position.set(kOffset, 0.0, -kOffset);
-    //             terrainInst.renderOrder = 1;
-    //             scene.add(terrainInst);
+                //kdTree.appendDebugMesh(scene);
+                scene.add(gltf.scene);         
+            });
+    }
 
 
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.position.set(0.0, 0.0, kOffset);
-    //             terrainInst.renderOrder = 1;
-    //             scene.add(terrainInst);
-
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.position.set(0.0, 0.0, -kOffset);
-    //             terrainInst.renderOrder = 1;
-    //             scene.add(terrainInst);
-
-
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.position.set(-kOffset, 0.0, 0.0);
-    //             terrainInst.renderOrder = 1;
-    //             scene.add(terrainInst);
-
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.position.set(-kOffset, 0.0, kOffset);
-    //             terrainInst.renderOrder = 1;
-    //             scene.add(terrainInst);
-
-    //             terrainInst = terrainSquare.clone();
-    //             terrainInst.position.set(-kOffset, 0.0, -kOffset);
-    //             terrainInst.renderOrder = 1;
-    //             scene.add(terrainInst);
-
-    //             // scene.add(treeAssets[0]);
-    //             /*
-
-    //             let pos = new THREE.Vector3();
-    //             let euler = new THREE.Euler();
-    //             // euler.set(0.0, 0.0, 0.0);
-    //             let rot = new THREE.Quaternion();
-    //             // rot.setFromEuler(euler);
-    //             let scale = new THREE.Vector3(1,1,1);
-
-    //             for (let i = 0; i < treeInstanceMesh.count; i++)
-    //             {
-
-    //                 let x, y, z;
-    //                 x = getRandomIntInRange(-100, 100);
-    //                 z = getRandomIntInRange(-100, 100);
-    //                 pos.set(x, 0.0, z);
-
-    //                 x = getRandomFloatInRange(0.75, 1.05);
-    //                 y = getRandomFloatInRange(0.75, 1.05);
-    //                 scale.set(x, y, x);
-
-    //                 // euler.set(0.0, getRandomFloatInRange(0.0, 3.14), 0.0);
-    //                 // rot.setFromEuler(euler);
-
-    //                 treeInstanceMesh.setMatrixAt(i,
-    //                     new THREE.Matrix4().compose(
-    //                         pos, rot, scale
-    //                     ));
-    //             }
-
-    //             treeInstanceMesh.instanceMatrix.needsUpdate = true;
-    //             */
-    //             scene.add(treeInstanceMesh);
-                
-    //         });
 
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(VRButton.createButton(renderer));
@@ -255,17 +166,17 @@ function initialize()
     torch = new THREE.PointLight(0xee8020, 25.0, 10.0);
     torch.visible = false;
 
-    cameraGroup.add(con);
+    cameraTranslationGroup.add(con);
     rightHand = con;
 
     con = renderer.xr.getControllerGrip(1);
     con.addEventListener("connected", onControllerConnected);
     con.addEventListener("disconnected", onControllerDisconnected);
     con.add(controllerModelFactory.createControllerModel(con));
-    cameraGroup.add(con);
+    cameraTranslationGroup.add(con);
     leftHand = con;
 
-    cameraGroup.add(torch);
+    cameraTranslationGroup.add(torch);
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
@@ -287,9 +198,10 @@ function render() {
     }
 
     updateInput(dt);
-    UpdateLevelGrid(cameraGroup.position);
+    UpdateLevelGrid(cameraTranslationGroup.position);
 
     moon.update(dt);
+    // grass.update(dt, cameraTranslationGroup.position);
 
     renderer.render(scene, camera);
 }
@@ -362,14 +274,54 @@ function updateInput(dt)
     }
 
     //let xrCamera = renderer.xr.getCamera(camera);
-    cameraGroup.getWorldDirection(tVec0); // Get forward axis
+    cameraRotationGroup.getWorldDirection(tVec0); // Get forward axis
     tVec0.y = 0.0; // Project to XZ plane
     tVec0.normalize();
     //tVec1.crossVectors(tVec0, THREE.Object3D.DefaultUp); // Compute right axis
     //tVec1.normalize();
-    cameraGroup.rotateOnWorldAxis(THREE.Object3D.DefaultUp, input.turn * dt * -1.57);
-    cameraGroup.position.addScaledVector(tVec0, input.move * dt * 2.0);
+    cameraRotationGroup.rotateOnWorldAxis(THREE.Object3D.DefaultUp, input.turn * dt * -1.57);
+
+    tVec1.copy(cameraTranslationGroup.position);
+    tVec2.copy(tVec1);
+    tVec2.addScaledVector(tVec0, input.move * dt * 2.0);
+    if (raycastFromTo(tVec1, tVec2, hr))
+    {
+
+        console.log("Hit on translate: " + hr.t);
+        if (hr.t > 0.001)
+        {
+            cameraTranslationGroup.position.lerpVectors(tVec1, tVec2, hr.t);
+        }
+        else
+        {
+            console.log("STOP");
+        }
+    }
+    else
+    {
+        cameraTranslationGroup.position.copy(tVec2); //addScaledVector(tVec0, input.move * dt * 2.0);
+    }
     
+
+    // Raycast from above the terrain down to the terrain to figure out our location
+
+    tVec0.copy(cameraTranslationGroup.position);
+    tVec0.y += 2.0;
+
+    tVec1.copy(tVec0);
+    tVec1.y -= 104.0;
+
+    
+    if (raycastFromTo(tVec0, tVec1, hr))
+    {
+        // move to the hit point
+        cameraTranslationGroup.position.y = tVec0.y + (tVec1.y - tVec0.y) * hr.t + 1.7;
+    }
+    else
+    {
+        // stay where we are, I guess
+    }
+
     // input.turn = 0.0;
     // input.move = 0.0;
 }
@@ -413,6 +365,7 @@ function onKeyUp(event)
     } 
 }
 
+
 function onControllerConnected(evt)
 {
     if (evt.data && evt.data.handedness)
@@ -420,7 +373,7 @@ function onControllerConnected(evt)
         if (evt.data.handedness == "right")
         {
             rightController = evt.data;
-            cameraGroup.remove(torch);
+            cameraTranslationGroup.remove(torch);
             rightHand.add(torch);
 
         }
@@ -439,11 +392,30 @@ function onControllerDisconnected(evt)
         {
             rightController = null; //evt.data;
             rightHand.remove(torch);
-            cameraGroup.add(torch);
+            cameraTranslationGroup.add(torch);
         }
         else
         {
             leftController = null; //evt.data;
         }
+    }
+}
+
+function raycastFromTo(from, to, hr)
+{
+    hr.t = 1.0;
+    
+    if (!gSimpleKDTree)
+    {
+        return LevelGridRaycast(from, to, hr);
+    }
+
+    if (kdTree)
+    {
+        return kdTree.topLevelRaycast(from, to, hr);
+    }
+    else
+    {
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 import * as THREE from 'three';
+import { CENTER, AVERAGE, SAH } from 'three-mesh-bvh';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { KDTree } from './kdTree';
 
 const kGridSize = 25.0;
 const kOneOverGridSize = 1.0 / kGridSize;
@@ -7,43 +9,79 @@ const kHalfGridSize = kGridSize * 0.5;
 let gGridAssetManager = null;
 let gLevelGrid = null;
 
+const kColliderStr = "Collider";
+const kColliderMaterial = new THREE.MeshBasicMaterial({color: 0x802080});
+const kShowColliders = false;
+
+const kInstanceStr = "Instance";
+const kMaxInstanceCount = 50;
+
+const gComputeBoundsOptions = {
+    lazyGeneration: false,
+    strategy: SAH,
+    // packData: false
+}
+
 class GridSquare
 {
     constructor(xIndex, zIndex, assetId)
     {
         this.origin = new THREE.Vector3(xIndex * kGridSize, 0.0, zIndex * kGridSize);
         this.asset = null;
-        this.parent = null;
+        this.levelGrid = null;
         this.assetId = assetId;
         this.xIndex = xIndex;
         this.zIndex = zIndex;
     }
 
-    isInScene()
+    isInLevelGrid()
     {
-        return this.parent != null;
+        return this.levelGrid != null;
     }
 
-    addToScene(parent)
+    addToLevelGrid(levelGrid)
     {
         console.log("ADD Grid[" + this.xIndex + ", " + this.zIndex + "] to scene.");
-        this.parent = parent;
+        this.levelGrid = levelGrid;
 
-        // get asset from asset pool
+        // get asset from asset pool -- this is a THREE.Group
         this.asset = gGridAssetManager.allocateGridAsset(this.assetId);
 
         // set its position to my origin
         this.asset.position.copy(this.origin);
+        this.asset.updateWorldMatrix(false, false);
 
         // add it to the scene
-        this.parent.add(this.asset);
+        this.levelGrid.add(this.asset);
+
+        // Add to the KD Tree
+        // @TODO - do I need to do "traverse" instead?
+        this.asset.children.forEach((child) => 
+        {
+            if (child.isCollider)
+            {
+                this.levelGrid.kdTree.insert(child);
+            }
+        });
+        // this.levelGrid.kdTree.insert(this.asset);
     }
 
-    unload()
+    removeFromLevelGrid()
     {
+        // Remove from the KD Tree
+        // @TODO - do I need to do "traverse" instead?
+        this.asset.children.forEach( (child) => 
+        {
+            if (child.isCollider)
+            {
+                child.kdParent.remove(child);
+            }
+        })
+        // this.asset.kdParent.remove(this.asset);
+
         // remove asset from parent (so no longer in the scene graph)
-        this.parent.remove(this.asset);
-        this.parent = null;
+        this.levelGrid.remove(this.asset);
+        this.levelGrid = null;
 
         // return the asset to the pool
         gGridAssetManager.freeGridAsset(this.assetId, this.asset);
@@ -75,10 +113,24 @@ export function UpdateLevelGrid(cameraPosition)
     }
 }
 
-class LevelGrid
+export function LevelGridRaycast(from, to, hr)
+{
+    if (gLevelGrid)
+    {
+        return gLevelGrid.kdTree.topLevelRaycast(from, to, hr);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+class LevelGrid extends THREE.Group
 {
     constructor(xGridMin, xGridMax, zGridMin, zGridMax, scene)
     {
+        super();
+
         this.xGridMin = xGridMin;
         this.xGridMax = xGridMax;
         this.zGridMin = zGridMin;
@@ -88,16 +140,42 @@ class LevelGrid
         this.zGridSquares = zGridMax - zGridMin + 1;
         this.squares = new Array(this.xGridSquares * this.zGridSquares);
         
+        let i = 0;
         for(let z = zGridMin; z <= zGridMax; z++)
         {
             for (let x = xGridMin; x <= xGridMax; x++)
             {
-                this.squares[x + z * this.xGridSquares] = new GridSquare(x,z,0);
+                this.squares[x + z * this.xGridSquares] = new GridSquare(x,z, Math.floor(Math.random() * 3.0)); //2); //Math.random() > 0.5 ? 1 : 0);
             }
         }
 
         this.scene = scene;
+        scene.add(this);
+
+        let box = new THREE.Box3(new THREE.Vector3((xGridMin - 1) * kGridSize, -50, (zGridMin-1) * kGridSize), new THREE.Vector3((xGridMax+1) * kGridSize, 50, (zGridMax+1) * kGridSize) );
+        this.kdTree = new KDTree(box,[]);
+
         this.visibleSet = [];
+
+        this.updateVisibility(new THREE.Vector3(0,0,0));
+        // this.kdTree.setObjectsVisibleAtLevel(0);
+        this.kdTreeVisLevel = -1;
+
+        document.addEventListener('keypress', (event)=>{this.onKeyPress(event)})
+    }
+
+    onKeyPress(event)
+    {
+        if (event.code == "BracketLeft")
+        {
+            this.kdTreeVisLevel = Math.max(this.kdTreeVisLevel - 1, -1);
+            this.kdTree.setObjectsVisibleAtLevel(this.kdTreeVisLevel);
+        }
+        else if (event.code == "BracketRight")
+        {
+            this.kdTreeVisLevel = Math.min(this.kdTreeVisLevel + 1, 12);
+            this.kdTree.setObjectsVisibleAtLevel(this.kdTreeVisLevel);
+        }
     }
 
     updateVisibility(position)
@@ -126,7 +204,8 @@ class LevelGrid
             if (square.xIndex < minX || square.xIndex > maxX ||
                 square.zIndex < minZ || square.zIndex > maxZ)
             {
-                square.unload();
+                square.removeFromLevelGrid();
+
                 bVisibilityChanged = true;
             }
         }
@@ -145,11 +224,11 @@ class LevelGrid
                 for (let x = minX; x <= maxX; x++)
                 {
                     let square = this.squares[x + z * this.xGridSquares];
-                    if (!square.isInScene())
+                    if (!square.isInLevelGrid())
                     {
-                        //@TODO -- do something with render order here
-                        square.addToScene(this.scene);
+                        square.addToLevelGrid(this); //(this.scene);
                     }
+
                     if (x == playerGridX && z == playerGridZ)
                     {
                         square.setRenderOrder(1);
@@ -158,6 +237,7 @@ class LevelGrid
                     {
                         square.setRenderOrder(10);
                     }
+
                     this.visibleSet[index++] = square;
                 }
             }
@@ -168,8 +248,6 @@ class LevelGrid
 }
 
 
-const kInstanceStr = "Instance";
-const kMaxInstanceCount = 50;
 
 // Returns a promise
 export function InitializeGridAssetManager()
@@ -194,8 +272,8 @@ class GridAssetManager
 
         let gridPromises = [];
         this.loadGridAsset(0, "./content/TerrainSquare2.gltf", gridPromises);
-        // loadGridAsset(1, "./content/TerrainSquare3.gltf", gridPromises);
-        // loadGridAsset(2, "./content/TerrainSquare4.gltf", gridPromises);
+        this.loadGridAsset(1, "./content/TerrainSquare3.gltf", gridPromises);
+        this.loadGridAsset(2, "./content/TerrainSquare4.gltf", gridPromises);
         // loadGridAsset(3, "./content/TerrainSquare5.gltf", gridPromises);
 
         return Promise.all(gridPromises);
@@ -209,12 +287,14 @@ class GridAssetManager
                 this.gltfLoader.load(path, (gltf) => 
                 {
                     let gridGroup = new THREE.Group();
-                    gridGroup.name = id + ": " + path;
+                    gridGroup.name = "Grid Asset" + id + ": " + path;
 
                     let instancedMeshes = {};
                     let matrix = new THREE.Matrix4();                
 
-                    for (let i = 0; i < gltf.scene.children.length; i++)
+                    let colliders = [];
+
+                    for (let i = gltf.scene.children.length - 1; i >= 0 ; i--)
                     {
                         let obj = gltf.scene.children[i];
 
@@ -234,35 +314,75 @@ class GridAssetManager
                                     obj.material,
                                     kMaxInstanceCount
                                 );
-                                instMesh = {mesh: mesh, count: 0};
+                                mesh.name = "InstancedMesh: " + instName;
+                                instMesh = {
+                                    mesh: mesh, 
+                                    count: 0, 
+                                    colliderGeometry: obj.geometry
+                                };
+                                instMesh.colliderGeometry.computeBoundsTree(gComputeBoundsOptions);
+
                                 instancedMeshes[instName] = instMesh;
+                                
                             }
                             console.assert(instMesh.count < kMaxInstanceCount);
                             
                             matrix.compose(obj.position, obj.quaternion, obj.scale);
                             instMesh.mesh.setMatrixAt(instMesh.count++, matrix);
+
+                            let colliderMesh = obj.clone();
+                            colliderMesh.geometry = instMesh.colliderGeometry;
+                            colliderMesh.material = kColliderMaterial;
+                            colliderMesh.visible = kShowColliders;
+
+
+                            colliderMesh.isCollider = true; //remember it so it can be added to the kdtree
+                            gridGroup.add(colliderMesh); //add it to the group so it's positioned properly
+                        }
+                        else if (obj.name.includes(kColliderStr))
+                        {
+                            obj.geometry.computeBoundsTree(gComputeBoundsOptions);
+                            obj.material = kColliderMaterial;
+                            obj.visible = kShowColliders;
+                            
+                            obj.isCollider = true;
+                            gridGroup.add(obj);
+
+                        }
+                        else if (obj.geometry)
+                        {
+                            // Any non-instanced props can be added to the gridGroup directly
+                            obj.geometry.computeBoundsTree(gComputeBoundsOptions);
+                            obj.isCollider = true;
+                            gridGroup.add(obj);
                         }
                         else
                         {
-                            // Any non-instanced props can be added to the gridGroup directly
-                            gridGroup.add(obj);
+                            console.log("IGNORING " + obj.name + " when loading " + path);
                         }
                     }
-                    // go over all instance meshes, add them to the scene, and mark them for update
-                    console.log("Instanced meshes for: " + path);
-                    for (let key in instancedMeshes)
+                    
+                    if (true)
                     {
-                        let item = instancedMeshes[key];
-                        console.log("\t" + key + ": " + item.count);
+                        // go over all instance meshes, add them to the scene, and mark them for update
+                        console.log("Instanced meshes for: " + path);
+                        for (let key in instancedMeshes)
+                        {
+                            let item = instancedMeshes[key];
+                            console.log("\t" + key + ": " + item.count);
 
-                        gridGroup.add(item.mesh);
-                        item.mesh.instanceMatrix.needsUpdate = true;
-                        item.mesh.count = item.count;
+                            item.mesh.isCollider = false;
+
+                            gridGroup.add(item.mesh);
+                            item.mesh.instanceMatrix.needsUpdate = true;
+                            item.mesh.count = item.count;
+                        }
                     }
 
                     this.gridAssets[id] = {
                         prototype: gridGroup,
-                        pool: []  //@TODO -- can we allocate the array to some reasonable size but keep length at zero?
+                        pool: [],  //@TODO -- can we allocate the array to some reasonable size but keep length at zero?
+                        instanceCount: 0
                     };
                     resolve();
                 })
@@ -283,7 +403,15 @@ class GridAssetManager
             }
             else
             {
-                result = ga.prototype.clone();
+                ga.instanceCount++;
+                result = ga.prototype.clone(false);
+                for (let i = 0; i < ga.prototype.children.length; i++)
+                {
+                    let clone = ga.prototype.children[i].clone();
+                    clone.isCollider = ga.prototype.children[i].isCollider;
+                    result.add(clone);
+                }
+                result.name = "Grid Asset"+ id + "(" + ga.instanceCount + ")";
             }
 
             return result;

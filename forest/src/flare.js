@@ -5,12 +5,14 @@ export class Flare
     constructor(position, scene, camera, renderer)
     {
 
+        let cameraGroup = camera.parent.parent;
+
         var texture = new THREE.TextureLoader().load('./content/sunflare.png');
         let geo = new THREE.PlaneGeometry(5.0, 5.0, 1, 1);
         let mat = new THREE.MeshBasicMaterial( 
             {
                 color: 0xffffff,
-                side: THREE.DoubleSide,
+                side: THREE.FrontSide,
                 opacity: 0.0,
                 transparent: true,
                 map: texture,
@@ -19,7 +21,7 @@ export class Flare
         );
         this.mesh = new THREE.Mesh(geo, mat);
         this.mesh.position.set(position.x, position.y, position.z);
-        scene.add(this.mesh);
+        cameraGroup.attach(this.mesh);
         //zone.addSceneObject(this.mesh);
 
 
@@ -31,21 +33,24 @@ export class Flare
 
         this.targetPos = new THREE.Vector3(0,0,0);
 
-        let sunGeo = new THREE.CircleGeometry(5.0, 32);
+        let sunGeo = new THREE.CircleGeometry(8.0, 32);
         let sunMat = new THREE.MeshBasicMaterial(
             {
                 color: 0xffffff,
-                side: THREE.DoubleSide,
+                side: THREE.FrontSide,
                 opacity: 1.0,
                 fog: false
             }
         );
+        sunMat.color.convertSRGBToLinear();
         this.sunMesh = new THREE.Mesh(sunGeo, sunMat);
         this.sunMesh.position.set(position.x*1.01, position.y*1.01, position.z*1.01);
-        scene.add(this.sunMesh);
+        cameraGroup.attach(this.sunMesh);
     
         
         this.posAccum = 0.0;
+
+        this.stars = new Stars(cameraGroup);
 
     }
 
@@ -76,7 +81,7 @@ export class Flare
             if (dot > kMin)
             {
                 let t = Math.min((dot - kMin) / (kMax - kMin), 1.0);
-                this.mesh.material.opacity = t * 0.2;
+                this.mesh.material.opacity = t * 0.4;
                 let size = kSmall + (kBig - kSmall) * t;
                 this.mesh.scale.set(size, size, size);
             }
@@ -93,4 +98,31 @@ export class Flare
         }
 
     }
+}
+
+export class Stars
+{
+    constructor(scene)
+    {
+        let geometry = new THREE.BufferGeometry();
+        let vertices = [];
+        let vertex = new THREE.Vector3();
+
+        for (let i = 0; i < 1000; i++)
+        {
+            let x = Math.random() * 2.0 - 1.0;
+            let y = Math.random();
+            let z = Math.random() * 2.0 - 1.0;
+            vertex.set(x,y,z);
+            vertex.normalize();
+            vertex.multiplyScalar(110.0);
+            vertices.push(vertex.x, vertex.y, vertex.z);
+        }
+        geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+        let material = new THREE.PointsMaterial({size: 0.5, color: 0xffffff, sizeAttenuation: false, transparent:false, fog: false});
+        material.color.convertSRGBToLinear();
+        this.stars = new THREE.Points(geometry, material);
+
+        scene.add(this.stars);
+    }   
 }

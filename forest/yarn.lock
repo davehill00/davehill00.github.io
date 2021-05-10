@@ -2763,6 +2763,11 @@ terser@^5.5.1:
     source-map "~0.7.2"
     source-map-support "~0.5.19"
 
+three-mesh-bvh@^0.3.7:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.3.7.tgz#39a05d2d53f66b5df486d08622801a1850734934"
+  integrity sha512-veRJRj0mY2rBj9yRZVg/E98wd6e7AzqzTq/+6ispY6m50gYuGitUNih2dRQzbkMcwRECLURvuudb9BFW3/swAw==
+
 three@^0.128.0:
   version "0.128.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.128.0.tgz#884dacca6a330e45600a09ec5439283f50b76aa6"
