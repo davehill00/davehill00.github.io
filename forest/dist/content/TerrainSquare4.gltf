@@ -128,7 +128,6 @@
     ],
     "materials" : [
         {
-            "doubleSided" : true,
             "name" : "Ground",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [

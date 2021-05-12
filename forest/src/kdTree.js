@@ -145,11 +145,6 @@ export class KDTree
 
     insert(object)
     {
-        if (object == null || object.geometry == null)
-        {
-            console.log("WUT?!");
-        }
-        
         this.objectCountInclusive++;
 
         _box0.setFromObject(object);
@@ -186,28 +181,6 @@ export class KDTree
                 }
             }
         }
-        /*
-        object.getWorldPosition(_vector0);
-        let dist = this.plane.distanceToPoint(_vector0); //object.position);
-        let radius = object.geometry.boundingSphere.radius;
-        radius *= Math.max(object.scale.x, Math.max(object.scale.y, object.scale.z));
-
-
-        if (this.childFront && dist > radius)
-        {
-            this.childFront.insert(object);
-        }
-        else if (this.childBack && dist < -radius)
-        {
-            this.childBack.insert(object);
-        }
-        else
-        {
-            this.objects.push(object);
-            object.kdParent = this;
-        }
-        */
-
     }
 
     remove(object)

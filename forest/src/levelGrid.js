@@ -22,6 +22,53 @@ const gComputeBoundsOptions = {
     // packData: false
 }
 
+export function UpdateLevelGrid(cameraPosition)
+{
+    if (gLevelGrid)
+    {
+        gLevelGrid.updateVisibility(cameraPosition);
+    }
+}
+
+// export function LevelGridRaycast(from, to, hr)
+// {
+//     if (gLevelGrid)
+//     {
+//         return gLevelGrid.kdTree.topLevelRaycast(from, to, hr);
+//     }
+//     else
+//     {
+//         return false;
+//     }
+// }
+
+export function InitializeLevelGrid( scene )
+{
+    return new Promise( (resolve) => {
+        const kSize = 10;
+        gLevelGrid = new LevelGrid(-kSize, kSize, -kSize, kSize, scene);
+        resolve();
+    });
+}
+
+// Returns a promise
+export function InitializeGridAssetManager()
+{
+    gGridAssetManager = new GridAssetManager();
+    return gGridAssetManager.loadAssets();
+}
+
+// Return true if there's a collision. Hit result will contain a t-value.
+export function LevelGridRaycast(from, to, hr)
+{
+    hr.t = 1.0;
+    if (gLevelGrid)
+    {
+        return gLevelGrid.kdTree.topLevelRaycast(from, to, hr);
+    }
+    return false;
+}
+
 class GridSquare
 {
     constructor(xIndex, zIndex, assetId)
@@ -96,34 +143,7 @@ class GridSquare
     }
 }
 
-export function InitializeLevelGrid( scene )
-{
-    return new Promise( (resolve) => {
-        const kSize = 10;
-        gLevelGrid = new LevelGrid(-kSize, kSize, -kSize, kSize, scene);
-        resolve();
-    });
-}
 
-export function UpdateLevelGrid(cameraPosition)
-{
-    if (gLevelGrid)
-    {
-        gLevelGrid.updateVisibility(cameraPosition);
-    }
-}
-
-export function LevelGridRaycast(from, to, hr)
-{
-    if (gLevelGrid)
-    {
-        return gLevelGrid.kdTree.topLevelRaycast(from, to, hr);
-    }
-    else
-    {
-        return false;
-    }
-}
 
 class LevelGrid extends THREE.Group
 {
@@ -245,15 +265,6 @@ class LevelGrid extends THREE.Group
             console.log("VISIBLE SET SIZE: " + index);
         }
     }
-}
-
-
-
-// Returns a promise
-export function InitializeGridAssetManager()
-{
-    gGridAssetManager = new GridAssetManager();
-    return gGridAssetManager.loadAssets();
 }
 
 class GridAssetManager

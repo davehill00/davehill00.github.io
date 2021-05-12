@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
-import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { InitializeGridAssetManager, InitializeLevelGrid, UpdateLevelGrid, LevelGridRaycast } from './levelGrid';
 import {Flare} from './flare.js';
 import { GrassSystem } from './grass';
@@ -10,6 +9,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 // MESH BVH SETUP
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast, CENTER, AVERAGE, SAH } from 'three-mesh-bvh';
+import { InitializeInputManager } from './inputManager';
+import { PlayerController } from './playerController';
 // BVH: Add the extension functions
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
@@ -26,6 +27,7 @@ let grass;
 let kdTree;
 let hr = {};
 
+let playerController;
 
 let gSimpleKDTree = false;
 
@@ -57,13 +59,13 @@ function initialize()
     
     
 
-    cameraTranslationGroup = new THREE.Group();
-    cameraRotationGroup = new THREE.Group();
+    // cameraTranslationGroup = new THREE.Group();
+    // cameraRotationGroup = new THREE.Group();
 
-    cameraTranslationGroup.add(cameraRotationGroup);
-    cameraRotationGroup.add(camera);
-    // add camera to scene so that objects attached to the camera get rendered
-    scene.add(cameraTranslationGroup);
+    // cameraTranslationGroup.add(cameraRotationGroup);
+    // cameraRotationGroup.add(camera);
+    // // add camera to scene so that objects attached to the camera get rendered
+    // scene.add(cameraTranslationGroup);
 
     //stencil:false doesn't appear to do anything by itself... if both stencil and depth are false, you get neither depth nor stencil
     renderer = new THREE.WebGLRenderer( {antialias: true}); //, stencil:false, depth:false}); 
@@ -101,7 +103,7 @@ function initialize()
     let moonDirectionVector = moonLight.position.clone();
     moonDirectionVector.normalize();
     moonDirectionVector.multiplyScalar(100.0);
-    moon = new Flare(moonDirectionVector, scene, camera, renderer);
+    // moon = new Flare(moonDirectionVector, scene, camera, renderer);
 
 
     // grass = new GrassSystem(scene, renderer);
@@ -158,6 +160,11 @@ function initialize()
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(VRButton.createButton(renderer));
 
+    InitializeInputManager(renderer.xr);
+    playerController = new PlayerController(scene, camera);
+
+
+    /*
     const controllerModelFactory = new XRControllerModelFactory();
     let con = renderer.xr.getControllerGrip(0);
     con.addEventListener("connected", onControllerConnected);
@@ -180,27 +187,33 @@ function initialize()
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
+    */
 
     renderer.setAnimationLoop(render);
 
+    /*
     document.addEventListener('keydown', (event) => {onKeyDown(event)});
     document.addEventListener('keyup', (event) => {onKeyUp(event)});
+    */
 }
 
 let frameNumber = 0;
 function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
 
-    frameNumber++;
-    if ((frameNumber % 3) == 0)
-    {
-        torch.intensity += getRandomFloatInRange(-0.15, 0.15);
-    }
+    // frameNumber++;
+    // if ((frameNumber % 3) == 0)
+    // {
+    //     torch.intensity += getRandomFloatInRange(-0.15, 0.15);
+    // }
 
-    updateInput(dt);
-    UpdateLevelGrid(cameraTranslationGroup.position);
+    //updateInput(dt);
+    playerController.update(dt);
 
-    moon.update(dt);
+    playerController.getPosition(tVec0);
+    UpdateLevelGrid(tVec0);
+
+    // moon.update(dt);
     // grass.update(dt, cameraTranslationGroup.position);
 
     renderer.render(scene, camera);

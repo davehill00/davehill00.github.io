@@ -65729,6 +65729,175 @@ class GrassSystem
 
 /***/ }),
 
+/***/ "./src/inputManager.js":
+/*!*****************************!*\
+  !*** ./src/inputManager.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "gInputManager": () => (/* binding */ gInputManager),
+/* harmony export */   "InitializeInputManager": () => (/* binding */ InitializeInputManager),
+/* harmony export */   "InputManager": () => (/* binding */ InputManager)
+/* harmony export */ });
+/* harmony import */ var three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/webxr/XRControllerModelFactory.js */ "./node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js");
+
+
+
+
+var gInputManager = null;
+function InitializeInputManager(xr)
+{
+    gInputManager = new InputManager(xr);
+}
+
+class InputManager
+{
+    constructor(xr)
+    {
+        console.assert(gInputManager == null);
+
+        this.xr = xr;
+
+        this.controllerModelFactory = new three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_0__.XRControllerModelFactory();
+        this.controllers = [];
+        this.controllers[0] = this.initController(0);
+        this.controllers[1] = this.initController(1);
+
+        this.keyboardEmulationInput = 
+        {
+            forward: 0.0,
+            sideways: 0.0,
+            turn: 0.0
+        };
+
+        document.addEventListener('keydown', (event) => { this.onKeyDown(event); });
+        document.addEventListener('keyup', (event) => {this.onKeyUp(event); });
+
+    }
+
+    initController(which)
+    {
+        let con = this.xr.getControllerGrip(which);
+        con.add(this.controllerModelFactory.createControllerModel(con));
+        con.addEventListener("connected", (event) => {this.onControllerConnected(event, which)});
+        con.addEventListener("disconnected", (event) => {this.onControllerDisconnected(event, which)});
+
+        return con;
+    }
+
+    onControllerConnected(evt, whichController) 
+    {
+        if (evt.data && evt.data.handedness) {
+
+            // Ensure right and left controllers are mapped consistently -- Right == 0, Left == 1
+            if ((evt.data.handedness == "right") != (whichController == 0))
+            {
+                // Swap order of controllers array
+                let tmp = this.controllers[0];
+                this.controllers[0] = this.controllers[1];
+                this.controllers[0] = tmp;
+            }
+            this.controllers[whichController].xrController = evt.data;
+            this.controllers[whichController].xrConnected = true;
+        }
+    }
+
+    onControllerDisconnected(evt, whichController) 
+    {
+        this.controllers[whichController].xrController = null;
+        this.controllers[whichController].xrConnected = false;
+    }
+
+    readButton(whichHand, whichButton)
+    {
+        if (this.controllers[whichHand].xrConnected)
+        {
+            return this.controllers[whichHand].xrController.gamepad.buttons[whichButton];
+        }
+        return 0;
+    }
+
+    readAxis(whichHand, whichAxis)
+    {
+        if (this.controllers[whichHand].xrConnected)
+        {
+            return this.controllers[whichHand].xrController.gamepad.axes[whichAxis];
+        }
+        return 0;
+    }
+
+    hasXrInput()
+    {
+        return this.controllers[0].xrConnected && this.controllers[1].xrConnected;
+    }
+
+    getKeyboardEmulationInput()
+    {
+        return this.keyboardEmulationInput;
+    }
+
+    onKeyDown(event)
+    {
+        if (event.code == 'KeyW')
+        {
+            this.keyboardEmulationInput.forward = -1.0;
+        }
+        else if (event.code == 'KeyS')
+        {
+            this.keyboardEmulationInput.forward = 1.0;
+        }
+        else if (event.code == 'KeyQ')
+        {
+            this.keyboardEmulationInput.sideways = 1.0;
+        }
+        else if (event.code == 'KeyE')
+        {
+            this.keyboardEmulationInput.sideways = -1.0;
+        }
+        else if (event.code == 'KeyA')
+        {
+            this.keyboardEmulationInput.turn = -1.0;
+        }
+        else if (event.code == 'KeyD')
+        {
+            this.keyboardEmulationInput.turn = 1.0;
+        }
+    }
+
+    onKeyUp(event)
+    {
+        if (event.code == 'KeyW')
+        {
+            this.keyboardEmulationInput.forward = 0.0;
+        }
+        else if (event.code == 'KeyS')
+        {
+            this.keyboardEmulationInput.forward = 0.0;
+        }
+        else if (event.code == 'KeyQ')
+        {
+            this.keyboardEmulationInput.sideways = 0.0;
+        }
+        else if (event.code == 'KeyE')
+        {
+            this.keyboardEmulationInput.sideways = 0.0;
+        }
+        else if (event.code == 'KeyA')
+        {
+            this.keyboardEmulationInput.turn = 0.0;
+        }
+        else if (event.code == 'KeyD')
+        {
+            this.keyboardEmulationInput.turn = 0.0;
+        }
+    }
+
+}
+
+/***/ }),
+
 /***/ "./src/kdTree.js":
 /*!***********************!*\
   !*** ./src/kdTree.js ***!
@@ -65888,11 +66057,6 @@ class KDTree
 
     insert(object)
     {
-        if (object == null || object.geometry == null)
-        {
-            console.log("WUT?!");
-        }
-        
         this.objectCountInclusive++;
 
         _box0.setFromObject(object);
@@ -65929,28 +66093,6 @@ class KDTree
                 }
             }
         }
-        /*
-        object.getWorldPosition(_vector0);
-        let dist = this.plane.distanceToPoint(_vector0); //object.position);
-        let radius = object.geometry.boundingSphere.radius;
-        radius *= Math.max(object.scale.x, Math.max(object.scale.y, object.scale.z));
-
-
-        if (this.childFront && dist > radius)
-        {
-            this.childFront.insert(object);
-        }
-        else if (this.childBack && dist < -radius)
-        {
-            this.childBack.insert(object);
-        }
-        else
-        {
-            this.objects.push(object);
-            object.kdParent = this;
-        }
-        */
-
     }
 
     remove(object)
@@ -66136,10 +66278,10 @@ class KDTree
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "InitializeLevelGrid": () => (/* binding */ InitializeLevelGrid),
 /* harmony export */   "UpdateLevelGrid": () => (/* binding */ UpdateLevelGrid),
-/* harmony export */   "LevelGridRaycast": () => (/* binding */ LevelGridRaycast),
-/* harmony export */   "InitializeGridAssetManager": () => (/* binding */ InitializeGridAssetManager)
+/* harmony export */   "InitializeLevelGrid": () => (/* binding */ InitializeLevelGrid),
+/* harmony export */   "InitializeGridAssetManager": () => (/* binding */ InitializeGridAssetManager),
+/* harmony export */   "LevelGridRaycast": () => (/* binding */ LevelGridRaycast)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var three_mesh_bvh__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three-mesh-bvh */ "./node_modules/three-mesh-bvh/src/index.js");
@@ -66167,6 +66309,53 @@ const gComputeBoundsOptions = {
     lazyGeneration: false,
     strategy: three_mesh_bvh__WEBPACK_IMPORTED_MODULE_0__.SAH,
     // packData: false
+}
+
+function UpdateLevelGrid(cameraPosition)
+{
+    if (gLevelGrid)
+    {
+        gLevelGrid.updateVisibility(cameraPosition);
+    }
+}
+
+// export function LevelGridRaycast(from, to, hr)
+// {
+//     if (gLevelGrid)
+//     {
+//         return gLevelGrid.kdTree.topLevelRaycast(from, to, hr);
+//     }
+//     else
+//     {
+//         return false;
+//     }
+// }
+
+function InitializeLevelGrid( scene )
+{
+    return new Promise( (resolve) => {
+        const kSize = 10;
+        gLevelGrid = new LevelGrid(-kSize, kSize, -kSize, kSize, scene);
+        resolve();
+    });
+}
+
+// Returns a promise
+function InitializeGridAssetManager()
+{
+    gGridAssetManager = new GridAssetManager();
+    return gGridAssetManager.loadAssets();
+}
+
+// Return true if there's a collision. Hit result will contain a t-value.
+function LevelGridRaycast(from, to, hr)
+{
+    hr.t = 1.0;
+    if (gLevelGrid)
+    {
+        return gLevelGrid.kdTree.topLevelRaycast(from, to, hr);
+    }
+    return false;
 }
 
 class GridSquare
@@ -66243,34 +66432,7 @@ class GridSquare
     }
 }
 
-function InitializeLevelGrid( scene )
-{
-    return new Promise( (resolve) => {
-        const kSize = 10;
-        gLevelGrid = new LevelGrid(-kSize, kSize, -kSize, kSize, scene);
-        resolve();
-    });
-}
 
-function UpdateLevelGrid(cameraPosition)
-{
-    if (gLevelGrid)
-    {
-        gLevelGrid.updateVisibility(cameraPosition);
-    }
-}
-
-function LevelGridRaycast(from, to, hr)
-{
-    if (gLevelGrid)
-    {
-        return gLevelGrid.kdTree.topLevelRaycast(from, to, hr);
-    }
-    else
-    {
-        return false;
-    }
-}
 
 class LevelGrid extends three__WEBPACK_IMPORTED_MODULE_2__.Group
 {
@@ -66392,15 +66554,6 @@ class LevelGrid extends three__WEBPACK_IMPORTED_MODULE_2__.Group
             console.log("VISIBLE SET SIZE: " + index);
         }
     }
-}
-
-
-
-// Returns a promise
-function InitializeGridAssetManager()
-{
-    gGridAssetManager = new GridAssetManager();
-    return gGridAssetManager.loadAssets();
 }
 
 class GridAssetManager
@@ -66574,6 +66727,170 @@ class GridAssetManager
     }
 }
 
+/***/ }),
+
+/***/ "./src/playerController.js":
+/*!*********************************!*\
+  !*** ./src/playerController.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "PlayerController": () => (/* binding */ PlayerController)
+/* harmony export */ });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _levelGrid_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./levelGrid.js */ "./src/levelGrid.js");
+/* harmony import */ var _inputManager_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./inputManager.js */ "./src/inputManager.js");
+
+
+
+
+let _forwardVector = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
+let _sidewaysVector = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
+let _translation = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
+let hr = {t: 1.0};
+
+let _vector0 = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
+let _vector1 = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
+
+class PlayerController
+{
+    constructor(scene, camera)
+    {
+        this.scene = scene;
+        this.camera = camera;
+
+        this.velocity = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
+
+        this.translationGroup = new three__WEBPACK_IMPORTED_MODULE_2__.Group();
+        this.translationGroup.position.copy(camera.position);
+        this.translationGroup.position.y = 0.5;
+        this.translationGroup.add(camera);
+        this.bIsFalling = false;
+
+        camera.position.y = 1.5;
+        scene.add(this.translationGroup);
+    }
+
+    update(dt)
+    {
+        //LevelGridRaycast(from, to, hr);
+
+        let sideways, forward, turn;
+        if (_inputManager_js__WEBPACK_IMPORTED_MODULE_1__.gInputManager.hasXrInput())
+        {
+            sideways = -_inputManager_js__WEBPACK_IMPORTED_MODULE_1__.gInputManager.readAxis(1, 2);
+            forward = _inputManager_js__WEBPACK_IMPORTED_MODULE_1__.gInputManager.readAxis(1, 3);
+            turn = _inputManager_js__WEBPACK_IMPORTED_MODULE_1__.gInputManager.readAxis(0, 2);
+        }
+        else
+        {
+            let keyboardEmu = _inputManager_js__WEBPACK_IMPORTED_MODULE_1__.gInputManager.getKeyboardEmulationInput();
+            sideways = keyboardEmu.sideways;
+            forward = keyboardEmu.forward;
+            turn = keyboardEmu.turn;
+        }
+
+        let sign = Math.sign(turn);
+        let turnAmount = Math.min(Math.abs(turn) * 4.0, 1.0) * sign; // make turn all-or-nothing, so you don't have much angular acceleration
+        this.translationGroup.rotateOnWorldAxis(three__WEBPACK_IMPORTED_MODULE_2__.Object3D.DefaultUp, turnAmount * dt * -1.57);
+
+        this.translationGroup.getWorldDirection(_forwardVector);
+        _forwardVector.y = 0.0;
+        _forwardVector.normalize();
+
+        _sidewaysVector.crossVectors(_forwardVector, three__WEBPACK_IMPORTED_MODULE_2__.Object3D.DefaultUp);
+        _sidewaysVector.normalize();
+
+
+        
+        const kStepUp = 0.3;
+        // Move up
+        _translation.copy(this.translationGroup.position);
+        _translation.y += kStepUp;
+        if ((0,_levelGrid_js__WEBPACK_IMPORTED_MODULE_0__.LevelGridRaycast)(this.translationGroup.position, _translation, hr))
+        {
+            this.translationGroup.position.lerpVectors(
+                this.translationGroup.position,
+                _translation,
+                hr.t
+            );
+        }
+        else
+        {
+            this.translationGroup.position.copy(_translation);
+        }
+
+
+        // Move forward
+        let movementScale = 8.0 * dt;
+        _translation.set(0,0,0);
+        if (this.bIsFalling)
+        {
+            _vector0.copy(this.velocity);
+            _vector0.y = 0.0;
+            _translation.addScaledVector(_vector0, dt);
+        }
+        else
+        {
+            _translation.addScaledVector(_forwardVector, forward * movementScale);
+            _translation.addScaledVector(_sidewaysVector, sideways * movementScale);    
+        }
+
+        _translation.add(this.translationGroup.position);
+
+        if ((0,_levelGrid_js__WEBPACK_IMPORTED_MODULE_0__.LevelGridRaycast)(this.translationGroup.position, _translation, hr))
+        {
+            this.translationGroup.position.lerpVectors(
+                this.translationGroup.position,
+                _translation,
+                hr.t
+            );
+        }
+        else
+        {
+            this.translationGroup.position.copy(_translation);
+        }
+
+        // Move down
+        _translation.copy(this.translationGroup.position);
+        _translation.y += -kStepUp + this.velocity.y * dt; //step down plus falling velocity (if any)
+        if ((0,_levelGrid_js__WEBPACK_IMPORTED_MODULE_0__.LevelGridRaycast)( this.translationGroup.position, _translation, hr))
+        {
+            // hit
+            this.translationGroup.position.y = this.translationGroup.position.y + (_translation.y - this.translationGroup.position.y) * hr.t;
+
+            this.bIsFalling = false;
+            this.velocity.set(0,0,0); //standing on something, so not falling or maintaining any velocity
+        }
+        else
+        {
+            //falling
+            this.translationGroup.position.y = _translation.y; // _vector0.y;
+            
+            if (!this.bIsFalling)
+            {
+                this.bIsFalling = true;
+
+                // start falling -- retain the XZ velocity from this frame
+                this.velocity.addScaledVector(_forwardVector, forward * 8.0);
+                this.velocity.addScaledVector(_sidewaysVector, sideways * 8.0);
+            }
+
+            // increase falling velocity every frame -- @TODO - add a terminal velocity?
+            this.velocity.y += -8.0 * dt;
+        }
+
+    }
+
+    getPosition(result)
+    {
+        result.copy(this.translationGroup.position);
+    }
+
+}
+
 /***/ })
 
 /******/ 	});
@@ -66639,17 +66956,17 @@ var __webpack_exports__ = {};
   !*** ./src/forest.js ***!
   \***********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three/examples/jsm/webxr/VRButton.js */ "./node_modules/three/examples/jsm/webxr/VRButton.js");
-/* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
-/* harmony import */ var three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! three/examples/jsm/webxr/XRControllerModelFactory.js */ "./node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! three/examples/jsm/webxr/VRButton.js */ "./node_modules/three/examples/jsm/webxr/VRButton.js");
+/* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
 /* harmony import */ var _levelGrid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./levelGrid */ "./src/levelGrid.js");
 /* harmony import */ var _flare_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./flare.js */ "./src/flare.js");
 /* harmony import */ var _grass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./grass */ "./src/grass.js");
 /* harmony import */ var _kdTree__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./kdTree */ "./src/kdTree.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
 /* harmony import */ var three_mesh_bvh__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three-mesh-bvh */ "./node_modules/three-mesh-bvh/src/index.js");
-
+/* harmony import */ var _inputManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./inputManager */ "./src/inputManager.js");
+/* harmony import */ var _playerController__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./playerController */ "./src/playerController.js");
 
 
 
@@ -66661,10 +66978,12 @@ __webpack_require__.r(__webpack_exports__);
 
 // MESH BVH SETUP
 
+
+
 // BVH: Add the extension functions
-three__WEBPACK_IMPORTED_MODULE_5__.BufferGeometry.prototype.computeBoundsTree = three_mesh_bvh__WEBPACK_IMPORTED_MODULE_4__.computeBoundsTree;
-three__WEBPACK_IMPORTED_MODULE_5__.BufferGeometry.prototype.disposeBoundsTree = three_mesh_bvh__WEBPACK_IMPORTED_MODULE_4__.disposeBoundsTree;
-three__WEBPACK_IMPORTED_MODULE_5__.Mesh.prototype.raycast = three_mesh_bvh__WEBPACK_IMPORTED_MODULE_4__.acceleratedRaycast;
+three__WEBPACK_IMPORTED_MODULE_7__.BufferGeometry.prototype.computeBoundsTree = three_mesh_bvh__WEBPACK_IMPORTED_MODULE_4__.computeBoundsTree;
+three__WEBPACK_IMPORTED_MODULE_7__.BufferGeometry.prototype.disposeBoundsTree = three_mesh_bvh__WEBPACK_IMPORTED_MODULE_4__.disposeBoundsTree;
+three__WEBPACK_IMPORTED_MODULE_7__.Mesh.prototype.raycast = three_mesh_bvh__WEBPACK_IMPORTED_MODULE_4__.acceleratedRaycast;
 
 let scene;
 let camera;
@@ -66677,6 +66996,7 @@ let grass;
 let kdTree;
 let hr = {};
 
+let playerController;
 
 let gSimpleKDTree = false;
 
@@ -66688,9 +67008,9 @@ let leftController = null;
 let pmremGenerator;
 let torch;
 
-let tVec0 = new three__WEBPACK_IMPORTED_MODULE_5__.Vector3();
-let tVec1 = new three__WEBPACK_IMPORTED_MODULE_5__.Vector3();
-let tVec2 = new three__WEBPACK_IMPORTED_MODULE_5__.Vector3();
+let tVec0 = new three__WEBPACK_IMPORTED_MODULE_7__.Vector3();
+let tVec1 = new three__WEBPACK_IMPORTED_MODULE_7__.Vector3();
+let tVec2 = new three__WEBPACK_IMPORTED_MODULE_7__.Vector3();
 
 let input = {
     move: 0.0,
@@ -66701,58 +67021,58 @@ initialize();
 
 function initialize()
 {
-    scene = new three__WEBPACK_IMPORTED_MODULE_5__.Scene();
-    camera = new three__WEBPACK_IMPORTED_MODULE_5__.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.05, 500);
+    scene = new three__WEBPACK_IMPORTED_MODULE_7__.Scene();
+    camera = new three__WEBPACK_IMPORTED_MODULE_7__.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.05, 500);
     camera.position.z = 0.0;
     camera.position.y = 2.0;
     
     
 
-    cameraTranslationGroup = new three__WEBPACK_IMPORTED_MODULE_5__.Group();
-    cameraRotationGroup = new three__WEBPACK_IMPORTED_MODULE_5__.Group();
+    // cameraTranslationGroup = new THREE.Group();
+    // cameraRotationGroup = new THREE.Group();
 
-    cameraTranslationGroup.add(cameraRotationGroup);
-    cameraRotationGroup.add(camera);
-    // add camera to scene so that objects attached to the camera get rendered
-    scene.add(cameraTranslationGroup);
+    // cameraTranslationGroup.add(cameraRotationGroup);
+    // cameraRotationGroup.add(camera);
+    // // add camera to scene so that objects attached to the camera get rendered
+    // scene.add(cameraTranslationGroup);
 
     //stencil:false doesn't appear to do anything by itself... if both stencil and depth are false, you get neither depth nor stencil
-    renderer = new three__WEBPACK_IMPORTED_MODULE_5__.WebGLRenderer( {antialias: true}); //, stencil:false, depth:false}); 
+    renderer = new three__WEBPACK_IMPORTED_MODULE_7__.WebGLRenderer( {antialias: true}); //, stencil:false, depth:false}); 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
     // renderer.xr.setFramebufferScaleFactor(1.0);
 
     renderer.physicallyCorrectLights = true;
-    renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_5__.sRGBEncoding;
-    renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_5__.ACESFilmicToneMapping;
+    renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_7__.sRGBEncoding;
+    renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_7__.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0; //0.285;
 
-    let clearColor = new three__WEBPACK_IMPORTED_MODULE_5__.Color(0x202045); // new THREE.Color(0.97, 0.98, 1.0);
+    let clearColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x202045); // new THREE.Color(0.97, 0.98, 1.0);
     clearColor.convertSRGBToLinear();
     renderer.setClearColor(clearColor);
 
     
-    clock = new three__WEBPACK_IMPORTED_MODULE_5__.Clock();
+    clock = new three__WEBPACK_IMPORTED_MODULE_7__.Clock();
 
-    let sunColor = new three__WEBPACK_IMPORTED_MODULE_5__.Color(0.87, 0.88, 1.0);
+    let sunColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0.87, 0.88, 1.0);
     sunColor.convertSRGBToLinear();
-    let moonLight = new three__WEBPACK_IMPORTED_MODULE_5__.DirectionalLight(sunColor, 2.3); //1.185); //1.25); //2.0);
+    let moonLight = new three__WEBPACK_IMPORTED_MODULE_7__.DirectionalLight(sunColor, 2.3); //1.185); //1.25); //2.0);
     moonLight.position.set(0.0, 1.0, 1.0);
     scene.add(moonLight);
 
-    let ambientColor = new three__WEBPACK_IMPORTED_MODULE_5__.Color(0.31, 0.31, 0.7); //(0.05, 0.05, 0.3); //1.0, 0.88, 0.87);
+    let ambientColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0.31, 0.31, 0.7); //(0.05, 0.05, 0.3); //1.0, 0.88, 0.87);
     ambientColor.convertSRGBToLinear();
-    let ambient = new three__WEBPACK_IMPORTED_MODULE_5__.AmbientLight(ambientColor, 0.6315); //0.25); //1.85);
+    let ambient = new three__WEBPACK_IMPORTED_MODULE_7__.AmbientLight(ambientColor, 0.6315); //0.25); //1.85);
     scene.add(ambient);
 
-    let fog = new three__WEBPACK_IMPORTED_MODULE_5__.FogExp2(clearColor.getHex(), 0.023);
+    let fog = new three__WEBPACK_IMPORTED_MODULE_7__.FogExp2(clearColor.getHex(), 0.023);
     // let fog = new THREE.Fog(clearColor.getHex(), 10, 30);
     scene.fog = fog;
 
     let moonDirectionVector = moonLight.position.clone();
     moonDirectionVector.normalize();
     moonDirectionVector.multiplyScalar(100.0);
-    moon = new _flare_js__WEBPACK_IMPORTED_MODULE_1__.Flare(moonDirectionVector, scene, camera, renderer);
+    // moon = new Flare(moonDirectionVector, scene, camera, renderer);
 
 
     // grass = new GrassSystem(scene, renderer);
@@ -66774,7 +67094,7 @@ function initialize()
     }
     else
     {
-        let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_6__.GLTFLoader();
+        let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_8__.GLTFLoader();
         loader.load("./content/test_level.gltf", (gltf) => 
             {
                 let objects = [];
@@ -66793,7 +67113,7 @@ function initialize()
                         }
                     });
 
-                let box = new three__WEBPACK_IMPORTED_MODULE_5__.Box3(new three__WEBPACK_IMPORTED_MODULE_5__.Vector3(-300, -50, -300), new three__WEBPACK_IMPORTED_MODULE_5__.Vector3(300, 50, 300) );
+                let box = new three__WEBPACK_IMPORTED_MODULE_7__.Box3(new three__WEBPACK_IMPORTED_MODULE_7__.Vector3(-300, -50, -300), new three__WEBPACK_IMPORTED_MODULE_7__.Vector3(300, 50, 300) );
                 kdTree = new _kdTree__WEBPACK_IMPORTED_MODULE_3__.KDTree(box, []); // objects);
                 objects.forEach((object) => {
                     kdTree.insert(object);
@@ -66807,14 +67127,19 @@ function initialize()
 
 
     document.body.appendChild(renderer.domElement);
-    document.body.appendChild(three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_7__.VRButton.createButton(renderer));
+    document.body.appendChild(three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_9__.VRButton.createButton(renderer));
 
-    const controllerModelFactory = new three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_8__.XRControllerModelFactory();
+    (0,_inputManager__WEBPACK_IMPORTED_MODULE_5__.InitializeInputManager)(renderer.xr);
+    playerController = new _playerController__WEBPACK_IMPORTED_MODULE_6__.PlayerController(scene, camera);
+
+
+    /*
+    const controllerModelFactory = new XRControllerModelFactory();
     let con = renderer.xr.getControllerGrip(0);
     con.addEventListener("connected", onControllerConnected);
     con.addEventListener("disconnected", onControllerDisconnected);
     con.add(controllerModelFactory.createControllerModel(con));
-    torch = new three__WEBPACK_IMPORTED_MODULE_5__.PointLight(0xee8020, 25.0, 10.0);
+    torch = new THREE.PointLight(0xee8020, 25.0, 10.0);
     torch.visible = false;
 
     cameraTranslationGroup.add(con);
@@ -66831,27 +67156,33 @@ function initialize()
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
+    */
 
     renderer.setAnimationLoop(render);
 
+    /*
     document.addEventListener('keydown', (event) => {onKeyDown(event)});
     document.addEventListener('keyup', (event) => {onKeyUp(event)});
+    */
 }
 
 let frameNumber = 0;
 function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
 
-    frameNumber++;
-    if ((frameNumber % 3) == 0)
-    {
-        torch.intensity += getRandomFloatInRange(-0.15, 0.15);
-    }
+    // frameNumber++;
+    // if ((frameNumber % 3) == 0)
+    // {
+    //     torch.intensity += getRandomFloatInRange(-0.15, 0.15);
+    // }
 
-    updateInput(dt);
-    (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.UpdateLevelGrid)(cameraTranslationGroup.position);
+    //updateInput(dt);
+    playerController.update(dt);
 
-    moon.update(dt);
+    playerController.getPosition(tVec0);
+    (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.UpdateLevelGrid)(tVec0);
+
+    // moon.update(dt);
     // grass.update(dt, cameraTranslationGroup.position);
 
     renderer.render(scene, camera);
@@ -66873,19 +67204,19 @@ function onSessionEnd()
 
 function LoadEnvMapPromise(pathname)
 {
-    pmremGenerator = new three__WEBPACK_IMPORTED_MODULE_5__.PMREMGenerator( renderer );
+    pmremGenerator = new three__WEBPACK_IMPORTED_MODULE_7__.PMREMGenerator( renderer );
     pmremGenerator.compileEquirectangularShader();
 
     return new Promise( (resolve, reject) => {
         
-        new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_9__.EXRLoader()
-            .setDataType( three__WEBPACK_IMPORTED_MODULE_5__.HalfFloatType )
+        new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_10__.EXRLoader()
+            .setDataType( three__WEBPACK_IMPORTED_MODULE_7__.HalfFloatType )
             .load( pathname,  ( texture ) => {
 
                 let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
                 scene.envMap = exrCubeRenderTarget.texture;
 
-                const rt = new three__WEBPACK_IMPORTED_MODULE_5__.WebGLCubeRenderTarget(2048);
+                const rt = new three__WEBPACK_IMPORTED_MODULE_7__.WebGLCubeRenderTarget(2048);
                 rt.fromEquirectangularTexture(renderer, texture);
                 scene.background = rt.texture;
                 scene.envMap = rt;
@@ -66930,7 +67261,7 @@ function updateInput(dt)
     tVec0.normalize();
     //tVec1.crossVectors(tVec0, THREE.Object3D.DefaultUp); // Compute right axis
     //tVec1.normalize();
-    cameraRotationGroup.rotateOnWorldAxis(three__WEBPACK_IMPORTED_MODULE_5__.Object3D.DefaultUp, input.turn * dt * -1.57);
+    cameraRotationGroup.rotateOnWorldAxis(three__WEBPACK_IMPORTED_MODULE_7__.Object3D.DefaultUp, input.turn * dt * -1.57);
 
     tVec1.copy(cameraTranslationGroup.position);
     tVec2.copy(tVec1);
