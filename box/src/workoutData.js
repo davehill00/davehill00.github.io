@@ -5,6 +5,7 @@ export const ROUNDTYPE_SCRIPTED = 0;
 export const ROUNDTYPE_NUM_PUNCHES = 1;
 export const ROUNDTYPE_TIMED = 2;
 export const ROUNDTYPE_SPEED = 3;
+export const ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED = 4;
 
 export let workoutData = [
 
@@ -324,10 +325,9 @@ export let workoutData = [
             bagType: null
         },
         {
-            introText: "WARM UP - THROW 200 PUNCHES",
-            numPunches: 200,
+            numPunchesPerMinute: 100,
             bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_NUM_PUNCHES
+            roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
         },
         {
             introText: 

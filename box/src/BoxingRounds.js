@@ -228,6 +228,14 @@ export class NumberOfPunchesBoxingRound extends BoxingRound
     }
 }
 
+export class TimeAdjustedNumberOfPunchesBoxingRound extends NumberOfPunchesBoxingRound
+{
+    constructor(duration, ppm, roundNumber, maxRounds, bagType, introText = null)
+    {
+        super((duration / 60) * ppm, roundNumber, maxRounds, bagType);
+    }
+}
+
 export class SpeedRound extends TimedBoxingRound
 {
     //roundInfo, roundDuration, roundNumber, this.numRounds

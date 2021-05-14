@@ -23,8 +23,8 @@ const kPunchNames =
     "RIGHT UPPER(6)"
 ];
 
-import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED} from "./workoutData.js";
-import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound} from "./BoxingRounds.js";
+import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED, ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED} from "./workoutData.js";
+import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound, TimeAdjustedNumberOfPunchesBoxingRound} from "./BoxingRounds.js";
 import { PunchDetector, PUNCH_JAB, PUNCH_LEFT_HOOK, PUNCH_RIGHT_HOOK, PUNCH_STRAIGHT, PUNCH_UNKNOWN, PUNCH_LEFT_UPPERCUT, PUNCH_RIGHT_UPPERCUT } from './punchDetector';
 
 const kIntroDuration = 5.0;
@@ -272,6 +272,10 @@ export class BoxingSession
             else if (roundInfo.roundType == ROUNDTYPE_NUM_PUNCHES)
             {
                 round = new NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+            }
+            else if (roundInfo.roundType == ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED)
+            {
+                round = new TimeAdjustedNumberOfPunchesBoxingRound(roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
             }
             else if (roundInfo.roundType == ROUNDTYPE_TIMED)
             {

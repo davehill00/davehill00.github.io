@@ -65048,7 +65048,7 @@ function extend() {
 /*!*****************************!*\
   !*** ./src/BoxingRounds.js ***!
   \*****************************/
-/*! exports provided: TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound */
+/*! exports provided: TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, TimeAdjustedNumberOfPunchesBoxingRound, SpeedRound */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -65056,6 +65056,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TimedBoxingRound", function() { return TimedBoxingRound; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScriptedBoxingRound", function() { return ScriptedBoxingRound; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NumberOfPunchesBoxingRound", function() { return NumberOfPunchesBoxingRound; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TimeAdjustedNumberOfPunchesBoxingRound", function() { return TimeAdjustedNumberOfPunchesBoxingRound; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SpeedRound", function() { return SpeedRound; });
 /* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
 /* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
@@ -65286,6 +65287,14 @@ class NumberOfPunchesBoxingRound extends BoxingRound
     getIntroText()
     {
         return this.introText;
+    }
+}
+
+class TimeAdjustedNumberOfPunchesBoxingRound extends NumberOfPunchesBoxingRound
+{
+    constructor(duration, ppm, roundNumber, maxRounds, bagType, introText = null)
+    {
+        super((duration / 60) * ppm, roundNumber, maxRounds, bagType);
     }
 }
 
@@ -67476,6 +67485,10 @@ class BoxingSession
             else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__["ROUNDTYPE_NUM_PUNCHES"])
             {
                 round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__["NumberOfPunchesBoxingRound"](roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+            }
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__["ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED"])
+            {
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__["TimeAdjustedNumberOfPunchesBoxingRound"](roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
             }
             else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__["ROUNDTYPE_TIMED"])
             {
@@ -70983,7 +70996,7 @@ function monospace(text, start, end, width) {
 /*!****************************!*\
   !*** ./src/workoutData.js ***!
   \****************************/
-/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED, workoutData */
+/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED, ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED, workoutData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70994,6 +71007,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_NUM_PUNCHES", function() { return ROUNDTYPE_NUM_PUNCHES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_TIMED", function() { return ROUNDTYPE_TIMED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_SPEED", function() { return ROUNDTYPE_SPEED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED", function() { return ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "workoutData", function() { return workoutData; });
 const ROUND_HEAVY_BAG = 0;
 const ROUND_DOUBLE_END_BAG = 1;
@@ -71002,6 +71016,7 @@ const ROUNDTYPE_SCRIPTED = 0;
 const ROUNDTYPE_NUM_PUNCHES = 1;
 const ROUNDTYPE_TIMED = 2;
 const ROUNDTYPE_SPEED = 3;
+const ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED = 4;
 
 let workoutData = [
 
@@ -71321,10 +71336,9 @@ let workoutData = [
             bagType: null
         },
         {
-            introText: "WARM UP - THROW 200 PUNCHES",
-            numPunches: 200,
+            numPunchesPerMinute: 100,
             bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_NUM_PUNCHES
+            roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
         },
         {
             introText: 
