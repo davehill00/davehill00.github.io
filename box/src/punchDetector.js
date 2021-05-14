@@ -46,6 +46,33 @@ export class PunchDetector
         }
     }
 
+    NEWanalyzePunch(glove, velocity)
+    {
+        console.assert(glove.controller.hasAngularVelocity);
+        if (glove.whichHand == 1) // left hand
+        {
+            let ang = glove.controller.angularVelocity;
+            // console.table(ang);
+            if (ang.x < 0 && ang.y > 0)
+            {
+                // console.log("JAB");
+                return PUNCH_JAB;
+            }
+            else if (ang.z < 0)
+            {
+                // console.log("HOOK");
+                return PUNCH_LEFT_HOOK;
+            }
+            else
+            {
+                // console.log("UPPER");
+                return PUNCH_LEFT_UPPERCUT;
+            }
+        }
+
+        return PUNCH_UNKNOWN;
+    }
+
     // Return punch type
     analyzePunch(glove, velocity)
     {
@@ -97,7 +124,7 @@ export class PunchDetector
             {
                 let bUpper = dotUp > 0.55;
 
-                if (true) //bLogging)
+                if (false) //bLogging)
                 {
                     if (bUpper) {
                         console.log("LEFT UPPER ************");
@@ -137,7 +164,7 @@ export class PunchDetector
             {
                 let bUpper = dotUp > 0.55;
 
-                if (true) //bLogging)
+                if (false) //bLogging)
                 {
                     if (bUpper) {
                         console.log("RIGHT UPPER ************");

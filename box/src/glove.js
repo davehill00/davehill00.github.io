@@ -13,6 +13,10 @@ let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 const kGloveRadius = 0.08;
 const kNewContactDelay = 0.15;
 
+function consoleWithNoSource(...params) {
+    setTimeout(console.log.bind(console, ...params));
+  }
+
 export class Glove extends THREE.Group
 {
     constructor(scene, whichHand)
@@ -142,6 +146,7 @@ export class Glove extends THREE.Group
 
         
 
+
         // Check for collisions from current position to goal position    
         let hit = false;
         let bag = null;
@@ -155,6 +160,15 @@ export class Glove extends THREE.Group
         {
             bag = this.doubleEndedBag;
             hit = doesSphereCollideWithOtherSphere(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
+        }
+
+        if (false && this.whichHand == 2)
+        {
+            consoleWithNoSource(
+                accumulatedTime + ", " + this.controller.linearVelocity.x + ", " + this.controller.linearVelocity.y + ", " + this.controller.linearVelocity.z + ", " +
+                this.controller.angularVelocity.x + ", " + this.controller.angularVelocity.y + ", " + this.controller.angularVelocity.z + ", " + 
+                this.controller.gamepad.buttons[0].pressed + ", " + (hit ? 1 : 0)
+            );
         }
 
         if ( hit )

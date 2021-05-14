@@ -68131,6 +68131,10 @@ let kBagPos = new THREE.Vector3(0.0, 0.0, -1.0);
 const kGloveRadius = 0.08;
 const kNewContactDelay = 0.15;
 
+function consoleWithNoSource(...params) {
+    setTimeout(console.log.bind(console, ...params));
+  }
+
 class Glove extends THREE.Group
 {
     constructor(scene, whichHand)
@@ -68251,6 +68255,7 @@ class Glove extends THREE.Group
 
         
 
+
         // Check for collisions from current position to goal position    
         let hit = false;
         let bag = null;
@@ -68265,6 +68270,9 @@ class Glove extends THREE.Group
             bag = this.doubleEndedBag;
             hit = Object(_sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_1__["doesSphereCollideWithOtherSphere"])(this.position, dest, kGloveRadius, bag.position, bag.radius, hitResult);
         }
+
+        if (false)
+        {}
 
         if ( hit )
         {
@@ -69459,6 +69467,33 @@ class PunchDetector
         }
     }
 
+    NEWanalyzePunch(glove, velocity)
+    {
+        console.assert(glove.controller.hasAngularVelocity);
+        if (glove.whichHand == 1) // left hand
+        {
+            let ang = glove.controller.angularVelocity;
+            // console.table(ang);
+            if (ang.x < 0 && ang.y > 0)
+            {
+                // console.log("JAB");
+                return PUNCH_JAB;
+            }
+            else if (ang.z < 0)
+            {
+                // console.log("HOOK");
+                return PUNCH_LEFT_HOOK;
+            }
+            else
+            {
+                // console.log("UPPER");
+                return PUNCH_LEFT_UPPERCUT;
+            }
+        }
+
+        return PUNCH_UNKNOWN;
+    }
+
     // Return punch type
     analyzePunch(glove, velocity)
     {
@@ -69510,18 +69545,8 @@ class PunchDetector
             {
                 let bUpper = dotUp > 0.55;
 
-                if (true) //bLogging)
-                {
-                    if (bUpper) {
-                        console.log("LEFT UPPER ************");
-                    }
-                    else
-                    {
-                        console.log("LEFT HOOK **************");
-                    }
-                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
-                }
+                if (false) //bLogging)
+                {}
 
                 if (bUpper)
                 {
@@ -69550,18 +69575,8 @@ class PunchDetector
             {
                 let bUpper = dotUp > 0.55;
 
-                if (true) //bLogging)
-                {
-                    if (bUpper) {
-                        console.log("RIGHT UPPER ************");
-                    }
-                    else
-                    {
-                        console.log("RIGHT STRAIGHT **************");
-                    }
-                    console.log("LINEAR"); console.table(glove.controller.linearVelocity);
-                    console.log("ANGULAR"); console.table(glove.controller.angularVelocity);
-                }
+                if (false) //bLogging)
+                {}
 
 
                 if (bLogging)
@@ -71143,8 +71158,8 @@ let workoutData = [
         {
             introText: 
                 "DOUBLE-END HOOKS:\n" +
-                " \u2022 JAB(1) then quick HOOK(4).\n" +
-                " \u2022 STRAIGHT(2) then quick HOOK(3).",
+                " \u2022 JAB(1) then HOOK(4).\n" +
+                " \u2022 STRAIGHT(2) then HOOK(3).",
             bagType: ROUND_DOUBLE_END_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:[
@@ -71284,6 +71299,135 @@ let workoutData = [
                     startTimePercent: 0.75,
                     descriptionText: "1-2-3"
                 },
+            ],
+        },
+        {
+            introText:
+                "HEAVY BAG FREESTYLE:\n"+
+                " \u2022 Close it out however you want.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_TIMED,
+        }
+    ],
+    [
+        {
+            introText: "COMBO WORKOUT 2:\n" +
+                " \u2022 6 round of drills.\n" +
+                " \u2022 Warm up, then focus on combos.",
+            uiShortText: "COMBO WORKOUT 2",
+            uiText: "COMBO WORKOUT 2:<ul><li>6 rounds of drills.</li><li>Warm up, then focus on combos.</li><li>Mostly heavy bag with a dash of double-end mixed in.</li></ul>",
+            uid: 5,
+            stages:[],
+            bagType: null
+        },
+        {
+            introText: "WARM UP - THROW 200 PUNCHES",
+            numPunches: 200,
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_NUM_PUNCHES
+        },
+        {
+            introText: 
+                "BASIC COMBOS:\n" +
+                " \u2022 Try some simple combos.\n" +
+                " \u2022 Focus on form, then increase speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-2"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-1-2"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-2-1"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-3"
+                }
+            ],
+        },
+        {
+            introText: 
+                "MORE COMBOS:\n" +
+                " \u2022 Try some different combos.\n" +
+                " \u2022 Focus on form, then increase speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-2-1"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-1-4"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-2-3-4"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-1-4-3"
+                }
+            ],
+        },
+        {
+            introText: 
+                "DOUBLE-END COMBOS:\n" +
+                " \u2022 Try some simple combos.\n" +
+                " \u2022 Things are trickier on the double-end bag.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-2, 1-1-2"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "2-3"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-4"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-3"
+                },
+            ],
+        },
+        {
+            introText: 
+                "STILL MORE COMBOS:\n" +
+                " \u2022 Try some more complex combos.\n" +
+                " \u2022 Focus on form, then increase speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-2-3-2"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-4-3-2"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-1-2-3-4"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-1-1-4-3"
+                }
             ],
         },
         {
