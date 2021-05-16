@@ -14,6 +14,8 @@ let cfg_culling = true;
 let moreButton = null;
 let lessButton = null;
 
+let monkeyInstanceMesh = null;
+
 parseUrlConfig();
 
 const scene = new THREE.Scene();
@@ -26,7 +28,7 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ antialias: cfg_antialias });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.xr.enabled = true;
-renderer.setClearColor(0x303030);
+renderer.setClearColor(0x000000); //0x303030);
 
 document.body.appendChild(renderer.domElement);
 document.body.appendChild(VRButton.createButton(renderer));
@@ -59,9 +61,9 @@ if (cfg_materialindex > 0)
 const kSpread = 5;
 const kRows = 7;
 const kCols = 7;
-const kColSpread = 1.5;
-const kRowMaxHeight = 1.0;
-const kRowSpread = 8.0;
+const kColSpread = 0.5; // 1.5;
+const kRowMaxHeight = 0.3; //1.0;
+const kRowSpread = 3.0; //8.0;
 
 var drawGroups = new Array();
 const groupSize = 1;
@@ -104,10 +106,24 @@ loader.load(cfg_materialindex == 3 ? './content/monkey-head-50k-normalmap.gltf' 
             mat = new THREE.MeshPhongMaterial({color: 0x85650f, shininess:30});
         }
 
+        monkeyInstanceMesh = new THREE.InstancedMesh(monkeyHead.geometry, mat, kRows * kCols);
+
         let x, y;
+        let position = new THREE.Vector3();
+        let scale = new THREE.Vector3(0.05, 0.05, 0.05);
+        let matrix = new THREE.Matrix4();
+        let index = 0;
         for (y = 0; y < kRows; y++) {
             for (x = 0; x < kCols; x++) {
+
+                position.set(-kColSpread * (kCols - 1) * 0.5 + x * kColSpread, 2.0 + (kRowMaxHeight - y * kRowSpread / kRows), -6.0 * kColSpread);
+                matrix.compose(position, monkeyHead.quaternion, scale);
+
+                monkeyInstanceMesh.setMatrixAt(index++, matrix);
+                /*
                 let monkey = new THREE.Mesh(monkeyHead.geometry, mat);
+
+
                 monkey.position.set(-kColSpread * (kCols - 1) * 0.5 + x * kColSpread, kRowMaxHeight - y * kRowSpread / kRows, -6.0 * kColSpread);
                 monkey.scale.set(0.5, 0.5, 0.5);
                 currentGroup.add(monkey);
@@ -120,12 +136,20 @@ loader.load(cfg_materialindex == 3 ? './content/monkey-head-50k-normalmap.gltf' 
                     currentGroup = new THREE.Group();
                     groupCounter = 0;
                 }
+                */
             }
         }
+
+        monkeyInstanceMesh.instanceMatrix.needsUpdate = true;
+
+        scene.add(monkeyInstanceMesh);
+        
+        /*
         if (currentGroup.children.length != 0) {
             scene.add(currentGroup);
             currentGroup.visible = false;
         }
+        */
 
         initVisibility(startCount);
 
@@ -142,7 +166,7 @@ var loadFont = require('load-bmfont')
 var fontGeometry;
 var fontMesh;
 
-
+/*
 loadFont('content/arial.fnt', function (err, font) {
     // create a geometry of packed bitmap glyphs,
     // word wrapped to 300px and right-aligned
@@ -185,7 +209,7 @@ loadFont('content/arial.fnt', function (err, font) {
 
     scene.add(messageMesh);
 });
-
+*/
 function onSelectEnd(event) {
     let increment = event.data.handedness == "right";
     updateVisibility(increment);
@@ -232,6 +256,7 @@ const kMaxPersist = 2000.0;
 
 renderer.setAnimationLoop(
     function () {
+        /*
         endOfLastFrame = performance.now();
         let delta = endOfLastFrame - startOfCurrentFrame;
         if (delta > curMaxDelta || endOfLastFrame > expiryMaxDelta) {
@@ -251,11 +276,12 @@ renderer.setAnimationLoop(
                 (firstInvisible * groupSize * numFaces) + " tris " +
                 delta.toFixed(1) + "(" + curMaxDelta.toFixed(1) + ") ms " +
                 (1000.0 / averageDelta).toFixed(0) + "(" + curMinHertz.toFixed(0) + ") Hz");
-        }
+        }*/
         renderer.render(scene, camera);
     });
 
 function initVisibility(numVisible) {
+    /*
     firstInvisible = 0;
     for (firstInvisible = 0; firstInvisible < numVisible; firstInvisible++) {
         if (firstInvisible >= drawGroups.length)
@@ -263,10 +289,25 @@ function initVisibility(numVisible) {
 
         drawGroups[firstInvisible].visible = true;
     }
+    */
+    firstInvisible = numVisible;
+    monkeyInstanceMesh.count = firstInvisible;
+
     window.localStorage.setItem("num_objs", firstInvisible);
 }
 
 function updateVisibility(increment) {
+    if (increment)
+    {
+        firstInvisible = Math.min(firstInvisible + 1, kRows * kCols)
+    }
+    else
+    {
+        firstInvisible = Math.max(0, firstInvisible - 1);
+    }
+    monkeyInstanceMesh.count = firstInvisible;
+    window.localStorage.setItem("num_objs", firstInvisible);
+    /*
     if (increment) {
         if (firstInvisible < drawGroups.length) {
             drawGroups[firstInvisible].visible = true;
@@ -281,6 +322,7 @@ function updateVisibility(increment) {
         }
         window.localStorage.setItem("num_objs", firstInvisible);
     }
+    */
 }
 
 function parseUrlConfig()

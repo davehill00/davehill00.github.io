@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+//import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+import {VRButton} from './vrButton.js';
+
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js'; //'three/examples/jsm/webxr/XRControllerModelFactory.js';
 
@@ -13,28 +15,39 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer( {antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.xr.enabled = true;
-renderer.setClearColor(0x303030);
+renderer.xr.setFramebufferScaleFactor(0.1);
+renderer.setClearColor(0x000000); //0x303030);
+
+// renderer.overrideVrCameraPosition = true;
+// renderer.vrCameraPositionOverrideValue.set(0.0, 10.0, 10.0);
+renderer.xr.shouldOverrideVrPose = true;
+renderer.xr.overrideVrPoseValue.compose(
+    new THREE.Vector3(0.0, 0.0, -10.0),
+    new THREE.Quaternion().identity(), //setfromEuler(new THREE.Euler(0, 0, 0)),
+    new THREE.Vector3(1.0, 1.0, 1.0)
+);
 
 document.body.appendChild(renderer.domElement);
-document.body.appendChild(VRButton.createButton(renderer));
+//document.body.appendChild(VRButton.createButton(renderer));
+let vrButton = new VRButton(renderer);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
-directionalLight.position.set(2, 2, 1);
-scene.add(directionalLight);
+// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
+// directionalLight.position.set(2, 2, 1);
+// scene.add(directionalLight);
 
-const light = new THREE.AmbientLight(0x202020); // soft white light
-scene.add(light);
+// const light = new THREE.AmbientLight(0x202020); // soft white light
+// scene.add(light);
 
 
 
 const boxGeometry = new THREE.BoxGeometry();
-const boxMaterials = [new THREE.MeshPhysicalMaterial({ color: 0xff8020 }), new THREE.MeshPhysicalMaterial({ color: 0xaaaaaa })];
+const boxMaterials = [new THREE.MeshBasicMaterial({ color: 0xff8020 }), new THREE.MeshBasicMaterial({ color: 0xaaaaaa })];
 
 let i;
-const kSpread = 20;
+const kSpread = 30;
 
 var drawGroups = new Array();
 const groupSize = 10;
@@ -68,9 +81,9 @@ if (currentGroup.children.length != 0)
 }
 
 var firstInvisible = -1;
-initVisibility((kSpread*kSpread*0.25)/groupSize);
-
-
+initVisibility(52); //(kSpread*kSpread*0.25)/groupSize);
+vrButton.checkForXR()
+/*
 var createGeometry = require('three-bmfont-text')
 var loadFont = require('load-bmfont')
 
@@ -118,7 +131,7 @@ loadFont('fonts/arial.fnt', function (err, font) {
 
     scene.add(messageMesh);
 });
-
+*/
 
 function onSelectStart(event)
 {
@@ -172,6 +185,7 @@ const kMaxPersist = 2000.0;
 
 renderer.setAnimationLoop(
     function () {
+        /*
         endOfLastFrame = performance.now();
         let delta = endOfLastFrame - startOfCurrentFrame;
         if (delta > curMaxDelta || endOfLastFrame > expiryMaxDelta) {
@@ -193,7 +207,7 @@ renderer.setAnimationLoop(
                 (1000.0 / averageDelta).toFixed(0) + "(" + curMinHertz.toFixed(0) + ") Hz");
         }
 
-
+        */
         renderer.render(scene, camera);
     });
 
@@ -216,6 +230,7 @@ function updateVisibility(increment)
         {
             drawGroups[firstInvisible].visible = true;
             firstInvisible++;
+            console.log(firstInvisible + " groups x " + groupSize + "/group = " + firstInvisible * groupSize);
         }
     }
     else

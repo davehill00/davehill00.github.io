@@ -4,3 +4,5 @@ content/.DS_Store
 node_modules
 *.log
 box/.yalc/*
+.yalc/*
+*.yalc/*
