@@ -365,11 +365,11 @@ export let workoutData = [
             stages: [
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "1-2-1"
+                    descriptionText: "1-2-1-4"
                 },
                 {
                     startTimePercent: 0.25,
-                    descriptionText: "1-2-1-4"
+                    descriptionText: "1-1-2-3"
                 },
                 {
                     startTimePercent: 0.5,
