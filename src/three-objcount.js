@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 //import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import {VRButton} from './vrButton.js';
+import {OverrideXRFrameGetViewerPose} from "./overrideXRFrameGetViewerPose.js";
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js'; //'three/examples/jsm/webxr/XRControllerModelFactory.js';
@@ -18,14 +19,10 @@ renderer.xr.enabled = true;
 renderer.xr.setFramebufferScaleFactor(0.1);
 renderer.setClearColor(0x000000); //0x303030);
 
-// renderer.overrideVrCameraPosition = true;
-// renderer.vrCameraPositionOverrideValue.set(0.0, 10.0, 10.0);
-renderer.xr.shouldOverrideVrPose = true;
-renderer.xr.overrideVrPoseValue.compose(
-    new THREE.Vector3(0.0, 0.0, -10.0),
-    new THREE.Quaternion().identity(), //setfromEuler(new THREE.Euler(0, 0, 0)),
-    new THREE.Vector3(1.0, 1.0, 1.0)
-);
+let matrixOverridePose = new THREE.Matrix4().compose(
+    new THREE.Vector3(0,0,10), new THREE.Quaternion().identity(), new THREE.Vector3(1,1,1));
+
+OverrideXRFrameGetViewerPose(matrixOverridePose.toArray());
 
 document.body.appendChild(renderer.domElement);
 //document.body.appendChild(VRButton.createButton(renderer));

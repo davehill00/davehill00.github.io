@@ -90,7 +90,7 @@ export class VRButton
             optionalFeatures: [ 
             //'bounded-floor', 
             // 'hand-tracking',
-            // 'high-fixed-foveation-level',
+            'high-fixed-foveation-level',
             'low-refresh-rate'
         ] };
         navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( 

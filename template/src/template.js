@@ -24,12 +24,13 @@ function initialize()
     // add camera to scene so that objects attached to the camera get rendered
     scene.add(camera);
 
-    renderer = new THREE.WebGLRenderer( {antialias: true});
+    //stencil:false doesn't appear to do anything by itself... if both stencil and depth are false, you get neither depth nor stencil
+    renderer = new THREE.WebGLRenderer( {antialias: true}); //, stencil:false, depth:false}); 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
     //renderer.xr.setFramebufferScaleFactor(1.0);
 
-    // renderer.physicallyCorrectLights = true;
+    renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.285;
@@ -40,13 +41,13 @@ function initialize()
     
     clock = new THREE.Clock();
 
-    let sun = new THREE.DirectionalLight(color, 2.0);
+    let sun = new THREE.DirectionalLight(color, 1.0); //2.0);
     sun.position.set(1.0, 2.0, 1.0);
     scene.add(sun);
 
     let ambientColor = new THREE.Color(1.0, 0.88, 0.87);
     ambientColor.convertSRGBToLinear();
-    let ambient = new THREE.AmbientLight(ambientColor, 1.85);
+    let ambient = new THREE.AmbientLight(ambientColor, 0.25); //1.85);
     scene.add(ambient);
 
     let envMapPromise = LoadEnvMapPromise('./content/environment_map.exr');
@@ -60,7 +61,7 @@ function initialize()
             (gltf) => {
                 for (let i = 0; i < gltf.scene.children.length; i++)
                 {                
-                    //  let obj = gltf.scene.children[i];       
+                     let obj = gltf.scene.children[i];       
                     //  if (obj.name == "Suzanne")
                     //  {
                     //      obj.material.envMap = scene.envMap;
@@ -79,15 +80,15 @@ function initialize()
 
                     //      }
                     //  }
-                //     obj.traverse(
-                //         function (node)
-                //         {
-                //             if (scene.envMap && node.material) // && 'envmap' in node.material)
-                //             {
-                //                 console.log("Setting EnvMap on " + node.name + " with intensity " + node.material.envMapIntensity);
-                //                 node.material.envMap = scene.envMap;
-                //             }
-                //         });
+                    obj.traverse(
+                        function (node)
+                        {
+                            if (scene.envMap && node.material) // && 'envmap' in node.material)
+                            {
+                                console.log("Setting EnvMap on " + node.name + " with intensity " + node.material.envMapIntensity);
+                                node.material.envMap = scene.envMap;
+                            }
+                        });
                 }
                 // gltf.scene.traverse(
                 //     function(node)
@@ -151,7 +152,7 @@ function LoadEnvMapPromise(pathname)
     return new Promise( (resolve, reject) => {
         
         new EXRLoader()
-            .setDataType( THREE.FloatType )
+            .setDataType( THREE.HalfFloatType )
             .load( pathname,  ( texture ) => {
 
                 let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
@@ -160,7 +161,7 @@ function LoadEnvMapPromise(pathname)
                 const rt = new THREE.WebGLCubeRenderTarget(2048);
                 rt.fromEquirectangularTexture(renderer, texture);
                 scene.background = rt.texture;
-                // scene.envMap = rt;
+                scene.envMap = rt;
 
                 resolve();
 
