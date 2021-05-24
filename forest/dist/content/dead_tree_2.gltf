@@ -1,0 +1,104 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "Dead Tree"
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "Dead Tree",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.3948811888694763,
+                    0.3546105921268463,
+                    0.3357003629207611,
+                    1
+                ],
+                "metallicFactor" : 0.130952388048172
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Cylinder.001",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1
+                    },
+                    "indices" : 2,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 1143,
+            "max" : [
+                5.753692626953125,
+                18.062667846679688,
+                2.6593635082244873
+            ],
+            "min" : [
+                -3.1751112937927246,
+                -0.2451627552509308,
+                -3.428687572479248
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 1143,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5123,
+            "count" : 6570,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 13716,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 13716,
+            "byteOffset" : 13716
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 13140,
+            "byteOffset" : 27432
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 40572,
+            "uri" : "dead_tree_2.bin"
+        }
+    ]
+}

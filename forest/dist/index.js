@@ -1,6 +1,321 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
+
+/***/ "./node_modules/json-stringify-safe/stringify.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/json-stringify-safe/stringify.js ***!
+  \*******************************************************/
+/***/ ((module, exports) => {
+
+exports = module.exports = stringify
+exports.getSerialize = serializer
+
+function stringify(obj, replacer, spaces, cycleReplacer) {
+  return JSON.stringify(obj, serializer(replacer, cycleReplacer), spaces)
+}
+
+function serializer(replacer, cycleReplacer) {
+  var stack = [], keys = []
+
+  if (cycleReplacer == null) cycleReplacer = function(key, value) {
+    if (stack[0] === value) return "[Circular ~]"
+    return "[Circular ~." + keys.slice(0, stack.indexOf(value)).join(".") + "]"
+  }
+
+  return function(key, value) {
+    if (stack.length > 0) {
+      var thisPos = stack.indexOf(this)
+      ~thisPos ? stack.splice(thisPos + 1) : stack.push(this)
+      ~thisPos ? keys.splice(thisPos, Infinity, key) : keys.push(key)
+      if (~stack.indexOf(value)) value = cycleReplacer.call(this, key, value)
+    }
+    else stack.push(value)
+
+    return replacer == null ? value : replacer.call(this, key, value)
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/random-seed/index.js":
+/*!*******************************************!*\
+  !*** ./node_modules/random-seed/index.js ***!
+  \*******************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*
+ * random-seed
+ * https://github.com/skratchdot/random-seed
+ *
+ * This code was originally written by Steve Gibson and can be found here:
+ *
+ * https://www.grc.com/otg/uheprng.htm
+ *
+ * It was slightly modified for use in node, to pass jshint, and a few additional
+ * helper functions were added.
+ *
+ * Copyright (c) 2013 skratchdot
+ * Dual Licensed under the MIT license and the original GRC copyright/license
+ * included below.
+ */
+/*	============================================================================
+									Gibson Research Corporation
+				UHEPRNG - Ultra High Entropy Pseudo-Random Number Generator
+	============================================================================
+	LICENSE AND COPYRIGHT:  THIS CODE IS HEREBY RELEASED INTO THE PUBLIC DOMAIN
+	Gibson Research Corporation releases and disclaims ALL RIGHTS AND TITLE IN
+	THIS CODE OR ANY DERIVATIVES. Anyone may be freely use it for any purpose.
+	============================================================================
+	This is GRC's cryptographically strong PRNG (pseudo-random number generator)
+	for JavaScript. It is driven by 1536 bits of entropy, stored in an array of
+	48, 32-bit JavaScript variables.  Since many applications of this generator,
+	including ours with the "Off The Grid" Latin Square generator, may require
+	the deteriministic re-generation of a sequence of PRNs, this PRNG's initial
+	entropic state can be read and written as a static whole, and incrementally
+	evolved by pouring new source entropy into the generator's internal state.
+	----------------------------------------------------------------------------
+	ENDLESS THANKS are due Johannes Baagoe for his careful development of highly
+	robust JavaScript implementations of JS PRNGs.  This work was based upon his
+	JavaScript "Alea" PRNG which is based upon the extremely robust Multiply-
+	With-Carry (MWC) PRNG invented by George Marsaglia. MWC Algorithm References:
+	http://www.GRC.com/otg/Marsaglia_PRNGs.pdf
+	http://www.GRC.com/otg/Marsaglia_MWC_Generators.pdf
+	----------------------------------------------------------------------------
+	The quality of this algorithm's pseudo-random numbers have been verified by
+	multiple independent researchers. It handily passes the fermilab.ch tests as
+	well as the "diehard" and "dieharder" test suites.  For individuals wishing
+	to further verify the quality of this algorithm's pseudo-random numbers, a
+	256-megabyte file of this algorithm's output may be downloaded from GRC.com,
+	and a Microsoft Windows scripting host (WSH) version of this algorithm may be
+	downloaded and run from the Windows command prompt to generate unique files
+	of any size:
+	The Fermilab "ENT" tests: http://fourmilab.ch/random/
+	The 256-megabyte sample PRN file at GRC: https://www.GRC.com/otg/uheprng.bin
+	The Windows scripting host version: https://www.GRC.com/otg/wsh-uheprng.js
+	----------------------------------------------------------------------------
+	Qualifying MWC multipliers are: 187884, 686118, 898134, 1104375, 1250205,
+	1460910 and 1768863. (We use the largest one that's < 2^21)
+	============================================================================ */
+
+var stringify = __webpack_require__(/*! json-stringify-safe */ "./node_modules/json-stringify-safe/stringify.js");
+
+/*	============================================================================
+This is based upon Johannes Baagoe's carefully designed and efficient hash
+function for use with JavaScript.  It has a proven "avalanche" effect such
+that every bit of the input affects every bit of the output 50% of the time,
+which is good.	See: http://baagoe.com/en/RandomMusings/hash/avalanche.xhtml
+============================================================================
+*/
+var Mash = function () {
+	var n = 0xefc8249d;
+	var mash = function (data) {
+		if (data) {
+			data = data.toString();
+			for (var i = 0; i < data.length; i++) {
+				n += data.charCodeAt(i);
+				var h = 0.02519603282416938 * n;
+				n = h >>> 0;
+				h -= n;
+				h *= n;
+				n = h >>> 0;
+				h -= n;
+				n += h * 0x100000000; // 2^32
+			}
+			return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+		} else {
+			n = 0xefc8249d;
+		}
+	};
+	return mash;
+};
+
+var uheprng = function (seed) {
+	return (function () {
+		var o = 48; // set the 'order' number of ENTROPY-holding 32-bit values
+		var c = 1; // init the 'carry' used by the multiply-with-carry (MWC) algorithm
+		var p = o; // init the 'phase' (max-1) of the intermediate variable pointer
+		var s = new Array(o); // declare our intermediate variables array
+		var i; // general purpose local
+		var j; // general purpose local
+		var k = 0; // general purpose local
+
+		// when our "uheprng" is initially invoked our PRNG state is initialized from the
+		// browser's own local PRNG. This is okay since although its generator might not
+		// be wonderful, it's useful for establishing large startup entropy for our usage.
+		var mash = new Mash(); // get a pointer to our high-performance "Mash" hash
+
+		// fill the array with initial mash hash values
+		for (i = 0; i < o; i++) {
+			s[i] = mash(Math.random());
+		}
+
+		// this PRIVATE (internal access only) function is the heart of the multiply-with-carry
+		// (MWC) PRNG algorithm. When called it returns a pseudo-random number in the form of a
+		// 32-bit JavaScript fraction (0.0 to <1.0) it is a PRIVATE function used by the default
+		// [0-1] return function, and by the random 'string(n)' function which returns 'n'
+		// characters from 33 to 126.
+		var rawprng = function () {
+			if (++p >= o) {
+				p = 0;
+			}
+			var t = 1768863 * s[p] + c * 2.3283064365386963e-10; // 2^-32
+			return s[p] = t - (c = t | 0);
+		};
+
+		// this EXPORTED function is the default function returned by this library.
+		// The values returned are integers in the range from 0 to range-1. We first
+		// obtain two 32-bit fractions (from rawprng) to synthesize a single high
+		// resolution 53-bit prng (0 to <1), then we multiply this by the caller's
+		// "range" param and take the "floor" to return a equally probable integer.
+		var random = function (range) {
+			return Math.floor(range * (rawprng() + (rawprng() * 0x200000 | 0) * 1.1102230246251565e-16)); // 2^-53
+		};
+
+		// this EXPORTED function 'string(n)' returns a pseudo-random string of
+		// 'n' printable characters ranging from chr(33) to chr(126) inclusive.
+		random.string = function (count) {
+			var i;
+			var s = '';
+			for (i = 0; i < count; i++) {
+				s += String.fromCharCode(33 + random(94));
+			}
+			return s;
+		};
+
+		// this PRIVATE "hash" function is used to evolve the generator's internal
+		// entropy state. It is also called by the EXPORTED addEntropy() function
+		// which is used to pour entropy into the PRNG.
+		var hash = function () {
+			var args = Array.prototype.slice.call(arguments);
+			for (i = 0; i < args.length; i++) {
+				for (j = 0; j < o; j++) {
+					s[j] -= mash(args[i]);
+					if (s[j] < 0) {
+						s[j] += 1;
+					}
+				}
+			}
+		};
+
+		// this EXPORTED "clean string" function removes leading and trailing spaces and non-printing
+		// control characters, including any embedded carriage-return (CR) and line-feed (LF) characters,
+		// from any string it is handed. this is also used by the 'hashstring' function (below) to help
+		// users always obtain the same EFFECTIVE uheprng seeding key.
+		random.cleanString = function (inStr) {
+			inStr = inStr.replace(/(^\s*)|(\s*$)/gi, ''); // remove any/all leading spaces
+			inStr = inStr.replace(/[\x00-\x1F]/gi, ''); // remove any/all control characters
+			inStr = inStr.replace(/\n /, '\n'); // remove any/all trailing spaces
+			return inStr; // return the cleaned up result
+		};
+
+		// this EXPORTED "hash string" function hashes the provided character string after first removing
+		// any leading or trailing spaces and ignoring any embedded carriage returns (CR) or Line Feeds (LF)
+		random.hashString = function (inStr) {
+			inStr = random.cleanString(inStr);
+			mash(inStr); // use the string to evolve the 'mash' state
+			for (i = 0; i < inStr.length; i++) { // scan through the characters in our string
+				k = inStr.charCodeAt(i); // get the character code at the location
+				for (j = 0; j < o; j++) { //	"mash" it into the UHEPRNG state
+					s[j] -= mash(k);
+					if (s[j] < 0) {
+						s[j] += 1;
+					}
+				}
+			}
+		};
+
+		// this EXPORTED function allows you to seed the random generator.
+		random.seed = function (seed) {
+			if (typeof seed === 'undefined' || seed === null) {
+				seed = Math.random();
+			}
+			if (typeof seed !== 'string') {
+				seed = stringify(seed, function (key, value) {
+					if (typeof value === 'function') {
+						return (value).toString();
+					}
+					return value;
+				});
+			}
+			random.initState();
+			random.hashString(seed);
+		};
+
+		// this handy exported function is used to add entropy to our uheprng at any time
+		random.addEntropy = function ( /* accept zero or more arguments */ ) {
+			var args = [];
+			for (i = 0; i < arguments.length; i++) {
+				args.push(arguments[i]);
+			}
+			hash((k++) + (new Date().getTime()) + args.join('') + Math.random());
+		};
+
+		// if we want to provide a deterministic startup context for our PRNG,
+		// but without directly setting the internal state variables, this allows
+		// us to initialize the mash hash and PRNG's internal state before providing
+		// some hashing input
+		random.initState = function () {
+			mash(); // pass a null arg to force mash hash to init
+			for (i = 0; i < o; i++) {
+				s[i] = mash(' '); // fill the array with initial mash hash values
+			}
+			c = 1; // init our multiply-with-carry carry
+			p = o; // init our phase
+		};
+
+		// we use this (optional) exported function to signal the JavaScript interpreter
+		// that we're finished using the "Mash" hash function so that it can free up the
+		// local "instance variables" is will have been maintaining.  It's not strictly
+		// necessary, of course, but it's good JavaScript citizenship.
+		random.done = function () {
+			mash = null;
+		};
+
+		// if we called "uheprng" with a seed value, then execute random.seed() before returning
+		if (typeof seed !== 'undefined') {
+			random.seed(seed);
+		}
+
+		// Returns a random integer between 0 (inclusive) and range (exclusive)
+		random.range = function (range) {
+			return random(range);
+		};
+
+		// Returns a random float between 0 (inclusive) and 1 (exclusive)
+		random.random = function () {
+			return random(Number.MAX_VALUE - 1) / Number.MAX_VALUE;
+		};
+
+		// Returns a random float between min (inclusive) and max (exclusive)
+		random.floatBetween = function (min, max) {
+			return random.random() * (max - min) + min;
+		};
+
+		// Returns a random integer between min (inclusive) and max (inclusive)
+		random.intBetween = function (min, max) {
+			return Math.floor(random.random() * (max - min + 1)) + min;
+		};
+
+		// when our main outer "uheprng" function is called, after setting up our
+		// initial variables and entropic state, we return an "instance pointer"
+		// to the internal anonymous function which can then be used to access
+		// the uheprng's various exported functions.  As with the ".done" function
+		// above, we should set the returned value to 'null' once we're finished
+		// using any of these functions.
+		return random;
+	}());
+};
+
+// Modification for use in node:
+uheprng.create = function (seed) {
+	return new uheprng(seed);
+};
+module.exports = uheprng;
+
+
+/***/ }),
 
 /***/ "./node_modules/three-mesh-bvh/src/Constants.js":
 /*!******************************************************!*\
@@ -8,6 +323,7 @@
   \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "CENTER": () => (/* binding */ CENTER),
@@ -35,6 +351,7 @@ const CONTAINED = 2;
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ MeshBVH)
@@ -642,6 +959,7 @@ class MeshBVH {
   \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MeshBVHDebug": () => (/* binding */ MeshBVHDebug)
@@ -788,6 +1106,7 @@ class MeshBVHDebug {
   \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ MeshBVHNode)
@@ -813,6 +1132,7 @@ class MeshBVHNode {
   \**************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -974,6 +1294,7 @@ class MeshBVHVisualizer extends three__WEBPACK_IMPORTED_MODULE_1__.Group {
   \********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "boxToArray": () => (/* binding */ boxToArray),
@@ -1041,6 +1362,7 @@ function getLongestEdgeIndex( bounds ) {
   \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "estimateMemoryInBytes": () => (/* binding */ estimateMemoryInBytes),
@@ -1197,6 +1519,7 @@ function estimateMemoryInBytes( obj ) {
   \****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "closestPointLineToLine": () => (/* binding */ closestPointLineToLine),
@@ -1416,6 +1739,7 @@ const sphereIntersectTriangle = ( function () {
   \**************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OrientedBox": () => (/* binding */ OrientedBox)
@@ -1824,6 +2148,7 @@ OrientedBox.prototype.distanceToBox = ( function () {
   \**************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "intersectTris": () => (/* binding */ intersectTris),
@@ -1871,6 +2196,7 @@ function intersectClosestTri( mesh, geo, raycaster, ray, offset, count ) {
   \***********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SeparatingAxisBounds": () => (/* binding */ SeparatingAxisBounds),
@@ -2015,6 +2341,7 @@ const areIntersecting = ( function () {
   \*************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SeparatingAxisTriangle": () => (/* binding */ SeparatingAxisTriangle)
@@ -2365,6 +2692,7 @@ SeparatingAxisTriangle.prototype.distanceToTriangle = ( function () {
   \*****************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "intersectTri": () => (/* binding */ intersectTri)
@@ -2487,6 +2815,7 @@ function intersectTri( mesh, geo, raycaster, ray, tri, intersections ) {
   \****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "setTriangle": () => (/* binding */ setTriangle)
@@ -2524,6 +2853,7 @@ function setTriangle( tri, i, index, pos ) {
   \***********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "buildTree": () => (/* binding */ buildTree)
@@ -3216,6 +3546,7 @@ function buildTree( geo, options ) {
   \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "raycast": () => (/* binding */ raycast),
@@ -3740,6 +4071,7 @@ const intersectsGeometry = ( function () {
   \****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "raycastBuffer": () => (/* binding */ raycastBuffer),
@@ -4280,6 +4612,7 @@ function arrayToBoxBuffer( stride4Offset, array, target ) {
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MeshBVH": () => (/* reexport safe */ _MeshBVH_js__WEBPACK_IMPORTED_MODULE_0__.default),
@@ -4367,6 +4700,7 @@ function disposeBoundsTree() {
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ACESFilmicToneMapping": () => (/* binding */ ACESFilmicToneMapping),
@@ -53994,6 +54328,7 @@ if ( typeof window !== 'undefined' ) {
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Deflate": () => (/* binding */ Deflate),
@@ -56529,6 +56864,7 @@ function unzipSync(data) {
   \***************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Constants": () => (/* binding */ Constants),
@@ -56943,6 +57279,7 @@ class MotionController {
   \**************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "EXRLoader": () => (/* binding */ EXRLoader)
@@ -59359,6 +59696,7 @@ class EXRLoader extends three__WEBPACK_IMPORTED_MODULE_0__.DataTextureLoader {
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "GLTFLoader": () => (/* binding */ GLTFLoader)
@@ -63312,6 +63650,7 @@ function toTrianglesDrawMode( geometry, drawMode ) {
   \***********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "VRButton": () => (/* binding */ VRButton)
@@ -63495,6 +63834,7 @@ class VRButton {
   \***************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "XRControllerModelFactory": () => (/* binding */ XRControllerModelFactory)
@@ -63802,6 +64142,7 @@ class XRControllerModelFactory {
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DEG2RAD": () => (/* binding */ DEG2RAD),
@@ -64072,6 +64413,7 @@ function setQuaternionFromProperEuler( q, a, b, c, order ) {
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Quaternion": () => (/* binding */ Quaternion)
@@ -64753,6 +65095,7 @@ Quaternion.prototype.isQuaternion = true;
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Vector3": () => (/* binding */ Vector3)
@@ -65490,6 +65833,7 @@ const _quaternion = /*@__PURE__*/ new _Quaternion_js__WEBPACK_IMPORTED_MODULE_1_
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Flare": () => (/* binding */ Flare),
@@ -65500,10 +65844,10 @@ __webpack_require__.r(__webpack_exports__);
 
 class Flare
 {
-    constructor(position, scene, camera, renderer)
+    constructor(position, scene, playerController, renderer)
     {
 
-        let cameraGroup = camera.parent.parent;
+        let playerTranslationGroup = playerController.getTranslationGroup();
 
         var texture = new three__WEBPACK_IMPORTED_MODULE_0__.TextureLoader().load('./content/sunflare.png');
         let geo = new three__WEBPACK_IMPORTED_MODULE_0__.PlaneGeometry(5.0, 5.0, 1, 1);
@@ -65519,12 +65863,12 @@ class Flare
         );
         this.mesh = new three__WEBPACK_IMPORTED_MODULE_0__.Mesh(geo, mat);
         this.mesh.position.set(position.x, position.y, position.z);
-        cameraGroup.attach(this.mesh);
+        // playerTranslationGroup.attach(this.mesh);
         //zone.addSceneObject(this.mesh);
 
 
         // this.zone = zone;
-        this.camera = camera;
+        // this.camera = camera;
         this.renderer = renderer;
         this.camHeading = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3(0,0,0);
         this.toFlarePos = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3(0,0,0);
@@ -65535,7 +65879,7 @@ class Flare
         let sunMat = new three__WEBPACK_IMPORTED_MODULE_0__.MeshBasicMaterial(
             {
                 color: 0xffffff,
-                side: three__WEBPACK_IMPORTED_MODULE_0__.FrontSide,
+                side: three__WEBPACK_IMPORTED_MODULE_0__.DoubleSide,
                 opacity: 1.0,
                 fog: false
             }
@@ -65543,12 +65887,12 @@ class Flare
         sunMat.color.convertSRGBToLinear();
         this.sunMesh = new three__WEBPACK_IMPORTED_MODULE_0__.Mesh(sunGeo, sunMat);
         this.sunMesh.position.set(position.x*1.01, position.y*1.01, position.z*1.01);
-        cameraGroup.attach(this.sunMesh);
+        // playerTranslationGroup.attach(this.sunMesh);
     
         
         this.posAccum = 0.0;
 
-        this.stars = new Stars(cameraGroup);
+        // this.stars = new Stars(playerTranslationGroup);
 
     }
 
@@ -65633,6 +65977,7 @@ class Stars
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "GrassSystem": () => (/* binding */ GrassSystem)
@@ -65735,6 +66080,7 @@ class GrassSystem
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "gInputManager": () => (/* binding */ gInputManager),
@@ -65904,6 +66250,7 @@ class InputManager
   \***********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "KDTree": () => (/* binding */ KDTree)
@@ -66119,7 +66466,7 @@ class KDTree
         let result = this.raycast(from,to,hr);
         if (_numObjTested != _lastNumObjTested) 
         {
-            console.log("KdTree: Tested " + _numObjTested + " objects.");
+            // console.log("KdTree: Tested " + _numObjTested + " objects.");
             // hr.t = 1.0;
             // this.raycast(from, to, hr, 0, true);
         }
@@ -66276,46 +66623,58 @@ class KDTree
   \**************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "UpdateLevelGrid": () => (/* binding */ UpdateLevelGrid),
 /* harmony export */   "InitializeLevelGrid": () => (/* binding */ InitializeLevelGrid),
 /* harmony export */   "InitializeGridAssetManager": () => (/* binding */ InitializeGridAssetManager),
+/* harmony export */   "LoadGridProps": () => (/* binding */ LoadGridProps),
+/* harmony export */   "LoadGridAssets": () => (/* binding */ LoadGridAssets),
 /* harmony export */   "LevelGridRaycast": () => (/* binding */ LevelGridRaycast)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var three_mesh_bvh__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three-mesh-bvh */ "./node_modules/three-mesh-bvh/src/index.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
 /* harmony import */ var _kdTree__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./kdTree */ "./src/kdTree.js");
+/* harmony import */ var _levelLayout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./levelLayout */ "./src/levelLayout.js");
 
 
 
 
 
-const kGridSize = 25.0;
+
+const kGridSize = 32.0;
 const kOneOverGridSize = 1.0 / kGridSize;
 const kHalfGridSize = kGridSize * 0.5;
+const kVisibleRings = 2;
+
 let gGridAssetManager = null;
 let gLevelGrid = null;
 
 const kColliderStr = "Collider";
-const kColliderMaterial = new three__WEBPACK_IMPORTED_MODULE_2__.MeshBasicMaterial({color: 0x802080});
+const kColliderMaterial = new three__WEBPACK_IMPORTED_MODULE_3__.MeshBasicMaterial({color: 0x802080});
 const kShowColliders = false;
 
 const kInstanceStr = "Instance";
 const kMaxInstanceCount = 50;
 
+const RAND = __webpack_require__(/*! random-seed */ "./node_modules/random-seed/index.js").create("testing");
+
+const kRotOptions = [0, 90, 180, 270];
 const gComputeBoundsOptions = {
     lazyGeneration: false,
     strategy: three_mesh_bvh__WEBPACK_IMPORTED_MODULE_0__.SAH,
     // packData: false
 }
 
-function UpdateLevelGrid(cameraPosition)
+let tVec0 = new three__WEBPACK_IMPORTED_MODULE_3__.Vector3();
+
+function UpdateLevelGrid(cameraPosition, cameraHeading)
 {
     if (gLevelGrid)
     {
-        gLevelGrid.updateVisibility(cameraPosition);
+        gLevelGrid.updateVisibility(cameraPosition, cameraHeading);
     }
 }
 
@@ -66334,16 +66693,27 @@ function UpdateLevelGrid(cameraPosition)
 function InitializeLevelGrid( scene )
 {
     return new Promise( (resolve) => {
-        const kSize = 10;
-        gLevelGrid = new LevelGrid(-kSize, kSize, -kSize, kSize, scene);
+        // const kSize = 10;
+        gLevelGrid = new LevelGrid(_levelLayout__WEBPACK_IMPORTED_MODULE_2__.levelLayoutTest, scene);
+        // gLevelGrid = new LevelGrid(-kSize, kSize, -kSize, kSize, scene);
         resolve();
     });
 }
 
-// Returns a promise
+
 function InitializeGridAssetManager()
 {
     gGridAssetManager = new GridAssetManager();
+}
+// Returns a promise
+function LoadGridProps()
+{
+    return gGridAssetManager.loadProps();
+}
+
+// Returns a promise
+function LoadGridAssets() 
+{
     return gGridAssetManager.loadAssets();
 }
 
@@ -66360,14 +66730,15 @@ function LevelGridRaycast(from, to, hr)
 
 class GridSquare
 {
-    constructor(xIndex, zIndex, assetId)
+    constructor(xIndex, zIndex, assetId, rotation)
     {
-        this.origin = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3(xIndex * kGridSize, 0.0, zIndex * kGridSize);
+        this.origin = new three__WEBPACK_IMPORTED_MODULE_3__.Vector3(xIndex * kGridSize, 0.0, zIndex * kGridSize);
         this.asset = null;
         this.levelGrid = null;
         this.assetId = assetId;
         this.xIndex = xIndex;
         this.zIndex = zIndex;
+        this.rotation = rotation;
     }
 
     isInLevelGrid()
@@ -66377,7 +66748,7 @@ class GridSquare
 
     addToLevelGrid(levelGrid)
     {
-        console.log("ADD Grid[" + this.xIndex + ", " + this.zIndex + "] to scene.");
+        // console.log("ADD Grid[" + this.xIndex + ", " + this.zIndex + "] to scene.");
         this.levelGrid = levelGrid;
 
         // get asset from asset pool -- this is a THREE.Group
@@ -66385,6 +66756,7 @@ class GridSquare
 
         // set its position to my origin
         this.asset.position.copy(this.origin);
+        this.asset.rotation.y = this.rotation;
         this.asset.updateWorldMatrix(false, false);
 
         // add it to the scene
@@ -66398,6 +66770,11 @@ class GridSquare
             {
                 this.levelGrid.kdTree.insert(child);
             }
+            else if (child.isInstancedMesh)
+            {
+                child.instanceMatrix.needsUpdate = true;
+            }
+
         });
         // this.levelGrid.kdTree.insert(this.asset);
     }
@@ -66430,43 +66807,94 @@ class GridSquare
     {
         this.asset.renderOrder = order;
     }
+
+    setVisibility(newVis)
+    {
+        this.asset.visible = newVis;
+    }
+    isVisible()
+    {
+        return this.asset.visible;
+    }
 }
 
 
 
-class LevelGrid extends three__WEBPACK_IMPORTED_MODULE_2__.Group
+class LevelGrid extends three__WEBPACK_IMPORTED_MODULE_3__.Group
 {
-    constructor(xGridMin, xGridMax, zGridMin, zGridMax, scene)
+    constructor(layout, scene) //xGridMin, xGridMax, zGridMin, zGridMax, scene)
     {
         super();
 
-        this.xGridMin = xGridMin;
-        this.xGridMax = xGridMax;
-        this.zGridMin = zGridMin;
-        this.zGridMax = zGridMax;
+        console.assert(layout.length > 0);
+        let zRange = layout.length;
+        let xRange = layout[0].length;
+        // layout.forEach((row) => { xRange = Math.max(xRange, row.length)}) / 2;
 
-        this.xGridSquares = xGridMax - xGridMin + 1;
-        this.zGridSquares = zGridMax - zGridMin + 1;
+        // this.xGridMin = Math.floor(xRange * -0.5);
+        // this.xGridMax = this.xGridMin + xRange;
+
+        // this.yGridMin = Math.floor(zRange * -0.5);
+        // this.yGridMax = this.yGridMin + zRange;
+
+        
+        // this.xGridMin = xGridMin;
+        // this.xGridMax = xGridMax;
+        // this.zGridMin = zGridMin;
+        // this.zGridMax = zGridMax;
+
+        this.xGridSquares = xRange / 2; //xGridMax - xGridMin + 1;
+        this.zGridSquares = zRange; //zGridMax - zGridMin + 1;
+        this.xGridMin = 0;
+        this.xGridMax = this.xGridSquares - 1;
+        this.zGridMin = 0;
+        this.zGridMax = this.zGridSquares - 1;
+
         this.squares = new Array(this.xGridSquares * this.zGridSquares);
         
+        this.lastPlayerGridX = Number.MAX_VALUE;
+        this.lastPlayerGridZ = Number.MAX_VALUE;
+
         let i = 0;
-        for(let z = zGridMin; z <= zGridMax; z++)
+        for(let z = 0; z < zRange; z++) // zGridMin; z <= zGridMax; z++)
         {
+            let row = layout[z];
+            console.assert(row.length == xRange);
+            for (let x = 0; x < xRange; x +=2)
+            {
+                if (row[x] == ".")
+                    continue; // NULL SQUARE
+                let rotSignal = row[x+1];
+                let rot = (rotSignal == '-') ? 0.0 :
+                    (rotSignal == '<') ? 90.0 : 
+                    (rotSignal == '|') ? 180.0 : 
+                    (rotSignal == '>') ? 270.0 : 
+                    (rotSignal == '*') ? (kRotOptions[RAND.intBetween(0,3)]) : 
+                    -1.0;
+                console.assert(rot >= 0.0);
+                this.squares[x/2 + z * this.xGridSquares] = new GridSquare(x/2, z, parseInt(row[x]),  (rot * Math.PI / 180.0));
+                // break;
+            }
+
+            /*
+            let pad = Math.floor(zRange - row.length)
             for (let x = xGridMin; x <= xGridMax; x++)
             {
                 this.squares[x + z * this.xGridSquares] = new GridSquare(x,z, Math.floor(Math.random() * 3.0)); //2); //Math.random() > 0.5 ? 1 : 0);
             }
+            */
         }
 
         this.scene = scene;
         scene.add(this);
 
-        let box = new three__WEBPACK_IMPORTED_MODULE_2__.Box3(new three__WEBPACK_IMPORTED_MODULE_2__.Vector3((xGridMin - 1) * kGridSize, -50, (zGridMin-1) * kGridSize), new three__WEBPACK_IMPORTED_MODULE_2__.Vector3((xGridMax+1) * kGridSize, 50, (zGridMax+1) * kGridSize) );
+
+        let box = new three__WEBPACK_IMPORTED_MODULE_3__.Box3(new three__WEBPACK_IMPORTED_MODULE_3__.Vector3((this.xGridMin - 1) * kGridSize, -50, (this.zGridMin-1) * kGridSize), new three__WEBPACK_IMPORTED_MODULE_3__.Vector3((this.xGridMax+1) * kGridSize, 50, (this.zGridMax+1) * kGridSize) );
         this.kdTree = new _kdTree__WEBPACK_IMPORTED_MODULE_1__.KDTree(box,[]);
 
         this.visibleSet = [];
 
-        this.updateVisibility(new three__WEBPACK_IMPORTED_MODULE_2__.Vector3(0,0,0));
+        // this.updateVisibility(new THREE.Vector3(0,0,0));
         // this.kdTree.setObjectsVisibleAtLevel(0);
         this.kdTreeVisLevel = -1;
 
@@ -66485,25 +66913,35 @@ class LevelGrid extends three__WEBPACK_IMPORTED_MODULE_2__.Group
             this.kdTreeVisLevel = Math.min(this.kdTreeVisLevel + 1, 12);
             this.kdTree.setObjectsVisibleAtLevel(this.kdTreeVisLevel);
         }
+        else if (event.code == "Slash")
+        {
+            this.logNextVisUpdate = true;
+        }
     }
 
-    updateVisibility(position)
+    updateVisibility(position, heading)
     {
         // player is at position
         // determine which grid square this falls into
         let playerGridX = Math.floor((position.x + kHalfGridSize) * kOneOverGridSize);
         let playerGridZ = Math.floor((position.z + kHalfGridSize) * kOneOverGridSize);
         
+        if (this.logNextVisUpdate)
+        {
+            console.log("PLAYER X: " + playerGridX + ", Z: " + playerGridZ);
+            this.logNextVisUpdate = false;
+        }
 
         // determine grid ranges around this
 
-        let minX = Math.max(playerGridX - 2, this.xGridMin);
-        let maxX = Math.min(playerGridX + 2, this.xGridMax);
-        let minZ = Math.max(playerGridZ - 2, this.zGridMin);
-        let maxZ = Math.min(playerGridZ + 2, this.zGridMax);
+        let minX = Math.max(playerGridX - kVisibleRings, this.xGridMin);
+        let maxX = Math.min(playerGridX + kVisibleRings, this.xGridMax);
+        let minZ = Math.max(playerGridZ - kVisibleRings, this.zGridMin);
+        let maxZ = Math.min(playerGridZ + kVisibleRings, this.zGridMax);
         
         // prune any currently visible squares that are outside that set
-        let bVisibilityChanged = false;
+        let bVisibilityChanged = playerGridX != this.lastPlayerGridX || playerGridZ != this.lastPlayerGridZ;
+
         for (let i = 0; i < this.visibleSet.length; i++)
         {
             let square = this.visibleSet[i];
@@ -66514,15 +66952,16 @@ class LevelGrid extends three__WEBPACK_IMPORTED_MODULE_2__.Group
                 square.zIndex < minZ || square.zIndex > maxZ)
             {
                 square.removeFromLevelGrid();
-
-                bVisibilityChanged = true;
             }
         }
 
-        if (bVisibilityChanged || this.visibleSet.length == 0)
+        if (bVisibilityChanged)
         {
+
+            this.lastPlayerGridX = playerGridX;
+            this.lastPlayerGridZ = playerGridZ;
             
-            console.log("UPDATE VISIBILITY: " + position.x + ", " + position.z + " ==> " + playerGridX + ", " + playerGridZ);
+            // console.log("UPDATE VISIBILITY: " + position.x + ", " + position.z + " ==> " + playerGridX + ", " + playerGridZ);
 
             this.visibleSet.fill(null);
             
@@ -66533,6 +66972,9 @@ class LevelGrid extends three__WEBPACK_IMPORTED_MODULE_2__.Group
                 for (let x = minX; x <= maxX; x++)
                 {
                     let square = this.squares[x + z * this.xGridSquares];
+                    if (square == null)
+                        continue;
+
                     if (!square.isInLevelGrid())
                     {
                         square.addToLevelGrid(this); //(this.scene);
@@ -66553,6 +66995,14 @@ class LevelGrid extends three__WEBPACK_IMPORTED_MODULE_2__.Group
 
             console.log("VISIBLE SET SIZE: " + index);
         }
+
+        // Rough frustum culling -- @TODO - do something like what's mentioned in this thread:
+        // https://discourse.threejs.org/t/how-to-do-frustum-culling-with-instancedmesh/22633
+        // Note that even with the borked implementation (which over-culled) this didn't help with performance
+        // Rendering the trees is too expensive at the fragment-shader level
+        if (false)
+        {}
+
     }
 }
 
@@ -66560,23 +67010,59 @@ class GridAssetManager
 {
     constructor()
     {
+        this.propAssets = [];
         this.gridAssets = [];
         this.instancedPropAssets = [];
-        this.gltfLoader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__.GLTFLoader();
+        this.gltfLoader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_4__.GLTFLoader();
     }
 
+    loadProps()
+    {
+        let propPromises = [];
+        this.loadPropAsset(0, "./content/dead_tree_2.gltf", 10, 15, propPromises);
+        this.loadPropAsset(1, "./content/big_rock.gltf", 3, 5, propPromises);
+        // this.loadPropAsset(0, "./content/inverted_cone.gltf", propPromises);
+
+        return Promise.all(propPromises);
+    }
     loadAssets()
     {
         // let instancedPropPromises = [];
         // loadInstancedPropAsset(kTreeInstance, "./content/dead_tree_1.gltf", instancedPropPromises);
 
+        console.assert(this.propAssets.length > 0);
+        
         let gridPromises = [];
-        this.loadGridAsset(0, "./content/TerrainSquare2.gltf", gridPromises);
-        this.loadGridAsset(1, "./content/TerrainSquare3.gltf", gridPromises);
-        this.loadGridAsset(2, "./content/TerrainSquare4.gltf", gridPromises);
-        // loadGridAsset(3, "./content/TerrainSquare5.gltf", gridPromises);
+        this.loadGridAsset(0, "./content/Terrain_Area_Flat.gltf", gridPromises);
+        this.loadGridAsset(1, "./content/Terrain_Area_StraightEdge.gltf", gridPromises);
+        this.loadGridAsset(2, "./content/Terrain_Area_90deg.gltf", gridPromises);
+        this.loadGridAsset(3, "./content/Terrain_Area_Entrance.gltf", gridPromises);
+        this.loadGridAsset(4, "./content/Terrain_Path_Straight.gltf", gridPromises);
+        this.loadGridAsset(5, "./content/Terrain_Path_90deg.gltf", gridPromises);
 
         return Promise.all(gridPromises);
+
+        // this.loadGridAsset(0, "./content/TerrainSquare2.gltf", gridPromises);
+        // this.loadGridAsset(1, "./content/TerrainSquare3.gltf", gridPromises);
+        // this.loadGridAsset(2, "./content/TerrainSquare4.gltf", gridPromises);
+        // loadGridAsset(3, "./content/TerrainSquare5.gltf", gridPromises);
+
+        // return new Promise( (resolve) =>
+        // {
+        //     Promise.all(propPromises).then( (values) => {
+        //         return Promise.all(gridPromises);
+        //     }).then( () => {resolve()});
+
+        // });
+        // Promise.all(propPromises)
+        
+        // .then(Promise.all(gridPromises));
+        // return new Promise( (resolve) => 
+        // {
+        //     Promise.all(propPromises).then( Promise.all(gridPromises)() => {return Promise.all(gridPromises)}).then( ()=>{ resolve()});
+        // })
+        // return Promise.all(propPromises).then(
+            // () => { return Promise.all(gridPromises)});
     }
 
     loadGridAsset(id, path, promises)
@@ -66584,13 +67070,15 @@ class GridAssetManager
         promises.push(
             new Promise((resolve, reject) =>
             {
+                console.assert(this.propAssets.length > 0);
                 this.gltfLoader.load(path, (gltf) => 
                 {
-                    let gridGroup = new three__WEBPACK_IMPORTED_MODULE_2__.Group();
+                    let gridGroup = new three__WEBPACK_IMPORTED_MODULE_3__.Group();
                     gridGroup.name = "Grid Asset" + id + ": " + path;
 
                     let instancedMeshes = {};
-                    let matrix = new three__WEBPACK_IMPORTED_MODULE_2__.Matrix4();                
+                    let matrix = new three__WEBPACK_IMPORTED_MODULE_3__.Matrix4();                
+                    let position = new three__WEBPACK_IMPORTED_MODULE_3__.Vector3();
 
                     let colliders = [];
 
@@ -66609,7 +67097,7 @@ class GridAssetManager
                             let instMesh = instancedMeshes[instName];
                             if (instMesh == null)
                             {
-                                let mesh = new three__WEBPACK_IMPORTED_MODULE_2__.InstancedMesh(
+                                let mesh = new three__WEBPACK_IMPORTED_MODULE_3__.InstancedMesh(
                                     obj.geometry,
                                     obj.material,
                                     kMaxInstanceCount
@@ -66654,7 +67142,11 @@ class GridAssetManager
                             // Any non-instanced props can be added to the gridGroup directly
                             obj.geometry.computeBoundsTree(gComputeBoundsOptions);
                             obj.isCollider = true;
+                            let newMat = new three__WEBPACK_IMPORTED_MODULE_3__.MeshPhongMaterial({color: 0x303030}); //0x202020}); // obj.material.color});
+                            obj.material = newMat;
+
                             gridGroup.add(obj);
+                            // obj.material.wireframe = true;
                         }
                         else
                         {
@@ -66679,6 +67171,106 @@ class GridAssetManager
                         }
                     }
 
+                    if (true)
+                    {
+                        // HACK! Need to figure out how to get this properly at some point
+                        let terrain = gridGroup.children[0];
+
+                        let raycaster = new three__WEBPACK_IMPORTED_MODULE_3__.Raycaster();
+                        let direction = new three__WEBPACK_IMPORTED_MODULE_3__.Vector3(0.0, -1.0, 0.0);
+                        let rotation = new three__WEBPACK_IMPORTED_MODULE_3__.Quaternion();
+                        let scale = new three__WEBPACK_IMPORTED_MODULE_3__.Vector3(1.0,1.0,1.0);
+                        let intersections = [];
+
+                        let numProps = this.propAssets.length;
+                        for (let i = 0; i < numProps; i++)
+                        {
+                            // create an instanced mesh for the randomly placed assets
+                            let propAsset = this.propAssets[i];
+                            let prop = propAsset.prop;
+                            let kInstances = RAND.intBetween(propAsset.min, propAsset.max); // 15;
+                            let instAutoMesh = new three__WEBPACK_IMPORTED_MODULE_3__.InstancedMesh(prop.geometry, prop.material, kInstances);
+
+                            let count = 0;
+                            while (count < kInstances)
+                            {
+                                // create random position
+                                position.set(
+                                    Math.min(
+                                        Math.max(
+                                            RAND.random() * kGridSize - kHalfGridSize, 
+                                            -kHalfGridSize + 0.1), 
+                                        kHalfGridSize - 0.1),
+                                    150.0,
+                                    Math.min(
+                                        Math.max(
+                                            RAND.random() * kGridSize - kHalfGridSize, 
+                                            -kHalfGridSize + 0.1), 
+                                        kHalfGridSize - 0.1)
+                                );
+
+                                // raycast against the existing grid group to find the height
+                                raycaster.set(position, direction);
+                                raycaster.near = 0.0;
+                                raycaster.far = 500.0;
+                                intersections.length = 0;
+                                terrain.raycast(raycaster, intersections);
+                                
+                                if (intersections.length < 1)
+                                {
+                                    console.log("NO COLLISION");
+                                    continue;
+                                }
+
+                                intersections.sort((a, b) => {
+                                    return a.distance - b.distance;
+                                });
+
+                                let int = intersections[0];
+
+                                if (int.face.normal.y < 0.8)
+                                    continue;
+
+                                if (intersections.length > 1)
+                                {
+                                    console.log("int 0 = " + intersections[0].distance + ", int 1 = " + intersections[1].distance);
+                                }
+
+                                // construct the position matrix and set it in the instance mesh
+                                // position.y -= intersections[0].distance + 0.05; //50.0 - intersections[0].distance - 0.1;
+                                scale.x = scale.y = scale.z = RAND.floatBetween(0.5, 1.2);
+                                scale.y += RAND.floatBetween(-0.1, 0.1);
+                                // scale.x = RAND.floatBetween(0.7, 1.1);
+                                // scale.y = RAND.floatBetween(0.8, 1.1);
+                                // scale.z = scale.z;
+                                // scale.x = (Math.random() * 0.5) + 0.6;
+                                // scale.z = scale.x;
+                                // scale.y = (Math.random() * 0.5) + 0.2;
+
+                                rotation.setFromAxisAngle(three__WEBPACK_IMPORTED_MODULE_3__.Object3D.DefaultUp, RAND.random() * 2.0 * Math.PI);
+                                matrix.compose(intersections[0].point, rotation, scale);
+                            
+                                instAutoMesh.setMatrixAt(count++, matrix);
+
+                                // create the collision mesh and add it to the group
+                                let colliderMesh = prop.clone();
+                                colliderMesh.applyMatrix4(matrix);
+                                colliderMesh.material = kColliderMaterial;
+                                colliderMesh.visible = kShowColliders;
+                                colliderMesh.isCollider = true; //remember it so it can be added to the kdtree
+                                gridGroup.add(colliderMesh); //add it to the group so it's positioned properly
+
+                            }
+                        
+                            // update the instance mesh
+                            instAutoMesh.instanceMatrix.needsUpdate = true;
+
+                            // add it to the group
+                            gridGroup.add(instAutoMesh);
+                        }
+
+                    }
+
                     this.gridAssets[id] = {
                         prototype: gridGroup,
                         pool: [],  //@TODO -- can we allocate the array to some reasonable size but keep length at zero?
@@ -66687,6 +67279,37 @@ class GridAssetManager
                     resolve();
                 })
 
+            }));
+    }
+
+    loadPropAsset(id, path, min, max, promises)
+    {
+        promises.push(
+            new Promise((resolve, reject) =>
+            {
+                this.gltfLoader.load(path, (gltf) => 
+                {
+                    let material = null;
+                    gltf.scene.traverse( (node) => {
+                        if (node.material && material === null)
+                        {
+                            material = new three__WEBPACK_IMPORTED_MODULE_3__.MeshPhongMaterial(
+                                {
+                                    color: node.material.color,
+                                    shininess: 1.0 - node.material.roughness
+                                }
+                            );
+                        }
+                        node.material = material;
+                    });
+                    this.propAssets[id] = {
+                        prop: gltf.scene.children[0],
+                        min: min,
+                        max: max
+                    };
+                    console.log("Finished loading prop: " + path)
+                    resolve();
+                });
             }));
     }
 
@@ -66729,12 +67352,80 @@ class GridAssetManager
 
 /***/ }),
 
+/***/ "./src/levelLayout.js":
+/*!****************************!*\
+  !*** ./src/levelLayout.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "levelLayoutTest": () => (/* binding */ levelLayoutTest)
+/* harmony export */ });
+
+// - --> not rotated
+// < --> rotated 90 deg CCW
+// > --> rotated 90 deg CW
+// | --> rotated 180 deg
+
+// Shapes
+// 0 == terrain area
+// 1 == terrain area straight edge, +X is elevated, -X is ground level
+// 2 == terrain area 90 deg, -X and -Y are elevated
+// 3 == terrain area entrance
+// 4 == terrain path straight
+// 5 == terrain path 90 deg
+
+// ? == terrain path 90 degree, -X and -Y are elevated
+
+const levelLayoutTest = 
+[
+        "..........................",
+        "..2>1|1|3|1|2|............",
+        "..1>0*0*0*0*3<4<5<........",
+        "..3>0*0*0*0*1<............",
+        "..1>0*0*0*0*3<5|..........",
+        "..2-1-3-1-1-2<4|2>1|2|....",
+        "......4|......4|1>0-1<....",
+        "..............5-3>0-1<....",
+        "................1>0-1<....",
+        "................2-1-2<....",
+]
+
+// export const levelLayoutTest = 
+// [
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+//         "0|0|0|0|1>0|0|1<",
+        
+//         // "..2>1|1|3|1|2|............",
+//         // "..1>0-0-0-0-3<4<5<........",
+//         // "..3>0-0-0-0-1<............",
+//         // "..1>0-0-0-0-3<5|..........",
+//         // "..2-1-3-1-1-2<4|2>1|2|....",
+//         // "......4|......4|1>0-1<....",
+//         // "..............5-3>0-1<....",
+//         // "................1>0-1<....",
+//         // "................2-1-2<....",
+// ]
+
+/***/ }),
+
 /***/ "./src/playerController.js":
 /*!*********************************!*\
   !*** ./src/playerController.js ***!
   \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "PlayerController": () => (/* binding */ PlayerController)
@@ -66754,6 +67445,8 @@ let hr = {t: 1.0};
 let _vector0 = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
 let _vector1 = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
 
+const bAllowFalling = true;
+
 class PlayerController
 {
     constructor(scene, camera)
@@ -66765,7 +67458,8 @@ class PlayerController
 
         this.translationGroup = new three__WEBPACK_IMPORTED_MODULE_2__.Group();
         this.translationGroup.position.copy(camera.position);
-        this.translationGroup.position.y = 0.5;
+        this.translationGroup.position.set(150, 10.5, 75);
+        // this.translationGroup.position.y = 10.5;
         this.translationGroup.add(camera);
         this.bIsFalling = false;
 
@@ -66826,7 +67520,7 @@ class PlayerController
         // Move forward
         let movementScale = 8.0 * dt;
         _translation.set(0,0,0);
-        if (this.bIsFalling)
+        if (bAllowFalling && this.bIsFalling)
         {
             _vector0.copy(this.velocity);
             _vector0.y = 0.0;
@@ -66869,17 +67563,20 @@ class PlayerController
             //falling
             this.translationGroup.position.y = _translation.y; // _vector0.y;
             
-            if (!this.bIsFalling)
+            if (bAllowFalling)
             {
-                this.bIsFalling = true;
+                if (!this.bIsFalling)
+                {
+                    this.bIsFalling = true;
 
-                // start falling -- retain the XZ velocity from this frame
-                this.velocity.addScaledVector(_forwardVector, forward * 8.0);
-                this.velocity.addScaledVector(_sidewaysVector, sideways * 8.0);
+                    // start falling -- retain the XZ velocity from this frame
+                    this.velocity.addScaledVector(_forwardVector, forward * 8.0);
+                    this.velocity.addScaledVector(_sidewaysVector, sideways * 8.0);
+                }
+
+                // increase falling velocity every frame -- @TODO - add a terminal velocity?
+                this.velocity.y += -8.0 * dt;
             }
-
-            // increase falling velocity every frame -- @TODO - add a terminal velocity?
-            this.velocity.y += -8.0 * dt;
         }
 
     }
@@ -66887,6 +67584,14 @@ class PlayerController
     getPosition(result)
     {
         result.copy(this.translationGroup.position);
+    }
+    getHeading(result)
+    {
+        this.translationGroup.getWorldDirection(result);
+    }
+    getTranslationGroup()
+    {
+        return this.translationGroup;
     }
 
 }
@@ -66950,8 +67655,9 @@ class PlayerController
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
+"use strict";
 /*!***********************!*\
   !*** ./src/forest.js ***!
   \***********************/
@@ -67040,14 +67746,18 @@ function initialize()
     renderer = new three__WEBPACK_IMPORTED_MODULE_7__.WebGLRenderer( {antialias: true}); //, stencil:false, depth:false}); 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    // renderer.xr.setFramebufferScaleFactor(1.0);
+    renderer.xr.setFramebufferScaleFactor(1.0);
 
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_7__.sRGBEncoding;
     renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_7__.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0; //0.285;
 
-    let clearColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x202045); // new THREE.Color(0.97, 0.98, 1.0);
+
+    (0,_inputManager__WEBPACK_IMPORTED_MODULE_5__.InitializeInputManager)(renderer.xr);
+    playerController = new _playerController__WEBPACK_IMPORTED_MODULE_6__.PlayerController(scene, camera);
+
+    let clearColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x606075); //0x000000); // new THREE.Color(0.97, 0.98, 1.0);
     clearColor.convertSRGBToLinear();
     renderer.setClearColor(clearColor);
 
@@ -67056,23 +67766,23 @@ function initialize()
 
     let sunColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0.87, 0.88, 1.0);
     sunColor.convertSRGBToLinear();
-    let moonLight = new three__WEBPACK_IMPORTED_MODULE_7__.DirectionalLight(sunColor, 2.3); //1.185); //1.25); //2.0);
+    let moonLight = new three__WEBPACK_IMPORTED_MODULE_7__.DirectionalLight(sunColor, 0.28); //2.3); //1.185); //1.25); //2.0);
     moonLight.position.set(0.0, 1.0, 1.0);
     scene.add(moonLight);
 
-    let ambientColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0.31, 0.31, 0.7); //(0.05, 0.05, 0.3); //1.0, 0.88, 0.87);
+    let ambientColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0.31, 0.31, 0.5); //(0.05, 0.05, 0.3); //1.0, 0.88, 0.87);
     ambientColor.convertSRGBToLinear();
     let ambient = new three__WEBPACK_IMPORTED_MODULE_7__.AmbientLight(ambientColor, 0.6315); //0.25); //1.85);
     scene.add(ambient);
 
-    let fog = new three__WEBPACK_IMPORTED_MODULE_7__.FogExp2(clearColor.getHex(), 0.023);
+    let fog = new three__WEBPACK_IMPORTED_MODULE_7__.FogExp2(clearColor.getHex(), 0.024); //0.023);
     // let fog = new THREE.Fog(clearColor.getHex(), 10, 30);
     scene.fog = fog;
 
     let moonDirectionVector = moonLight.position.clone();
     moonDirectionVector.normalize();
     moonDirectionVector.multiplyScalar(100.0);
-    // moon = new Flare(moonDirectionVector, scene, camera, renderer);
+    moon = new _flare_js__WEBPACK_IMPORTED_MODULE_1__.Flare(moonDirectionVector, scene, playerController, renderer);
 
 
     // grass = new GrassSystem(scene, renderer);
@@ -67084,9 +67794,14 @@ function initialize()
 
     if (!gSimpleKDTree)
     {
-        let assetManagerPromise = (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.InitializeGridAssetManager)();
+        (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.InitializeGridAssetManager)();
+        // let assetManagerPromise = InitializeGridAssetManager();
 
-        assetManagerPromise.then( 
+        (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.LoadGridProps)().then(
+            ()=> { 
+                return (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.LoadGridAssets)(); 
+            }
+        ).then( 
             ()=>{
                 return (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.InitializeLevelGrid)(scene);
             }
@@ -67129,8 +67844,10 @@ function initialize()
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(three_examples_jsm_webxr_VRButton_js__WEBPACK_IMPORTED_MODULE_9__.VRButton.createButton(renderer));
 
-    (0,_inputManager__WEBPACK_IMPORTED_MODULE_5__.InitializeInputManager)(renderer.xr);
-    playerController = new _playerController__WEBPACK_IMPORTED_MODULE_6__.PlayerController(scene, camera);
+
+    torch = new three__WEBPACK_IMPORTED_MODULE_7__.PointLight(0xee8020, 2.0, 5.0);
+    // playerController.translationGroup.add(torch);
+    // torch.position.y += 1.5;
 
 
     /*
@@ -67170,17 +67887,18 @@ let frameNumber = 0;
 function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
 
-    // frameNumber++;
-    // if ((frameNumber % 3) == 0)
-    // {
-    //     torch.intensity += getRandomFloatInRange(-0.15, 0.15);
-    // }
+    frameNumber++;
+    if ((frameNumber % 3) == 0)
+    {
+        torch.intensity += getRandomFloatInRange(-0.25, 0.25);
+    }
 
     //updateInput(dt);
     playerController.update(dt);
 
     playerController.getPosition(tVec0);
-    (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.UpdateLevelGrid)(tVec0);
+    playerController.getHeading(tVec1);
+    (0,_levelGrid__WEBPACK_IMPORTED_MODULE_0__.UpdateLevelGrid)(tVec0, tVec1);
 
     // moon.update(dt);
     // grass.update(dt, cameraTranslationGroup.position);

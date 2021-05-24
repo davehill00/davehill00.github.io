@@ -2,10 +2,10 @@ import * as THREE from 'three';
 
 export class Flare
 {
-    constructor(position, scene, camera, renderer)
+    constructor(position, scene, playerController, renderer)
     {
 
-        let cameraGroup = camera.parent.parent;
+        let playerTranslationGroup = playerController.getTranslationGroup();
 
         var texture = new THREE.TextureLoader().load('./content/sunflare.png');
         let geo = new THREE.PlaneGeometry(5.0, 5.0, 1, 1);
@@ -21,12 +21,12 @@ export class Flare
         );
         this.mesh = new THREE.Mesh(geo, mat);
         this.mesh.position.set(position.x, position.y, position.z);
-        cameraGroup.attach(this.mesh);
+        // playerTranslationGroup.attach(this.mesh);
         //zone.addSceneObject(this.mesh);
 
 
         // this.zone = zone;
-        this.camera = camera;
+        // this.camera = camera;
         this.renderer = renderer;
         this.camHeading = new THREE.Vector3(0,0,0);
         this.toFlarePos = new THREE.Vector3(0,0,0);
@@ -37,7 +37,7 @@ export class Flare
         let sunMat = new THREE.MeshBasicMaterial(
             {
                 color: 0xffffff,
-                side: THREE.FrontSide,
+                side: THREE.DoubleSide,
                 opacity: 1.0,
                 fog: false
             }
@@ -45,12 +45,12 @@ export class Flare
         sunMat.color.convertSRGBToLinear();
         this.sunMesh = new THREE.Mesh(sunGeo, sunMat);
         this.sunMesh.position.set(position.x*1.01, position.y*1.01, position.z*1.01);
-        cameraGroup.attach(this.sunMesh);
+        // playerTranslationGroup.attach(this.sunMesh);
     
         
         this.posAccum = 0.0;
 
-        this.stars = new Stars(cameraGroup);
+        // this.stars = new Stars(playerTranslationGroup);
 
     }
 

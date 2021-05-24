@@ -9,6 +9,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "random-seed": "^0.3.0",
     "three": "^0.128.0",
     "three-mesh-bvh": "^0.3.7"
   },

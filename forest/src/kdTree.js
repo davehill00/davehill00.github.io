@@ -207,7 +207,7 @@ export class KDTree
         let result = this.raycast(from,to,hr);
         if (_numObjTested != _lastNumObjTested) 
         {
-            console.log("KdTree: Tested " + _numObjTested + " objects.");
+            // console.log("KdTree: Tested " + _numObjTested + " objects.");
             // hr.t = 1.0;
             // this.raycast(from, to, hr, 0, true);
         }

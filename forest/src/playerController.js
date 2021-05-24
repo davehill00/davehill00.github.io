@@ -10,6 +10,8 @@ let hr = {t: 1.0};
 let _vector0 = new THREE.Vector3();
 let _vector1 = new THREE.Vector3();
 
+const bAllowFalling = true;
+
 export class PlayerController
 {
     constructor(scene, camera)
@@ -21,7 +23,8 @@ export class PlayerController
 
         this.translationGroup = new THREE.Group();
         this.translationGroup.position.copy(camera.position);
-        this.translationGroup.position.y = 0.5;
+        this.translationGroup.position.set(150, 10.5, 75);
+        // this.translationGroup.position.y = 10.5;
         this.translationGroup.add(camera);
         this.bIsFalling = false;
 
@@ -82,7 +85,7 @@ export class PlayerController
         // Move forward
         let movementScale = 8.0 * dt;
         _translation.set(0,0,0);
-        if (this.bIsFalling)
+        if (bAllowFalling && this.bIsFalling)
         {
             _vector0.copy(this.velocity);
             _vector0.y = 0.0;
@@ -125,17 +128,20 @@ export class PlayerController
             //falling
             this.translationGroup.position.y = _translation.y; // _vector0.y;
             
-            if (!this.bIsFalling)
+            if (bAllowFalling)
             {
-                this.bIsFalling = true;
+                if (!this.bIsFalling)
+                {
+                    this.bIsFalling = true;
 
-                // start falling -- retain the XZ velocity from this frame
-                this.velocity.addScaledVector(_forwardVector, forward * 8.0);
-                this.velocity.addScaledVector(_sidewaysVector, sideways * 8.0);
+                    // start falling -- retain the XZ velocity from this frame
+                    this.velocity.addScaledVector(_forwardVector, forward * 8.0);
+                    this.velocity.addScaledVector(_sidewaysVector, sideways * 8.0);
+                }
+
+                // increase falling velocity every frame -- @TODO - add a terminal velocity?
+                this.velocity.y += -8.0 * dt;
             }
-
-            // increase falling velocity every frame -- @TODO - add a terminal velocity?
-            this.velocity.y += -8.0 * dt;
         }
 
     }
@@ -143,6 +149,14 @@ export class PlayerController
     getPosition(result)
     {
         result.copy(this.translationGroup.position);
+    }
+    getHeading(result)
+    {
+        this.translationGroup.getWorldDirection(result);
+    }
+    getTranslationGroup()
+    {
+        return this.translationGroup;
     }
 
 }

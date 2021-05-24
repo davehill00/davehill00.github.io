@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
-import { InitializeGridAssetManager, InitializeLevelGrid, UpdateLevelGrid, LevelGridRaycast } from './levelGrid';
+import { InitializeGridAssetManager, InitializeLevelGrid, UpdateLevelGrid, LevelGridRaycast, LoadGridProps, LoadGridAssets } from './levelGrid';
 import {Flare} from './flare.js';
 import { GrassSystem } from './grass';
 import { KDTree } from './kdTree';
@@ -71,14 +71,18 @@ function initialize()
     renderer = new THREE.WebGLRenderer( {antialias: true}); //, stencil:false, depth:false}); 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    // renderer.xr.setFramebufferScaleFactor(1.0);
+    renderer.xr.setFramebufferScaleFactor(1.0);
 
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0; //0.285;
 
-    let clearColor = new THREE.Color(0x202045); // new THREE.Color(0.97, 0.98, 1.0);
+
+    InitializeInputManager(renderer.xr);
+    playerController = new PlayerController(scene, camera);
+
+    let clearColor = new THREE.Color(0x606075); //0x000000); // new THREE.Color(0.97, 0.98, 1.0);
     clearColor.convertSRGBToLinear();
     renderer.setClearColor(clearColor);
 
@@ -87,23 +91,23 @@ function initialize()
 
     let sunColor = new THREE.Color(0.87, 0.88, 1.0);
     sunColor.convertSRGBToLinear();
-    let moonLight = new THREE.DirectionalLight(sunColor, 2.3); //1.185); //1.25); //2.0);
+    let moonLight = new THREE.DirectionalLight(sunColor, 0.28); //2.3); //1.185); //1.25); //2.0);
     moonLight.position.set(0.0, 1.0, 1.0);
     scene.add(moonLight);
 
-    let ambientColor = new THREE.Color(0.31, 0.31, 0.7); //(0.05, 0.05, 0.3); //1.0, 0.88, 0.87);
+    let ambientColor = new THREE.Color(0.31, 0.31, 0.5); //(0.05, 0.05, 0.3); //1.0, 0.88, 0.87);
     ambientColor.convertSRGBToLinear();
     let ambient = new THREE.AmbientLight(ambientColor, 0.6315); //0.25); //1.85);
     scene.add(ambient);
 
-    let fog = new THREE.FogExp2(clearColor.getHex(), 0.023);
+    let fog = new THREE.FogExp2(clearColor.getHex(), 0.024); //0.023);
     // let fog = new THREE.Fog(clearColor.getHex(), 10, 30);
     scene.fog = fog;
 
     let moonDirectionVector = moonLight.position.clone();
     moonDirectionVector.normalize();
     moonDirectionVector.multiplyScalar(100.0);
-    // moon = new Flare(moonDirectionVector, scene, camera, renderer);
+    moon = new Flare(moonDirectionVector, scene, playerController, renderer);
 
 
     // grass = new GrassSystem(scene, renderer);
@@ -115,9 +119,14 @@ function initialize()
 
     if (!gSimpleKDTree)
     {
-        let assetManagerPromise = InitializeGridAssetManager();
+        InitializeGridAssetManager();
+        // let assetManagerPromise = InitializeGridAssetManager();
 
-        assetManagerPromise.then( 
+        LoadGridProps().then(
+            ()=> { 
+                return LoadGridAssets(); 
+            }
+        ).then( 
             ()=>{
                 return InitializeLevelGrid(scene);
             }
@@ -160,8 +169,10 @@ function initialize()
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(VRButton.createButton(renderer));
 
-    InitializeInputManager(renderer.xr);
-    playerController = new PlayerController(scene, camera);
+
+    torch = new THREE.PointLight(0xee8020, 2.0, 5.0);
+    // playerController.translationGroup.add(torch);
+    // torch.position.y += 1.5;
 
 
     /*
@@ -201,17 +212,18 @@ let frameNumber = 0;
 function render() {
     let dt = Math.min(clock.getDelta(), 0.0333);
 
-    // frameNumber++;
-    // if ((frameNumber % 3) == 0)
-    // {
-    //     torch.intensity += getRandomFloatInRange(-0.15, 0.15);
-    // }
+    frameNumber++;
+    if ((frameNumber % 3) == 0)
+    {
+        torch.intensity += getRandomFloatInRange(-0.25, 0.25);
+    }
 
     //updateInput(dt);
     playerController.update(dt);
 
     playerController.getPosition(tVec0);
-    UpdateLevelGrid(tVec0);
+    playerController.getHeading(tVec1);
+    UpdateLevelGrid(tVec0, tVec1);
 
     // moon.update(dt);
     // grass.update(dt, cameraTranslationGroup.position);
