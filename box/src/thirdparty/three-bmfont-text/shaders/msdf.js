@@ -50,7 +50,7 @@ module.exports = function createMSDFShader (opt) {
       '}',
 
       'void main() {',
-      '  vec3 imageSample = ' + (negate ? '1.0 - ' : '') + 'texture(map, vUv).rgb;',
+      '  vec3 imageSample = ' + (negate ? '1.0 - ' : '') + 'texture(map, vUv, -1.0).rgb;',
       '  float sigDist = median(imageSample.r, imageSample.g, imageSample.b) - 0.5;',
       '  float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);',
       '  result = vec4(color.xyz, alpha * opacity);',

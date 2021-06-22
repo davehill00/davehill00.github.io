@@ -413,11 +413,94 @@ function setupHandForController(id, evt)
     }
 }
 
-function render() {
+let adjustFramerate = false;
+let lastTime = null;
+let refreshRates = [60.0, 72.0, 90.0];
+let targetRefreshRateIdx = refreshRates.length-1;
+const kMaxFrameTimeWiggleRoom = 0.01; //0.3;
+let targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs(); //1.0/refreshRates[targetRefreshRateIdx] * 1000.0; //90.0;
+
+// let desiredRefreshRate = 1.0/90.0;
+
+function computeTargetMaxFrameTimeMs()
+{
+    return ((1.0/refreshRates[targetRefreshRateIdx]) * 1000.0) * (1.0 + kMaxFrameTimeWiggleRoom); // + kMaxFrameTimeWiggleRoom;
+}
+
+let slowFrameCountCooldown = 0.0;
+let slowFrameCount = 0;
+
+function adjustTargetFrameRate(indexDelta)
+{
+    let session = renderer.xr.getSession();
+    targetRefreshRateIdx = Math.max(0, Math.min(targetRefreshRateIdx + indexDelta, refreshRates.length-1));
+    session.updateTargetFrameRate(refreshRates[targetRefreshRateIdx]);
+    // session.targetFrameRate = 
+    console.log("SETTING NEW TARGET FRAMERATE TO: " + refreshRates[targetRefreshRateIdx] );
+
+    targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs();
+    adjustFramerate = true;
+    slowFrameCount = Math.max(slowFrameCount - 50, 0);
+}
+
+function onFrameRateChange(evt)
+{
+    console.log("framerate change: " + evt);
+}
+
+function render(time) {
+
+
+    let frameMs;
+    if (lastTime !== null)
+    {
+        frameMs = time - lastTime;
+    }
+    else
+    {
+        frameMs = 16.0;
+    }
+    lastTime = time;
+
+    if (adjustFramerate)
+    {
+        if (frameMs > targetMaxFrameTimeMs * 1.5)
+        {
+            // We're running slow
+            console.log("RUNNING SLOWER THAN " + refreshRates[targetRefreshRateIdx] + " Hz (" + frameMs + " ms, " + (1000.0/frameMs).toFixed(1) + " Hz)");
+            slowFrameCount++;
+
+            slowFrameCountCooldown = time + 250.0;
+
+            if (slowFrameCount > 100)
+            {
+                // desiredRefreshRate
+                if (targetRefreshRateIdx > 0)
+                {
+                    adjustTargetFrameRate(-1);
+                    /*
+                    targetRefreshRateIdx--;
+                    targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs(); //1.0/refreshRates[targetRefreshRateIdx] * 1000.0;
+                    slowFrameCount -= 50; // give us a bit of breathing room to see if we can recover
+                    console.log("DROPPING TARGET RATE TO " + refreshRates[targetRefreshRateIdx] + " Hz (" + targetMaxFrameTimeMs + " ms)");
+                    */
+                }
+            }
+        }
+        else if (time > slowFrameCountCooldown)
+        {
+            if (slowFrameCount > 0)
+            {
+                console.log("MEETING FRAMERATE - SLOW FRAMES: " + slowFrameCount);
+            }
+            slowFrameCount = Math.max(slowFrameCount - 1, 0);        
+        }
+    }
 
     // hud.update();
 
-    let dt = Math.min(clock.getDelta(), 0.0333); // * 3.0;
+    let dt = frameMs * 0.001;
+    // let dt = Math.min(clock.getDelta(), 0.0333); // * 3.0;
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
     // TWEEN.update(accumulatedTime);
@@ -445,6 +528,26 @@ function onSessionStart()
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
     gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
     gameLogic.start();
+
+    let session = renderer.xr.getSession();
+    if (session.supportedFrameRates)
+    {
+        console.log("SUPPORTED FRAMERATES: " + session.supportedFrameRates);
+        refreshRates = session.supportedFrameRates;
+        targetRefreshRateIdx = refreshRates.length-1;
+        session.addEventListener("ontargetframeratechange", onFrameRateChange);
+        adjustTargetFrameRate(0);
+        /*
+        targetRefreshRateIdx = refreshRates.length-1;
+        session.updateTargetFrameRate(refreshRates[targetRefreshRateIdx]);
+        // session.targetFrameRate = 
+        console.log("SETTING INITIAL TARGET FRAMERATE TO: " + session.targetFrameRate );
+        
+        targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs();
+        adjustFramerate = true;
+        slowFrameCount = 0;
+        */
+    }
 }
 
 function onSessionEnd()
