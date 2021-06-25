@@ -328,6 +328,11 @@ export class BoxingSession
 
     update(dt, accumulatedTime)
     {
+        
+        if (this.state == SESSION_PAUSED)
+            return;
+
+
         if (this.doubleEndBag.visible)
         {
             this.doubleEndBag.update(dt, accumulatedTime);

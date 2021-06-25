@@ -66424,6 +66424,7 @@ function setupHandForController(id, evt)
 }
 
 let adjustFramerate = false;
+let bPause = false;
 let lastTime = null;
 let refreshRates = [60.0, 72.0, 90.0];
 let targetRefreshRateIdx = refreshRates.length-1;
@@ -66472,7 +66473,7 @@ function render(time) {
     }
     lastTime = time;
 
-    if (adjustFramerate)
+    if (adjustFramerate && !bPause)
     {
         if (frameMs > targetMaxFrameTimeMs * 1.5)
         {
@@ -66507,9 +66508,14 @@ function render(time) {
         }
     }
 
+
     // hud.update();
 
     let dt = frameMs * 0.001;
+    
+    if (false)
+    {}
+
     // let dt = Math.min(clock.getDelta(), 0.0333); // * 3.0;
     accumulatedTime += dt;
     // renderer.inputManager.update(dt, accumulatedTime);
@@ -66547,17 +66553,37 @@ function onSessionStart()
         targetRefreshRateIdx = refreshRates.length-1;
         session.addEventListener("ontargetframeratechange", onFrameRateChange);
         adjustTargetFrameRate(0);
-        /*
-        targetRefreshRateIdx = refreshRates.length-1;
-        session.updateTargetFrameRate(refreshRates[targetRefreshRateIdx]);
-        // session.targetFrameRate = 
-        console.log("SETTING INITIAL TARGET FRAMERATE TO: " + session.targetFrameRate );
-        
-        targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs();
-        adjustFramerate = true;
-        slowFrameCount = 0;
-        */
     }
+
+    session.addEventListener('visibilitychange', e => {
+        // remove hand controller while blurred
+        if(e.session.visibilityState === 'visible-blurred') 
+        {
+            bPause = true;
+            gameLogic.pause();
+            if (leftHand.glove)
+            {
+                leftHand.glove.hide();
+            }
+            if (rightHand.glove)
+            {
+                rightHand.glove.hide();
+            }
+        }
+        else
+        {
+            bPause = false;
+            gameLogic.resume();
+            if (leftHand.glove)
+            {
+                leftHand.glove.show();
+            }
+            if (rightHand.glove)
+            {
+                rightHand.glove.show();
+            }
+        }
+    });
 }
 
 function onSessionEnd()
@@ -67644,6 +67670,11 @@ class BoxingSession
 
     update(dt, accumulatedTime)
     {
+        
+        if (this.state == SESSION_PAUSED)
+            return;
+
+
         if (this.doubleEndBag.visible)
         {
             this.doubleEndBag.update(dt, accumulatedTime);
