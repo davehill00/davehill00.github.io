@@ -503,7 +503,7 @@ export class ZoneDefault extends Zone
         }
 
 
-        if (this.lookForExitInput && this.renderer.inputManager.getTriggerPressedDuration(1) > 1.0)
+        if ((true || this.lookForExitInput) && this.renderer.inputManager.getTriggerPressedDuration(1) > 1.0)
         {
             this.lookForExitInput = false;
             this.fadeOutToBlack.start(this.accumulatedTime);
