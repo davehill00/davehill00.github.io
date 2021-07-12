@@ -91,7 +91,7 @@ export class VRButton
             //'bounded-floor', 
             // 'hand-tracking',
             'high-fixed-foveation-level',
-            'low-refresh-rate'
+            // 'low-refresh-rate'
         ] };
         navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( 
             (session) => {

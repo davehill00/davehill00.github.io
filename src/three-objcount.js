@@ -16,8 +16,10 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer( {antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.xr.enabled = true;
-renderer.xr.setFramebufferScaleFactor(0.1);
+renderer.xr.setFramebufferScaleFactor(0.25);
 renderer.setClearColor(0x000000); //0x303030);
+
+renderer.useOldRenderObjectsLogic = true;
 
 let matrixOverridePose = new THREE.Matrix4().compose(
     new THREE.Vector3(0,0,10), new THREE.Quaternion().identity(), new THREE.Vector3(1,1,1));
@@ -78,7 +80,7 @@ if (currentGroup.children.length != 0)
 }
 
 var firstInvisible = -1;
-initVisibility(52); //(kSpread*kSpread*0.25)/groupSize);
+initVisibility(42); //(kSpread*kSpread*0.25)/groupSize);
 vrButton.checkForXR()
 /*
 var createGeometry = require('three-bmfont-text')
@@ -139,6 +141,12 @@ function onSelectEnd(event)
     updateVisibility(increment);
 }
 
+function onSqueezeEnd(event)
+{
+    let enableSlowPath = event.data.handedness == "left";
+    renderer.useOldRenderObjectsLogic = enableSlowPath;
+}
+
 const controllerModelFactory = new XRControllerModelFactory();
 const controllerGrip0 = renderer.xr.getControllerGrip(0);
 const model0 = controllerModelFactory.createControllerModel( controllerGrip0 );
@@ -152,10 +160,11 @@ scene.add( controllerGrip1 );
 const controller0 = renderer.xr.getController(0);
 controller0.addEventListener('selectstart', onSelectStart);
 controller0.addEventListener('selectend', onSelectEnd);
-
+controller0.addEventListener('squeezeend', onSqueezeEnd);
 const controller1 = renderer.xr.getController(1);
 controller1.addEventListener('selectstart', onSelectStart);
 controller1.addEventListener('selectend', onSelectEnd);
+controller1.addEventListener('squeezeend', onSqueezeEnd);
 
 
 document.onkeydown = function(e) {
