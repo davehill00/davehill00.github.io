@@ -65729,6 +65729,8 @@ class HeavyBag extends Bag
                         obj.material.roughness = 0.2;
                         obj.material.envMapIntensity = 0.8;
                         obj.material.envMap = this.scene.envMap;
+                        obj.material.precision = 'mediump';
+                        obj.material.needsUpdate = true;
                         obj.renderOrder = 3;
                     }
                     else if (obj.name == "PunchEffectMesh")
@@ -66933,6 +66935,8 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
                         obj.material.roughness = 0.25;
                         obj.material.envMapIntensity = 0.5;
                         obj.material.envMap = this.scene.envMap;
+                        obj.material.precision = 'mediump';
+                        obj.material.needsUpdate = true;
                     }
                 }
                 this.add(this.mesh);
@@ -68334,6 +68338,8 @@ class Glove extends THREE.Group
                     obj.name = "GLOVE " + (whichHand == 1? "LEFT " : "RIGHT " + i )
                     obj.material.roughness = 0.4;
                     obj.material.envMapIntensity = 0.7;
+                    obj.material.precision = 'mediump';
+                    obj.material.needsUpdate = true;
                 }
                 gltf.scene.renderOrder = 0; // render before everything else
                 this.add(gltf.scene);

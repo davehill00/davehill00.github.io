@@ -73,6 +73,8 @@ export class DoubleEndedBag extends Bag
                         obj.material.roughness = 0.25;
                         obj.material.envMapIntensity = 0.5;
                         obj.material.envMap = this.scene.envMap;
+                        obj.material.precision = 'mediump';
+                        obj.material.needsUpdate = true;
                     }
                 }
                 this.add(this.mesh);

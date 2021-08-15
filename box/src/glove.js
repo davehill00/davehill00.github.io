@@ -68,6 +68,8 @@ export class Glove extends THREE.Group
                     obj.name = "GLOVE " + (whichHand == 1? "LEFT " : "RIGHT " + i )
                     obj.material.roughness = 0.4;
                     obj.material.envMapIntensity = 0.7;
+                    obj.material.precision = 'mediump';
+                    obj.material.needsUpdate = true;
                 }
                 gltf.scene.renderOrder = 0; // render before everything else
                 this.add(gltf.scene);

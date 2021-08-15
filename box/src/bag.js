@@ -180,6 +180,8 @@ export class HeavyBag extends Bag
                         obj.material.roughness = 0.2;
                         obj.material.envMapIntensity = 0.8;
                         obj.material.envMap = this.scene.envMap;
+                        obj.material.precision = 'mediump';
+                        obj.material.needsUpdate = true;
                         obj.renderOrder = 3;
                     }
                     else if (obj.name == "PunchEffectMesh")
