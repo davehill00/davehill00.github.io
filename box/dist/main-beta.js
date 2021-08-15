@@ -66265,6 +66265,12 @@ function initialize()
                                 node.material.envMapIntensity = emo.intensity;
                                 node.material.roughness = emo.roughness;
                             }
+
+                            if (node.material)
+                            {
+                                node.material.precision = 'mediump';
+                                node.material.needsUpdate = true;
+                            }
                         });
 
                         // console.log("OBJECT: " + obj.name);
@@ -66551,6 +66557,10 @@ function onSessionStart()
         console.log("SUPPORTED FRAMERATES: " + session.supportedFrameRates);
         refreshRates = session.supportedFrameRates;
         targetRefreshRateIdx = refreshRates.length-1;
+        while (refreshRates[targetRefreshRateIdx] > 80)
+        {
+            targetRefreshRateIdx--;
+        }
         session.addEventListener("ontargetframeratechange", onFrameRateChange);
         adjustTargetFrameRate(0);
     }
@@ -69193,8 +69203,8 @@ class PageUI
             optionalFeatures: [ 
             //'bounded-floor', 
             // 'hand-tracking',
-            // 'high-fixed-foveation-level',
-            'low-fixed-foveation-level',
+            'high-fixed-foveation-level',
+            // 'low-fixed-foveation-level',
             // 'low-refresh-rate'
         ] };
         navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( 

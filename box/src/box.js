@@ -255,6 +255,12 @@ function initialize()
                                 node.material.envMapIntensity = emo.intensity;
                                 node.material.roughness = emo.roughness;
                             }
+
+                            if (node.material)
+                            {
+                                node.material.precision = 'mediump';
+                                node.material.needsUpdate = true;
+                            }
                         });
 
                         // console.log("OBJECT: " + obj.name);
@@ -543,6 +549,10 @@ function onSessionStart()
         console.log("SUPPORTED FRAMERATES: " + session.supportedFrameRates);
         refreshRates = session.supportedFrameRates;
         targetRefreshRateIdx = refreshRates.length-1;
+        while (refreshRates[targetRefreshRateIdx] > 80)
+        {
+            targetRefreshRateIdx--;
+        }
         session.addEventListener("ontargetframeratechange", onFrameRateChange);
         adjustTargetFrameRate(0);
     }
