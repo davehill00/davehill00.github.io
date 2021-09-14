@@ -30,6 +30,8 @@ export class PlayerHud
 
         this.screenQuad.renderOrder = 1;
         this.screenQuad.position.z = -1;
+        this.screenQuad.visible = false;
+        
         camera.add(this.screenQuad);
         this.hitTimer = 0.0;
 
@@ -79,6 +81,7 @@ export class PlayerHud
     processHit()
     {
         this.hitTimer = Math.min(this.hitTimer + 0.5, 0.5);
+        this.screenQuad.visible = true;
     }
 
     update(dt)
@@ -87,7 +90,17 @@ export class PlayerHud
         {
             this.hitTimer -= dt;
             let intensity = clamp(this.hitTimer*2.0, 0.0, 0.8);
-            this.screenQuad.material.opacity = intensity;
+
+            if (this.hitTimer > 0.0)
+            {
+                this.screenQuad.material.opacity = intensity;
+            }
+            else
+            {
+                this.screenQuad.material.opacity = 0.0;
+                this.screenQuad.visible = false;
+            }
+
         }
     }
 
