@@ -18,7 +18,7 @@
     "copy-webpack-plugin": "6.4.0",
     "live-moving-average": "^1.1.0",
     "load-bmfont": "^1.4.1",
-    "three": "^0.131.3",
+    "three": "^0.132.2",
     "webpack": "4",
     "xtend": "^4.0.2"
   },
@@ -28,6 +28,8 @@
     "build-release": "webpack --config webpack.config.release.js",
     "serve-release": "webpack serve --config webpack.config.release.js",
     "beta-build": "webpack --config webpack.config.beta.js",
-    "beta-serve": "webpack serve --config webpack.config.beta.js "
+    "beta-serve": "webpack serve --config webpack.config.beta.js ",
+    "r132-build": "webpack --config webpack.config.r132.js",
+    "r132-serve": "webpack serve --config webpack.config.r132.js"
   }
 }
