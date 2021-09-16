@@ -484,7 +484,7 @@ export class PageUI
             optionalFeatures: [ 
             //'bounded-floor', 
             // 'hand-tracking',
-            'high-fixed-foveation-level',
+            // 'high-fixed-foveation-level',
             // 'low-fixed-foveation-level',
             // 'low-refresh-rate'
         ] };

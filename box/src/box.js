@@ -474,7 +474,7 @@ function render(time) {
         if (frameMs > targetMaxFrameTimeMs * 1.5)
         {
             // We're running slow
-            console.log("RUNNING SLOWER THAN " + refreshRates[targetRefreshRateIdx] + " Hz (" + frameMs + " ms, " + (1000.0/frameMs).toFixed(1) + " Hz)");
+            // console.log("RUNNING SLOWER THAN " + refreshRates[targetRefreshRateIdx] + " Hz (" + frameMs + " ms, " + (1000.0/frameMs).toFixed(1) + " Hz)");
             slowFrameCount++;
 
             slowFrameCountCooldown = time + 250.0;
@@ -496,10 +496,10 @@ function render(time) {
         }
         else if (time > slowFrameCountCooldown)
         {
-            if (slowFrameCount > 0)
-            {
-                console.log("MEETING FRAMERATE - SLOW FRAMES: " + slowFrameCount);
-            }
+            // if (slowFrameCount > 0)
+            // {
+            //     console.log("MEETING FRAMERATE - SLOW FRAMES: " + slowFrameCount);
+            // }
             slowFrameCount = Math.max(slowFrameCount - 1, 0);        
         }
     }
@@ -555,6 +555,12 @@ function onSessionStart()
         }
         session.addEventListener("ontargetframeratechange", onFrameRateChange);
         adjustTargetFrameRate(0);
+    }
+
+    if (renderer.xr.setFoveation)
+    {
+        console.log("SETTING FOVEATION ON XR OBJECT");
+        renderer.xr.setFoveation(1.0);
     }
 
     session.addEventListener('visibilitychange', e => {
