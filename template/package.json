@@ -7,7 +7,8 @@
     "@webxr-input-profiles/assets": "^1.0.5",
     "@webxr-input-profiles/motion-controllers": "^1.0.0",
     "@webxr-input-profiles/registry": "^1.0.1",
-    "three": "^0.127.0",
+    "three": "^0.132.2",
+    "three-csm": "^1.1.0",
     "webpack": "4"
   },
   "devDependencies": {

@@ -43,7 +43,8 @@ controls.update();
 
 
 const boxGeometry = new THREE.BoxGeometry();
-const boxMaterials = [new THREE.MeshBasicMaterial({ color: 0xff8020 }), new THREE.MeshBasicMaterial({ color: 0xaaaaaa })];
+// 0xff8020 0xaaaaaa
+const boxMaterials = [new THREE.MeshBasicMaterial({ color: 0x222222 }), new THREE.MeshBasicMaterial({ color: 0x444444 })];
 
 let i;
 const kSpread = 30;
@@ -54,7 +55,8 @@ var currentGroup = new THREE.Group();
 var groupCounter = 0;
 
 for (i = 0; i < kSpread * kSpread; i++) {
-    let cube = new THREE.Mesh(boxGeometry, boxMaterials[i%2]);
+    let cube = new THREE.Mesh(boxGeometry, boxMaterials[i%2].clone());
+    cube.material.color.setRGB(0.5 + Math.random() * 0.5, 0.5 + Math.random() * 0.5, 0.5 + Math.random() * 0.5);
     let row = i % kSpread;
     let col = Math.floor(i / kSpread);
     //cube.position.set(-kSpread + row * 2.0, -kSpread + col * 2.0, -2 * kSpread);
@@ -149,13 +151,16 @@ function onSqueezeEnd(event)
 
 const controllerModelFactory = new XRControllerModelFactory();
 const controllerGrip0 = renderer.xr.getControllerGrip(0);
-const model0 = controllerModelFactory.createControllerModel( controllerGrip0 );
-controllerGrip0.add( model0 );
-scene.add( controllerGrip0 );
+// const model0 = controllerModelFactory.createControllerModel( controllerGrip0 );
+// controllerGrip0.add( model0 );
+// scene.add( controllerGrip0 );
+// controllerGrip0.visible = false;
+
 const controllerGrip1 = renderer.xr.getControllerGrip(1);
-const model1 = controllerModelFactory.createControllerModel( controllerGrip1 );
-controllerGrip1.add( model1 );
-scene.add( controllerGrip1 );
+// const model1 = controllerModelFactory.createControllerModel( controllerGrip1 );
+// controllerGrip1.add( model1 );
+// scene.add( controllerGrip1 );
+// controllerGrip1.visible = false;
 
 const controller0 = renderer.xr.getController(0);
 controller0.addEventListener('selectstart', onSelectStart);

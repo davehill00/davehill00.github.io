@@ -7,21 +7,23 @@
   "license": "MIT",
   "devDependencies": {
     "gltfpack": "^0.15.1",
-    "webpack-cli": "^4.2.0",
-    "webpack-dev-server": "^3.11.0"
+    "webpack": "4",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "3.11"
   },
   "dependencies": {
     "load-bmfont": "^1.4.1",
-    "three": "file:.yalc/three",
-    "three-bmfont-text": "^3.0.1",
-    "webpack": "4"
+    "three": "^0.132.2",
+    "three-bmfont-text": "^3.0.1"
   },
   "scripts": {
     "buildobj": "webpack --config webpack-objcount.config.js",
     "buildtri": "webpack --config webpack-tricount.config.js",
+    "buildmat": "webpack --config webpack-matcost.config.js",
     "buildbjsobj": "webpack --config webpack-bjs-objcount.config.js",
     "startobj": "webpack serve --config webpack-objcount.config.js ",
     "starttri": "webpack serve --config webpack-tricount.config.js ",
+    "startmat": "webpack serve --config webpack-matcost.config.js ",
     "startbjsobj": "webpack serve --config webpack-bjs-objcount.config.js"
   }
 }
