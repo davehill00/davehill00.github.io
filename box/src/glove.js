@@ -140,7 +140,7 @@ export class Glove extends THREE.Group
         // Try to move from current position to controller position
         this.controller.getWorldPosition(dest);
 
-        // Update velocity (i.e., how fast is controller we're slaved to moving)
+        // Update velocity (i.e., how fast is controller the glove is associated with attached to moving)
         const oneOverDt = 1.0 / dt;
         this.velocity.x = (dest.x - this.position.x) * oneOverDt;
         this.velocity.y = (dest.y - this.position.y) * oneOverDt;

@@ -654,7 +654,7 @@ export class BoxingSession
 
     onBagHit(glove, speed, velocity)
     {           
-        this.lastPunchType = this.punchDetector.analyzePunch(glove, velocity);
+        this.lastPunchType = this.punchDetector.analyzePunch_V3(glove, velocity);
 
         if (this.state == SESSION_ROUND)
         {
