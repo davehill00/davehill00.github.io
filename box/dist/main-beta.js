@@ -70602,6 +70602,7 @@ class PunchDetector
     }
     analyzePunch_V3(glove, velocity)
     {
+        const bLogging = false;
         //
         // Compute the player-relative space transform
         //
@@ -70658,40 +70659,101 @@ class PunchDetector
         // based on handedness and those values, try to deduce the type of punch
         if (glove.whichHand == 1) // Left hand
         {
-
-            // -Z is towards the bag
-            if (tPunchDirection2D.z < -0.707 && tGloveOrientationX.y < -0.707) // glove is moving forward, and palm (X axis) is pointing down
+            
+            if(bLogging)
             {
-                return PUNCH_JAB;
+                console.log("**** Unknown Left Hand ****")
+                console.log("tPunchDir x: " + tPunchDirection2D.x.toFixed(3) + ", z: " + tPunchDirection2D.z.toFixed(3));
+                console.log("tAngVel x: " + tGloveAngularVelocity.x.toFixed(3) + ", y: " + tGloveAngularVelocity.y.toFixed(3) + ", z: " + tGloveAngularVelocity.z.toFixed(3));
+                console.log("tGloveOrientationX x:" + tGloveOrientationX.x.toFixed(3) + ", y: " + tGloveOrientationX.y.toFixed(3) + ", z: " + tGloveOrientationX.z.toFixed(3));
+                console.log("tGloveOrientationY x:" + tGloveOrientationY.x.toFixed(3) + ", y: " + tGloveOrientationY.y.toFixed(3) + ", z: " + tGloveOrientationY.z.toFixed(3));
+                console.log("tGloveOrientationZ x:" + tGloveOrientationZ.x.toFixed(3) + ", y: " + tGloveOrientationZ.y.toFixed(3) + ", z: " + tGloveOrientationZ.z.toFixed(3));
+                console.log("-----");
             }
-            else if (tPunchDirection2D.x > 0.707 && tGloveOrientationZ.x < -0.707) // glove is pointing across the body 
+
+            if (tGloveAngularVelocity.y < 0.0 && tPunchDirection2D.x > 0.5 && tGloveOrientationX.y < 0.0)
             {
+                if (bLogging) 
+                {
+                    console.log("^^^--- LEFT HOOK");
+                }
                 return PUNCH_LEFT_HOOK;
             }
-            else if (tGloveOrientationX.y > 0.0) // top/thumb is pointing left
+            if (tPunchDirection2D.z < -0.5 && tGloveOrientationX.y < -0.5 )
             {
+                if (bLogging)
+                {
+                    console.log("^^^--- JAB");
+                }
+                return PUNCH_JAB;
+            }
+            if (tGloveOrientationX.y > 0.0 && tGloveAngularVelocity.x > 0.0)
+            {
+                if (bLogging)
+                {
+                    console.log("^^^--- LEFT UPPER CUT");
+                }
                 return PUNCH_LEFT_UPPERCUT;
             }
 
-        //     console.log("**** Left Hand Unknown ****")
-        //     console.log("tPunchDir x: %.2f, z: %.2f", tPunchDirection2D.x, tPunchDirection2D.z);
-        //     console.log("tGloveOrientationX x: %.2f, y: %.2f, z: %.2f", tGloveOrientationX.x, tGloveOrientationX.y, tGloveOrientationX.z);
-        //     console.log("tGloveOrientationY x: %.2f, y: %.2f, z: %.2f", tGloveOrientationY.x, tGloveOrientationY.y, tGloveOrientationY.z);
-        //     console.log("tGloveOrientationZ x: %.2f, y: %.2f, z: %.2f", tGloveOrientationZ.x, tGloveOrientationZ.y, tGloveOrientationZ.z);
+            if (bLogging)
+            {
+                console.log("**** Unknown Left Hand ****")
+                console.log("tPunchDir x: " + tPunchDirection2D.x.toFixed(3) + ", z: " + tPunchDirection2D.z.toFixed(3));
+                console.log("tAngVel x: " + tGloveAngularVelocity.x.toFixed(3) + ", y: " + tGloveAngularVelocity.y.toFixed(3) + ", z: " + tGloveAngularVelocity.z.toFixed(3));
+                console.log("tGloveOrientationX x:" + tGloveOrientationX.x.toFixed(3) + ", y: " + tGloveOrientationX.y.toFixed(3) + ", z: " + tGloveOrientationX.z.toFixed(3));
+                console.log("tGloveOrientationY x:" + tGloveOrientationY.x.toFixed(3) + ", y: " + tGloveOrientationY.y.toFixed(3) + ", z: " + tGloveOrientationY.z.toFixed(3));
+                console.log("tGloveOrientationZ x:" + tGloveOrientationZ.x.toFixed(3) + ", y: " + tGloveOrientationZ.y.toFixed(3) + ", z: " + tGloveOrientationZ.z.toFixed(3));
+                console.log("-----");
+            }
         }
         else
         {
-            if (tPunchDirection2D.z < -0.707 && tGloveOrientationX.y > 0.707)
+            if (bLogging)
             {
-                return PUNCH_STRAIGHT;
+                console.log("**** Right Hand ****")
+                console.log("tPunchDir x: " + tPunchDirection2D.x.toFixed(3) + ", z: " + tPunchDirection2D.z.toFixed(3));
+                console.log("tAngVel x: " + tGloveAngularVelocity.x.toFixed(3) + ", y: " + tGloveAngularVelocity.y.toFixed(3) + ", z: " + tGloveAngularVelocity.z.toFixed(3));
+                console.log("tGloveOrientationX x:" + tGloveOrientationX.x.toFixed(3) + ", y: " + tGloveOrientationX.y.toFixed(3) + ", z: " + tGloveOrientationX.z.toFixed(3));
+                console.log("tGloveOrientationY x:" + tGloveOrientationY.x.toFixed(3) + ", y: " + tGloveOrientationY.y.toFixed(3) + ", z: " + tGloveOrientationY.z.toFixed(3));
+                console.log("tGloveOrientationZ x:" + tGloveOrientationZ.x.toFixed(3) + ", y: " + tGloveOrientationZ.y.toFixed(3) + ", z: " + tGloveOrientationZ.z.toFixed(3));
+                console.log("-----");
             }
-            else if (tPunchDirection2D.x < -0.707 && tGloveOrientationZ.x > 0.707)
+
+            if (tGloveAngularVelocity.y > 0.0 && tPunchDirection2D.x < -0.5 && tGloveOrientationX.y > 0.0)
             {
+                if (bLogging)
+                {
+                    console.log("^^^--- RIGHT HOOK");
+                }
                 return PUNCH_RIGHT_HOOK;
             }
-            else if (tGloveOrientationX.y < 0.0) // top/thumb is pointing right
+            if (tPunchDirection2D.z < -0.5 && tGloveOrientationX.y > 0.5 )
             {
+                if (bLogging)
+                {
+                    console.log("^^^--- STRAIGHT");
+                }
+                return PUNCH_STRAIGHT;
+            }
+            if (tGloveOrientationX.y < 0.0 && tGloveAngularVelocity.x > 0.0)
+            {
+                if (bLogging)
+                {
+                    console.log("^^^--- RIGHT UPPER CUT");
+                }
                 return PUNCH_RIGHT_UPPERCUT;
+            }
+            
+            if (bLogging)
+            {
+                console.log("**** Right Hand - Unknown ****")
+                console.log("tPunchDir x: " + tPunchDirection2D.x.toFixed(3) + ", z: " + tPunchDirection2D.z.toFixed(3));
+                console.log("tAngVel x: " + tGloveAngularVelocity.x.toFixed(3) + ", y: " + tGloveAngularVelocity.y.toFixed(3) + ", z: " + tGloveAngularVelocity.z.toFixed(3));
+                console.log("tGloveOrientationX x:" + tGloveOrientationX.x.toFixed(3) + ", y: " + tGloveOrientationX.y.toFixed(3) + ", z: " + tGloveOrientationX.z.toFixed(3));
+                console.log("tGloveOrientationY x:" + tGloveOrientationY.x.toFixed(3) + ", y: " + tGloveOrientationY.y.toFixed(3) + ", z: " + tGloveOrientationY.z.toFixed(3));
+                console.log("tGloveOrientationZ x:" + tGloveOrientationZ.x.toFixed(3) + ", y: " + tGloveOrientationZ.y.toFixed(3) + ", z: " + tGloveOrientationZ.z.toFixed(3));
+                console.log("-----");
             }
         }
         return PUNCH_UNKNOWN;
