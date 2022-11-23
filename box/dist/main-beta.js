@@ -72344,113 +72344,449 @@ const ROUNDTYPE_SPEED = 3;
 const ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED = 4;
 
 let workoutData = [
+    [
+        {
+            introText: "INTRO WORKOUT:\n" +
+                " \u2022 Practice the basic punches.\n" + 
+                " \u2022 6 rounds of drills.",
+            uiShortText: "INTRO WORKOUT",
+            uiText: "INTRO WORKOUT:<ul><li>Practice the basic punches.</li><li>6 rounds of drills.</li></ul>",
+            uid: 10,
+            stages:[],
+            bagType: null
+        },
+        {
+            introText: "JAB and STRAIGHT:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "JAB: 1"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "STRAIGHT: 2"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "DOUBLE JAB: 1-1"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "JAB then STRAIGHT:\n1-2"
+                }
+            ]
+        },
+        {
+            introText: "LEAD and REAR HOOK:\n" + 
+            " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "LEAD HOOK: 3"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "REAR HOOK: 4"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "STRAIGHT then L.HOOK:\n2-3"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "JAB then R.HOOK:\n1-4"
+                }
+            ]
+        },
+        {
+            introText: "JAB and STRAIGHT:\n" + 
+                " \u2022 New bag, same punches.\n" + 
+                " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "JAB: 1"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "STRAIGHT: 2"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "DOUBLE JAB: 1-1"
+                },
 
-    // WORKOUT 1
-    //[
-    //     {
-    //         introText: "DOUBLE-END BAG #1:\n" +
-    //             " \u2022 6 rounds of double-end bag drills.\n" +
-    //             " \u2022 Focus on accuracy then speed.\n" +
-    //             " \u2022 The double-end bag can hit back, so keep your guard up!",
-    //         uiShortText: "D.E.B. INSANITY",
-    //         uiText: "DOUBLE-END BAG INSANITY:<br>6 rounds of drills. All double-end, all the time!<br>So much good stuff to do...<br><br> it'll blow your mind right out of your ear holes!!!",
-    //         uid: 1,
-    //         stages:[],
-    //         bagType: null
-    //     },
-    //     {
-    //         introText: "THROW 100 PUNCHES",
-    //         numPunches: 100,
-    //         bagType: ROUND_DOUBLE_END_BAG,
-    //         roundType: ROUNDTYPE_NUM_PUNCHES
-    //     },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "JAB then STRAIGHT:\n1-2"
+                }
+            ]
+        },
+        {
+            introText: "LEAD and REAR HOOK:\n" + 
+            " \u2022 New bag, same punches.\n" + 
+            " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "LEAD HOOK: 3"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "REAR HOOK: 4"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "STRAIGHT then L. HOOK:\n2-3"
+                },
 
-    //     {
-    //         introText: 
-    //             "JAB THEN STRAIGHT:\n" +
-    //             " \u2022 Throw JABs(1) and move around the bag for the first half.\n" +
-    //             " \u2022 Throw STRAIGHTs(2) and move around the bag for the second half.",
-    //         stages: [
-    //             {
-    //                 startTimePercent: 0.0,
-    //                 descriptionText: "JAB(1) and move around the bag."
-    //             },
-    //             {
-    //                 startTimePercent: 0.5,
-    //                 descriptionText: "STRAIGHT(2) and move around the bag."
-    //             }
-    //         ],
-    //         bagType: ROUND_DOUBLE_END_BAG,
-    //         roundType: ROUNDTYPE_SCRIPTED
-    //     },
-    //     {
-    //         introText: 
-    //             "JAB, HOOK, STRAIGHT, HOOK:\n" +
-    //             " \u2022 Throw JAB(1) then RIGHT HOOK(4) for the first half.\n" +
-    //             " \u2022 Throw STRAIGHT(2) then LEFT HOOK(3) for the second half.\n",
-    //         stages: [
-    //             {
-    //                 startTimePercent: 0.0,
-    //                 descriptionText: "JAB(1) then RIGHT HOOK(4)"
-    //             },
-    //             {
-    //                 startTimePercent: 0.5,
-    //                 descriptionText: "STRAIGHT(2) then LEFT HOOK(3)"
-    //             }
-    //         ],
-    //         bagType: ROUND_DOUBLE_END_BAG,
-    //         roundType: ROUNDTYPE_SCRIPTED
-    //     },
-    //     {
-    //         introText: 
-    //             "THE OLD ONE-TWO PUNCH:\n" +
-    //             " \u2022 Throw JAB(1) then STRAIGHT(2) for the first half.\n" +
-    //             " \u2022 Throw 2 JABs(1) in quick succession then STRAIGHT(2) for the second half.\n",
-    //         stages: [
-    //             {
-    //                 startTimePercent: 0.0,
-    //                 descriptionText: "JAB(1) then STRAIGHT(2)."
-    //             },
-    //             {
-    //                 startTimePercent: 0.5,
-    //                 descriptionText: "JAB(1), JAB(1), STRAIGHT(2)."
-    //             }
-    //         ],
-    //         bagType: ROUND_DOUBLE_END_BAG,
-    //         roundType: ROUNDTYPE_SCRIPTED
-    //     },
-    //     {
-    //         introText: 
-    //             "CAPTAIN HOOK:\n" +
-    //             " \u2022 Throw LEFT HOOKs(3) and move around the bag for the first half.\n" +
-    //             " \u2022 Throw RIGHT HOOKs(4) and move around the bag for the second half.\n",
-    //         stages: [
-    //             {
-    //                 startTimePercent: 0.0,
-    //                 descriptionText: "LEFT HOOK(3) and move around the bag."
-    //             },
-    //             {
-    //                 startTimePercent: 0.5,
-    //                 descriptionText: "RIGHT HOOK(4) and move around the bag."
-    //             }
-    //         ],
-    //         bagType: ROUND_DOUBLE_END_BAG,
-    //         roundType: ROUNDTYPE_SCRIPTED
-    //     },
-    //     {
-    //         introText: 
-    //             "JAB-STRAIGHT COMBOS:\n" +
-    //             " \u2022 Throw 2 JABs(1), then a STRAIGHT(2), then a JAB (1), then a STRAIGHT(2).\n",
-    //         stages: [
-    //             {
-    //                 startTimePercent: 0.0,
-    //                 descriptionText: "JAB(1), JAB(1), STRAIGHT(2), JAB(1), STRAIGHT (2)."
-    //             }
-    //         ],
-    //         bagType: ROUND_DOUBLE_END_BAG,
-    //         roundType: ROUNDTYPE_SCRIPTED
-    //     },
-    // ],
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "JAB then R. HOOK:\n1-4"
+                }
+            ]
+        },
+        {
+            introText: "LEAD and REAR UPPERCUT:\n" + 
+            " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "LEFT UPPERCUT: 5"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "RIGHT UPPERCUT: 6"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "STRAIGHT then L.UPPER:\n2-5"
+                },
+
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "JAB then R.UPPER:\n1-6"
+                }
+            ]
+        },
+        {
+            introText:
+                "HEAVY BAG FREESTYLE:\n"+
+                " \u2022 Close it out however you want.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_TIMED,
+        }
+    ],
+
+
+    [
+        {
+            introText: "INTERMEDIATE WORKOUT:\n" +
+                " \u2022 2- and 3-punch combos.\n" + 
+                " \u2022 Double-end bag speed round.\n" + 
+                " \u2022 7 rounds of drills.",
+            uiShortText: "INT. WORKOUT",
+            uiText: "INTERMEDIATE WORKOUT:<ul><li>2- and 3-punch combos</li><li>Double-end bag speed round.</li><li>7 rounds of drills.</li></ul>",
+            uid: 11,
+            stages:[],
+            bagType: null
+        },
+        { // WARM UP
+            numPunchesPerMinute: 100,
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
+        },
+        {
+            introText: "2-PUNCH COMBOS:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.\n" +
+                " \u2022 Keep your guard up.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-1"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-4"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-6"
+                }
+            ]
+        },
+        {
+            introText: "2-PUNCH COMBOS:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-1"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-4"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-6"
+                }
+            ]
+        },
+        {
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SPEED,
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    targetPPM: 200,
+                },
+                {
+                    startTimePercent: 0.25,
+                    targetPPM: 250,
+                },
+                {
+                    startTimePercent: 0.75,
+                    targetPPM: 300,
+                }
+            ]
+        },
+        {
+            introText: "3-PUNCH COMBOS:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-1-2"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-3"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-1-4"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-5"
+                }
+            ]
+        },
+        {
+            introText: "3-PUNCH COMBOS:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.\n" +
+                " \u2022 Keep your guard up.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-1-2"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-3"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-1-4"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-5"
+                }
+            ]
+        },
+        {
+            introText:
+                "HEAVY BAG FREESTYLE:\n"+
+                " \u2022 Put those 2- and 3-punch combos together.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_TIMED,
+        }
+    ],
+    
+
+    [
+        {
+            introText: "ADVANCED WORKOUT:\n" +
+                " \u2022 More complex combos.\n" + 
+                " \u2022 Double-end bag speed round.\n" + 
+                " \u2022 7 rounds of drills.",
+            uiShortText: "ADV. WORKOUT",
+            uiText: "ADVANCED WORKOUT:<ul><li>More complex combos</li><li>Double-end bag speed round.</li><li>7 rounds of drills.</li></ul>",
+            uid: 12,
+            stages:[],
+            bagType: null
+        },
+        { // WARM UP
+            numPunchesPerMinute: 150,
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
+        },
+        {
+            introText: "3-PUNCH COMBOS:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.\n",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-2-3"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-4-5"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "2-3-6"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-3-2"
+                }
+            ]
+        },
+        {
+            introText: "4-PUNCH COMBOS:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-2-1-4"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-3-4"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-1-2-3"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-1-6"
+                }
+            ]
+        },
+        {
+            introText: "3-PUNCH COMBOS:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.\n" +
+                " \u2022 Keep your guard up.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-1-2"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-1"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-1-4"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-3"
+                }
+            ]
+        },
+        {
+            introText: "5-PUNCH COMBOS:\n" + 
+                " \u2022 Focus on form, then ramp up the speed.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages:
+            [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-1-2-3-4"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-1-4-5"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-4-3-6-6"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-3-2-2-1"
+                }
+            ]
+        },
+        {
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SPEED,
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    targetPPM: 250,
+                },
+                {
+                    startTimePercent: 0.25,
+                    targetPPM: 275,
+                },
+                {
+                    startTimePercent: 0.75,
+                    targetPPM: 325,
+                }
+            ]
+        },
+        {
+            introText:
+                "HEAVY BAG FREESTYLE:\n"+
+                " \u2022 Put those 2- and 3-punch combos together.",
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_TIMED,
+        }
+    ],
+    
     [
         {
             introText: "BASIC WORKOUT:\n" +
@@ -72463,10 +72799,14 @@ let workoutData = [
             bagType: null
         },
         {
-            introText: "WARM UP - THROW 100 PUNCHES",
-            numPunches: 100,
+            numPunchesPerMinute: 100,
             bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_NUM_PUNCHES
+            roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
+        },
+        {
+            numPunchesPerMinute: 100,
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
         },
         {
             introText: 
@@ -72485,31 +72825,38 @@ let workoutData = [
                 },
                 {
                     startTimePercent: 0.5,
-                    descriptionText: "1-2-1"
+                    descriptionText: "1-2-1-4"
                 },
 
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "1-2-1-4"
+                    descriptionText: "1-2-3-4"
                 }
 
             ]
         },
         {
             introText: 
-                "DOUBLE-END HOOKS:\n" +
-                " \u2022 JAB(1) then HOOK(4).\n" +
-                " \u2022 STRAIGHT(2) then HOOK(3).",
+                "DOUBLE-END COMBOS:\n" +
+                " \u2022 Focus on form, then ramp up the speed.",
             bagType: ROUND_DOUBLE_END_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:[
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "1-4"
+                    descriptionText: "1-2"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-1-2"
                 },
                 {
                     startTimePercent: 0.5,
-                    descriptionText: "2-3"
+                    descriptionText: "1-2-1"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-5"
                 }
             ]
         },
@@ -72522,21 +72869,18 @@ let workoutData = [
             stages:[
                 {
                     startTimePercent: 0.0,
-                    // descriptionText: "Stay above 300 PPM",
-                    targetPPM: 300,
+                    targetPPM: 200,
                 },
                 {
                     startTimePercent: 0.25,
-                    // descriptionText: "Go for 350 PPM",
-                    targetPPM: 350,
+                    targetPPM: 250,
                 },
                 {
                     startTimePercent: 0.75,
-                    // descriptionText: "Finish at 400PPM",
-                    targetPPM: 400,
+                    targetPPM: 300,
                 }
             ],
-            bagType: ROUND_DOUBLE_END_BAG,
+            bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SPEED
         },
         {
@@ -72550,7 +72894,7 @@ let workoutData = [
     [
         {
             introText: "COMBO WORKOUT:\n" +
-                " \u2022 5 round of drills.\n" +
+                " \u2022 6 round of drills.\n" +
                 " \u2022 Warm up, then focus on combos.",
             uiShortText: "COMBO WORKOUT",
             uiText: "COMBO WORKOUT:<ul><li>5 rounds of drills.</li><li>Warm up, then focus on combos.</li><li>Mostly heavy bag with a dash of double-end mixed in.</li></ul>",
@@ -72642,6 +72986,32 @@ let workoutData = [
             ],
         },
         {
+            introText: 
+                "UPPER CUT COMBOS:\n" +
+                " \u2022 Work in some upper cuts.\n" +
+                " \u2022 Focus on form, then increase speed.",
+            bagType: ROUND_DOUBLE_END_BAG,
+            roundType: ROUNDTYPE_SCRIPTED,
+            stages: [
+                {
+                    startTimePercent: 0.0,
+                    descriptionText: "1-1-2-5"
+                },                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-1-6"
+                },
+                {
+                    startTimePercent: 0.5,
+                    descriptionText: "1-1-2-3-6"
+                },
+                {
+                    startTimePercent: 0.75,
+                    descriptionText: "1-2-1-4-5-6"
+                },
+
+            ],
+        },
+        {
             introText:
                 "HEAVY BAG FREESTYLE:\n"+
                 " \u2022 Close it out however you want.",
@@ -72649,12 +73019,16 @@ let workoutData = [
             roundType: ROUNDTYPE_TIMED,
         }
     ],
+
+
+
+
     [
         {
-            introText: "COMBO WORKOUT 2:\n" +
+            introText: "COMBO WORKOUT:\n" +
                 " \u2022 6 round of drills.\n" +
                 " \u2022 Warm up, then focus on combos.",
-            uiShortText: "COMBO WORKOUT 2",
+            uiShortText: "COMBO WORKOUT",
             uiText: "COMBO WORKOUT 2:<ul><li>6 rounds of drills.</li><li>Warm up, then focus on combos.</li><li>Mostly heavy bag with a dash of double-end mixed in.</li></ul>",
             uid: 5,
             stages:[],
@@ -72745,30 +73119,56 @@ let workoutData = [
         },
         {
             introText: 
-                "STILL MORE COMBOS:\n" +
-                " \u2022 Try some more complex combos.\n" +
+                "UPPER CUT COMBOS:\n" +
+                " \u2022 Work in some upper cuts.\n" +
                 " \u2022 Focus on form, then increase speed.",
-            bagType: ROUND_HEAVY_BAG,
+            bagType: ROUND_DOUBLE_END_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages: [
                 {
                     startTimePercent: 0.0,
-                    descriptionText: "1-2-3-2"
-                },
-                {
+                    descriptionText: "1-1-2-5"
+                },                {
                     startTimePercent: 0.25,
-                    descriptionText: "1-4-3-2"
+                    descriptionText: "1-2-1-6"
                 },
                 {
                     startTimePercent: 0.5,
-                    descriptionText: "1-1-2-3-4"
+                    descriptionText: "1-1-2-3-6"
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "1-2-1-1-4-3"
-                }
+                    descriptionText: "1-2-1-4-5-6"
+                },
+
             ],
         },
+        // {
+        //     introText: 
+        //         "STILL MORE COMBOS:\n" +
+        //         " \u2022 Try some more complex combos.\n" +
+        //         " \u2022 Focus on form, then increase speed.",
+        //     bagType: ROUND_HEAVY_BAG,
+        //     roundType: ROUNDTYPE_SCRIPTED,
+        //     stages: [
+        //         {
+        //             startTimePercent: 0.0,
+        //             descriptionText: "1-2-3-2"
+        //         },
+        //         {
+        //             startTimePercent: 0.25,
+        //             descriptionText: "1-4-3-2"
+        //         },
+        //         {
+        //             startTimePercent: 0.5,
+        //             descriptionText: "1-1-2-3-4"
+        //         },
+        //         {
+        //             startTimePercent: 0.75,
+        //             descriptionText: "1-2-1-1-4-3"
+        //         }
+        //     ],
+        // },
         {
             introText:
                 "HEAVY BAG FREESTYLE:\n"+
