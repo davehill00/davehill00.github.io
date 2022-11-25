@@ -12,19 +12,29 @@ const SESSION_REST = 4;
 const SESSION_OUTRO = 5;
 const SESSION_PAUSED = 6;
 
-const kPunchNames = 
+export const kPunchNames = 
 [
     "UNRECOGNIZED",
     "JAB(1)",
     "STRAIGHT(2)",
-    "LEFT HOOK(3)",
-    "RIGHT HOOK(4)",
-    "LEFT UPPER(5)",
-    "RIGHT UPPER(6)"
+    "LEAD HOOK(3)",
+    "REAR HOOK(4)",
+    "LEAD UPPER(5)",
+    "REAR UPPER(6)"
+];
+export const kPunchNamesShort = 
+[
+    "UNREC",
+    "JAB",
+    "STRAIGHT",
+    "L HOOK",
+    "R HOOK",
+    "L UPPER",
+    "R UPPER"
 ];
 
-import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED, ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED} from "./workoutData.js";
-import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound, TimeAdjustedNumberOfPunchesBoxingRound} from "./BoxingRounds.js";
+import {workoutData, ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED, ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED, ROUNDTYPE_NUM_SPECIFIC_PUNCHES} from "./workoutData.js";
+import {TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, SpeedRound, TimeAdjustedNumberOfPunchesBoxingRound, NumberOfSpecificPunchesBoxingRound} from "./BoxingRounds.js";
 import { PunchDetector, PUNCH_JAB, PUNCH_LEFT_HOOK, PUNCH_RIGHT_HOOK, PUNCH_STRAIGHT, PUNCH_UNKNOWN, PUNCH_LEFT_UPPERCUT, PUNCH_RIGHT_UPPERCUT } from './punchDetector';
 
 const kIntroDuration = 5.0;
@@ -33,11 +43,12 @@ const kRestGetReadyDuration = 5.0;
 
 // const kGetReadyDuration = 3.0;
 
-const kWorkoutTextBoxSmallFontSize = 470;
+const kWorkoutTextBoxSmallFontSize = 500; //470;
 const kWorkoutTextBoxBigFontSize = 350;
 
 const kBlackColor = new THREE.Color(0x000000);
-const kRedColor = new THREE.Color(0x5D1719);
+export const kGreenColor = new THREE.Color(0x00721b);
+export const kRedColor = new THREE.Color(0x5D1719);
 kRedColor.multiplyScalar(1.5);
 const kGreyColor = new THREE.Color(0x404040);
 
@@ -276,6 +287,10 @@ export class BoxingSession
             else if (roundInfo.roundType == ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED)
             {
                 round = new TimeAdjustedNumberOfPunchesBoxingRound(roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
+            }
+            else if (roundInfo.roundType == ROUNDTYPE_NUM_SPECIFIC_PUNCHES)
+            {
+                round = new NumberOfSpecificPunchesBoxingRound(roundInfo, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
             }
             else if (roundInfo.roundType == ROUNDTYPE_TIMED)
             {
@@ -636,13 +651,21 @@ export class BoxingSession
         this.workoutIntroTextBox.displayMessage(message);
     }
     
-    displayWorkoutInfoMessage(message, wantUpdateSound = true)
+    displayWorkoutInfoMessage(message, wantUpdateSound = true, overrideColor = null)
     {
         console.assert(this.workoutStageTextBox.visible);
         //console.log("display workout info message: " + message);
         if (wantUpdateSound)
         {
             this.soundNewInstructions.play();
+        }
+        if (overrideColor)
+        {
+            this.workoutStageTextBox.setMessageColor(overrideColor);
+        }
+        else
+        {
+            this.workoutStageTextBox.setMessageColor(kBlackColor);
         }
         this.workoutStageTextBox.displayMessage(message);
     }
@@ -658,7 +681,7 @@ export class BoxingSession
 
         if (this.state == SESSION_ROUND)
         {
-            this.boxingRoundInfo.onBagHit(glove.whichHand, speed, velocity);
+            this.boxingRoundInfo.onBagHit(glove.whichHand, speed, velocity, this.lastPunchType);
             this.punchingStats.onBagHit(glove.whichHand, speed, velocity, this.lastPunchType);
         }
     }

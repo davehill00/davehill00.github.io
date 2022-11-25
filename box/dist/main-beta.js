@@ -65990,7 +65990,7 @@ function extend() {
 /*!*****************************!*\
   !*** ./src/BoxingRounds.js ***!
   \*****************************/
-/*! exports provided: TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, TimeAdjustedNumberOfPunchesBoxingRound, SpeedRound */
+/*! exports provided: TimedBoxingRound, ScriptedBoxingRound, NumberOfPunchesBoxingRound, TimeAdjustedNumberOfPunchesBoxingRound, NumberOfSpecificPunchesBoxingRound, SpeedRound */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -65999,9 +65999,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScriptedBoxingRound", function() { return ScriptedBoxingRound; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NumberOfPunchesBoxingRound", function() { return NumberOfPunchesBoxingRound; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TimeAdjustedNumberOfPunchesBoxingRound", function() { return TimeAdjustedNumberOfPunchesBoxingRound; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NumberOfSpecificPunchesBoxingRound", function() { return NumberOfSpecificPunchesBoxingRound; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SpeedRound", function() { return SpeedRound; });
 /* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
 /* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
+/* harmony import */ var _sphereSphereIntersection_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sphereSphereIntersection.js */ "./src/sphereSphereIntersection.js");
+
 
 
 
@@ -66238,6 +66241,136 @@ class TimeAdjustedNumberOfPunchesBoxingRound extends NumberOfPunchesBoxingRound
     {
         super((duration / 60) * ppm, roundNumber, maxRounds, bagType);
     }
+}
+
+class NumberOfSpecificPunchesBoxingRound extends BoxingRound
+{
+    constructor(roundInfo, roundNumber, maxRounds, bagType, introText = null)
+    {
+        super(roundNumber, maxRounds, bagType);
+
+        
+        
+        //console.log("Almost Done Count: " + this.almostDonePunchCount);
+
+        if (introText != null)
+        {
+            this.introText = introText;
+        }
+        else
+        {
+            this.introText = "PRACTICE MAKES PERFECT:\n";
+            if (roundInfo.stages.length < 5)
+            {
+                for(let i = 0; i < roundInfo.stages.length; i++)
+                {
+                    this.introText += " \u2022 ";
+                    this.introText += _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__["kPunchNames"][roundInfo.stages[i].punchType] + " x " + roundInfo.stages[i].numPunches;
+                    if (i < (roundInfo.stages.length - 1) )
+                    {
+                            this.introText += "\n";
+                    }
+                }
+            }
+            else
+            {
+                for(let i = 0; i < roundInfo.stages.length; i++)
+                {
+                    if (i%2 == 0)
+                    {
+                        this.introText += " \u2022 ";
+                    }
+                    else
+                    {
+                        this.introText += ", ";
+                    }
+                    this.introText += _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__["kPunchNamesShort"][roundInfo.stages[i].punchType] + " x " + roundInfo.stages[i].numPunches;
+                    if (i < (roundInfo.stages.length - 1) && (i%2 == 1))
+                    {
+                            this.introText += "\n";
+                    }
+                }
+            }
+            
+        }
+        this.roundInfo = roundInfo;
+        this.bFailedPunch = false;
+    }
+
+    start(session, elapsedTime)
+    {
+        this.currentPunchType = this.roundInfo.stages[0].punchType;
+        this.currentPunchTypeName = _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__["kPunchNames"][this.currentPunchType];
+        this.numPunches = this.roundInfo.stages[0].numPunches;
+        this.almostDonePunchCount = Math.floor(this.numPunches * 0.25);
+
+        session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, false);
+        this.startTime = elapsedTime;
+        this.session = session;
+
+        this.nextWorkoutStage = 1;
+    }
+
+    update(session, elapsedTime)
+    {
+        session.updateTimer(elapsedTime - this.startTime, false, false);
+    }
+
+    isOver(elapsedTime)
+    {
+        return this.numPunches <= 0;
+    }
+
+    onBagHit(whichHand, speed, velocity, punchType)
+    {
+        // need punch type here
+        if (punchType == this.currentPunchType)
+        {
+            this.numPunches--;
+
+            if (this.numPunches > 0)
+            {
+                this.session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, false, this.bFailedPunch ? _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__["kGreenColor"] : null);
+
+                if(this.numPunches == this.almostDonePunchCount)
+                {
+                    this.session.playGetReadySound();
+                }
+            }
+            else
+            {
+                if (this.nextWorkoutStage == this.roundInfo.stages.length)
+                {
+                    // display all-done
+                }
+                else
+                {
+                    this.numPunches = this.roundInfo.stages[this.nextWorkoutStage].numPunches;
+                    this.almostDonePunchCount = Math.floor(this.numPunches * 0.25);
+                    
+                    this.currentPunchType = this.roundInfo.stages[this.nextWorkoutStage].punchType;
+                    this.currentPunchTypeName = _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__["kPunchNames"][this.currentPunchType];
+        
+                    this.session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, true);
+             
+                    this.nextWorkoutStage++;
+                }
+            }         
+        }
+        else
+        {
+            // @TODO - play a fail sound here
+            this.session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, true, _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__["kRedColor"]);
+            this.bFailedPunch = true;
+        }
+    }
+
+    getIntroText()
+    {
+        return this.introText;
+    }
+
+    
 }
 
 class SpeedRound extends TimedBoxingRound
@@ -67394,14 +67527,17 @@ let slowFrameCount = 0;
 function adjustTargetFrameRate(indexDelta)
 {
     let session = renderer.xr.getSession();
-    targetRefreshRateIdx = Math.max(0, Math.min(targetRefreshRateIdx + indexDelta, refreshRates.length-1));
-    session.updateTargetFrameRate(refreshRates[targetRefreshRateIdx]);
-    // session.targetFrameRate = 
-    console.log("SETTING NEW TARGET FRAMERATE TO: " + refreshRates[targetRefreshRateIdx] );
+    if (session)
+    {
+        targetRefreshRateIdx = Math.max(0, Math.min(targetRefreshRateIdx + indexDelta, refreshRates.length-1));
+        session.updateTargetFrameRate(refreshRates[targetRefreshRateIdx]);
+        // session.targetFrameRate = 
+        console.log("SETTING NEW TARGET FRAMERATE TO: " + refreshRates[targetRefreshRateIdx] );
 
-    targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs();
-    adjustFramerate = true;
-    slowFrameCount = Math.max(slowFrameCount - 50, 0);
+        targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs();
+        adjustFramerate = true;
+        slowFrameCount = Math.max(slowFrameCount - 50, 0);
+    }
 }
 
 function onFrameRateChange(evt)
@@ -68288,11 +68424,15 @@ class DoubleEndedBag extends _bag_js__WEBPACK_IMPORTED_MODULE_4__["Bag"]
 /*!**************************!*\
   !*** ./src/gamelogic.js ***!
   \**************************/
-/*! exports provided: formatTimeString, BoxingSession, PunchingStats */
+/*! exports provided: kPunchNames, kPunchNamesShort, kGreenColor, kRedColor, formatTimeString, BoxingSession, PunchingStats */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "kPunchNames", function() { return kPunchNames; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "kPunchNamesShort", function() { return kPunchNamesShort; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "kGreenColor", function() { return kGreenColor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "kRedColor", function() { return kRedColor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatTimeString", function() { return formatTimeString; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BoxingSession", function() { return BoxingSession; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PunchingStats", function() { return PunchingStats; });
@@ -68321,10 +68461,20 @@ const kPunchNames =
     "UNRECOGNIZED",
     "JAB(1)",
     "STRAIGHT(2)",
-    "LEFT HOOK(3)",
-    "RIGHT HOOK(4)",
-    "LEFT UPPER(5)",
-    "RIGHT UPPER(6)"
+    "LEAD HOOK(3)",
+    "REAR HOOK(4)",
+    "LEAD UPPER(5)",
+    "REAR UPPER(6)"
+];
+const kPunchNamesShort = 
+[
+    "UNREC",
+    "JAB",
+    "STRAIGHT",
+    "L HOOK",
+    "R HOOK",
+    "L UPPER",
+    "R UPPER"
 ];
 
 
@@ -68337,10 +68487,11 @@ const kRestGetReadyDuration = 5.0;
 
 // const kGetReadyDuration = 3.0;
 
-const kWorkoutTextBoxSmallFontSize = 470;
+const kWorkoutTextBoxSmallFontSize = 500; //470;
 const kWorkoutTextBoxBigFontSize = 350;
 
 const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
+const kGreenColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x00721b);
 const kRedColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x5D1719);
 kRedColor.multiplyScalar(1.5);
 const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x404040);
@@ -68580,6 +68731,10 @@ class BoxingSession
             else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__["ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED"])
             {
                 round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__["TimeAdjustedNumberOfPunchesBoxingRound"](roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
+            }
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__["ROUNDTYPE_NUM_SPECIFIC_PUNCHES"])
+            {
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__["NumberOfSpecificPunchesBoxingRound"](roundInfo, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
             }
             else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__["ROUNDTYPE_TIMED"])
             {
@@ -68940,13 +69095,21 @@ class BoxingSession
         this.workoutIntroTextBox.displayMessage(message);
     }
     
-    displayWorkoutInfoMessage(message, wantUpdateSound = true)
+    displayWorkoutInfoMessage(message, wantUpdateSound = true, overrideColor = null)
     {
         console.assert(this.workoutStageTextBox.visible);
         //console.log("display workout info message: " + message);
         if (wantUpdateSound)
         {
             this.soundNewInstructions.play();
+        }
+        if (overrideColor)
+        {
+            this.workoutStageTextBox.setMessageColor(overrideColor);
+        }
+        else
+        {
+            this.workoutStageTextBox.setMessageColor(kBlackColor);
         }
         this.workoutStageTextBox.displayMessage(message);
     }
@@ -68962,7 +69125,7 @@ class BoxingSession
 
         if (this.state == SESSION_ROUND)
         {
-            this.boxingRoundInfo.onBagHit(glove.whichHand, speed, velocity);
+            this.boxingRoundInfo.onBagHit(glove.whichHand, speed, velocity, this.lastPunchType);
             this.punchingStats.onBagHit(glove.whichHand, speed, velocity, this.lastPunchType);
         }
     }
@@ -72321,7 +72484,7 @@ function monospace(text, start, end, width) {
 /*!****************************!*\
   !*** ./src/workoutData.js ***!
   \****************************/
-/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED, ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED, workoutData */
+/*! exports provided: ROUND_HEAVY_BAG, ROUND_DOUBLE_END_BAG, ROUNDTYPE_SCRIPTED, ROUNDTYPE_NUM_PUNCHES, ROUNDTYPE_TIMED, ROUNDTYPE_SPEED, ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED, ROUNDTYPE_NUM_SPECIFIC_PUNCHES, workoutData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -72333,7 +72496,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_TIMED", function() { return ROUNDTYPE_TIMED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_SPEED", function() { return ROUNDTYPE_SPEED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED", function() { return ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUNDTYPE_NUM_SPECIFIC_PUNCHES", function() { return ROUNDTYPE_NUM_SPECIFIC_PUNCHES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "workoutData", function() { return workoutData; });
+/* harmony import */ var _punchDetector__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./punchDetector */ "./src/punchDetector.js");
+
+
 const ROUND_HEAVY_BAG = 0;
 const ROUND_DOUBLE_END_BAG = 1;
 
@@ -72342,19 +72509,21 @@ const ROUNDTYPE_NUM_PUNCHES = 1;
 const ROUNDTYPE_TIMED = 2;
 const ROUNDTYPE_SPEED = 3;
 const ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED = 4;
+const ROUNDTYPE_NUM_SPECIFIC_PUNCHES = 5;
 
 let workoutData = [
     [
         {
             introText: "INTRO WORKOUT:\n" +
                 " \u2022 Practice the basic punches.\n" + 
-                " \u2022 6 rounds of drills.",
+                " \u2022 5 rounds of drills.",
             uiShortText: "INTRO WORKOUT",
-            uiText: "INTRO WORKOUT:<ul><li>Practice the basic punches.</li><li>6 rounds of drills.</li></ul>",
+            uiText: "INTRO WORKOUT:<ul><li>Practice the basic punches.</li><li>5 rounds of drills.</li></ul>",
             uid: 10,
             stages:[],
             bagType: null
         },
+        
         {
             introText: "JAB and STRAIGHT:\n" + 
                 " \u2022 Focus on form, then ramp up the speed.",
@@ -72406,60 +72575,6 @@ let workoutData = [
             ]
         },
         {
-            introText: "JAB and STRAIGHT:\n" + 
-                " \u2022 New bag, same punches.\n" + 
-                " \u2022 Focus on form, then ramp up the speed.",
-            bagType: ROUND_DOUBLE_END_BAG,
-            roundType: ROUNDTYPE_SCRIPTED,
-            stages:
-            [
-                {
-                    startTimePercent: 0.0,
-                    descriptionText: "JAB: 1"
-                },
-                {
-                    startTimePercent: 0.25,
-                    descriptionText: "STRAIGHT: 2"
-                },
-                {
-                    startTimePercent: 0.5,
-                    descriptionText: "DOUBLE JAB: 1-1"
-                },
-
-                {
-                    startTimePercent: 0.75,
-                    descriptionText: "JAB then STRAIGHT:\n1-2"
-                }
-            ]
-        },
-        {
-            introText: "LEAD and REAR HOOK:\n" + 
-            " \u2022 New bag, same punches.\n" + 
-            " \u2022 Focus on form, then ramp up the speed.",
-            bagType: ROUND_DOUBLE_END_BAG,
-            roundType: ROUNDTYPE_SCRIPTED,
-            stages:
-            [
-                {
-                    startTimePercent: 0.0,
-                    descriptionText: "LEAD HOOK: 3"
-                },
-                {
-                    startTimePercent: 0.25,
-                    descriptionText: "REAR HOOK: 4"
-                },
-                {
-                    startTimePercent: 0.5,
-                    descriptionText: "STRAIGHT then L. HOOK:\n2-3"
-                },
-
-                {
-                    startTimePercent: 0.75,
-                    descriptionText: "JAB then R. HOOK:\n1-4"
-                }
-            ]
-        },
-        {
             introText: "LEAD and REAR UPPERCUT:\n" + 
             " \u2022 Focus on form, then ramp up the speed.",
             bagType: ROUND_HEAVY_BAG,
@@ -72486,14 +72601,55 @@ let workoutData = [
             ]
         },
         {
-            introText:
-                "HEAVY BAG FREESTYLE:\n"+
-                " \u2022 Close it out however you want.",
             bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_TIMED,
+            roundType: ROUNDTYPE_SPEED,
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    targetPPM: 200,
+                },
+                {
+                    startTimePercent: 0.25,
+                    targetPPM: 250,
+                },
+                {
+                    startTimePercent: 0.75,
+                    targetPPM: 300,
+                }
+            ]
+        },
+        {
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_NUM_SPECIFIC_PUNCHES,
+            stages:
+            [
+                {
+                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__["PUNCH_JAB"],
+                    numPunches: 25,
+                },
+                {
+                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__["PUNCH_STRAIGHT"],
+                    numPunches: 25
+                },
+                {
+                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__["PUNCH_LEFT_HOOK"],
+                    numPunches: 25,
+                },
+                {
+                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__["PUNCH_RIGHT_HOOK"],
+                    numPunches: 25,
+                },
+                {
+                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__["PUNCH_LEFT_UPPERCUT"],
+                    numPunches: 25
+                },
+                {
+                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__["PUNCH_RIGHT_UPPERCUT"],
+                    numPunches: 25
+                }
+            ]
         }
     ],
-
 
     [
         {
@@ -72516,7 +72672,7 @@ let workoutData = [
             introText: "2-PUNCH COMBOS:\n" + 
                 " \u2022 Focus on form, then ramp up the speed.\n" +
                 " \u2022 Keep your guard up.",
-            bagType: ROUND_DOUBLE_END_BAG,
+            bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:
             [
@@ -72541,7 +72697,7 @@ let workoutData = [
         {
             introText: "2-PUNCH COMBOS:\n" + 
                 " \u2022 Focus on form, then ramp up the speed.",
-            bagType: ROUND_HEAVY_BAG,
+            bagType: ROUND_DOUBLE_END_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:
             [
@@ -72569,11 +72725,11 @@ let workoutData = [
             stages:[
                 {
                     startTimePercent: 0.0,
-                    targetPPM: 200,
+                    targetPPM: 250,
                 },
                 {
                     startTimePercent: 0.25,
-                    targetPPM: 250,
+                    targetPPM: 275,
                 },
                 {
                     startTimePercent: 0.75,
@@ -72593,12 +72749,12 @@ let workoutData = [
                     descriptionText: "1-1-2"
                 },
                 {
-                    startTimePercent: 0.25,
-                    descriptionText: "1-2-3"
-                },
-                {
                     startTimePercent: 0.5,
                     descriptionText: "1-1-4"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-3"
                 },
                 {
                     startTimePercent: 0.75,
@@ -72619,12 +72775,12 @@ let workoutData = [
                     descriptionText: "1-1-2"
                 },
                 {
-                    startTimePercent: 0.25,
-                    descriptionText: "1-2-3"
-                },
-                {
                     startTimePercent: 0.5,
                     descriptionText: "1-1-4"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-3"
                 },
                 {
                     startTimePercent: 0.75,
@@ -72766,11 +72922,11 @@ let workoutData = [
             stages:[
                 {
                     startTimePercent: 0.0,
-                    targetPPM: 250,
+                    targetPPM: 275,
                 },
                 {
                     startTimePercent: 0.25,
-                    targetPPM: 275,
+                    targetPPM: 300,
                 },
                 {
                     startTimePercent: 0.75,
@@ -72781,12 +72937,12 @@ let workoutData = [
         {
             introText:
                 "HEAVY BAG FREESTYLE:\n"+
-                " \u2022 Put those 2- and 3-punch combos together.",
+                " \u2022 Close it out however you want.",
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_TIMED,
         }
     ],
-    
+    /*
     [
         {
             introText: "BASIC WORKOUT:\n" +
@@ -73241,7 +73397,7 @@ let workoutData = [
             roundType: ROUNDTYPE_SPEED
         }
     ],
-    
+    */
 ];
 
 /***/ })

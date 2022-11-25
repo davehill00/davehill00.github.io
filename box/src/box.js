@@ -440,14 +440,17 @@ let slowFrameCount = 0;
 function adjustTargetFrameRate(indexDelta)
 {
     let session = renderer.xr.getSession();
-    targetRefreshRateIdx = Math.max(0, Math.min(targetRefreshRateIdx + indexDelta, refreshRates.length-1));
-    session.updateTargetFrameRate(refreshRates[targetRefreshRateIdx]);
-    // session.targetFrameRate = 
-    console.log("SETTING NEW TARGET FRAMERATE TO: " + refreshRates[targetRefreshRateIdx] );
+    if (session)
+    {
+        targetRefreshRateIdx = Math.max(0, Math.min(targetRefreshRateIdx + indexDelta, refreshRates.length-1));
+        session.updateTargetFrameRate(refreshRates[targetRefreshRateIdx]);
+        // session.targetFrameRate = 
+        console.log("SETTING NEW TARGET FRAMERATE TO: " + refreshRates[targetRefreshRateIdx] );
 
-    targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs();
-    adjustFramerate = true;
-    slowFrameCount = Math.max(slowFrameCount - 50, 0);
+        targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs();
+        adjustFramerate = true;
+        slowFrameCount = Math.max(slowFrameCount - 50, 0);
+    }
 }
 
 function onFrameRateChange(evt)

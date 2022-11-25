@@ -1,3 +1,5 @@
+import { PUNCH_JAB, PUNCH_LEFT_HOOK, PUNCH_RIGHT_HOOK, PUNCH_RIGHT_UPPERCUT, PUNCH_LEFT_UPPERCUT, PUNCH_STRAIGHT } from "./punchDetector";
+
 export const ROUND_HEAVY_BAG = 0;
 export const ROUND_DOUBLE_END_BAG = 1;
 
@@ -6,19 +8,21 @@ export const ROUNDTYPE_NUM_PUNCHES = 1;
 export const ROUNDTYPE_TIMED = 2;
 export const ROUNDTYPE_SPEED = 3;
 export const ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED = 4;
+export const ROUNDTYPE_NUM_SPECIFIC_PUNCHES = 5;
 
 export let workoutData = [
     [
         {
             introText: "INTRO WORKOUT:\n" +
                 " \u2022 Practice the basic punches.\n" + 
-                " \u2022 6 rounds of drills.",
+                " \u2022 5 rounds of drills.",
             uiShortText: "INTRO WORKOUT",
-            uiText: "INTRO WORKOUT:<ul><li>Practice the basic punches.</li><li>6 rounds of drills.</li></ul>",
+            uiText: "INTRO WORKOUT:<ul><li>Practice the basic punches.</li><li>5 rounds of drills.</li></ul>",
             uid: 10,
             stages:[],
             bagType: null
         },
+        
         {
             introText: "JAB and STRAIGHT:\n" + 
                 " \u2022 Focus on form, then ramp up the speed.",
@@ -70,60 +74,6 @@ export let workoutData = [
             ]
         },
         {
-            introText: "JAB and STRAIGHT:\n" + 
-                " \u2022 New bag, same punches.\n" + 
-                " \u2022 Focus on form, then ramp up the speed.",
-            bagType: ROUND_DOUBLE_END_BAG,
-            roundType: ROUNDTYPE_SCRIPTED,
-            stages:
-            [
-                {
-                    startTimePercent: 0.0,
-                    descriptionText: "JAB: 1"
-                },
-                {
-                    startTimePercent: 0.25,
-                    descriptionText: "STRAIGHT: 2"
-                },
-                {
-                    startTimePercent: 0.5,
-                    descriptionText: "DOUBLE JAB: 1-1"
-                },
-
-                {
-                    startTimePercent: 0.75,
-                    descriptionText: "JAB then STRAIGHT:\n1-2"
-                }
-            ]
-        },
-        {
-            introText: "LEAD and REAR HOOK:\n" + 
-            " \u2022 New bag, same punches.\n" + 
-            " \u2022 Focus on form, then ramp up the speed.",
-            bagType: ROUND_DOUBLE_END_BAG,
-            roundType: ROUNDTYPE_SCRIPTED,
-            stages:
-            [
-                {
-                    startTimePercent: 0.0,
-                    descriptionText: "LEAD HOOK: 3"
-                },
-                {
-                    startTimePercent: 0.25,
-                    descriptionText: "REAR HOOK: 4"
-                },
-                {
-                    startTimePercent: 0.5,
-                    descriptionText: "STRAIGHT then L. HOOK:\n2-3"
-                },
-
-                {
-                    startTimePercent: 0.75,
-                    descriptionText: "JAB then R. HOOK:\n1-4"
-                }
-            ]
-        },
-        {
             introText: "LEAD and REAR UPPERCUT:\n" + 
             " \u2022 Focus on form, then ramp up the speed.",
             bagType: ROUND_HEAVY_BAG,
@@ -150,14 +100,55 @@ export let workoutData = [
             ]
         },
         {
-            introText:
-                "HEAVY BAG FREESTYLE:\n"+
-                " \u2022 Close it out however you want.",
             bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_TIMED,
+            roundType: ROUNDTYPE_SPEED,
+            stages:[
+                {
+                    startTimePercent: 0.0,
+                    targetPPM: 200,
+                },
+                {
+                    startTimePercent: 0.25,
+                    targetPPM: 250,
+                },
+                {
+                    startTimePercent: 0.75,
+                    targetPPM: 300,
+                }
+            ]
+        },
+        {
+            bagType: ROUND_HEAVY_BAG,
+            roundType: ROUNDTYPE_NUM_SPECIFIC_PUNCHES,
+            stages:
+            [
+                {
+                    punchType: PUNCH_JAB,
+                    numPunches: 25,
+                },
+                {
+                    punchType: PUNCH_STRAIGHT,
+                    numPunches: 25
+                },
+                {
+                    punchType: PUNCH_LEFT_HOOK,
+                    numPunches: 25,
+                },
+                {
+                    punchType: PUNCH_RIGHT_HOOK,
+                    numPunches: 25,
+                },
+                {
+                    punchType: PUNCH_LEFT_UPPERCUT,
+                    numPunches: 25
+                },
+                {
+                    punchType: PUNCH_RIGHT_UPPERCUT,
+                    numPunches: 25
+                }
+            ]
         }
     ],
-
 
     [
         {
@@ -180,7 +171,7 @@ export let workoutData = [
             introText: "2-PUNCH COMBOS:\n" + 
                 " \u2022 Focus on form, then ramp up the speed.\n" +
                 " \u2022 Keep your guard up.",
-            bagType: ROUND_DOUBLE_END_BAG,
+            bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:
             [
@@ -205,7 +196,7 @@ export let workoutData = [
         {
             introText: "2-PUNCH COMBOS:\n" + 
                 " \u2022 Focus on form, then ramp up the speed.",
-            bagType: ROUND_HEAVY_BAG,
+            bagType: ROUND_DOUBLE_END_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:
             [
@@ -233,11 +224,11 @@ export let workoutData = [
             stages:[
                 {
                     startTimePercent: 0.0,
-                    targetPPM: 200,
+                    targetPPM: 250,
                 },
                 {
                     startTimePercent: 0.25,
-                    targetPPM: 250,
+                    targetPPM: 275,
                 },
                 {
                     startTimePercent: 0.75,
@@ -257,12 +248,12 @@ export let workoutData = [
                     descriptionText: "1-1-2"
                 },
                 {
-                    startTimePercent: 0.25,
-                    descriptionText: "1-2-3"
-                },
-                {
                     startTimePercent: 0.5,
                     descriptionText: "1-1-4"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-3"
                 },
                 {
                     startTimePercent: 0.75,
@@ -283,12 +274,12 @@ export let workoutData = [
                     descriptionText: "1-1-2"
                 },
                 {
-                    startTimePercent: 0.25,
-                    descriptionText: "1-2-3"
-                },
-                {
                     startTimePercent: 0.5,
                     descriptionText: "1-1-4"
+                },
+                {
+                    startTimePercent: 0.25,
+                    descriptionText: "1-2-3"
                 },
                 {
                     startTimePercent: 0.75,
@@ -430,11 +421,11 @@ export let workoutData = [
             stages:[
                 {
                     startTimePercent: 0.0,
-                    targetPPM: 250,
+                    targetPPM: 275,
                 },
                 {
                     startTimePercent: 0.25,
-                    targetPPM: 275,
+                    targetPPM: 300,
                 },
                 {
                     startTimePercent: 0.75,
@@ -445,12 +436,12 @@ export let workoutData = [
         {
             introText:
                 "HEAVY BAG FREESTYLE:\n"+
-                " \u2022 Put those 2- and 3-punch combos together.",
+                " \u2022 Close it out however you want.",
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_TIMED,
         }
     ],
-    
+    /*
     [
         {
             introText: "BASIC WORKOUT:\n" +
@@ -905,5 +896,5 @@ export let workoutData = [
             roundType: ROUNDTYPE_SPEED
         }
     ],
-    
+    */
 ];

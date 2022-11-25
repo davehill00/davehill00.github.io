@@ -1,5 +1,6 @@
 import {ROUND_HEAVY_BAG} from "./workoutData.js";
-import {formatTimeString} from "./gamelogic.js";
+import {formatTimeString, kPunchNames, kPunchNamesShort, kGreenColor, kRedColor} from "./gamelogic.js";
+import { HitResult } from "./sphereSphereIntersection.js";
 
 const kRoundAlmostDoneTime = 10.0;
 
@@ -234,6 +235,136 @@ export class TimeAdjustedNumberOfPunchesBoxingRound extends NumberOfPunchesBoxin
     {
         super((duration / 60) * ppm, roundNumber, maxRounds, bagType);
     }
+}
+
+export class NumberOfSpecificPunchesBoxingRound extends BoxingRound
+{
+    constructor(roundInfo, roundNumber, maxRounds, bagType, introText = null)
+    {
+        super(roundNumber, maxRounds, bagType);
+
+        
+        
+        //console.log("Almost Done Count: " + this.almostDonePunchCount);
+
+        if (introText != null)
+        {
+            this.introText = introText;
+        }
+        else
+        {
+            this.introText = "PRACTICE MAKES PERFECT:\n";
+            if (roundInfo.stages.length < 5)
+            {
+                for(let i = 0; i < roundInfo.stages.length; i++)
+                {
+                    this.introText += " \u2022 ";
+                    this.introText += kPunchNames[roundInfo.stages[i].punchType] + " x " + roundInfo.stages[i].numPunches;
+                    if (i < (roundInfo.stages.length - 1) )
+                    {
+                            this.introText += "\n";
+                    }
+                }
+            }
+            else
+            {
+                for(let i = 0; i < roundInfo.stages.length; i++)
+                {
+                    if (i%2 == 0)
+                    {
+                        this.introText += " \u2022 ";
+                    }
+                    else
+                    {
+                        this.introText += ", ";
+                    }
+                    this.introText += kPunchNamesShort[roundInfo.stages[i].punchType] + " x " + roundInfo.stages[i].numPunches;
+                    if (i < (roundInfo.stages.length - 1) && (i%2 == 1))
+                    {
+                            this.introText += "\n";
+                    }
+                }
+            }
+            
+        }
+        this.roundInfo = roundInfo;
+        this.bFailedPunch = false;
+    }
+
+    start(session, elapsedTime)
+    {
+        this.currentPunchType = this.roundInfo.stages[0].punchType;
+        this.currentPunchTypeName = kPunchNames[this.currentPunchType];
+        this.numPunches = this.roundInfo.stages[0].numPunches;
+        this.almostDonePunchCount = Math.floor(this.numPunches * 0.25);
+
+        session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, false);
+        this.startTime = elapsedTime;
+        this.session = session;
+
+        this.nextWorkoutStage = 1;
+    }
+
+    update(session, elapsedTime)
+    {
+        session.updateTimer(elapsedTime - this.startTime, false, false);
+    }
+
+    isOver(elapsedTime)
+    {
+        return this.numPunches <= 0;
+    }
+
+    onBagHit(whichHand, speed, velocity, punchType)
+    {
+        // need punch type here
+        if (punchType == this.currentPunchType)
+        {
+            this.numPunches--;
+
+            if (this.numPunches > 0)
+            {
+                this.session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, false, this.bFailedPunch ? kGreenColor : null);
+
+                if(this.numPunches == this.almostDonePunchCount)
+                {
+                    this.session.playGetReadySound();
+                }
+            }
+            else
+            {
+                if (this.nextWorkoutStage == this.roundInfo.stages.length)
+                {
+                    // display all-done
+                }
+                else
+                {
+                    this.numPunches = this.roundInfo.stages[this.nextWorkoutStage].numPunches;
+                    this.almostDonePunchCount = Math.floor(this.numPunches * 0.25);
+                    
+                    this.currentPunchType = this.roundInfo.stages[this.nextWorkoutStage].punchType;
+                    this.currentPunchTypeName = kPunchNames[this.currentPunchType];
+        
+                    this.session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, true);
+             
+                    this.nextWorkoutStage++;
+                }
+            }         
+        }
+        else
+        {
+            // @TODO - play a fail sound here
+            this.session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, true, kRedColor);
+            this.bFailedPunch = true;
+        }
+    }
+
+    getIntroText()
+    {
+        return this.introText;
+    }
+
+    
 }
 
 export class SpeedRound extends TimedBoxingRound
