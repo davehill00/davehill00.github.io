@@ -325,6 +325,7 @@ export class NumberOfSpecificPunchesBoxingRound extends BoxingRound
             if (this.numPunches > 0)
             {
                 this.session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, false, this.bFailedPunch ? kGreenColor : null);
+                this.bFailedPunch = false;
 
                 if(this.numPunches == this.almostDonePunchCount)
                 {

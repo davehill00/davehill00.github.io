@@ -66331,6 +66331,7 @@ class NumberOfSpecificPunchesBoxingRound extends BoxingRound
             if (this.numPunches > 0)
             {
                 this.session.displayWorkoutInfoMessage( this.currentPunchTypeName + " x " + this.numPunches, false, this.bFailedPunch ? _gamelogic_js__WEBPACK_IMPORTED_MODULE_1__["kGreenColor"] : null);
+                this.bFailedPunch = false;
 
                 if(this.numPunches == this.almostDonePunchCount)
                 {
