@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "three": {
+      "signature": "f79774548f20c464ff53d1b5b9d17e69",
+      "file": true,
+      "replaced": "^0.147.0"
+    }
+  }
+}

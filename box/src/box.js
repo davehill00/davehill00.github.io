@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import {BasisTextureLoader} from 'three/examples/jsm/loaders/BasisTextureLoader.js'
-
 import {TGALoader} from 'three/examples/jsm/loaders/TGALoader.js'
+import {OverrideXRFrameGetViewerPose} from "./overrideXRFrameGetViewerPose.js";
+
 
 //import * as BASIS from 'three/exmaples/js/libs/basis/basis_transcoder.js'
 
@@ -58,6 +58,13 @@ let basisLoader = null;
 let envMapObjects = {}
 let hud = null;
 let pageUI = null;
+
+
+let matrixOverridePose = new THREE.Matrix4().compose(
+    new THREE.Vector3(0,1.6,0), new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.707, 0, 0)), new THREE.Vector3(1,1,1));
+
+// OverrideXRFrameGetViewerPose(matrixOverridePose.toArray()); // Enable this to hard-code the viewpoint for consistent performance testing
+
 initialize();
 
 function initialize()
@@ -79,7 +86,8 @@ function initialize()
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
-    //renderer.xr.setFramebufferScaleFactor(1.0) //0.75);
+    renderer.xr.setFramebufferScaleFactor(1.0);
+
     let color = new THREE.Color(0x000000);
     //color.convertSRGBToLinear();
     renderer.setClearColor(color);
@@ -91,10 +99,11 @@ function initialize()
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     // renderer.toneMappingExposure = 1.25;
 
+    document.body.appendChild(renderer.domElement);
     pageUI = new PageUI(renderer);
 
 
-    document.body.appendChild(renderer.domElement);
+    // document.body.appendChild(renderer.domElement);
 
     clock = new THREE.Clock();
 
@@ -444,7 +453,7 @@ function adjustTargetFrameRate(indexDelta)
     {
         targetRefreshRateIdx = Math.max(0, Math.min(targetRefreshRateIdx + indexDelta, refreshRates.length-1));
         session.updateTargetFrameRate(refreshRates[targetRefreshRateIdx]);
-        // session.targetFrameRate = 
+
         console.log("SETTING NEW TARGET FRAMERATE TO: " + refreshRates[targetRefreshRateIdx] );
 
         targetMaxFrameTimeMs = computeTargetMaxFrameTimeMs();
@@ -552,7 +561,7 @@ function onSessionStart()
         console.log("SUPPORTED FRAMERATES: " + session.supportedFrameRates);
         refreshRates = session.supportedFrameRates;
         targetRefreshRateIdx = refreshRates.length-1;
-        while (refreshRates[targetRefreshRateIdx] > 80)
+        while (refreshRates[targetRefreshRateIdx] > 90)
         {
             targetRefreshRateIdx--;
         }
@@ -734,7 +743,7 @@ function LoadLightmapPromise(meshName, filepath)
             console.log("LOADED: " + meshName + " -> " + filepath);
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = THREE.RGBDEncoding;
+            texture.encoding = THREE.LinearEncoding; //RGBDEncoding;
             lightmaps[meshName] = texture;
             resolve();
         });
@@ -749,7 +758,7 @@ function LoadBasisLightmapPromise(meshName, filepath)
         basisLoader.load(filepath, (texture) => {
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = THREE.RGBDEncoding  ;
+            texture.encoding = THREE.LinearEncoding; //RGBDEncoding  ;
             lightmaps[meshName] = texture;
             resolve();
         });
@@ -762,7 +771,7 @@ function LoadBasisAoPromise(meshName, filepath)
         basisLoader.load(filepath, (texture) => {
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = THREE.RGBDEncoding;
+            texture.encoding = THREE.LinearEncoding; //RGBDEncoding;
             aomaps[meshName] = texture;
             resolve();
         });
