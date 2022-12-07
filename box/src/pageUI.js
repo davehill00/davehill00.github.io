@@ -19,6 +19,7 @@ export class PageUI
         
         this.bagType = 1;
         this.doBagSwap = true;
+        this.arMode = true;
 
         if (!window.localStorage.getItem("first_run"))
         {
@@ -30,6 +31,7 @@ export class PageUI
             window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
             window.localStorage.setItem("cfg_workoutType", this.workoutType);
             window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.whichScriptedWorkout][0].uid);
+            window.localStorage.setItem("cfg_arMode", this.arMode ? 1 : 0)
         }
         else
         {
@@ -85,6 +87,12 @@ export class PageUI
                     this.whichScriptedWorkout = matchedIndex;
                 }
             }
+
+            val = window.localStorage.getItem("cfg_arMode");
+            if (val)
+            {
+                this.arMode = (parseInt(val) == 1);
+            }
         }
 
 
@@ -136,6 +144,16 @@ export class PageUI
         this.uiConfigureButton.onclick = () => {this.onConfigureClicked()};
         this.uiButtonGroup.appendChild(this.uiConfigureButton);
 
+        this.uiARVRButton = document.createElement("button");
+        this.uiARVRButton.style.fontSize = "2.25vw"
+        this.uiARVRButton.style.borderWidth = "0.4vw";
+        this.uiARVRButton.innerHTML = this.arMode ? "AR Mode Selected" : "VR Mode Selected";
+        // this.uiARVRButton.disabled = true;
+        // this.uiARVRButton.style.visibility = "hidden";
+        // this.uiARVRButton.style.display = "none";
+        console.log("UI AR VR BUtton Display Style = " + this.uiARVRButton.style.display);
+        this.uiARVRButton.onclick = () => {this.onToggleARVRClicked()};
+        this.uiButtonGroup.appendChild(this.uiARVRButton);
 
         this.uiAboutButton = document.createElement("button");
         this.uiAboutButton.style.fontSize = "2.25vw";
@@ -438,7 +456,7 @@ export class PageUI
     checkForXR()
     {
         if ( 'xr' in navigator ) {
-			navigator.xr.isSessionSupported( 'immersive-vr' ).then( 
+			navigator.xr.isSessionSupported( this.arMode ? 'immersive-ar' : 'immersive-vr' ).then( 
                 ( supported ) => {
 			    	supported ? this.onWebXRSupported() : this.onWebXRNotFound();
 			} );
@@ -450,15 +468,17 @@ export class PageUI
     onWebXRSupported()
     {
         this.uiStartButton.disabled = false;
+        this.uiStartButton.classList.remove("webxr_not_found");
         this.uiStartButton.innerHTML = "START";
         this.uiConfigureButton.disabled = false;
         this.uiConfigureButton.innerHTML = this.getMatchConfigString();
 
+        this.uiConfigureButton.style.display = "";
     }
     
     onWebXRNotFound()
     {
-        this.uiStartButton.innerHTML = "WebXR not supported"
+        this.uiStartButton.innerHTML = this.arMode ? "AR not supported" : "VR not supported";
         this.uiStartButton.classList.add("webxr_not_found");
         this.uiStartButton.disabled = false;
         this.uiStartButton.onclick = () => {
@@ -466,6 +486,14 @@ export class PageUI
         }
 
         this.uiConfigureButton.style.display = "none";
+    }
+
+    onToggleARVRClicked()
+    {
+        this.arMode = !this.arMode;
+        window.localStorage.setItem("cfg_arMode", this.arMode ? 1 : 0);
+        this.uiARVRButton.innerHTML = this.arMode ? "AR Mode Selected" : "VR Mode Selected";
+        this.checkForXR();
     }
 
     onStartClicked()
@@ -488,7 +516,7 @@ export class PageUI
             // 'low-fixed-foveation-level',
             // 'low-refresh-rate'
         ] };
-        navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( 
+        navigator.xr.requestSession( this.arMode ? 'immersive-ar' : 'immersive-vr', sessionInit ).then( 
             (session) => {
                 this.onSessionStarted(session);
             }

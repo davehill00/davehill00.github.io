@@ -91,6 +91,7 @@ function initialize()
     let color = new THREE.Color(0x000000);
     //color.convertSRGBToLinear();
     renderer.setClearColor(color);
+ 
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
     // renderer.shadowMap.enabled = true;
@@ -573,6 +574,44 @@ function onSessionStart()
     {
         console.log("SETTING FOVEATION ON XR OBJECT");
         renderer.xr.setFoveation(1.0);
+    }
+
+    let stuffToHideInArMode_MaterialNames = [
+        'Accent.Wall.001', 
+        'Floor.001', 
+        'Ceiling.001', 
+        'Baseboard.001', 
+        'Walls.001', 
+        'Dumbell.Handle.001', 
+        'Dumbell.001', 
+        'Shelf.Legs.001',
+        'FloorMarkings',
+        'TV.001'
+    ]
+    if (pageUI.arMode)
+    {
+        // walk through the scene and hide stuff
+        scene.traverse((node) => {
+            if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
+            {
+                node.visible = false;
+            }
+        });
+
+        renderer.setClearAlpha(0.0);
+    }
+    else
+    {
+        // walk through the scene and show stuff
+        renderer.setClearAlpha(1.0);
+        scene.traverse((node) => {
+            if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
+            {
+                node.visible = true;
+            }
+        });
+
+        renderer.setClearAlpha(1.0);
     }
 
     session.addEventListener('visibilitychange', e => {
