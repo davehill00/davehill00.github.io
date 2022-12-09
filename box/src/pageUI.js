@@ -21,6 +21,26 @@ export class PageUI
         this.doBagSwap = true;
         this.arMode = true;
 
+        this.hasCheckedForArVrSupport = 0;
+        this.hasArSupport = false;
+        this.hasVrSupport = false;
+        if ( 'xr' in navigator ) {
+			navigator.xr.isSessionSupported( 'immersive-ar').then( 
+                ( supported ) => {
+                    this.hasArSupport = supported;
+                    this.hasCheckedForArVrSupport++;
+			} );
+            navigator.xr.isSessionSupported( 'immersive-vr').then( 
+                ( supported ) => {
+                    this.hasVrSupport = supported;
+                    this.hasCheckedForArVrSupport++;
+			} );
+		} else {
+            this.hasArSupport = false;
+            this.hasVrSupport = false;
+            this.hasCheckedForArVrSupport = 2;
+		}
+
         if (!window.localStorage.getItem("first_run"))
         {
             window.localStorage.setItem("first_run", "true");
@@ -147,13 +167,23 @@ export class PageUI
         this.uiARVRButton = document.createElement("button");
         this.uiARVRButton.style.fontSize = "2.25vw"
         this.uiARVRButton.style.borderWidth = "0.4vw";
-        this.uiARVRButton.innerHTML = this.arMode ? "AR Mode Selected" : "VR Mode Selected";
-        // this.uiARVRButton.disabled = true;
+        this.uiARVRButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; //this.arMode ? "AR Mode Selected" : "VR Mode Selected";
+        this.uiARVRButton.disabled = true;
         // this.uiARVRButton.style.visibility = "hidden";
         // this.uiARVRButton.style.display = "none";
         console.log("UI AR VR BUtton Display Style = " + this.uiARVRButton.style.display);
         this.uiARVRButton.onclick = () => {this.onToggleARVRClicked()};
         this.uiButtonGroup.appendChild(this.uiARVRButton);
+
+        // this.uiARVRToggle = document.createElement("label");
+        // this.uiARVRToggle.class = "switch";
+        // document.body.appendChild(this.uiARVRToggle);
+        // let toggleSwitch = document.createElement("input");
+        // toggleSwitch.type = "checkbox";
+        // let span = document.createElement("span");
+        // span.class = "slider";
+        // this.uiARVRToggle.appendChild(toggleSwitch);
+        // this.uiARVRToggle.appendChild(span);
 
         this.uiAboutButton = document.createElement("button");
         this.uiAboutButton.style.fontSize = "2.25vw";
@@ -455,14 +485,48 @@ export class PageUI
 
     checkForXR()
     {
-        if ( 'xr' in navigator ) {
-			navigator.xr.isSessionSupported( this.arMode ? 'immersive-ar' : 'immersive-vr' ).then( 
-                ( supported ) => {
-			    	supported ? this.onWebXRSupported() : this.onWebXRNotFound();
-			} );
-		} else {
-            this.onWebXRNotFound();
-		}
+        if (this.hasCheckedForArVrSupport == 2)
+        {
+            if ((this.hasArSupport||this.hasVrSupport) && !(this.hasArSupport && this.hasVrSupport))
+            {
+                //only one flavor supported -- hide the toggle
+                window.localStorage.setItem("cfg_arMode", this.hasArSupport ? 1 : 0);
+                this.arMode = this.hasArSupport;
+                this.uiARVRButton.style.display = "none";
+                this.uiARVRButton.disabled = true;
+                this.onWebXRSupported();
+
+            } else if (this.arMode && this.hasArSupport)
+            {
+                this.uiARVRButton.disabled = false;
+                this.uiARVRButton.style.display = "";
+                this.uiARVRButton.innerHTML = "AR Mode Selected";
+                this.onWebXRSupported();
+            }
+            else if (!this.arMode && this.hasVrSupport)
+            {
+                this.uiARVRButton.disabled = false;
+                this.uiARVRButton.style.display = "";
+                this.uiARVRButton.innerHTML = "VR Mode Selected";
+                this.onWebXRSupported();
+            }
+            else
+            {
+                this.onWebXRNotFound();
+            }
+        }
+        else
+        {
+            console.log("OLD PATH FOR CHECKING")
+            if ( 'xr' in navigator ) {
+                navigator.xr.isSessionSupported( this.arMode ? 'immersive-ar' : 'immersive-vr' ).then( 
+                    ( supported ) => {
+                        supported ? this.onWebXRSupported() : this.onWebXRNotFound();
+                } );
+            } else {
+                this.onWebXRNotFound();
+            }
+        }
     }
 
     onWebXRSupported()
@@ -478,11 +542,16 @@ export class PageUI
     
     onWebXRNotFound()
     {
-        this.uiStartButton.innerHTML = this.arMode ? "AR not supported" : "VR not supported";
+        this.uiStartButton.innerHTML = "WebXR Not Supported. Click to send to Oculus Headset.";
         this.uiStartButton.classList.add("webxr_not_found");
         this.uiStartButton.disabled = false;
+        this.uiARVRButton.style.display = "none";
+        this.uiARVRButton.disabled = true;
         this.uiStartButton.onclick = () => {
-            window.open("https://immersiveweb.dev", "_blank");
+            let sendToUrl = "https://oculus.com/open_url/?url=" + encodeURIComponent(window.location.href);
+            console.log(sendToUrl);
+            window.open(sendToUrl, "_blank");
+            // window.open("https://immersiveweb.dev", "_blank");
         }
 
         this.uiConfigureButton.style.display = "none";
