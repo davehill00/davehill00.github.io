@@ -11,7 +11,7 @@ module.exports = {
   entry: './src/box.js',
 
   // Enable source mapping
-  devtool: 'source-map',
+  // devtool: 'source-map',
 
   // Path and filename of your result bundle.
   // Webpack will bundle all JavaScript into this file
@@ -22,15 +22,16 @@ module.exports = {
 
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
-    //compress: true,
-    port: 9000
+    // compress: true,
+    port: 8080
   },
 
   // Default mode for Webpack is production.
   // Depending on mode Webpack will apply different things
   // on final bundle. For now we don't need production's JavaScript
   // minifying and other thing so let's set mode to development
-  mode: 'development',
+  // mode: 'development',
+  mode: 'production',
 
   plugins: [
     new webpack.ProvidePlugin({
