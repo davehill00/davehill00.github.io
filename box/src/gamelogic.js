@@ -173,6 +173,8 @@ export class BoxingSession
             if (node.name == "Screen")
             {
                 this.TV = node;
+                this.TV.needsRenderUpdate = false;
+                
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
                 this.TV.add(this.stateTextBox);
@@ -470,6 +472,11 @@ export class BoxingSession
                             this.workoutStageTextBox.visible = false;
                             this.workoutSummaryTextBox.displayMessage(message);
                             this.workoutSummaryTextBox.visible = true;
+
+                            if (this.TV)
+                            {
+                                this.TV.needsRenderUpdate = true;
+                            }
                         }
                         this.state = SESSION_OUTRO;
                     }
@@ -512,6 +519,11 @@ export class BoxingSession
 
     startGetReadyState()
     {
+        if (this.TV)
+        {
+            this.TV.needsRenderUpdate = true;
+        }
+
         this.state = SESSION_GET_READY;
         this.showBagForNextRound();
         this.soundGetReady.play();
@@ -575,6 +587,8 @@ export class BoxingSession
     updateTimer(value, bRoundUp = true, bChangeColorOnFinalTenSeconds=true)
     {
         let message;
+        
+
         if (this.state == SESSION_NULL || this.state == SESSION_OUTRO)
         {
             this.timerTextBox.setMessageColor(kGreyColor);
@@ -605,6 +619,10 @@ export class BoxingSession
             message = formatTimeString(newTimeInWholeSeconds);
             //message = minutes.toString().padStart(1, '0') + ':' + seconds.toString().padStart(2, '0');
         }
+        if (this.TV)
+        {
+            this.TV.needsRenderUpdate = true;
+        }
         this.timerTextBox.displayMessage(message);
     }
 
@@ -612,6 +630,12 @@ export class BoxingSession
     {
         let roundMessage;
         let stateMessage;
+        
+        if (this.TV)
+        {
+            this.TV.needsRenderUpdate = true;
+        }
+
         if (this.state == SESSION_NULL || this.state == SESSION_PAUSED)
         {
             roundMessage = "ROUND -/-";
@@ -648,12 +672,24 @@ export class BoxingSession
     displayIntroMessage(message)
     {
         console.assert(this.workoutIntroTextBox.visible);
+
+        if (this.TV)
+        {
+            this.TV.needsRenderUpdate = true;
+        }
+
         this.workoutIntroTextBox.displayMessage(message);
     }
     
     displayWorkoutInfoMessage(message, wantUpdateSound = true, overrideColor = null)
     {
         console.assert(this.workoutStageTextBox.visible);
+
+        if (this.TV)
+        {
+            this.TV.needsRenderUpdate = true;
+        }
+
         //console.log("display workout info message: " + message);
         if (wantUpdateSound)
         {
@@ -745,6 +781,7 @@ export class PunchingStats
             if (node.name == "Screen")
             {
                 this.TV = node;
+                this.TV.needsRenderUpdate = false;
                 this.TV.add(this.statsTextBox);
                 this.TV.add(this.punchTextBox);
             }
@@ -869,6 +906,11 @@ export class PunchingStats
 
 
         let message; 
+
+        if (this.TV)
+        {
+            this.TV.needsRenderUpdate = true;
+        }
 
         if (!onlyPunchRecord)
         {

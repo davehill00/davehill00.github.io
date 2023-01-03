@@ -19,7 +19,9 @@
     "live-moving-average": "^1.1.0",
     "load-bmfont": "^1.4.1",
     "three": "file:.yalc/three",
+    "webgl-debug": "^2.0.1",
     "webpack": "4",
+    "webxr-layers-polyfill": "file:.yalc/webxr-layers-polyfill",
     "xtend": "^4.0.2"
   },
   "scripts": {

@@ -5,7 +5,9 @@ import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import {BasisTextureLoader} from 'three/examples/jsm/loaders/BasisTextureLoader.js'
 import {TGALoader} from 'three/examples/jsm/loaders/TGALoader.js'
 import {OverrideXRFrameGetViewerPose} from "./overrideXRFrameGetViewerPose.js";
+import {HTMLMesh} from 'three/examples/jsm/interactive/HTMLMesh.js'
 
+import WebXRLayersPolyfill from 'webxr-layers-polyfill/build/webxr-layers-polyfill.module.js';
 
 //import * as BASIS from 'three/exmaples/js/libs/basis/basis_transcoder.js'
 
@@ -34,6 +36,15 @@ let controllers=[];
 let scene = null;
 let camera = null;
 let renderer = null;
+let quadCamera = null;
+let quadScene = null;
+let quadScreen = null;
+let threeQuadLayer = null;
+
+let quadRTT = null;
+let quadPng = null;
+let bUseRTT = false;
+
 let clock = null;
 let accumulatedTime = 0.0;
 
@@ -58,7 +69,10 @@ let basisLoader = null;
 let envMapObjects = {}
 let hud = null;
 let pageUI = null;
+let clearColorBlack = new THREE.Color(0x000000);
+let clearColorQuadScene = new THREE.Color(0x808080);
 
+let layersPolyfill = new WebXRLayersPolyfill()
 
 let matrixOverridePose = new THREE.Matrix4().compose(
     new THREE.Vector3(0,1.6,0), new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.707, 0, 0)), new THREE.Vector3(1,1,1));
@@ -75,6 +89,8 @@ function initialize()
     camera.position.y = 1.3;
     //camera.rotation.x = -0.17;
     // add camera to scene so that objects attached to the camera get rendered
+
+
     scene.add(camera);
 
     hud = new HUD.StatsHud(camera);
@@ -88,9 +104,66 @@ function initialize()
     renderer.xr.enabled = true;
     renderer.xr.setFramebufferScaleFactor(1.0);
 
-    let color = new THREE.Color(0x000000);
+    quadRTT = new THREE.WebGLRenderTarget(1024, 512, {samples:4});
+    let texLoader = new THREE.TextureLoader();
+    // quadPng = texLoader.load('content/1024x512.png');
+
+    // quadCamera = new THREE.PerspectiveCamera(30, 1024.0/512.0, 0.01, 1000); //new THREE.OrthographicCamera(-400, 400, 300, -300, 0.1, 100);
+    let qH = 0.52;
+    let qW = 0.52 * 16/10;
+    quadCamera = new THREE.OrthographicCamera(-qW, qW, qH, -qH, 0.01, 100)
+    quadCamera.position.z = 3;
+
+    quadScene = new THREE.Scene();
+    quadScene.add(new THREE.DirectionalLight(0x808080, 3.0));
+    quadScene.add(new THREE.HemisphereLight(0xeeeeff, 0xaa9944, 0.2));
+    quadScene.add(quadCamera);
+
+    
+    let guidom = document.createElement("div");
+    guidom.style.width = "1000px"
+    let button = document.createElement("p");
+    button.innerHTML = "TEST! Testing, testing, 123... how does small text look in a layer? THe quick brown fox jumps over the lazy dog. It was the best of times, it was the worst of times.";
+    // button.className = "workout_description_text";
+    button.style.fontSize = "32px"
+    button.style.color = "#000000"
+    // button.style.width = "50%"
+    // button.style.height = "200px"
+    document.body.appendChild(guidom);
+    guidom.appendChild(button);
+
+    let htmlMesh = new HTMLMesh(guidom);
+    htmlMesh.position.x = 0.3;
+    htmlMesh.position.y = -0.23;
+    htmlMesh.position.z = 0.2;
+
+    quadScene.add(htmlMesh);
+
+    // let quadMesh;
+    
+    // quadMesh = new THREE.Mesh(
+    //     new THREE.BoxGeometry(4.0, 0.5, 0.5),
+    //     new THREE.MeshStandardMaterial( {color: 0xaaaaff, roughness:0.8, transparent: true, opacity: 0.5})
+    // );
+    // quadMesh.rotation.x = 0.707;
+    // quadMesh.position.z = -1;
+    // quadScene.add(quadMesh);
+
+
+    // quadMesh = new THREE.Mesh(
+    //     new THREE.SphereGeometry(1.0, 16, 9),
+    //     new THREE.MeshStandardMaterial( {color:0xffcc22, roughness: 0.2, transparent: true, opacity: 0.4})
+    // );
+
+    // quadMesh.position.z = -1;
+    // quadScene.add(quadMesh);
+    
+
+    
+
+
     //color.convertSRGBToLinear();
-    renderer.setClearColor(color);
+    renderer.setClearColor(clearColorBlack);
  
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
@@ -101,6 +174,7 @@ function initialize()
     // renderer.toneMappingExposure = 1.25;
 
     document.body.appendChild(renderer.domElement);
+    // document.body.appendChild(quadRenderer.domElement);
     pageUI = new PageUI(renderer);
 
 
@@ -468,7 +542,8 @@ function onFrameRateChange(evt)
     console.log("framerate change: " + evt);
 }
 
-function render(time) {
+
+function render(time, frame) {
 
 
     let frameMs;
@@ -541,6 +616,88 @@ function render(time) {
         playerHud.update(dt);
 
     renderer.render(scene, camera);
+
+
+    if (false)
+    {
+        renderer.setRenderTarget(quadRTT);
+        renderer.setClearColor(clearColorQuadScene, 1.0)
+        renderer.clear();
+        renderer.xr.enabled = false;
+        renderer.render(quadScene, quadCamera);
+        renderer.xr.enabled = true
+
+        renderer.setRenderTarget(null);
+        renderer.setClearColor(clearColorBlack);
+    }    
+
+    let session = renderer.xr.getSession();
+    if (true && session)
+    {
+        
+        // let quadLayer = renderer.xr.getQuadLayer();
+        // let quadRenderTarget = renderer.xr.getQuadRenderTarget();
+
+        if (threeQuadLayer && /*quadLayer && quadRenderTarget &&*/ quadScreen && quadScreen.needsRenderUpdate)
+        {
+            quadScreen.needsRenderUpdate = false;
+
+            if (true)
+            {
+
+                // let renderProps = renderer.properties.get(quadRenderTarget);
+                // renderProps.__ignoreDepthValues = false;
+                let renderProps = renderer.properties.get(threeQuadLayer.renderTarget);
+                renderProps.__ignoreDepthValues = false;
+
+                
+                // set viewport, rendertarget, and renderTargetTextures
+                // renderer.xr.setupQuadLayerStateToRender(frame);
+                threeQuadLayer.setupToRender(renderer, frame);
+
+                
+
+                // renderer.setRenderTargetFramebuffer( quadRenderTarget, quadLayer.framebuffer );
+                // renderer.setRenderTarget( quadRenderTarget );
+
+                // let sharedGLContext = renderer.getContext('webgl2');
+                // let result = sharedGLContext.checkFramebufferStatus(sharedGLContext.FRAMEBUFFER)
+                // console.log("result = " + result)
+                
+
+                renderer.xr.enabled = false;
+                renderer.setClearColor(clearColorQuadScene, 1.0);
+                renderer.render(quadScene, quadCamera);
+                renderer.setClearColor(clearColorBlack, 0.0);
+                renderer.xr.enabled = true;
+            }
+            else
+            {
+                let _gl = renderer.getContext('webgl2');
+                let subImage = renderer.xr.getQuadLayerSubImage(frame);
+                _gl.bindTexture(_gl.TEXTURE_2D, subImage.colorTexture);
+                /*
+                // WebGL2
+                texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, offset)
+                texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, source)
+                texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels, srcOffset)
+                */
+
+                _gl.texSubImage2D(
+                    _gl.TEXTURE_2D, //target
+                    0, //level
+                    0, 0, // xoffset, yoffset
+                    1024, 512, //width, height
+                    _gl.RGBA, _gl.UNSIGNED_BYTE, quadPng.image); //texData.__webglTexture); //quadPng.source.data);
+                _gl.bindTexture(_gl.TEXTURE_2D, null);
+            }
+
+        }
+        else
+        {
+            // console.log("skip render")
+        }
+    }
 }
 
 export function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX, bQuatY, bQuatZ)
@@ -555,6 +712,8 @@ function onSessionStart()
     //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
     gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
     gameLogic.start();
+
+    renderer.xr.setQuadRenderer(renderer); //@TODO - remove
 
     let session = renderer.xr.getSession();
     if (session.supportedFrameRates)
@@ -603,7 +762,7 @@ function onSessionStart()
     else
     {
         // walk through the scene and show stuff
-        renderer.setClearAlpha(1.0);
+        // renderer.setClearAlpha(1.0);
         scene.traverse((node) => {
             if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
             {
@@ -611,7 +770,47 @@ function onSessionStart()
             }
         });
 
-        renderer.setClearAlpha(1.0);
+        // renderer.setClearAlpha(0.0);
+    }
+
+    threeQuadLayer = renderer.xr.createQuadLayer(1600, 1000, 0.832, 0.52);
+    renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+
+    // position screen and quad layer
+    let quadLayer = threeQuadLayer.layer; //renderer.xr.getQuadLayer();
+
+    // get TV screen location
+    if(quadScreen != null)
+    {
+        let screenOrientation = quadScreen.matrix;
+
+        // position quadLayer at screenOrientation
+        quadLayer.transform = new XRRigidTransform(quadScreen.position, quadScreen.quaternion);
+        // quadLayer.height = 0.52;
+        // quadLayer.width = quadLayer.height * 16/10;
+        // set up the hole-punch mesh in the same place
+        let holePunchMesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.0 * quadLayer.width, 2.0 * quadLayer.height),
+            new THREE.MeshBasicMaterial(
+                {
+                    colorWrite: false,
+                }
+            )
+        );
+        holePunchMesh.position.copy(quadScreen.position);
+        holePunchMesh.quaternion.copy(quadScreen.quaternion);
+        scene.add(holePunchMesh);
+
+        // move screen content (and children) to a default position/orientation in from of the quad-layer camera
+        quadScreen.position.set(0,0,0);
+        // quadScreen.translateX(-quadScreen.position.x)
+        // quadScreen.translateY(-quadScreen.position.y)
+        // quadScreen.translateZ(-quadScreen.position.z)
+
+        quadScreen.rotation.set(0,0,0);
+        //quadScreen.material.transparent = true;
+        //quadScreen.material.opacity = 0.75;
+        // quadScreen.updateMatrixWorld(true);
     }
 
     session.addEventListener('visibilitychange', e => {
@@ -677,7 +876,28 @@ function initScene(scene, camera, renderer)
 
     gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
+    if (true && gameLogic.TV != null)
+    {
+        quadScreen = gameLogic.TV;
+        scene.remove(quadScreen);
 
+        quadScene.add(quadScreen);
+    }
+
+    
+    // let qtb = new TextBox(400, "center", 1.667, "center", 1.0, 0xff00ff, "", "", true)
+    // quadScene.add(qtb);
+    // qtb.displayMessage("testing 1 2 3")
+
+    if (bUseRTT)
+    {
+        let quadMesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(1.333, 1.0),
+            new THREE.MeshBasicMaterial( {map: quadRTT.texture}));
+        quadMesh.position.z = -2;
+        quadMesh.position.y = 1;
+        scene.add(quadMesh);
+    }    
 }
 
 /*
@@ -754,7 +974,7 @@ function LoadEnvMapPromise()
     return new Promise( (resolve, reject) => {
         
         new EXRLoader()
-            .setDataType( THREE.HalfFloatType )
+            // .setDataType( THREE.HalfFloatType )
             .load( './content/gym_v8_envmap_2.exr',  ( texture ) => {
 
                 let exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
