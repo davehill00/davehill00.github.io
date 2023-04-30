@@ -193,8 +193,8 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        // appVersionText.innerHTML = "Version 0.9&beta;";
-        appVersionText.innerHTML = "Version 0.9";
+        appVersionText.innerHTML = "Version 0.9&beta;";
+        // appVersionText.innerHTML = "Version 0.9";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -548,7 +548,12 @@ export class PageUI
         this.uiARVRButton.style.display = "none";
         this.uiARVRButton.disabled = true;
         this.uiStartButton.onclick = () => {
-            let sendToUrl = "https://oculus.com/open_url/?url=" + encodeURIComponent(window.location.href);
+            let hasParam = window.location.href.match('[?]');
+            console.log("hasParam = " + hasParam);
+            let href = window.location.href + ((hasParam != null) ? "" : "?") + "&utm_content=send_to_meta_headset";
+            console.log("HREF = " + href);
+        
+            let sendToUrl = "https://oculus.com/open_url/?url=" + encodeURIComponent(href);
             console.log(sendToUrl);
             window.open(sendToUrl, "_blank");
             // window.open("https://immersiveweb.dev", "_blank");
