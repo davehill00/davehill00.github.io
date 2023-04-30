@@ -1,8 +1,8 @@
 import {workoutData} from "./workoutData.js";
 
 
-const kMaxLogo = "40%";
-const kMinLogo = "20%";
+const kMaxLogo = "35%";
+const kMinLogo = "15%";
 export class PageUI
 {
 
@@ -193,8 +193,8 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.8&beta;";
-        // appVersionText.innerHTML = "Version 0.7";
+        appVersionText.innerHTML = "Version 0.9&beta;";
+        // appVersionText.innerHTML = "Version 0.8";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -458,8 +458,8 @@ export class PageUI
 
 
         // OK & CANCEL 
-        this.uiConfigurationGroup.appendChild(document.createElement("br"));
-        this.uiConfigurationGroup.appendChild(document.createElement("br"));
+        // this.uiConfigurationGroup.appendChild(document.createElement("br"));
+        // this.uiConfigurationGroup.appendChild(document.createElement("br"));
 
         div = document.createElement("div");
         div.className = "plus_minus_container";
@@ -577,9 +577,10 @@ export class PageUI
         const sessionInit = { 
             requiredFeatures: [
                 'local-floor', 
-                'layers'
+                
             ],
             optionalFeatures: [ 
+                'layers'
             //'bounded-floor', 
             // 'hand-tracking',
             // 'high-fixed-foveation-level',

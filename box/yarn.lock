@@ -3976,10 +3976,10 @@ terser@^4.1.2:
     source-map "~0.6.1"
     source-map-support "~0.5.12"
 
-three@^0.147.0:
-  version "0.147.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.147.0.tgz#1974af9e8e0c1efb3a8561334d57c0b6c29a7951"
-  integrity sha512-LPTOslYQXFkmvceQjFTNnVVli2LaVF6C99Pv34fJypp8NbQLbTlu3KinZ0zURghS5zEehK+VQyvWuPZ/Sm8fzw==
+three@0.148:
+  version "0.148.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.148.0.tgz#b6f62f9c84227f8d51c151bf17b67984ded8e4d7"
+  integrity sha512-8uzVV+qhTPi0bOFs/3te3RW6hb3urL8jYEl6irjCWo/l6sr8MPNMcClFev/MMYeIxr0gmDcoXTy/8LXh/LXkfw==
 
 through2@^2.0.0:
   version "2.0.5"
@@ -4345,10 +4345,8 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-webxr-layers-polyfill@^1.0.5:
+"webxr-layers-polyfill@file:.yalc/webxr-layers-polyfill":
   version "1.0.5"
-  resolved "https://registry.yarnpkg.com/webxr-layers-polyfill/-/webxr-layers-polyfill-1.0.5.tgz#391932b4a4d632eb4739ec31e555c168fcb8afb7"
-  integrity sha512-3/N/STQ6i2E2HzxfoMpm68uvJyfDKzVDMZhV0HIAicCk7RzkxNVwPRpTfHf2dqeccEdsAyRjRl9LKjSSwZjVxQ==
   dependencies:
     gl-matrix "^3.4.3"
 

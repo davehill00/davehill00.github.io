@@ -120,24 +120,24 @@ function initialize()
     quadScene.add(quadCamera);
 
     
-    let guidom = document.createElement("div");
-    guidom.style.width = "1000px"
-    let button = document.createElement("p");
-    button.innerHTML = "TEST! Testing, testing, 123... how does small text look in a layer? THe quick brown fox jumps over the lazy dog. It was the best of times, it was the worst of times.";
-    // button.className = "workout_description_text";
-    button.style.fontSize = "32px"
-    button.style.color = "#000000"
-    // button.style.width = "50%"
-    // button.style.height = "200px"
-    document.body.appendChild(guidom);
-    guidom.appendChild(button);
+    // let guidom = document.createElement("div");
+    // guidom.style.width = "1000px"
+    // let button = document.createElement("p");
+    // button.innerHTML = "TEST! Testing, testing, 123... how does small text look in a layer? THe quick brown fox jumps over the lazy dog. It was the best of times, it was the worst of times.";
+    // // button.className = "workout_description_text";
+    // button.style.fontSize = "32px"
+    // button.style.color = "#000000"
+    // // button.style.width = "50%"
+    // // button.style.height = "200px"
+    // document.body.appendChild(guidom);
+    // guidom.appendChild(button);
 
-    let htmlMesh = new HTMLMesh(guidom);
-    htmlMesh.position.x = 0.3;
-    htmlMesh.position.y = -0.23;
-    htmlMesh.position.z = 0.2;
+    // let htmlMesh = new HTMLMesh(guidom);
+    // htmlMesh.position.x = 0.3;
+    // htmlMesh.position.y = -0.23;
+    // htmlMesh.position.z = 0.2;
 
-    quadScene.add(htmlMesh);
+    // quadScene.add(htmlMesh);
 
     // let quadMesh;
     
@@ -638,7 +638,7 @@ function render(time, frame) {
         // let quadLayer = renderer.xr.getQuadLayer();
         // let quadRenderTarget = renderer.xr.getQuadRenderTarget();
 
-        if (threeQuadLayer && /*quadLayer && quadRenderTarget &&*/ quadScreen && quadScreen.needsRenderUpdate)
+        if (true || (threeQuadLayer && /*quadLayer && quadRenderTarget &&*/ quadScreen && quadScreen.needsRenderUpdate))
         {
             quadScreen.needsRenderUpdate = false;
 
@@ -773,7 +773,7 @@ function onSessionStart()
         // renderer.setClearAlpha(0.0);
     }
 
-    threeQuadLayer = renderer.xr.createQuadLayer(1600, 1000, 0.832, 0.52);
+    threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
     renderer.xr.registerQuadLayer(threeQuadLayer, -1);
 
     // position screen and quad layer
@@ -848,6 +848,7 @@ function onSessionEnd()
 {
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
     gameLogic.pause();
+    location.reload();
 }
 
 function initScene(scene, camera, renderer)
