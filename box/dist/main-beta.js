@@ -72238,17 +72238,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three/examples/jsm/loaders/TGALoader.js */ "./node_modules/three/examples/jsm/loaders/TGALoader.js");
 /* harmony import */ var _overrideXRFrameGetViewerPose_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./overrideXRFrameGetViewerPose.js */ "./src/overrideXRFrameGetViewerPose.js");
 /* harmony import */ var three_examples_jsm_interactive_HTMLMesh_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three/examples/jsm/interactive/HTMLMesh.js */ "./node_modules/three/examples/jsm/interactive/HTMLMesh.js");
-/* harmony import */ var webxr_layers_polyfill_build_webxr_layers_polyfill_module_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! webxr-layers-polyfill/build/webxr-layers-polyfill.module.js */ "./node_modules/webxr-layers-polyfill/build/webxr-layers-polyfill.module.js");
-/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
-/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
-/* harmony import */ var _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./doubleEndedBag.js */ "./src/doubleEndedBag.js");
-/* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
-/* harmony import */ var _playerHud_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./playerHud.js */ "./src/playerHud.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
-/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
-/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
-/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
-/* harmony import */ var _textBox_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./textBox.js */ "./src/textBox.js");
+/* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
+/* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
+/* harmony import */ var _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./doubleEndedBag.js */ "./src/doubleEndedBag.js");
+/* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
+/* harmony import */ var _playerHud_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./playerHud.js */ "./src/playerHud.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
+/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
+/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
+/* harmony import */ var _textBox_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./textBox.js */ "./src/textBox.js");
 
 
 
@@ -72323,7 +72322,6 @@ let pageUI = null;
 let clearColorBlack = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
 let clearColorQuadScene = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x808080);
 
-let layersPolyfill = new webxr_layers_polyfill_build_webxr_layers_polyfill_module_js__WEBPACK_IMPORTED_MODULE_8__["default"]()
 
 let matrixOverridePose = new three__WEBPACK_IMPORTED_MODULE_0__["Matrix4"]().compose(
     new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0,1.6,0), new three__WEBPACK_IMPORTED_MODULE_0__["Quaternion"]().setFromEuler(new three__WEBPACK_IMPORTED_MODULE_0__["Euler"](-0.707, 0, 0)), new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](1,1,1));
@@ -72344,7 +72342,7 @@ function initialize()
 
     scene.add(camera);
 
-    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_15__["StatsHud"](camera);
+    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_14__["StatsHud"](camera);
 
     audioListener = new three__WEBPACK_IMPORTED_MODULE_0__["AudioListener"]();
     camera.add( audioListener );
@@ -72426,7 +72424,7 @@ function initialize()
 
     document.body.appendChild(renderer.domElement);
     // document.body.appendChild(quadRenderer.domElement);
-    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_16__["PageUI"](renderer);
+    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_15__["PageUI"](renderer);
 
 
     // document.body.appendChild(renderer.domElement);
@@ -73030,29 +73028,29 @@ function onSessionEnd()
 
 function initScene(scene, camera, renderer)
 {
-    Object(_textBox_js__WEBPACK_IMPORTED_MODULE_18__["initializeTextBoxSystem"])();
+    Object(_textBox_js__WEBPACK_IMPORTED_MODULE_17__["initializeTextBoxSystem"])();
     
-    playerHud = new _playerHud_js__WEBPACK_IMPORTED_MODULE_13__["PlayerHud"](camera, audioListener);
+    playerHud = new _playerHud_js__WEBPACK_IMPORTED_MODULE_12__["PlayerHud"](camera, audioListener);
 
-    heavyBag = new _bag_js__WEBPACK_IMPORTED_MODULE_10__["HeavyBag"](audioListener, scene, camera, renderer);
+    heavyBag = new _bag_js__WEBPACK_IMPORTED_MODULE_9__["HeavyBag"](audioListener, scene, camera, renderer);
     heavyBag.visible = false;
-    doubleEndedBag = new _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_11__["DoubleEndedBag"](audioListener, scene, camera, renderer, playerHud);
+    doubleEndedBag = new _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_10__["DoubleEndedBag"](audioListener, scene, camera, renderer, playerHud);
     doubleEndedBag.visible = false;
 
     scene.add(heavyBag);
     scene.add(doubleEndedBag);
     
-    leftHand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_9__["Glove"](scene, 1);
+    leftHand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_8__["Glove"](scene, 1);
     leftHand.glove.heavyBag = heavyBag;
     leftHand.glove.doubleEndedBag = doubleEndedBag;
-    rightHand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_9__["Glove"](scene, 2);
+    rightHand.glove = new _glove_js__WEBPACK_IMPORTED_MODULE_8__["Glove"](scene, 2);
     rightHand.glove.heavyBag = heavyBag;
     rightHand.glove.doubleEndedBag = doubleEndedBag;
 
     heavyBag.setGloves(leftHand.glove, rightHand.glove);
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
 
-    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_12__["BoxingSession"](scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__["BoxingSession"](scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
     if ( true && gameLogic.TV != null)
     {
@@ -75294,8 +75292,11 @@ function OverrideXRFrameGetViewerPose(viewerPoseMatrixAsArray)
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageUI", function() { return PageUI; });
 /* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
+/* harmony import */ var webxr_layers_polyfill_build_webxr_layers_polyfill_module_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! webxr-layers-polyfill/build/webxr-layers-polyfill.module.js */ "./node_modules/webxr-layers-polyfill/build/webxr-layers-polyfill.module.js");
 
 
+
+let layersPolyfill = null;
 
 const kMaxLogo = "35%";
 const kMinLogo = "15%";
@@ -75834,6 +75835,9 @@ class PageUI
         this.uiConfigureButton.innerHTML = this.getMatchConfigString();
 
         this.uiConfigureButton.style.display = "";
+
+        layersPolyfill = new webxr_layers_polyfill_build_webxr_layers_polyfill_module_js__WEBPACK_IMPORTED_MODULE_1__["default"]()
+
     }
     
     onWebXRNotFound()

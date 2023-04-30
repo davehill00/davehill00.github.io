@@ -1,5 +1,7 @@
 import {workoutData} from "./workoutData.js";
+import WebXRLayersPolyfill from 'webxr-layers-polyfill/build/webxr-layers-polyfill.module.js';
 
+let layersPolyfill = null;
 
 const kMaxLogo = "35%";
 const kMinLogo = "15%";
@@ -538,6 +540,9 @@ export class PageUI
         this.uiConfigureButton.innerHTML = this.getMatchConfigString();
 
         this.uiConfigureButton.style.display = "";
+
+        layersPolyfill = new WebXRLayersPolyfill()
+
     }
     
     onWebXRNotFound()

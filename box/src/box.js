@@ -7,7 +7,7 @@ import {TGALoader} from 'three/examples/jsm/loaders/TGALoader.js'
 import {OverrideXRFrameGetViewerPose} from "./overrideXRFrameGetViewerPose.js";
 import {HTMLMesh} from 'three/examples/jsm/interactive/HTMLMesh.js'
 
-import WebXRLayersPolyfill from 'webxr-layers-polyfill/build/webxr-layers-polyfill.module.js';
+
 
 //import * as BASIS from 'three/exmaples/js/libs/basis/basis_transcoder.js'
 
@@ -72,7 +72,6 @@ let pageUI = null;
 let clearColorBlack = new THREE.Color(0x000000);
 let clearColorQuadScene = new THREE.Color(0x808080);
 
-let layersPolyfill = new WebXRLayersPolyfill()
 
 let matrixOverridePose = new THREE.Matrix4().compose(
     new THREE.Vector3(0,1.6,0), new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.707, 0, 0)), new THREE.Vector3(1,1,1));
