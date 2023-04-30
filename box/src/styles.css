@@ -255,14 +255,15 @@ button:disabled
     font-size: 22px;
     color:#9f7909;
     background-color: #000000;
-    border-color: #303030;
+    border-color: #9f7a0940;
+     /* // #303030; */
     border-width: 2px;
     border-style: solid;
     /* border-radius: 25%; */
     /* margin: 4px; */
     margin: 6px;
     width: 100%;
-    height: 100px;
+    height: 110px;
     padding: 9px;
     padding-left: 8px;
     padding-right: 8px;

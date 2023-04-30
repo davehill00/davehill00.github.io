@@ -19,7 +19,7 @@ export class PageUI
         
         this.bagType = 1;
         this.doBagSwap = true;
-        this.arMode = true;
+        this.arMode = false;
 
         this.hasCheckedForArVrSupport = 0;
         this.hasArSupport = false;
@@ -111,7 +111,7 @@ export class PageUI
             val = window.localStorage.getItem("cfg_arMode");
             if (val)
             {
-                this.arMode = (parseInt(val) == 1);
+                this.arMode = false; //(parseInt(val) == 1);
             }
         }
 
@@ -173,7 +173,7 @@ export class PageUI
         // this.uiARVRButton.style.display = "none";
         console.log("UI AR VR BUtton Display Style = " + this.uiARVRButton.style.display);
         this.uiARVRButton.onclick = () => {this.onToggleARVRClicked()};
-        this.uiButtonGroup.appendChild(this.uiARVRButton);
+        // this.uiButtonGroup.appendChild(this.uiARVRButton);
 
         // this.uiARVRToggle = document.createElement("label");
         // this.uiARVRToggle.class = "switch";
@@ -193,8 +193,8 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9&beta;";
-        // appVersionText.innerHTML = "Version 0.8";
+        // appVersionText.innerHTML = "Version 0.9&beta;";
+        appVersionText.innerHTML = "Version 0.9";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -491,21 +491,21 @@ export class PageUI
             {
                 //only one flavor supported -- hide the toggle
                 window.localStorage.setItem("cfg_arMode", this.hasArSupport ? 1 : 0);
-                this.arMode = this.hasArSupport;
+                this.arMode = false; //this.hasArSupport;
                 this.uiARVRButton.style.display = "none";
                 this.uiARVRButton.disabled = true;
                 this.onWebXRSupported();
 
             } else if (this.arMode && this.hasArSupport)
             {
-                this.uiARVRButton.disabled = false;
+                //this.uiARVRButton.disabled = false;
                 this.uiARVRButton.style.display = "";
                 this.uiARVRButton.innerHTML = "AR Mode Selected";
                 this.onWebXRSupported();
             }
             else if (!this.arMode && this.hasVrSupport)
             {
-                this.uiARVRButton.disabled = false;
+                //this.uiARVRButton.disabled = false;
                 this.uiARVRButton.style.display = "";
                 this.uiARVRButton.innerHTML = "VR Mode Selected";
                 this.onWebXRSupported();
@@ -559,7 +559,7 @@ export class PageUI
 
     onToggleARVRClicked()
     {
-        this.arMode = !this.arMode;
+        this.arMode = false; //!this.arMode;
         window.localStorage.setItem("cfg_arMode", this.arMode ? 1 : 0);
         this.uiARVRButton.innerHTML = this.arMode ? "AR Mode Selected" : "VR Mode Selected";
         this.checkForXR();
