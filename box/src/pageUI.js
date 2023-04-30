@@ -542,7 +542,7 @@ export class PageUI
     
     onWebXRNotFound()
     {
-        this.uiStartButton.innerHTML = "WebXR Not Supported. Click to send to Oculus Headset.";
+        this.uiStartButton.innerHTML = "Click here to try it on your Meta Quest Headset.";
         this.uiStartButton.classList.add("webxr_not_found");
         this.uiStartButton.disabled = false;
         this.uiARVRButton.style.display = "none";

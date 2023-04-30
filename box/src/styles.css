@@ -201,8 +201,10 @@ button:disabled
 }
 .webxr_not_found
 {
-    color:#8d1414;
-    border-color: #8d1414;
+    /* color:#8d1414; */
+    /* border-color: #8d1414; */
+    color:#9f7909;
+    border-color:#9f7909;
     font-size: 2vw;
 }
 
