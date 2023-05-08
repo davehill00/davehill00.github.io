@@ -2674,7 +2674,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()(_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default.a);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, "html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    /* color:#8d1414; */\r\n    /* border-color: #8d1414; */\r\n    color:#9f7909;\r\n    border-color:#9f7909;\r\n    font-size: 2vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7a0940;\r\n     /* // #303030; */\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 110px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n\r\n\r\n\r\n\r\n/* The switch - the box around the slider */\r\n.switch {\r\n    position: relative;\r\n    display: inline-block;\r\n    width: 60px;\r\n    height: 34px;\r\n  }\r\n  \r\n  /* Hide default HTML checkbox */\r\n  .switch input {\r\n    opacity: 0;\r\n    width: 0;\r\n    height: 0;\r\n  }\r\n  \r\n  /* The slider */\r\n  .slider {\r\n    position: absolute;\r\n    cursor: pointer;\r\n    top: 0;\r\n    left: 0;\r\n    right: 0;\r\n    bottom: 0;\r\n    background-color: #ccc;\r\n    -webkit-transition: .4s;\r\n    transition: .4s;\r\n  }\r\n  \r\n  .slider:before {\r\n    position: absolute;\r\n    content: \"\";\r\n    height: 26px;\r\n    width: 26px;\r\n    left: 4px;\r\n    bottom: 4px;\r\n    background-color: white;\r\n    -webkit-transition: .4s;\r\n    transition: .4s;\r\n  }\r\n  \r\n  input:checked + .slider {\r\n    background-color: #2196F3;\r\n  }\r\n  \r\n  input:focus + .slider {\r\n    box-shadow: 0 0 1px #2196F3;\r\n  }\r\n  \r\n  input:checked + .slider:before {\r\n    -webkit-transform: translateX(26px);\r\n    -ms-transform: translateX(26px);\r\n    transform: translateX(26px);\r\n  }", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":["html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #404040;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    /* color:#8d1414; */\r\n    /* border-color: #8d1414; */\r\n    color:#9f7909;\r\n    border-color:#9f7909;\r\n    font-size: 2vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7a0940;\r\n     /* // #303030; */\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 110px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n\r\n\r\n\r\n\r\n/* The switch - the box around the slider */\r\n.switch {\r\n    position: relative;\r\n    display: inline-block;\r\n    width: 60px;\r\n    height: 34px;\r\n  }\r\n  \r\n  /* Hide default HTML checkbox */\r\n  .switch input {\r\n    opacity: 0;\r\n    width: 0;\r\n    height: 0;\r\n  }\r\n  \r\n  /* The slider */\r\n  .slider {\r\n    position: absolute;\r\n    cursor: pointer;\r\n    top: 0;\r\n    left: 0;\r\n    right: 0;\r\n    bottom: 0;\r\n    background-color: #ccc;\r\n    -webkit-transition: .4s;\r\n    transition: .4s;\r\n  }\r\n  \r\n  .slider:before {\r\n    position: absolute;\r\n    content: \"\";\r\n    height: 26px;\r\n    width: 26px;\r\n    left: 4px;\r\n    bottom: 4px;\r\n    background-color: white;\r\n    -webkit-transition: .4s;\r\n    transition: .4s;\r\n  }\r\n  \r\n  input:checked + .slider {\r\n    background-color: #2196F3;\r\n  }\r\n  \r\n  input:focus + .slider {\r\n    box-shadow: 0 0 1px #2196F3;\r\n  }\r\n  \r\n  input:checked + .slider:before {\r\n    -webkit-transform: translateX(26px);\r\n    -ms-transform: translateX(26px);\r\n    transform: translateX(26px);\r\n  }"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, "html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #5D1719;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    /* color:#8d1414; */\r\n    /* border-color: #8d1414; */\r\n    color:#9f7909;\r\n    border-color:#9f7909;\r\n    font-size: 2vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7a0940;\r\n     /* // #303030; */\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 110px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n\r\n\r\n@media only screen and (orientation: portrait) {\r\n    /* .title_image\r\n    {\r\n        width: auto;\r\n        height: 25%;     \r\n    } \r\n    */\r\n    .button_container\r\n    {\r\n        width: 90%;\r\n        margin-left: 5%;\r\n    }\r\n    .button_group\r\n    {\r\n        width: 80%;\r\n    }\r\n  }", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":["html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #5D1719;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    /* color:#8d1414; */\r\n    /* border-color: #8d1414; */\r\n    color:#9f7909;\r\n    border-color:#9f7909;\r\n    font-size: 2vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7a0940;\r\n     /* // #303030; */\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 110px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n\r\n\r\n@media only screen and (orientation: portrait) {\r\n    /* .title_image\r\n    {\r\n        width: auto;\r\n        height: 25%;     \r\n    } \r\n    */\r\n    .button_container\r\n    {\r\n        width: 90%;\r\n        margin-left: 5%;\r\n    }\r\n    .button_group\r\n    {\r\n        width: 80%;\r\n    }\r\n  }"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
@@ -29502,7 +29502,9 @@ class WebXRQuadLayer extends Object3D
 		super.updateMatrixWorld( force );
 
 
-		// @TODO - update the position of the quad layer to match
+		// Update the position of the quad layer to match
+		// @TODO - check force and/or matrixNeedsUpdate flags?
+		// @TODO - I wish there was a way to not have to allocate a new object each time we do this.
 		this.layer.transform = new XRRigidTransform(this.position, this.quaternion);
 
 	}
@@ -29511,7 +29513,7 @@ class WebXRQuadLayer extends Object3D
 
 		super.updateWorldMatrix( updateParents, updateChildren );
 		
-		// @TODO - update the position of the quad layer to match
+		// Update the position of the quad layer to match
 		this.layer.transform = new XRRigidTransform(this.position, this.quaternion);
 
 	}
@@ -29544,7 +29546,6 @@ class WebXRManager extends EventDispatcher {
 
 		let glQuadLayer = null;
 		let glQuadRenderTarget = null;
-		let quadRenderer = null;
 
 		const controllers = [];
 		const controllerInputSources = [];
@@ -29594,7 +29595,6 @@ class WebXRManager extends EventDispatcher {
 		};
 
 		this.setQuadRenderer = function(_quadRenderer) {
-			quadRenderer = _quadRenderer;
 		};
 
 		this.getControllerGrip = function ( index ) {
@@ -30149,36 +30149,6 @@ class WebXRManager extends EventDispatcher {
 
 		};
 
-		this.setupQuadLayerStateToRender = function(frame)
-		{
-			// Set up the mono layers
-			if (quadRenderer != null)
-			{
-				const glSubImage = glBinding.getSubImage( glQuadLayer, frame );
-				let viewport = glSubImage.viewport;
-
-				quadRenderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
-				quadRenderer.setRenderTargetTextures(
-					glQuadRenderTarget,
-					glSubImage.colorTexture,
-					undefined ); //glQuadLayer.ignoreDepthValues ? undefined : glSubImage.depthStencilTexture );
-
-				quadRenderer.setRenderTarget( glQuadRenderTarget );
-
-			}
-		};
-		this.getQuadLayerSubImage = function(frame)
-		{
-			if (quadRenderer != null)
-			{
-				const glSubImage = glBinding.getSubImage( glQuadLayer, frame );
-				glSubImage.viewport;
-				return glSubImage;
-			}
-			return null;
-
-		};
-
 		// Animation Loop
 
 		let onAnimationFrameCallback = null;
@@ -30188,7 +30158,7 @@ class WebXRManager extends EventDispatcher {
 
 			if (isInAnimationFrame)
 				return;
-			
+
 			// isInAnimationFrame = true;
 
 			pose = frame.getViewerPose( customReferenceSpace || referenceSpace );
@@ -30372,6 +30342,7 @@ class WebXRManager extends EventDispatcher {
 		this.dispose = function () {};
 
 		this.createQuadLayer = function(widthPixels, heightPixels, widthGeo, heightGeo) {
+
 			const quadLayerInit = {
 				colorFormat: 32856,
 				depthFormat: 35056,
@@ -30385,12 +30356,12 @@ class WebXRManager extends EventDispatcher {
 				isStatic: false
 			};
 
-			let quadLayer = glBinding.createQuadLayer(quadLayerInit);
+			const quadLayer = glBinding.createQuadLayer(quadLayerInit);
 			// glQuadLayer.transform = new XRRigidTransform( {y: 1.0, z: -2} );
 
 			// session.updateRenderState( { layers: [glQuadLayer, glProjLayer]});
 
-			let renderTarget = new WebGLRenderTarget(
+			const renderTarget = new WebGLRenderTarget(
 				widthPixels, heightPixels,
 				{
 					format: RGBAFormat,
@@ -30403,27 +30374,34 @@ class WebXRManager extends EventDispatcher {
 			renderTarget.isXRRenderTarget = true; // TODO Remove this when possible, see #23278
 
 			return new WebXRQuadLayer(quadLayer, renderTarget, glBinding);
+
 		};
 
-		this.registerQuadLayer = function(quadLayer, order)
-		{
+		this.registerQuadLayer = function(quadLayer, order) {
+
 			let layers = [];
-			if (quadLayer != null)
-			{
-				if (order < 0)
-				{
+			if (quadLayer != null) {
+
+				if (order < 0) {
+
 					layers = [quadLayer.layer, glProjLayer];
-				}
-				else 
-				{
+
+				} else {
+
 					layers = [glProjLayer, quadLayer.layer];
+
 				}
+
 			}
 			else
 			{
+
 				layers = [glProjLayer];
+
 			}
-			session.updateRenderState( { layers: layers });
+
+			session.updateRenderState( { layers: layers } );
+
 		};
 
 	}
@@ -72223,13 +72201,12 @@ class HeavyBag extends Bag
 /*!********************!*\
   !*** ./src/box.js ***!
   \********************/
-/*! exports provided: setDirectionalLightPositionFromBlenderQuaternion, OnStartButton */
+/*! exports provided: setDirectionalLightPositionFromBlenderQuaternion */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDirectionalLightPositionFromBlenderQuaternion", function() { return setDirectionalLightPositionFromBlenderQuaternion; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OnStartButton", function() { return OnStartButton; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var three_examples_jsm_webxr_XRControllerModelFactory_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/webxr/XRControllerModelFactory.js */ "./node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js");
 /* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
@@ -72291,9 +72268,7 @@ let quadScene = null;
 let quadScreen = null;
 let threeQuadLayer = null;
 
-let quadRTT = null;
 let quadPng = null;
-let bUseRTT = false;
 
 let clock = null;
 let accumulatedTime = 0.0;
@@ -72322,6 +72297,23 @@ let pageUI = null;
 let clearColorBlack = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x000000);
 let clearColorQuadScene = new three__WEBPACK_IMPORTED_MODULE_0__["Color"](0x808080);
 
+
+const blackoutMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"](
+    {
+        color:0x000000, 
+        opacity:0.0, 
+        transparent:true,
+        depthTest: false,
+        fog: false
+    }
+);
+const blackoutQuad = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
+    new three__WEBPACK_IMPORTED_MODULE_0__["PlaneGeometry"](1000.0, 1000.0, 1, 1),
+    blackoutMaterial);
+blackoutQuad.position.z = -0.1;
+let bDoBlackoutFade = false;
+let blackoutFadeTimer = 0.0;
+let kBlackoutFadeInTime = 0.5;
 
 let matrixOverridePose = new three__WEBPACK_IMPORTED_MODULE_0__["Matrix4"]().compose(
     new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0,1.6,0), new three__WEBPACK_IMPORTED_MODULE_0__["Quaternion"]().setFromEuler(new three__WEBPACK_IMPORTED_MODULE_0__["Euler"](-0.707, 0, 0)), new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](1,1,1));
@@ -72353,61 +72345,18 @@ function initialize()
     renderer.xr.enabled = true;
     renderer.xr.setFramebufferScaleFactor(1.0);
 
-    quadRTT = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderTarget"](1024, 512, {samples:4});
-    let texLoader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
-    // quadPng = texLoader.load('content/1024x512.png');
 
-    // quadCamera = new THREE.PerspectiveCamera(30, 1024.0/512.0, 0.01, 1000); //new THREE.OrthographicCamera(-400, 400, 300, -300, 0.1, 100);
     let qH = 0.52;
     let qW = 0.52 * 16/10;
     quadCamera = new three__WEBPACK_IMPORTED_MODULE_0__["OrthographicCamera"](-qW, qW, qH, -qH, 0.01, 100)
     quadCamera.position.z = 3;
 
     quadScene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
-    quadScene.add(new three__WEBPACK_IMPORTED_MODULE_0__["DirectionalLight"](0x808080, 3.0));
-    quadScene.add(new three__WEBPACK_IMPORTED_MODULE_0__["HemisphereLight"](0xeeeeff, 0xaa9944, 0.2));
+    // quadScene.add(new THREE.DirectionalLight(0x808080, 3.0));
+    // quadScene.add(new THREE.HemisphereLight(0xeeeeff, 0xaa9944, 0.2));
     quadScene.add(quadCamera);
 
-    
-    // let guidom = document.createElement("div");
-    // guidom.style.width = "1000px"
-    // let button = document.createElement("p");
-    // button.innerHTML = "TEST! Testing, testing, 123... how does small text look in a layer? THe quick brown fox jumps over the lazy dog. It was the best of times, it was the worst of times.";
-    // // button.className = "workout_description_text";
-    // button.style.fontSize = "32px"
-    // button.style.color = "#000000"
-    // // button.style.width = "50%"
-    // // button.style.height = "200px"
-    // document.body.appendChild(guidom);
-    // guidom.appendChild(button);
-
-    // let htmlMesh = new HTMLMesh(guidom);
-    // htmlMesh.position.x = 0.3;
-    // htmlMesh.position.y = -0.23;
-    // htmlMesh.position.z = 0.2;
-
-    // quadScene.add(htmlMesh);
-
-    // let quadMesh;
-    
-    // quadMesh = new THREE.Mesh(
-    //     new THREE.BoxGeometry(4.0, 0.5, 0.5),
-    //     new THREE.MeshStandardMaterial( {color: 0xaaaaff, roughness:0.8, transparent: true, opacity: 0.5})
-    // );
-    // quadMesh.rotation.x = 0.707;
-    // quadMesh.position.z = -1;
-    // quadScene.add(quadMesh);
-
-
-    // quadMesh = new THREE.Mesh(
-    //     new THREE.SphereGeometry(1.0, 16, 9),
-    //     new THREE.MeshStandardMaterial( {color:0xffcc22, roughness: 0.2, transparent: true, opacity: 0.4})
-    // );
-
-    // quadMesh.position.z = -1;
-    // quadScene.add(quadMesh);
-    
-
+  
     
 
 
@@ -72425,6 +72374,7 @@ function initialize()
     document.body.appendChild(renderer.domElement);
     // document.body.appendChild(quadRenderer.domElement);
     pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_15__["PageUI"](renderer);
+    // pageUI.checkForXR();
 
 
     // document.body.appendChild(renderer.domElement);
@@ -72435,162 +72385,12 @@ function initialize()
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
-
-
     InitBasisLoader();
-    //lightmaps['Room'] = LoadLightmapBasis("./content/Lightmaps_V8/", "Room_denoised.basis");
 
-    let lightmapPromises = [];
-    if (true)
-    {
-        lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.basis"));
-    }
-    else {}
-    // lightmapPromises.push(LoadBasisLightmapPromise('Kettlebell', "./content/Lightmaps_V8/Kettlebell_denoised.basis"));
-    // lightmapPromises.push(LoadBasisLightmapPromise('Legs', "./content/Lightmaps_V8/Legs_denoised.basis"));
-    // lightmapPromises.push(LoadBasisLightmapPromise('Seat', "./content/Lightmaps_V8/Seat_denoised.basis"));
-
-    lightmapPromises.push(LoadEnvMapPromise());
-
-
-    envMapObjects['Floor'] = { intensity: 0.03, roughness: 0.36};
-    envMapObjects['AccentWall'] = { intensity: 0.35, roughness: 0.2};
-    envMapObjects['Dumbell'] = { intensity: 0.25, roughness: 0.7};
-    envMapObjects['Shelf'] = { intensity: 0.15, roughness: 0.2};
-    envMapObjects['DumbellHandle'] = { intensity: 0.55, roughness: 0.1};
-    envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
-    envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
-    envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
-    envMapObjects['Screen'] = {intensity: 0.3, roughness: 0.82};
+    let emp = LoadEnvMapPromise();
+    emp.then(pageUI.checkForXR());
     
     
-    // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};
-    // envMapObjects['Legs'] = {intensity: 0.5, roughness: 0.5};
-    // envMapObjects['Kettlebell'] = {intensity: 0.75, roughness: 0.5};
-    
-    // What do I want to have happen for loading?
-    // Load enviornment map
-    // Load lightmaps
-    // Load environment and apply lightmaps and envmap
-    // Load bag and apply envmap
-    // Load gloves
-    // all done loading
-    // post-load fixups
-
-    
-    const loadingManager = new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]();
-    loadingManager.addHandler(/\.basis$/i, basisLoader);
-    loadingManager.addHandler( /\.tga$/i, new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_5__["TGALoader"]() );
-
-    // let loaderPromise = new Promise( (resolve) => {
-    //     let loader = new GLTFLoader(loadingManager);
-    //     loader.load('./content/gym_v8.gltf', resolve);
-    // });
-
-    Promise.all(lightmapPromises)
-        .then( 
-            () => {
-                return new Promise( (resolve) => {
-                    //console.log("LOAD GLTF");
-                    let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__["GLTFLoader"](loadingManager);
-                    loader.load('./content/gym_v8.gltf', resolve);
-                })
-            })
-        .then(
-            (gltf) => {
-                // console.log("GLTF is: " + gltf);
-                return new Promise(
-                    (resolve) => {
-                    //console.log("DO GLTF FIXUPS")
-                    for (let i = 0; i < gltf.scene.children.length; i++)
-                    {                
-                        let obj = gltf.scene.children[i];
-                        
-                        // obj.renderOrder = 10; //render after gloves and bag
-
-                        obj.traverse(function (node) {
-
-                            node.renderOrder = 10;
-                            if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
-                            {}
-
-                            // console.log("NODE: " + node.name);
-                            let nodeLightmap = lightmaps[node.name];
-                            if (nodeLightmap && node.material && 'lightMap' in node.material) {
-                                // console.log("--> LIGHTMAP: " + nodeLightmap.name);
-                                node.material.lightMap = nodeLightmap;
-                                node.material.lightMapIntensity = 1.0;
-                                node.material.needsUpdate = true;
-                            }
-
-                            let nodeAomap = aomaps[node.name];
-                            if(nodeAomap && node.material && 'aoMap' in node.material) {
-                                node.material.aoMap = nodeAomap;
-                                node.material.aoMapIntensity = 0.5;
-                                node.material.needsUpdate = true;
-                            }
-
-                            let emo = envMapObjects[node.name];
-                                
-                            if (emo)
-                            {
-                                node.material.envMap = scene.envMap;
-                                node.material.envMapIntensity = emo.intensity;
-                                node.material.roughness = emo.roughness;
-                            }
-
-                            if (node.material)
-                            {
-                                node.material.precision = 'mediump';
-                                node.material.needsUpdate = true;
-                            }
-                        });
-
-                        // console.log("OBJECT: " + obj.name);
-                        if (obj.name == "Screen")
-                        {
-                            console.log
-                            obj.material.emissiveIntensity = 0.03;
-                            obj.material.color.setRGB(0.86, 0.86, 0.965);
-                            let loader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
-                            let tvBkgd = loader.load("./content/tv_background2.png");
-                            tvBkgd.flipY = false;
-                    
-                            // obj.material.name = "TVSCREEN";
-                            obj.material.map = tvBkgd;
-            
-                        }
-                        else if (obj.name =="Floor")
-                        {
-                            obj.material.lightMapIntensity = 2.0;
-                            obj.material.metalness = 0.5;
-                        }
-                        else if (obj.name == "AccentWall")
-                        {
-                            obj.material.lightMapIntensity = 1.5;
-                        }
-                    }
-                    scene.add(gltf.scene);
-                    initScene(scene, camera, renderer);
-                    //console.log("DONE LOADING AND FIXUPS");
-                    resolve();
-                });
-            })
-        .then(() =>
-            {
-                //console.log("CHECK FOR XR");
-                pageUI.checkForXR(); 
-            });
-
-
 
 
 
@@ -72635,27 +72435,9 @@ function initialize()
 
     controllers.push(renderer.xr.getControllerGrip( 1 ));
     scene.add( controllers[1] );
-    // let con1 = renderer.xr.getControllerGrip(1);
-    // con1.add(controllerModelFactory.createControllerModel(con1));
-    // scene.add(con1);
-    //controllers[1].add(controllerModelFactory.createControllerModel(controllers[1]));
    
     renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
-
         setupHandForController(1, evt);
-        // console.log("Got Gamepad for Controller 1: " + evt.data.handedness);
-        // controllers[1].gamepad = evt.data.gamepad;
-        // if (evt.data.handedness == "left")
-        // {
-        //     leftHand.setController(controllers[1]);
-        //     setupHand(leftHand, 1);
-        // }
-        // else
-        // {
-        //     rightHand.setController(controllers[0]);
-        //     setupHand(rightHand, 2);
-        // }
-
     });
     renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 1");
@@ -72687,7 +72469,7 @@ function initialize()
     });
 
 
-    renderer.setAnimationLoop(render); 
+    // renderer.setAnimationLoop(render); 
 }
 
 function setupHandForController(id, evt)
@@ -72709,6 +72491,159 @@ function setupHandForController(id, evt)
         rightHand.isSetUp = true;
     }
 }
+
+function loadLevelAssets(addLoadingScreenDelay)
+{
+    let lightmapPromises = [];
+    if (true)
+    {
+        if (addLoadingScreenDelay)
+        {
+            lightmapPromises.push(new Promise(resolve => setTimeout(resolve, 3000)));
+        }
+
+        lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.basis"));
+
+    }
+    // lightmapPromises.push(LoadEnvMapPromise());
+
+
+    envMapObjects['Floor'] = { intensity: 0.03, roughness: 0.36};
+    envMapObjects['AccentWall'] = { intensity: 0.35, roughness: 0.2};
+    envMapObjects['Dumbell'] = { intensity: 0.25, roughness: 0.7};
+    envMapObjects['Shelf'] = { intensity: 0.15, roughness: 0.2};
+    envMapObjects['DumbellHandle'] = { intensity: 0.55, roughness: 0.1};
+    envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
+    envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
+    envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
+    envMapObjects['Screen'] = {intensity: 0.3, roughness: 0.82};
+    
+       // What do I want to have happen for loading?
+    // Load enviornment map
+    // Load lightmaps
+    // Load environment and apply lightmaps and envmap
+    // Load bag and apply envmap
+    // Load gloves
+    // all done loading
+    // post-load fixups
+
+    
+    const loadingManager = new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]();
+    loadingManager.addHandler(/\.basis$/i, basisLoader);
+    loadingManager.addHandler( /\.tga$/i, new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_5__["TGALoader"]() );
+
+    Promise.all(lightmapPromises)
+        
+        .then( 
+            () => {
+                return new Promise( (resolve) => {
+                    //console.log("LOAD GLTF");
+                    let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__["GLTFLoader"](loadingManager);
+                    loader.load('./content/gym_v8.gltf', resolve);
+                })
+            })
+        .then(
+            (gltf) => {
+                console.log("GLTF is: " + gltf);
+                return new Promise(
+                    (resolve) => {
+                    console.log("DO GLTF FIXUPS")
+                    for (let i = 0; i < gltf.scene.children.length; i++)
+                    {                
+                        let obj = gltf.scene.children[i];
+                        
+                        // obj.renderOrder = 10; //render after gloves and bag
+
+                        obj.traverse(function (node) {
+
+                            node.renderOrder = 10;
+                            if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
+                            {}
+
+                            console.log("NODE: " + node.name);
+                            let nodeLightmap = lightmaps[node.name];
+                            if (nodeLightmap && node.material && 'lightMap' in node.material) {
+                                console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                                node.material.lightMap = nodeLightmap;
+                                node.material.lightMapIntensity = 1.0;
+                                node.material.needsUpdate = true;
+                            }
+
+                            let nodeAomap = aomaps[node.name];
+                            if(nodeAomap && node.material && 'aoMap' in node.material) {
+                                node.material.aoMap = nodeAomap;
+                                node.material.aoMapIntensity = 0.5;
+                                node.material.needsUpdate = true;
+                            }
+
+                            let emo = envMapObjects[node.name];
+                                
+                            if (emo)
+                            {
+                                node.material.envMap = scene.envMap;
+                                node.material.envMapIntensity = emo.intensity;
+                                node.material.roughness = emo.roughness;
+                            }
+
+                            if (node.material)
+                            {
+                                node.material.precision = 'mediump';
+                                node.material.needsUpdate = true;
+                            }
+                        });
+
+                        console.log("OBJECT: " + obj.name);
+                        if (obj.name == "Screen")
+                        {
+                            console.log
+                            obj.material.emissiveIntensity = 0.03;
+                            obj.material.color.setRGB(0.86, 0.86, 0.965);
+                            let loader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]();
+                            let tvBkgd = loader.load("./content/tv_background2.png");
+                            tvBkgd.flipY = false;
+                    
+                            // obj.material.name = "TVSCREEN";
+                            obj.material.map = tvBkgd;
+            
+                        }
+                        else if (obj.name =="Floor")
+                        {
+                            obj.material.lightMapIntensity = 2.0;
+                            obj.material.metalness = 0.5;
+                        }
+                        else if (obj.name == "AccentWall")
+                        {
+                            obj.material.lightMapIntensity = 1.5;
+                        }
+                    }
+                    scene.add(gltf.scene);
+                    initScene(scene, camera, renderer);
+                    console.log("DONE LOADING AND FIXUPS");
+                    resolve();
+                });
+            })
+        .then(() =>
+            {
+
+                // hide loading screen and start rendering the main scene?
+
+                //console.log("CHECK FOR XR");
+                // pageUI.checkForXR(); 
+                doPostLoadGameInitialization();
+            });
+
+
+}
+
+
 
 let adjustFramerate = false;
 let bPause = false;
@@ -72812,6 +72747,22 @@ function render(time, frame) {
     // renderer.inputManager.update(dt, accumulatedTime);
     // TWEEN.update(accumulatedTime);
 
+    if (bDoBlackoutFade)
+    {
+        blackoutFadeTimer += dt;
+        if (blackoutFadeTimer < kBlackoutFadeInTime)
+        {
+            blackoutMaterial.opacity = 1.0 - blackoutFadeTimer / kBlackoutFadeInTime;
+        }
+        else
+        {
+            // all done
+            scene.remove(blackoutQuad);
+        }
+    }
+
+
+
     updateHands(dt, accumulatedTime);
     if (gameLogic)
     {
@@ -72822,56 +72773,30 @@ function render(time, frame) {
 
     renderer.render(scene, camera);
 
-
-    if (false)
-    {}    
-
     let session = renderer.xr.getSession();
-    if ( true && session)
+    if (session)
     {
-        
-        // let quadLayer = renderer.xr.getQuadLayer();
-        // let quadRenderTarget = renderer.xr.getQuadRenderTarget();
-
-        if (true)
+        if ((threeQuadLayer && quadScreen && (bDoBlackoutFade || quadScreen.needsRenderUpdate || (pageUI.layersPolyfill && pageUI.layersPolyfill.injected))))
         {
             quadScreen.needsRenderUpdate = false;
 
-            if (true)
-            {
+            let renderProps = renderer.properties.get(threeQuadLayer.renderTarget);
+            renderProps.__ignoreDepthValues = false;
 
-                // let renderProps = renderer.properties.get(quadRenderTarget);
-                // renderProps.__ignoreDepthValues = false;
-                let renderProps = renderer.properties.get(threeQuadLayer.renderTarget);
-                renderProps.__ignoreDepthValues = false;
-
-                
-                // set viewport, rendertarget, and renderTargetTextures
-                // renderer.xr.setupQuadLayerStateToRender(frame);
-                threeQuadLayer.setupToRender(renderer, frame);
-
-                
-
-                // renderer.setRenderTargetFramebuffer( quadRenderTarget, quadLayer.framebuffer );
-                // renderer.setRenderTarget( quadRenderTarget );
-
-                // let sharedGLContext = renderer.getContext('webgl2');
-                // let result = sharedGLContext.checkFramebufferStatus(sharedGLContext.FRAMEBUFFER)
-                // console.log("result = " + result)
-                
-
-                renderer.xr.enabled = false;
-                renderer.setClearColor(clearColorQuadScene, 1.0);
-                renderer.render(quadScene, quadCamera);
-                renderer.setClearColor(clearColorBlack, 0.0);
-                renderer.xr.enabled = true;
-            }
-            else
-            {}
-
+            
+            // set viewport, rendertarget, and renderTargetTextures
+            threeQuadLayer.setupToRender(renderer, frame);
+            
+            renderer.xr.enabled = false;
+            renderer.setClearColor(clearColorQuadScene, 1.0);
+            renderer.render(quadScene, quadCamera);
+            renderer.setClearColor(clearColorBlack, 0.0);
+            renderer.xr.enabled = true;
         }
         else
-        {}
+        {
+            // console.log("skip render")
+        }
     }
 }
 
@@ -72884,11 +72809,23 @@ function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX,
 
 function onSessionStart()
 {
-    //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
-    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
-    gameLogic.start();
 
-    renderer.xr.setQuadRenderer(renderer); //@TODO - remove
+    let loadingScreen = false;
+    if (pageUI.layersPolyfill && !pageUI.layersPolyfill.injected) //!pageUI.layersPolyfill || !pageUI.layersPolyfill.injected) 
+    {
+        loadingScreen = true;
+        setupLoadingScreen();
+    }
+
+
+    initGlovesAndBag(scene, camera, renderer);
+
+    
+    loadLevelAssets(loadingScreen);
+
+    //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
+    // gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
+    // gameLogic.start();
 
     let session = renderer.xr.getSession();
     if (session.supportedFrameRates)
@@ -72910,46 +72847,128 @@ function onSessionStart()
         renderer.xr.setFoveation(1.0);
     }
 
-    let stuffToHideInArMode_MaterialNames = [
-        'Accent.Wall.001', 
-        'Floor.001', 
-        'Ceiling.001', 
-        'Baseboard.001', 
-        'Walls.001', 
-        'Dumbell.Handle.001', 
-        'Dumbell.001', 
-        'Shelf.Legs.001',
-        'FloorMarkings',
-        'TV.001'
-    ]
-    if (pageUI.arMode)
-    {
-        // walk through the scene and hide stuff
-        scene.traverse((node) => {
-            if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
-            {
-                node.visible = false;
-            }
-        });
-
-        renderer.setClearAlpha(0.0);
-    }
-    else
-    {
-        // walk through the scene and show stuff
-        // renderer.setClearAlpha(1.0);
-        scene.traverse((node) => {
-            if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
-            {
-                node.visible = true;
-            }
-        });
-
-        // renderer.setClearAlpha(0.0);
-    }
-
     threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
-    renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+    // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+
+    // let stuffToHideInArMode_MaterialNames = [
+    //     'Accent.Wall.001', 
+    //     'Floor.001', 
+    //     'Ceiling.001', 
+    //     'Baseboard.001', 
+    //     'Walls.001', 
+    //     'Dumbell.Handle.001', 
+    //     'Dumbell.001', 
+    //     'Shelf.Legs.001',
+    //     'FloorMarkings',
+    //     'TV.001'
+    // ]
+    // if (pageUI.arMode)
+    // {
+    //     // walk through the scene and hide stuff
+    //     scene.traverse((node) => {
+    //         if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
+    //         {
+    //             node.visible = false;
+    //         }
+    //     });
+
+    //     renderer.setClearAlpha(0.0);
+    // }
+    // else
+    // {
+    //     // walk through the scene and show stuff
+    //     // renderer.setClearAlpha(1.0);
+    //     scene.traverse((node) => {
+    //         if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
+    //         {
+    //             node.visible = true;
+    //         }
+    //     });
+
+    //     // renderer.setClearAlpha(0.0);
+    // }
+
+    // threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
+    // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+
+    // // position screen and quad layer
+    // let quadLayer = threeQuadLayer.layer; //renderer.xr.getQuadLayer();
+
+    // // get TV screen location
+    // if(quadScreen != null)
+    // {
+    //     let screenOrientation = quadScreen.matrix;
+
+    //     // position quadLayer at screenOrientation
+    //     quadLayer.transform = new XRRigidTransform(quadScreen.position, quadScreen.quaternion);
+    //     // quadLayer.height = 0.52;
+    //     // quadLayer.width = quadLayer.height * 16/10;
+    //     // set up the hole-punch mesh in the same place
+    //     let holePunchMesh = new THREE.Mesh(
+    //         new THREE.PlaneGeometry(2.0 * quadLayer.width, 2.0 * quadLayer.height),
+    //         new THREE.MeshBasicMaterial(
+    //             {
+    //                 colorWrite: false,
+    //             }
+    //         )
+    //     );
+    //     holePunchMesh.position.copy(quadScreen.position);
+    //     holePunchMesh.quaternion.copy(quadScreen.quaternion);
+    //     scene.add(holePunchMesh);
+
+    //     // move screen content (and children) to a default position/orientation in from of the quad-layer camera
+    //     quadScreen.position.set(0,0,0);
+    //     // quadScreen.translateX(-quadScreen.position.x)
+    //     // quadScreen.translateY(-quadScreen.position.y)
+    //     // quadScreen.translateZ(-quadScreen.position.z)
+
+    //     quadScreen.rotation.set(0,0,0);
+    //     //quadScreen.material.transparent = true;
+    //     //quadScreen.material.opacity = 0.75;
+    //     // quadScreen.updateMatrixWorld(true);
+    // }
+
+    // session.addEventListener('visibilitychange', e => {
+    //     // remove hand controller while blurred
+    //     if(e.session.visibilityState === 'visible-blurred') 
+    //     {
+    //         bPause = true;
+    //         gameLogic.pause();
+    //         if (leftHand.glove)
+    //         {
+    //             leftHand.glove.hide();
+    //         }
+    //         if (rightHand.glove)
+    //         {
+    //             rightHand.glove.hide();
+    //         }
+    //     }
+    //     else
+    //     {
+    //         bPause = false;
+    //         gameLogic.resume();
+    //         if (leftHand.glove)
+    //         {
+    //             leftHand.glove.show();
+    //         }
+    //         if (rightHand.glove)
+    //         {
+    //             rightHand.glove.show();
+    //         }
+    //     }
+    // });
+}
+
+
+function doPostLoadGameInitialization()
+{
+    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
+    gameLogic.start();
+
+
+
+    // threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
+    // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
 
     // position screen and quad layer
     let quadLayer = threeQuadLayer.layer; //renderer.xr.getQuadLayer();
@@ -72988,6 +73007,7 @@ function onSessionStart()
         // quadScreen.updateMatrixWorld(true);
     }
 
+    let session = renderer.xr.getSession();
     session.addEventListener('visibilitychange', e => {
         // remove hand controller while blurred
         if(e.session.visibilityState === 'visible-blurred') 
@@ -73017,21 +73037,95 @@ function onSessionStart()
             }
         }
     });
+
+    wrapupLoadingScreen();
 }
 
 function onSessionEnd()
 {
+    renderer.setAnimationLoop(null);
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
     gameLogic.pause();
     location.reload();
 }
 
-function initScene(scene, camera, renderer)
+let loadingQuadLayer = null;
+let loadingCamera = null;
+let loadingScene = null;
+let loadingScreenQuadLocation = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0.0, 1.0, -3.0);
+let loadingScreenQuadQuaternion = new three__WEBPACK_IMPORTED_MODULE_0__["Quaternion"]();
+function setupLoadingScreen()
 {
-    Object(_textBox_js__WEBPACK_IMPORTED_MODULE_17__["initializeTextBoxSystem"])();
-    
-    playerHud = new _playerHud_js__WEBPACK_IMPORTED_MODULE_12__["PlayerHud"](camera, audioListener);
+    loadingQuadLayer = renderer.xr.createQuadLayer(1024, 1024, 1.0, 1.0);
+    // threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
+    renderer.xr.registerQuadLayer(loadingQuadLayer, -1);
 
+
+
+    
+    //@TODO --- set up loading camera, loading scene, get it rendering while loading is happening (with progress bar?)
+
+    loadingCamera = new three__WEBPACK_IMPORTED_MODULE_0__["OrthographicCamera"](-0.5, 0.5, 0.5, -0.5, 0.01, 100)
+    loadingCamera.position.z = 20;
+
+    loadingScene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
+    loadingScene.add(loadingCamera);
+    let logo = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load('./content/heavy_bag_trainer_logo.png');
+    let loadingScreenMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
+        new three__WEBPACK_IMPORTED_MODULE_0__["PlaneGeometry"](1.0, 0.5),
+        new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]( {color: 0x808080, map: logo} ));
+    loadingScreenMesh.rotation.x = 0.707;
+    loadingScreenMesh.position.z = -10
+    
+    loadingScene.add( loadingScreenMesh );
+
+    loadingScene.add(blackoutQuad);
+    blackoutMaterial.opacity = 0.0;
+    // quadScene.add( loadingCamera );
+
+
+    renderer.setAnimationLoop( loadingScreenRender );
+}
+
+let emptyScene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
+
+function loadingScreenRender(time, frame)
+{
+    renderer.render(emptyScene, camera);
+
+    let renderProps = renderer.properties.get(loadingQuadLayer.renderTarget);
+    renderProps.__ignoreDepthValues = false;
+
+    loadingQuadLayer.layer.transform = new XRRigidTransform( loadingScreenQuadLocation, loadingScreenQuadQuaternion );
+
+    // set viewport, rendertarget, and renderTargetTextures
+    loadingQuadLayer.setupToRender(renderer, frame);
+    
+    renderer.xr.enabled = false;
+    renderer.setClearColor(clearColorBlack, 1.0);
+    renderer.render(loadingScene, loadingCamera);
+    renderer.setClearColor(clearColorBlack, 0.0);
+    renderer.xr.enabled = true;
+
+}
+
+function wrapupLoadingScreen()
+{
+    loadingQuadLayer = null;
+    loadingScene = null;
+
+    scene.add(blackoutQuad);
+    bDoBlackoutFade = true;
+    blackoutMaterial.opacity = 0.0;
+    blackoutFadeTimer = 0.0;
+
+    renderer.setAnimationLoop(render);
+    quadScreen.needsRenderUpdate = true;
+    renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+}
+
+function initGlovesAndBag(scene, camera, renderer)
+{
     heavyBag = new _bag_js__WEBPACK_IMPORTED_MODULE_9__["HeavyBag"](audioListener, scene, camera, renderer);
     heavyBag.visible = false;
     doubleEndedBag = new _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_10__["DoubleEndedBag"](audioListener, scene, camera, renderer, playerHud);
@@ -73049,6 +73143,33 @@ function initScene(scene, camera, renderer)
 
     heavyBag.setGloves(leftHand.glove, rightHand.glove);
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
+}
+
+function initScene(scene, camera, renderer)
+{
+    Object(_textBox_js__WEBPACK_IMPORTED_MODULE_17__["initializeTextBoxSystem"])();
+    
+    playerHud = new _playerHud_js__WEBPACK_IMPORTED_MODULE_12__["PlayerHud"](camera, audioListener);
+
+    // heavyBag = new HeavyBag(audioListener, scene, camera, renderer);
+    // heavyBag.visible = false;
+    // doubleEndedBag = new DoubleEndedBag(audioListener, scene, camera, renderer, playerHud);
+    // doubleEndedBag.visible = false;
+
+    // scene.add(heavyBag);
+    // scene.add(doubleEndedBag);
+    
+    // leftHand.glove = new Glove(scene, 1);
+    // leftHand.glove.heavyBag = heavyBag;
+    // leftHand.glove.doubleEndedBag = doubleEndedBag;
+    // rightHand.glove = new Glove(scene, 2);
+    // rightHand.glove.heavyBag = heavyBag;
+    // rightHand.glove.doubleEndedBag = doubleEndedBag;
+
+    // heavyBag.setGloves(leftHand.glove, rightHand.glove);
+    // doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
+
+    // gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
     gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_11__["BoxingSession"](scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
@@ -73065,15 +73186,6 @@ function initScene(scene, camera, renderer)
     // quadScene.add(qtb);
     // qtb.displayMessage("testing 1 2 3")
 
-    if (bUseRTT)
-    {
-        let quadMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](
-            new three__WEBPACK_IMPORTED_MODULE_0__["PlaneGeometry"](1.333, 1.0),
-            new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]( {map: quadRTT.texture}));
-        quadMesh.position.z = -2;
-        quadMesh.position.y = 1;
-        scene.add(quadMesh);
-    }    
 }
 
 /*
@@ -73212,25 +73324,6 @@ function LoadBasisAoPromise(meshName, filepath)
         });
     });
 }
-
-
-function OnStartButton()
-{
-    
-    const sessionInit = { optionalFeatures: [ 
-        'local-floor', 
-        'bounded-floor', 
-        'hand-tracking'
-    ]};
-    navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( (session) => {
-        renderer.xr.setSession(session);
-    });
-}
-
-// function opaqueSort(obj1, obj2)
-// {
-//     return 0;
-// }
 
 /***/ }),
 
@@ -73976,7 +74069,7 @@ class BoxingSession
             if (node.name == "Screen")
             {
                 this.TV = node;
-                this.TV.needsRenderUpdate = false;
+                this.TV.needsRenderUpdate = true;
                 
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
@@ -74584,7 +74677,7 @@ class PunchingStats
             if (node.name == "Screen")
             {
                 this.TV = node;
-                this.TV.needsRenderUpdate = false;
+                this.TV.needsRenderUpdate = true;
                 this.TV.add(this.statsTextBox);
                 this.TV.add(this.punchTextBox);
             }
@@ -74825,6 +74918,8 @@ class Glove extends THREE.Group
         this.inContactWithBag = false;
         this.nextNewContactTime = -1.0;
 
+        this.bDeferredVisibility = null;
+
         this.scene = scene;
         scene.add(this);
 
@@ -74856,6 +74951,10 @@ class Glove extends THREE.Group
                 gltf.scene.renderOrder = 0; // render before everything else
                 this.add(gltf.scene);
                 this.mesh = gltf.scene.children[0];
+                if (this.bDeferredVisibility !== null)
+                {
+                    this.mesh.visible = this.bDeferredVisibility;
+                }
                 // this.mesh.visible = false;
             });
     }
@@ -74870,13 +74969,26 @@ class Glove extends THREE.Group
 
     show()
     {
-        console.assert(this.mesh);
-        this.mesh.visible = true;
+        if (this.mesh == null)
+        {
+            this.bDeferredVisibility = true;
+        }
+        else
+        {
+            console.assert(this.mesh);
+            this.mesh.visible = true;
+        }
     }
     hide()
     {
-        console.assert(this.mesh);
-        this.mesh.visible = false;
+        if (this.mesh == null)
+        {
+            this.bDeferredVisibility = false;
+        }
+        else
+        {
+            this.mesh.visible = false;
+        }
     }
 
     isInContactWithBag()
@@ -75296,7 +75408,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-let layersPolyfill = null;
+// let layersPolyfill = null;
 
 const kMaxLogo = "35%";
 const kMinLogo = "15%";
@@ -75314,6 +75426,8 @@ class PageUI
         this.whichScriptedWorkout = 0;
         this.numScriptedWorkouts = _workoutData_js__WEBPACK_IMPORTED_MODULE_0__["workoutData"].length;
         
+        this.layersPolyfill = null;
+
         this.bagType = 1;
         this.doBagSwap = true;
         this.arMode = false;
@@ -75420,9 +75534,9 @@ class PageUI
 
     createUIElements()
     {
-        this.uiBackplate = document.createElement("div");
-        this.uiBackplate.className = "ui_backplate";
-        document.body.appendChild(this.uiBackplate);
+        // this.uiBackplate = document.createElement("div");
+        // this.uiBackplate.className = "ui_backplate";
+        // document.body.appendChild(this.uiBackplate);
 
         this.uiContainer = document.createElement("div");
         this.uiContainer.className = "ui_container";
@@ -75430,7 +75544,7 @@ class PageUI
 
         this.uiLogo = document.createElement("img");
         this.uiLogo.className = "title_image";
-        this.uiLogo.style.width = kMaxLogo;
+        // this.uiLogo.style.width = kMaxLogo;
         this.uiLogo.src = "./content/heavy_bag_trainer_logo.png";
 
 
@@ -75490,7 +75604,7 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9&beta;";
+        appVersionText.innerHTML = "Version 0.9.1&beta;";
         // appVersionText.innerHTML = "Version 0.9";
         appVersionText.className = "app_version_text";
         
@@ -75836,7 +75950,7 @@ class PageUI
 
         this.uiConfigureButton.style.display = "";
 
-        layersPolyfill = new webxr_layers_polyfill_build_webxr_layers_polyfill_module_js__WEBPACK_IMPORTED_MODULE_1__["default"]()
+        this.layersPolyfill = new webxr_layers_polyfill_build_webxr_layers_polyfill_module_js__WEBPACK_IMPORTED_MODULE_1__["default"]()
 
     }
     

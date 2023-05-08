@@ -173,7 +173,7 @@ export class BoxingSession
             if (node.name == "Screen")
             {
                 this.TV = node;
-                this.TV.needsRenderUpdate = false;
+                this.TV.needsRenderUpdate = true;
                 
                 this.TV.add(this.timerTextBox);
                 this.TV.add(this.roundsTextBox);
@@ -781,7 +781,7 @@ export class PunchingStats
             if (node.name == "Screen")
             {
                 this.TV = node;
-                this.TV.needsRenderUpdate = false;
+                this.TV.needsRenderUpdate = true;
                 this.TV.add(this.statsTextBox);
                 this.TV.add(this.punchTextBox);
             }

@@ -41,9 +41,7 @@ let quadScene = null;
 let quadScreen = null;
 let threeQuadLayer = null;
 
-let quadRTT = null;
 let quadPng = null;
-let bUseRTT = false;
 
 let clock = null;
 let accumulatedTime = 0.0;
@@ -72,6 +70,23 @@ let pageUI = null;
 let clearColorBlack = new THREE.Color(0x000000);
 let clearColorQuadScene = new THREE.Color(0x808080);
 
+
+const blackoutMaterial = new THREE.MeshBasicMaterial(
+    {
+        color:0x000000, 
+        opacity:0.0, 
+        transparent:true,
+        depthTest: false,
+        fog: false
+    }
+);
+const blackoutQuad = new THREE.Mesh(
+    new THREE.PlaneGeometry(1000.0, 1000.0, 1, 1),
+    blackoutMaterial);
+blackoutQuad.position.z = -0.1;
+let bDoBlackoutFade = false;
+let blackoutFadeTimer = 0.0;
+let kBlackoutFadeInTime = 0.5;
 
 let matrixOverridePose = new THREE.Matrix4().compose(
     new THREE.Vector3(0,1.6,0), new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.707, 0, 0)), new THREE.Vector3(1,1,1));
@@ -103,61 +118,18 @@ function initialize()
     renderer.xr.enabled = true;
     renderer.xr.setFramebufferScaleFactor(1.0);
 
-    quadRTT = new THREE.WebGLRenderTarget(1024, 512, {samples:4});
-    let texLoader = new THREE.TextureLoader();
-    // quadPng = texLoader.load('content/1024x512.png');
 
-    // quadCamera = new THREE.PerspectiveCamera(30, 1024.0/512.0, 0.01, 1000); //new THREE.OrthographicCamera(-400, 400, 300, -300, 0.1, 100);
     let qH = 0.52;
     let qW = 0.52 * 16/10;
     quadCamera = new THREE.OrthographicCamera(-qW, qW, qH, -qH, 0.01, 100)
     quadCamera.position.z = 3;
 
     quadScene = new THREE.Scene();
-    quadScene.add(new THREE.DirectionalLight(0x808080, 3.0));
-    quadScene.add(new THREE.HemisphereLight(0xeeeeff, 0xaa9944, 0.2));
+    // quadScene.add(new THREE.DirectionalLight(0x808080, 3.0));
+    // quadScene.add(new THREE.HemisphereLight(0xeeeeff, 0xaa9944, 0.2));
     quadScene.add(quadCamera);
 
-    
-    // let guidom = document.createElement("div");
-    // guidom.style.width = "1000px"
-    // let button = document.createElement("p");
-    // button.innerHTML = "TEST! Testing, testing, 123... how does small text look in a layer? THe quick brown fox jumps over the lazy dog. It was the best of times, it was the worst of times.";
-    // // button.className = "workout_description_text";
-    // button.style.fontSize = "32px"
-    // button.style.color = "#000000"
-    // // button.style.width = "50%"
-    // // button.style.height = "200px"
-    // document.body.appendChild(guidom);
-    // guidom.appendChild(button);
-
-    // let htmlMesh = new HTMLMesh(guidom);
-    // htmlMesh.position.x = 0.3;
-    // htmlMesh.position.y = -0.23;
-    // htmlMesh.position.z = 0.2;
-
-    // quadScene.add(htmlMesh);
-
-    // let quadMesh;
-    
-    // quadMesh = new THREE.Mesh(
-    //     new THREE.BoxGeometry(4.0, 0.5, 0.5),
-    //     new THREE.MeshStandardMaterial( {color: 0xaaaaff, roughness:0.8, transparent: true, opacity: 0.5})
-    // );
-    // quadMesh.rotation.x = 0.707;
-    // quadMesh.position.z = -1;
-    // quadScene.add(quadMesh);
-
-
-    // quadMesh = new THREE.Mesh(
-    //     new THREE.SphereGeometry(1.0, 16, 9),
-    //     new THREE.MeshStandardMaterial( {color:0xffcc22, roughness: 0.2, transparent: true, opacity: 0.4})
-    // );
-
-    // quadMesh.position.z = -1;
-    // quadScene.add(quadMesh);
-    
-
+  
     
 
 
@@ -175,6 +147,7 @@ function initialize()
     document.body.appendChild(renderer.domElement);
     // document.body.appendChild(quadRenderer.domElement);
     pageUI = new PageUI(renderer);
+    // pageUI.checkForXR();
 
 
     // document.body.appendChild(renderer.domElement);
@@ -185,204 +158,12 @@ function initialize()
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
 
-
-
     InitBasisLoader();
-    //lightmaps['Room'] = LoadLightmapBasis("./content/Lightmaps_V8/", "Room_denoised.basis");
 
-    let lightmapPromises = [];
-    if (true)
-    {
-        lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.basis"));
-    }
-    else if (true)
-    {
-        lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_baked_dir.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_baked_dir.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_baked_dir.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_baked_dir.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_baked_dir.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_baked_dir.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_baked_dir.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_baked_dir.basis"));
-        lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_baked_dir.basis"));
-
-        lightmapPromises.push(LoadBasisAoPromise('Room001', "./content/Lightmaps_V8/Room.001_baked_ao.basis"));
-        lightmapPromises.push(LoadBasisAoPromise('Floor', "./content/Lightmaps_V8/Floor_baked_ao.basis"));
-        lightmapPromises.push(LoadBasisAoPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_baked_ao.basis"));
-        lightmapPromises.push(LoadBasisAoPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_baked_ao.basis"));
-        lightmapPromises.push(LoadBasisAoPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_baked_ao.basis"));
-        lightmapPromises.push(LoadBasisAoPromise('TV', "./content/Lightmaps_V8/TV_baked_ao.basis"));
-        lightmapPromises.push(LoadBasisAoPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_baked_ao.basis"));
-        lightmapPromises.push(LoadBasisAoPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_baked_ao.basis"));
-        lightmapPromises.push(LoadBasisAoPromise('Shelf', "./content/Lightmaps_V8/Shelf_baked_ao.basis"));
-    }
-    else
-    {
-        // lightmapPromises.push(LoadLightmapPromise('Room', "./content/Lightmaps_V8/Room_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.tga"));
-        lightmapPromises.push(LoadLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.tga"));
-        // lightmapPromises.push(LoadLightmapPromise('ShelfLegs', "./content/Lightmaps_V8/ShelfLegs_denoised.tga"));
-        
-        
-    }
-    // lightmapPromises.push(LoadBasisLightmapPromise('Kettlebell', "./content/Lightmaps_V8/Kettlebell_denoised.basis"));
-    // lightmapPromises.push(LoadBasisLightmapPromise('Legs', "./content/Lightmaps_V8/Legs_denoised.basis"));
-    // lightmapPromises.push(LoadBasisLightmapPromise('Seat', "./content/Lightmaps_V8/Seat_denoised.basis"));
-
-    lightmapPromises.push(LoadEnvMapPromise());
-
-
-    envMapObjects['Floor'] = { intensity: 0.03, roughness: 0.36};
-    envMapObjects['AccentWall'] = { intensity: 0.35, roughness: 0.2};
-    envMapObjects['Dumbell'] = { intensity: 0.25, roughness: 0.7};
-    envMapObjects['Shelf'] = { intensity: 0.15, roughness: 0.2};
-    envMapObjects['DumbellHandle'] = { intensity: 0.55, roughness: 0.1};
-    envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
-    envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
-    envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
-    envMapObjects['Screen'] = {intensity: 0.3, roughness: 0.82};
+    let emp = LoadEnvMapPromise();
+    emp.then(pageUI.checkForXR());
     
     
-    // envMapObjects['Seat'] = {intensity: 0.5, roughness: 0.3};
-    // envMapObjects['Legs'] = {intensity: 0.5, roughness: 0.5};
-    // envMapObjects['Kettlebell'] = {intensity: 0.75, roughness: 0.5};
-    
-    // What do I want to have happen for loading?
-    // Load enviornment map
-    // Load lightmaps
-    // Load environment and apply lightmaps and envmap
-    // Load bag and apply envmap
-    // Load gloves
-    // all done loading
-    // post-load fixups
-
-    
-    const loadingManager = new THREE.LoadingManager();
-    loadingManager.addHandler(/\.basis$/i, basisLoader);
-    loadingManager.addHandler( /\.tga$/i, new TGALoader() );
-
-    // let loaderPromise = new Promise( (resolve) => {
-    //     let loader = new GLTFLoader(loadingManager);
-    //     loader.load('./content/gym_v8.gltf', resolve);
-    // });
-
-    Promise.all(lightmapPromises)
-        .then( 
-            () => {
-                return new Promise( (resolve) => {
-                    //console.log("LOAD GLTF");
-                    let loader = new GLTFLoader(loadingManager);
-                    loader.load('./content/gym_v8.gltf', resolve);
-                })
-            })
-        .then(
-            (gltf) => {
-                // console.log("GLTF is: " + gltf);
-                return new Promise(
-                    (resolve) => {
-                    //console.log("DO GLTF FIXUPS")
-                    for (let i = 0; i < gltf.scene.children.length; i++)
-                    {                
-                        let obj = gltf.scene.children[i];
-                        
-                        // obj.renderOrder = 10; //render after gloves and bag
-
-                        obj.traverse(function (node) {
-
-                            node.renderOrder = 10;
-                            if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
-                            {
-                                let simpleMat = new THREE.MeshLambertMaterial();
-                                simpleMat.color = node.material.color;
-                                simpleMat.emissive = node.material.emissive;
-                                node.material = simpleMat;
-                            }
-
-                            // console.log("NODE: " + node.name);
-                            let nodeLightmap = lightmaps[node.name];
-                            if (nodeLightmap && node.material && 'lightMap' in node.material) {
-                                // console.log("--> LIGHTMAP: " + nodeLightmap.name);
-                                node.material.lightMap = nodeLightmap;
-                                node.material.lightMapIntensity = 1.0;
-                                node.material.needsUpdate = true;
-                            }
-
-                            let nodeAomap = aomaps[node.name];
-                            if(nodeAomap && node.material && 'aoMap' in node.material) {
-                                node.material.aoMap = nodeAomap;
-                                node.material.aoMapIntensity = 0.5;
-                                node.material.needsUpdate = true;
-                            }
-
-                            let emo = envMapObjects[node.name];
-                                
-                            if (emo)
-                            {
-                                node.material.envMap = scene.envMap;
-                                node.material.envMapIntensity = emo.intensity;
-                                node.material.roughness = emo.roughness;
-                            }
-
-                            if (node.material)
-                            {
-                                node.material.precision = 'mediump';
-                                node.material.needsUpdate = true;
-                            }
-                        });
-
-                        // console.log("OBJECT: " + obj.name);
-                        if (obj.name == "Screen")
-                        {
-                            console.log
-                            obj.material.emissiveIntensity = 0.03;
-                            obj.material.color.setRGB(0.86, 0.86, 0.965);
-                            let loader = new THREE.TextureLoader();
-                            let tvBkgd = loader.load("./content/tv_background2.png");
-                            tvBkgd.flipY = false;
-                    
-                            // obj.material.name = "TVSCREEN";
-                            obj.material.map = tvBkgd;
-            
-                        }
-                        else if (obj.name =="Floor")
-                        {
-                            obj.material.lightMapIntensity = 2.0;
-                            obj.material.metalness = 0.5;
-                        }
-                        else if (obj.name == "AccentWall")
-                        {
-                            obj.material.lightMapIntensity = 1.5;
-                        }
-                    }
-                    scene.add(gltf.scene);
-                    initScene(scene, camera, renderer);
-                    //console.log("DONE LOADING AND FIXUPS");
-                    resolve();
-                });
-            })
-        .then(() =>
-            {
-                //console.log("CHECK FOR XR");
-                pageUI.checkForXR(); 
-            });
-
-
 
 
 
@@ -427,27 +208,9 @@ function initialize()
 
     controllers.push(renderer.xr.getControllerGrip( 1 ));
     scene.add( controllers[1] );
-    // let con1 = renderer.xr.getControllerGrip(1);
-    // con1.add(controllerModelFactory.createControllerModel(con1));
-    // scene.add(con1);
-    //controllers[1].add(controllerModelFactory.createControllerModel(controllers[1]));
    
     renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
-
         setupHandForController(1, evt);
-        // console.log("Got Gamepad for Controller 1: " + evt.data.handedness);
-        // controllers[1].gamepad = evt.data.gamepad;
-        // if (evt.data.handedness == "left")
-        // {
-        //     leftHand.setController(controllers[1]);
-        //     setupHand(leftHand, 1);
-        // }
-        // else
-        // {
-        //     rightHand.setController(controllers[0]);
-        //     setupHand(rightHand, 2);
-        // }
-
     });
     renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
         console.log("Lost Gamepad for Controller 1");
@@ -479,7 +242,7 @@ function initialize()
     });
 
 
-    renderer.setAnimationLoop(render); 
+    // renderer.setAnimationLoop(render); 
 }
 
 function setupHandForController(id, evt)
@@ -501,6 +264,164 @@ function setupHandForController(id, evt)
         rightHand.isSetUp = true;
     }
 }
+
+function loadLevelAssets(addLoadingScreenDelay)
+{
+    let lightmapPromises = [];
+    if (true)
+    {
+        if (addLoadingScreenDelay)
+        {
+            lightmapPromises.push(new Promise(resolve => setTimeout(resolve, 3000)));
+        }
+
+        lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Floor', "./content/Lightmaps_V8/Floor_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Ceiling', "./content/Lightmaps_V8/Ceiling_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('AccentWall', "./content/Lightmaps_V8/AccentWall_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Baseboard2', "./content/Lightmaps_V8/Baseboard2_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('TV', "./content/Lightmaps_V8/TV_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Dumbell', "./content/Lightmaps_V8/Dumbell_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('DumbellHandle', "./content/Lightmaps_V8/DumbellHandle_denoised.basis"));
+        lightmapPromises.push(LoadBasisLightmapPromise('Shelf', "./content/Lightmaps_V8/Shelf_denoised.basis"));
+
+    }
+    // lightmapPromises.push(LoadEnvMapPromise());
+
+
+    envMapObjects['Floor'] = { intensity: 0.03, roughness: 0.36};
+    envMapObjects['AccentWall'] = { intensity: 0.35, roughness: 0.2};
+    envMapObjects['Dumbell'] = { intensity: 0.25, roughness: 0.7};
+    envMapObjects['Shelf'] = { intensity: 0.15, roughness: 0.2};
+    envMapObjects['DumbellHandle'] = { intensity: 0.55, roughness: 0.1};
+    envMapObjects['Baseboard2'] = { intensity: 0.15, roughness: 0.4};
+    envMapObjects['TV'] = { intensity: 0.05, roughness: 0.45};
+    envMapObjects['Ring'] = { intensity: 0.2, roughness: 0.25};
+    envMapObjects['Screen'] = {intensity: 0.3, roughness: 0.82};
+    
+       // What do I want to have happen for loading?
+    // Load enviornment map
+    // Load lightmaps
+    // Load environment and apply lightmaps and envmap
+    // Load bag and apply envmap
+    // Load gloves
+    // all done loading
+    // post-load fixups
+
+    
+    const loadingManager = new THREE.LoadingManager();
+    loadingManager.addHandler(/\.basis$/i, basisLoader);
+    loadingManager.addHandler( /\.tga$/i, new TGALoader() );
+
+    Promise.all(lightmapPromises)
+        
+        .then( 
+            () => {
+                return new Promise( (resolve) => {
+                    //console.log("LOAD GLTF");
+                    let loader = new GLTFLoader(loadingManager);
+                    loader.load('./content/gym_v8.gltf', resolve);
+                })
+            })
+        .then(
+            (gltf) => {
+                console.log("GLTF is: " + gltf);
+                return new Promise(
+                    (resolve) => {
+                    console.log("DO GLTF FIXUPS")
+                    for (let i = 0; i < gltf.scene.children.length; i++)
+                    {                
+                        let obj = gltf.scene.children[i];
+                        
+                        // obj.renderOrder = 10; //render after gloves and bag
+
+                        obj.traverse(function (node) {
+
+                            node.renderOrder = 10;
+                            if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
+                            {
+                                let simpleMat = new THREE.MeshLambertMaterial();
+                                simpleMat.color = node.material.color;
+                                simpleMat.emissive = node.material.emissive;
+                                node.material = simpleMat;
+                            }
+
+                            console.log("NODE: " + node.name);
+                            let nodeLightmap = lightmaps[node.name];
+                            if (nodeLightmap && node.material && 'lightMap' in node.material) {
+                                console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                                node.material.lightMap = nodeLightmap;
+                                node.material.lightMapIntensity = 1.0;
+                                node.material.needsUpdate = true;
+                            }
+
+                            let nodeAomap = aomaps[node.name];
+                            if(nodeAomap && node.material && 'aoMap' in node.material) {
+                                node.material.aoMap = nodeAomap;
+                                node.material.aoMapIntensity = 0.5;
+                                node.material.needsUpdate = true;
+                            }
+
+                            let emo = envMapObjects[node.name];
+                                
+                            if (emo)
+                            {
+                                node.material.envMap = scene.envMap;
+                                node.material.envMapIntensity = emo.intensity;
+                                node.material.roughness = emo.roughness;
+                            }
+
+                            if (node.material)
+                            {
+                                node.material.precision = 'mediump';
+                                node.material.needsUpdate = true;
+                            }
+                        });
+
+                        console.log("OBJECT: " + obj.name);
+                        if (obj.name == "Screen")
+                        {
+                            console.log
+                            obj.material.emissiveIntensity = 0.03;
+                            obj.material.color.setRGB(0.86, 0.86, 0.965);
+                            let loader = new THREE.TextureLoader();
+                            let tvBkgd = loader.load("./content/tv_background2.png");
+                            tvBkgd.flipY = false;
+                    
+                            // obj.material.name = "TVSCREEN";
+                            obj.material.map = tvBkgd;
+            
+                        }
+                        else if (obj.name =="Floor")
+                        {
+                            obj.material.lightMapIntensity = 2.0;
+                            obj.material.metalness = 0.5;
+                        }
+                        else if (obj.name == "AccentWall")
+                        {
+                            obj.material.lightMapIntensity = 1.5;
+                        }
+                    }
+                    scene.add(gltf.scene);
+                    initScene(scene, camera, renderer);
+                    console.log("DONE LOADING AND FIXUPS");
+                    resolve();
+                });
+            })
+        .then(() =>
+            {
+
+                // hide loading screen and start rendering the main scene?
+
+                //console.log("CHECK FOR XR");
+                // pageUI.checkForXR(); 
+                doPostLoadGameInitialization();
+            });
+
+
+}
+
+
 
 let adjustFramerate = false;
 let bPause = false;
@@ -606,6 +527,22 @@ function render(time, frame) {
     // renderer.inputManager.update(dt, accumulatedTime);
     // TWEEN.update(accumulatedTime);
 
+    if (bDoBlackoutFade)
+    {
+        blackoutFadeTimer += dt;
+        if (blackoutFadeTimer < kBlackoutFadeInTime)
+        {
+            blackoutMaterial.opacity = 1.0 - blackoutFadeTimer / kBlackoutFadeInTime;
+        }
+        else
+        {
+            // all done
+            scene.remove(blackoutQuad);
+        }
+    }
+
+
+
     updateHands(dt, accumulatedTime);
     if (gameLogic)
     {
@@ -616,81 +553,25 @@ function render(time, frame) {
 
     renderer.render(scene, camera);
 
-
-    if (false)
-    {
-        renderer.setRenderTarget(quadRTT);
-        renderer.setClearColor(clearColorQuadScene, 1.0)
-        renderer.clear();
-        renderer.xr.enabled = false;
-        renderer.render(quadScene, quadCamera);
-        renderer.xr.enabled = true
-
-        renderer.setRenderTarget(null);
-        renderer.setClearColor(clearColorBlack);
-    }    
-
     let session = renderer.xr.getSession();
-    if (true && session)
+    if (session)
     {
-        
-        // let quadLayer = renderer.xr.getQuadLayer();
-        // let quadRenderTarget = renderer.xr.getQuadRenderTarget();
-
-        if (true || (threeQuadLayer && /*quadLayer && quadRenderTarget &&*/ quadScreen && quadScreen.needsRenderUpdate))
+        if ((threeQuadLayer && quadScreen && (bDoBlackoutFade || quadScreen.needsRenderUpdate || (pageUI.layersPolyfill && pageUI.layersPolyfill.injected))))
         {
             quadScreen.needsRenderUpdate = false;
 
-            if (true)
-            {
+            let renderProps = renderer.properties.get(threeQuadLayer.renderTarget);
+            renderProps.__ignoreDepthValues = false;
 
-                // let renderProps = renderer.properties.get(quadRenderTarget);
-                // renderProps.__ignoreDepthValues = false;
-                let renderProps = renderer.properties.get(threeQuadLayer.renderTarget);
-                renderProps.__ignoreDepthValues = false;
-
-                
-                // set viewport, rendertarget, and renderTargetTextures
-                // renderer.xr.setupQuadLayerStateToRender(frame);
-                threeQuadLayer.setupToRender(renderer, frame);
-
-                
-
-                // renderer.setRenderTargetFramebuffer( quadRenderTarget, quadLayer.framebuffer );
-                // renderer.setRenderTarget( quadRenderTarget );
-
-                // let sharedGLContext = renderer.getContext('webgl2');
-                // let result = sharedGLContext.checkFramebufferStatus(sharedGLContext.FRAMEBUFFER)
-                // console.log("result = " + result)
-                
-
-                renderer.xr.enabled = false;
-                renderer.setClearColor(clearColorQuadScene, 1.0);
-                renderer.render(quadScene, quadCamera);
-                renderer.setClearColor(clearColorBlack, 0.0);
-                renderer.xr.enabled = true;
-            }
-            else
-            {
-                let _gl = renderer.getContext('webgl2');
-                let subImage = renderer.xr.getQuadLayerSubImage(frame);
-                _gl.bindTexture(_gl.TEXTURE_2D, subImage.colorTexture);
-                /*
-                // WebGL2
-                texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, offset)
-                texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, source)
-                texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels, srcOffset)
-                */
-
-                _gl.texSubImage2D(
-                    _gl.TEXTURE_2D, //target
-                    0, //level
-                    0, 0, // xoffset, yoffset
-                    1024, 512, //width, height
-                    _gl.RGBA, _gl.UNSIGNED_BYTE, quadPng.image); //texData.__webglTexture); //quadPng.source.data);
-                _gl.bindTexture(_gl.TEXTURE_2D, null);
-            }
-
+            
+            // set viewport, rendertarget, and renderTargetTextures
+            threeQuadLayer.setupToRender(renderer, frame);
+            
+            renderer.xr.enabled = false;
+            renderer.setClearColor(clearColorQuadScene, 1.0);
+            renderer.render(quadScene, quadCamera);
+            renderer.setClearColor(clearColorBlack, 0.0);
+            renderer.xr.enabled = true;
         }
         else
         {
@@ -708,11 +589,23 @@ export function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, 
 
 function onSessionStart()
 {
-    //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
-    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
-    gameLogic.start();
 
-    renderer.xr.setQuadRenderer(renderer); //@TODO - remove
+    let loadingScreen = false;
+    if (pageUI.layersPolyfill && !pageUI.layersPolyfill.injected) //!pageUI.layersPolyfill || !pageUI.layersPolyfill.injected) 
+    {
+        loadingScreen = true;
+        setupLoadingScreen();
+    }
+
+
+    initGlovesAndBag(scene, camera, renderer);
+
+    
+    loadLevelAssets(loadingScreen);
+
+    //renderer.xr.getSession().addEventListener('inputsourceschange', onInputSourcesChange);
+    // gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
+    // gameLogic.start();
 
     let session = renderer.xr.getSession();
     if (session.supportedFrameRates)
@@ -734,46 +627,128 @@ function onSessionStart()
         renderer.xr.setFoveation(1.0);
     }
 
-    let stuffToHideInArMode_MaterialNames = [
-        'Accent.Wall.001', 
-        'Floor.001', 
-        'Ceiling.001', 
-        'Baseboard.001', 
-        'Walls.001', 
-        'Dumbell.Handle.001', 
-        'Dumbell.001', 
-        'Shelf.Legs.001',
-        'FloorMarkings',
-        'TV.001'
-    ]
-    if (pageUI.arMode)
-    {
-        // walk through the scene and hide stuff
-        scene.traverse((node) => {
-            if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
-            {
-                node.visible = false;
-            }
-        });
-
-        renderer.setClearAlpha(0.0);
-    }
-    else
-    {
-        // walk through the scene and show stuff
-        // renderer.setClearAlpha(1.0);
-        scene.traverse((node) => {
-            if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
-            {
-                node.visible = true;
-            }
-        });
-
-        // renderer.setClearAlpha(0.0);
-    }
-
     threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
-    renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+    // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+
+    // let stuffToHideInArMode_MaterialNames = [
+    //     'Accent.Wall.001', 
+    //     'Floor.001', 
+    //     'Ceiling.001', 
+    //     'Baseboard.001', 
+    //     'Walls.001', 
+    //     'Dumbell.Handle.001', 
+    //     'Dumbell.001', 
+    //     'Shelf.Legs.001',
+    //     'FloorMarkings',
+    //     'TV.001'
+    // ]
+    // if (pageUI.arMode)
+    // {
+    //     // walk through the scene and hide stuff
+    //     scene.traverse((node) => {
+    //         if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
+    //         {
+    //             node.visible = false;
+    //         }
+    //     });
+
+    //     renderer.setClearAlpha(0.0);
+    // }
+    // else
+    // {
+    //     // walk through the scene and show stuff
+    //     // renderer.setClearAlpha(1.0);
+    //     scene.traverse((node) => {
+    //         if (node.material && stuffToHideInArMode_MaterialNames.find( function(str) {return str == node.material.name}))
+    //         {
+    //             node.visible = true;
+    //         }
+    //     });
+
+    //     // renderer.setClearAlpha(0.0);
+    // }
+
+    // threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
+    // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+
+    // // position screen and quad layer
+    // let quadLayer = threeQuadLayer.layer; //renderer.xr.getQuadLayer();
+
+    // // get TV screen location
+    // if(quadScreen != null)
+    // {
+    //     let screenOrientation = quadScreen.matrix;
+
+    //     // position quadLayer at screenOrientation
+    //     quadLayer.transform = new XRRigidTransform(quadScreen.position, quadScreen.quaternion);
+    //     // quadLayer.height = 0.52;
+    //     // quadLayer.width = quadLayer.height * 16/10;
+    //     // set up the hole-punch mesh in the same place
+    //     let holePunchMesh = new THREE.Mesh(
+    //         new THREE.PlaneGeometry(2.0 * quadLayer.width, 2.0 * quadLayer.height),
+    //         new THREE.MeshBasicMaterial(
+    //             {
+    //                 colorWrite: false,
+    //             }
+    //         )
+    //     );
+    //     holePunchMesh.position.copy(quadScreen.position);
+    //     holePunchMesh.quaternion.copy(quadScreen.quaternion);
+    //     scene.add(holePunchMesh);
+
+    //     // move screen content (and children) to a default position/orientation in from of the quad-layer camera
+    //     quadScreen.position.set(0,0,0);
+    //     // quadScreen.translateX(-quadScreen.position.x)
+    //     // quadScreen.translateY(-quadScreen.position.y)
+    //     // quadScreen.translateZ(-quadScreen.position.z)
+
+    //     quadScreen.rotation.set(0,0,0);
+    //     //quadScreen.material.transparent = true;
+    //     //quadScreen.material.opacity = 0.75;
+    //     // quadScreen.updateMatrixWorld(true);
+    // }
+
+    // session.addEventListener('visibilitychange', e => {
+    //     // remove hand controller while blurred
+    //     if(e.session.visibilityState === 'visible-blurred') 
+    //     {
+    //         bPause = true;
+    //         gameLogic.pause();
+    //         if (leftHand.glove)
+    //         {
+    //             leftHand.glove.hide();
+    //         }
+    //         if (rightHand.glove)
+    //         {
+    //             rightHand.glove.hide();
+    //         }
+    //     }
+    //     else
+    //     {
+    //         bPause = false;
+    //         gameLogic.resume();
+    //         if (leftHand.glove)
+    //         {
+    //             leftHand.glove.show();
+    //         }
+    //         if (rightHand.glove)
+    //         {
+    //             rightHand.glove.show();
+    //         }
+    //     }
+    // });
+}
+
+
+function doPostLoadGameInitialization()
+{
+    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
+    gameLogic.start();
+
+
+
+    // threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
+    // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
 
     // position screen and quad layer
     let quadLayer = threeQuadLayer.layer; //renderer.xr.getQuadLayer();
@@ -812,6 +787,7 @@ function onSessionStart()
         // quadScreen.updateMatrixWorld(true);
     }
 
+    let session = renderer.xr.getSession();
     session.addEventListener('visibilitychange', e => {
         // remove hand controller while blurred
         if(e.session.visibilityState === 'visible-blurred') 
@@ -841,21 +817,95 @@ function onSessionStart()
             }
         }
     });
+
+    wrapupLoadingScreen();
 }
 
 function onSessionEnd()
 {
+    renderer.setAnimationLoop(null);
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
     gameLogic.pause();
     location.reload();
 }
 
-function initScene(scene, camera, renderer)
+let loadingQuadLayer = null;
+let loadingCamera = null;
+let loadingScene = null;
+let loadingScreenQuadLocation = new THREE.Vector3(0.0, 1.0, -3.0);
+let loadingScreenQuadQuaternion = new THREE.Quaternion();
+function setupLoadingScreen()
 {
-    initializeTextBoxSystem();
-    
-    playerHud = new PlayerHud(camera, audioListener);
+    loadingQuadLayer = renderer.xr.createQuadLayer(1024, 1024, 1.0, 1.0);
+    // threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
+    renderer.xr.registerQuadLayer(loadingQuadLayer, -1);
 
+
+
+    
+    //@TODO --- set up loading camera, loading scene, get it rendering while loading is happening (with progress bar?)
+
+    loadingCamera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.01, 100)
+    loadingCamera.position.z = 20;
+
+    loadingScene = new THREE.Scene();
+    loadingScene.add(loadingCamera);
+    let logo = new THREE.TextureLoader().load('./content/heavy_bag_trainer_logo.png');
+    let loadingScreenMesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.0, 0.5),
+        new THREE.MeshBasicMaterial( {color: 0x808080, map: logo} ));
+    loadingScreenMesh.rotation.x = 0.707;
+    loadingScreenMesh.position.z = -10
+    
+    loadingScene.add( loadingScreenMesh );
+
+    loadingScene.add(blackoutQuad);
+    blackoutMaterial.opacity = 0.0;
+    // quadScene.add( loadingCamera );
+
+
+    renderer.setAnimationLoop( loadingScreenRender );
+}
+
+let emptyScene = new THREE.Scene();
+
+function loadingScreenRender(time, frame)
+{
+    renderer.render(emptyScene, camera);
+
+    let renderProps = renderer.properties.get(loadingQuadLayer.renderTarget);
+    renderProps.__ignoreDepthValues = false;
+
+    loadingQuadLayer.layer.transform = new XRRigidTransform( loadingScreenQuadLocation, loadingScreenQuadQuaternion );
+
+    // set viewport, rendertarget, and renderTargetTextures
+    loadingQuadLayer.setupToRender(renderer, frame);
+    
+    renderer.xr.enabled = false;
+    renderer.setClearColor(clearColorBlack, 1.0);
+    renderer.render(loadingScene, loadingCamera);
+    renderer.setClearColor(clearColorBlack, 0.0);
+    renderer.xr.enabled = true;
+
+}
+
+function wrapupLoadingScreen()
+{
+    loadingQuadLayer = null;
+    loadingScene = null;
+
+    scene.add(blackoutQuad);
+    bDoBlackoutFade = true;
+    blackoutMaterial.opacity = 0.0;
+    blackoutFadeTimer = 0.0;
+
+    renderer.setAnimationLoop(render);
+    quadScreen.needsRenderUpdate = true;
+    renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+}
+
+function initGlovesAndBag(scene, camera, renderer)
+{
     heavyBag = new HeavyBag(audioListener, scene, camera, renderer);
     heavyBag.visible = false;
     doubleEndedBag = new DoubleEndedBag(audioListener, scene, camera, renderer, playerHud);
@@ -873,6 +923,33 @@ function initScene(scene, camera, renderer)
 
     heavyBag.setGloves(leftHand.glove, rightHand.glove);
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
+}
+
+function initScene(scene, camera, renderer)
+{
+    initializeTextBoxSystem();
+    
+    playerHud = new PlayerHud(camera, audioListener);
+
+    // heavyBag = new HeavyBag(audioListener, scene, camera, renderer);
+    // heavyBag.visible = false;
+    // doubleEndedBag = new DoubleEndedBag(audioListener, scene, camera, renderer, playerHud);
+    // doubleEndedBag.visible = false;
+
+    // scene.add(heavyBag);
+    // scene.add(doubleEndedBag);
+    
+    // leftHand.glove = new Glove(scene, 1);
+    // leftHand.glove.heavyBag = heavyBag;
+    // leftHand.glove.doubleEndedBag = doubleEndedBag;
+    // rightHand.glove = new Glove(scene, 2);
+    // rightHand.glove.heavyBag = heavyBag;
+    // rightHand.glove.doubleEndedBag = doubleEndedBag;
+
+    // heavyBag.setGloves(leftHand.glove, rightHand.glove);
+    // doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
+
+    // gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
     gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
@@ -889,15 +966,6 @@ function initScene(scene, camera, renderer)
     // quadScene.add(qtb);
     // qtb.displayMessage("testing 1 2 3")
 
-    if (bUseRTT)
-    {
-        let quadMesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(1.333, 1.0),
-            new THREE.MeshBasicMaterial( {map: quadRTT.texture}));
-        quadMesh.position.z = -2;
-        quadMesh.position.y = 1;
-        scene.add(quadMesh);
-    }    
 }
 
 /*
@@ -1036,22 +1104,3 @@ function LoadBasisAoPromise(meshName, filepath)
         });
     });
 }
-
-
-export function OnStartButton()
-{
-    
-    const sessionInit = { optionalFeatures: [ 
-        'local-floor', 
-        'bounded-floor', 
-        'hand-tracking'
-    ]};
-    navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( (session) => {
-        renderer.xr.setSession(session);
-    });
-}
-
-// function opaqueSort(obj1, obj2)
-// {
-//     return 0;
-// }

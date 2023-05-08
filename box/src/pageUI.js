@@ -1,8 +1,6 @@
 import {workoutData} from "./workoutData.js";
 import WebXRLayersPolyfill from 'webxr-layers-polyfill/build/webxr-layers-polyfill.module.js';
 
-let layersPolyfill = null;
-
 const kMaxLogo = "35%";
 const kMinLogo = "15%";
 export class PageUI
@@ -19,6 +17,8 @@ export class PageUI
         this.whichScriptedWorkout = 0;
         this.numScriptedWorkouts = workoutData.length;
         
+        this.layersPolyfill = null;
+
         this.bagType = 1;
         this.doBagSwap = true;
         this.arMode = false;
@@ -195,7 +195,7 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9&beta;";
+        appVersionText.innerHTML = "Version 0.9.1&beta;";
         // appVersionText.innerHTML = "Version 0.9";
         appVersionText.className = "app_version_text";
         
@@ -541,7 +541,7 @@ export class PageUI
 
         this.uiConfigureButton.style.display = "";
 
-        layersPolyfill = new WebXRLayersPolyfill()
+        this.layersPolyfill = new WebXRLayersPolyfill()
 
     }
     

@@ -34,6 +34,8 @@ export class Glove extends THREE.Group
         this.inContactWithBag = false;
         this.nextNewContactTime = -1.0;
 
+        this.bDeferredVisibility = null;
+
         this.scene = scene;
         scene.add(this);
 
@@ -74,6 +76,10 @@ export class Glove extends THREE.Group
                 gltf.scene.renderOrder = 0; // render before everything else
                 this.add(gltf.scene);
                 this.mesh = gltf.scene.children[0];
+                if (this.bDeferredVisibility !== null)
+                {
+                    this.mesh.visible = this.bDeferredVisibility;
+                }
                 // this.mesh.visible = false;
             });
     }
@@ -88,13 +94,26 @@ export class Glove extends THREE.Group
 
     show()
     {
-        console.assert(this.mesh);
-        this.mesh.visible = true;
+        if (this.mesh == null)
+        {
+            this.bDeferredVisibility = true;
+        }
+        else
+        {
+            console.assert(this.mesh);
+            this.mesh.visible = true;
+        }
     }
     hide()
     {
-        console.assert(this.mesh);
-        this.mesh.visible = false;
+        if (this.mesh == null)
+        {
+            this.bDeferredVisibility = false;
+        }
+        else
+        {
+            this.mesh.visible = false;
+        }
     }
 
     isInContactWithBag()
