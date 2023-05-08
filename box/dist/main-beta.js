@@ -75408,8 +75408,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// let layersPolyfill = null;
-
 const kMaxLogo = "35%";
 const kMinLogo = "15%";
 class PageUI
@@ -75534,9 +75532,9 @@ class PageUI
 
     createUIElements()
     {
-        // this.uiBackplate = document.createElement("div");
-        // this.uiBackplate.className = "ui_backplate";
-        // document.body.appendChild(this.uiBackplate);
+        this.uiBackplate = document.createElement("div");
+        this.uiBackplate.className = "ui_backplate";
+        document.body.appendChild(this.uiBackplate);
 
         this.uiContainer = document.createElement("div");
         this.uiContainer.className = "ui_container";
@@ -75544,7 +75542,7 @@ class PageUI
 
         this.uiLogo = document.createElement("img");
         this.uiLogo.className = "title_image";
-        // this.uiLogo.style.width = kMaxLogo;
+        this.uiLogo.style.width = kMaxLogo;
         this.uiLogo.src = "./content/heavy_bag_trainer_logo.png";
 
 
