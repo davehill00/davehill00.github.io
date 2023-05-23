@@ -2,15 +2,18 @@ import * as THREE from 'three';
 import { TextBox } from './textBox';
 import {MovingAverageEventsPerMinute} from './movingAverage.js';
 
+import {MainMenu} from './menu';
+
 var MSDFShader = require('./thirdparty/three-bmfont-text/shaders/msdf')
 
 const SESSION_NULL = 0;
-const SESSION_INTRO = 1;
-const SESSION_GET_READY = 2;
-const SESSION_ROUND = 3;
-const SESSION_REST = 4;
-const SESSION_OUTRO = 5;
-const SESSION_PAUSED = 6;
+const SESSION_MENU = 1;
+const SESSION_INTRO = 2;
+const SESSION_GET_READY = 3;
+const SESSION_ROUND = 4;
+const SESSION_REST = 5;
+const SESSION_OUTRO = 6;
+const SESSION_PAUSED = 7;
 
 export const kPunchNames = 
 [
@@ -66,7 +69,7 @@ export function formatTimeString(timeInSeconds)
 
 export class BoxingSession
 {
-    constructor(scene, camera, renderer, audioListener, heavyBag, doubleEndBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
+    constructor(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
     {
         this.scene = scene;
         this.audioListener = audioListener;
@@ -76,6 +79,10 @@ export class BoxingSession
         this.forceRoundOver = false;
         this.camera = camera;
         this.renderer = renderer;
+
+        this.menu = menu; //new MainMenu(scene, pageUI);
+        let _this = this;
+        menu.onStartCb = () => {_this.startGame()}
 
         // this.initialize(numRounds, roundDuration, restDuration);
 
@@ -313,7 +320,12 @@ export class BoxingSession
         //this.workoutInfo = info;
     }
 
-    start()
+    startMenu()
+    {
+        this.state = SESSION_MENU;
+    }
+
+    startGame()
     {
         this.state = SESSION_INTRO;
         this.elapsedTime = 0.0;
@@ -326,6 +338,9 @@ export class BoxingSession
         this.workoutIntroTextBox.visible = true;
         //this.updateWorkoutMessage();
         this.displayIntroMessage(this.workoutIntroMessage);
+
+        this.heavyBag.leftGlove.show();
+        this.heavyBag.rightGlove.show();
 
 
     }
@@ -384,6 +399,9 @@ export class BoxingSession
         switch(this.state)
         {
             case SESSION_NULL:
+                break;
+            case SESSION_MENU:
+                this.menu.update(dt);
                 break;
             case SESSION_INTRO:
                 this.elapsedTime += dt;

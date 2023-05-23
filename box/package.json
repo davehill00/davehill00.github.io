@@ -4,25 +4,29 @@
   "main": "box.js",
   "license": "MIT",
   "devDependencies": {
-    "css-loader": "^5.0.2",
+    "css-loader": "^6.7.3",
     "file-loader": "^6.2.0",
-    "style-loader": "^2.0.0",
-    "webpack-cli": "^4.2.0",
-    "webpack-dev-server": "^3.11.0"
+    "style-loader": "^3.3.2",
+    "webpack": "^5.82.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-dev-server": "^4.15.0"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^20.0.3",
     "@webxr-input-profiles/assets": "^1.0.5",
     "@webxr-input-profiles/motion-controllers": "^1.0.0",
     "@webxr-input-profiles/registry": "^1.0.1",
     "as-number": "^1.0.0",
     "copy-webpack-plugin": "6.4.0",
+    "html2canvas": "^1.4.1",
     "live-moving-average": "^1.1.0",
     "load-bmfont": "^1.4.1",
     "three": "file:.yalc/three",
+    "three-mesh-ui": "^6.5.4",
     "webgl-debug": "^2.0.1",
-    "webpack": "4",
     "webxr-layers-polyfill": "file:.yalc/webxr-layers-polyfill",
-    "xtend": "^4.0.2"
+    "xtend": "^4.0.2",
+    "yarn": "^1.22.19"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js",

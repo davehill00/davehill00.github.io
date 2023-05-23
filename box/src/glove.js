@@ -84,9 +84,10 @@ export class Glove extends THREE.Group
             });
     }
 
-    setController(controller)
+    setController(controller, gamepad)
     {
         this.controller = controller;
+        this.gamepad = gamepad;
         this.rotation.copy(this.controller.rotation);
         this.isSetUp = true;
         this.show();
@@ -132,12 +133,12 @@ export class Glove extends THREE.Group
 
     playImpactHaptic()
     {
-        let gamepad = this.controller.gamepad;
-        if (gamepad != null && gamepad.hapticActuators != null)
+        // let gamepad = this.controller.gamepad;
+        if (this.gamepad != null && this.gamepad.hapticActuators != null)
         {
             let kIntensity = 1.0;
             let kMilliseconds = 20; //16;
-            let hapticActuator = gamepad.hapticActuators[0];
+            let hapticActuator = this.gamepad.hapticActuators[0];
             if( hapticActuator != null)
             {
                 hapticActuator.pulse( kIntensity, kMilliseconds );
@@ -153,7 +154,6 @@ export class Glove extends THREE.Group
         {
             this.mesh.material.envMap = this.scene.envMap;
         }
-
         this.rotation.copy(this.controller.rotation);
 
         // Try to move from current position to controller position
@@ -188,7 +188,7 @@ export class Glove extends THREE.Group
             consoleWithNoSource(
                 accumulatedTime + ", " + this.controller.linearVelocity.x + ", " + this.controller.linearVelocity.y + ", " + this.controller.linearVelocity.z + ", " +
                 this.controller.angularVelocity.x + ", " + this.controller.angularVelocity.y + ", " + this.controller.angularVelocity.z + ", " + 
-                this.controller.gamepad.buttons[0].pressed + ", " + (hit ? 1 : 0)
+                this.gamepad.buttons[0].pressed + ", " + (hit ? 1 : 0)
             );
         }
 

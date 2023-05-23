@@ -21,7 +21,8 @@ module.exports = {
   },
 
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    // contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     //compress: true,
     port: 8080
   },
@@ -34,7 +35,10 @@ module.exports = {
 
   plugins: [
     new webpack.ProvidePlugin({
-      THREE: 'three'
+      THREE: 'three',
+
+      // https://github.com/webpack/changelog-v5/issues/10
+      Buffer: ['buffer', 'Buffer'],
     }),
     new CopyPlugin(
       {
@@ -43,6 +47,7 @@ module.exports = {
         ]
       }
     ),
+
     // new CopyPlugin({
     //   patterns: [
     //     { from: "node_modules/@webxr-input-profiles/assets/dist/profiles", to: "profiles" }

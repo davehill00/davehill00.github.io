@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import {BasisTextureLoader} from 'three/examples/jsm/loaders/BasisTextureLoader.js'
@@ -20,6 +20,7 @@ import {HeavyBag} from './bag.js';
 import {DoubleEndedBag} from './doubleEndedBag.js';
 import {BoxingSession} from './gamelogic.js';
 import {PlayerHud} from './playerHud.js';
+import { Controllers} from './controllers.js';
 
 import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-controllers';
 import { Session } from './gamelogic.js';
@@ -28,6 +29,7 @@ import {PageUI} from './pageUI.js';
 
 import css from './styles.css';
 import { initializeTextBoxSystem } from './textBox.js';
+import { MainMenu } from './menu.js';
 
 const uri = './profiles/';
 const motionControllers = {};
@@ -69,7 +71,7 @@ let hud = null;
 let pageUI = null;
 let clearColorBlack = new THREE.Color(0x000000);
 let clearColorQuadScene = new THREE.Color(0x808080);
-
+let menu = null;
 
 const blackoutMaterial = new THREE.MeshBasicMaterial(
     {
@@ -87,6 +89,9 @@ blackoutQuad.position.z = -0.1;
 let bDoBlackoutFade = false;
 let blackoutFadeTimer = 0.0;
 let kBlackoutFadeInTime = 0.5;
+
+
+export let gControllers = null;
 
 let matrixOverridePose = new THREE.Matrix4().compose(
     new THREE.Vector3(0,1.6,0), new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.707, 0, 0)), new THREE.Vector3(1,1,1));
@@ -144,6 +149,7 @@ function initialize()
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     // renderer.toneMappingExposure = 1.25;
 
+    renderer.domElement.setAttribute("data-html2canvas-ignore", "true");
     document.body.appendChild(renderer.domElement);
     // document.body.appendChild(quadRenderer.domElement);
     pageUI = new PageUI(renderer);
@@ -163,106 +169,42 @@ function initialize()
     let emp = LoadEnvMapPromise();
     emp.then(pageUI.checkForXR());
     
-    
+    gControllers = new Controllers(scene, renderer);
 
-
-
-    const controllerModelFactory = new XRControllerModelFactory();
-    controllers.push(renderer.xr.getControllerGrip( 0 ));
-    // let con0 = renderer.xr.getControllerGrip(0);
-    // con0.add(controllerModelFactory.createControllerModel(con0));
-    // scene.add(con0);
-    scene.add( controllers[0] );
-    
-    renderer.xr.getControllerGrip(0).addEventListener("connected", (evt) => {
-        setupHandForController(0, evt);
-    });
-    renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
-        console.log("Lost Gamepad for Controller 0");
-        console.table(evt.data);
-
-        if (evt.data == null)
-            return;
-
-        controllers[0].gamepad = null;
-        if (evt.data.handedness == "left")
-        {
-            if (leftHand.glove != null)
-            {
-                leftHand.glove.hide();
-            }
-            leftHand.controller = null;
-            leftHand.isSetUp = false;
-        }
-        else
-        {
-            if (rightHand.glove != null)
-            {
-                rightHand.glove.hide();
-            }
-            rightHand.controller = null;
-            rightHand.isSetUp = false;
-        }
-        
-    });
-
-    controllers.push(renderer.xr.getControllerGrip( 1 ));
-    scene.add( controllers[1] );
-   
-    renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
-        setupHandForController(1, evt);
-    });
-    renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
-        console.log("Lost Gamepad for Controller 1");
-        console.table(evt.data);
-        
-        if (evt.data == null)
-            return;
-
-        controllers[1].gamepad = null;
-
-        if (evt.data.handedness == "left")
-        {
-            if (leftHand.glove != null)
-            {
-                leftHand.glove.hide();
-            }
-            leftHand.controller = null;
-            leftHand.isSetUp = false;
-        }
-        else
-        {
-            if (rightHand.glove != null)
-            {
-                rightHand.glove.hide();
-            }
-            rightHand.controller = null;
-            rightHand.isSetUp = false;
-        }
-    });
-
-
-    // renderer.setAnimationLoop(render); 
+    initGlovesAndBag(scene, camera, renderer);
+    menu = new MainMenu(scene, pageUI);
 }
 
-function setupHandForController(id, evt)
+function setupHandForController(hand, controllerSpace, gamepad)
 {
-    console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
-    controllers[id].gamepad = evt.data.gamepad;
-    if (evt.data.handedness == "left")
-    {
-        console.assert(leftHand.glove);
-        leftHand.glove.setController(controllers[id]);
-        leftHand.glove.show();
-        leftHand.isSetUp = true;
-    }
-    else
-    {
-        console.assert(rightHand.glove);
-        rightHand.glove.setController(controllers[id]);
-        rightHand.glove.show();
-        rightHand.isSetUp = true;
-    }
+    console.assert(hand.glove);
+    hand.glove.setController(controllerSpace, gamepad);
+    hand.glove.hide();
+    hand.isSetUp = true;
+
+    // console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
+    // controllers[id].gamepad = evt.data.gamepad;
+    // if (evt.data.handedness == "left")
+    // {
+    //     console.assert(leftHand.glove);
+    //     leftHand.glove.setController(gripSpace, gamepad); //controllers[id]);
+    //     leftHand.glove.show();
+    //     leftHand.isSetUp = true;
+    // }
+    // else
+    // {
+    //     console.assert(rightHand.glove);
+    //     rightHand.glove.setController(controllers[id]);
+    //     rightHand.glove.show();
+    //     rightHand.isSetUp = true;
+    // }
+}
+
+function wrapupHandForController(hand)
+{
+    hand.isSetUp = false;
+    hand.controller = null;
+    hand.gamepad = null;
 }
 
 function loadLevelAssets(addLoadingScreenDelay)
@@ -598,7 +540,7 @@ function onSessionStart()
     }
 
 
-    initGlovesAndBag(scene, camera, renderer);
+    // initGlovesAndBag(scene, camera, renderer);
 
     
     loadLevelAssets(loadingScreen);
@@ -743,7 +685,9 @@ function onSessionStart()
 function doPostLoadGameInitialization()
 {
     gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
-    gameLogic.start();
+
+    // gameLogic.start();
+    gameLogic.startMenu();
 
 
 
@@ -917,9 +861,22 @@ function initGlovesAndBag(scene, camera, renderer)
     leftHand.glove = new Glove(scene, 1);
     leftHand.glove.heavyBag = heavyBag;
     leftHand.glove.doubleEndedBag = doubleEndedBag;
+    gControllers.leftControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad) => {
+        setupHandForController(leftHand, targetRaySpace, gamepad);
+    });
+    gControllers.leftControllerDisconnectedCallbacks.push(() => {
+        wrapupHandForController(leftHand);
+    });
+
     rightHand.glove = new Glove(scene, 2);
     rightHand.glove.heavyBag = heavyBag;
     rightHand.glove.doubleEndedBag = doubleEndedBag;
+    gControllers.rightControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad) => {
+        setupHandForController(rightHand, targetRaySpace, gamepad);
+    });
+    gControllers.rightControllerDisconnectedCallbacks.push(() => {
+        wrapupHandForController(rightHand);
+    });
 
     heavyBag.setGloves(leftHand.glove, rightHand.glove);
     doubleEndedBag.setGloves(leftHand.glove, rightHand.glove);
@@ -951,7 +908,7 @@ function initScene(scene, camera, renderer)
 
     // gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
-    gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
+    gameLogic = new BoxingSession(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
     if (true && gameLogic.TV != null)
     {
