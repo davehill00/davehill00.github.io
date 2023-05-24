@@ -69,7 +69,7 @@ export function formatTimeString(timeInSeconds)
 
 export class BoxingSession
 {
-    constructor(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
+    constructor(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndBag)
     {
         this.scene = scene;
         this.audioListener = audioListener;
@@ -81,8 +81,9 @@ export class BoxingSession
         this.renderer = renderer;
 
         this.menu = menu; //new MainMenu(scene, pageUI);
-        let _this = this;
-        menu.onStartCb = () => {_this.startGame()}
+        this.menu.boxingSession = this;
+        // let _this = this;
+        // menu.onStartCb = () => {_this.startGame()}
 
         // this.initialize(numRounds, roundDuration, restDuration);
 

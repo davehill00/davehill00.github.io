@@ -214,7 +214,7 @@ function loadLevelAssets(addLoadingScreenDelay)
     {
         if (addLoadingScreenDelay)
         {
-            lightmapPromises.push(new Promise(resolve => setTimeout(resolve, 3000)));
+            lightmapPromises.push(new Promise(resolve => setTimeout(resolve, 1200)));
         }
 
         lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.basis"));
@@ -684,7 +684,7 @@ function onSessionStart()
 
 function doPostLoadGameInitialization()
 {
-    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
+    // gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
 
     // gameLogic.start();
     gameLogic.startMenu();
@@ -850,6 +850,8 @@ function wrapupLoadingScreen()
 
 function initGlovesAndBag(scene, camera, renderer)
 {
+    playerHud = new PlayerHud(camera, audioListener);
+
     heavyBag = new HeavyBag(audioListener, scene, camera, renderer);
     heavyBag.visible = false;
     doubleEndedBag = new DoubleEndedBag(audioListener, scene, camera, renderer, playerHud);
@@ -886,7 +888,7 @@ function initScene(scene, camera, renderer)
 {
     initializeTextBoxSystem();
     
-    playerHud = new PlayerHud(camera, audioListener);
+    
 
     // heavyBag = new HeavyBag(audioListener, scene, camera, renderer);
     // heavyBag.visible = false;

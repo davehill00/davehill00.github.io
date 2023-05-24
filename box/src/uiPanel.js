@@ -13,7 +13,7 @@
 
 //  import { UI_CONSTANTS } from '../../Constants';
  const UI_CONSTANTS = {
-	UI_PIXELS_PER_METER: 512,
+	UI_PIXELS_PER_METER: 1024,
 	UI_FADE_TIME: 300, // in ms
 	UI_OFFSET_BUFFER: 7 / 512, // distance individual UI panels are from one another, to prevent z-fighting.
 };
@@ -52,7 +52,7 @@ const updateMatrixRecursively = (object) => {
          // width and height can be 'auto', so we need to check that they're numbers
          // before converting
          if (options[option] && !isNaN(options[option])) {
-             options[option] = options[option] / UI_CONSTANTS.UI_PIXELS_PER_METER;
+             options[option] = 2.0 * options[option] / UI_CONSTANTS.UI_PIXELS_PER_METER;
          }
      }
  
@@ -234,10 +234,10 @@ const updateMatrixRecursively = (object) => {
  
      getInteractableElements() {
          if (this.background) {
-             return [this.background, ...this.panel.getInteractableElements()];
+             return [this.background, ...this.panel.getInteractableElements()].filter( x => x.visible);
          }
  
-         return [this.panel, ...this.panel.getInteractableElements()];
+         return [this.panel, ...this.panel.getInteractableElements()].filter( x => x.visible);
      }
  
      getToggles() {

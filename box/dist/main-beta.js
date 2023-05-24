@@ -20719,7 +20719,7 @@ function loadLevelAssets(addLoadingScreenDelay)
     {
         if (addLoadingScreenDelay)
         {
-            lightmapPromises.push(new Promise(resolve => setTimeout(resolve, 3000)));
+            lightmapPromises.push(new Promise(resolve => setTimeout(resolve, 1200)));
         }
 
         lightmapPromises.push(LoadBasisLightmapPromise('Room001', "./content/Lightmaps_V8/Room.001_denoised.basis"));
@@ -21182,7 +21182,7 @@ function onSessionStart()
 
 function doPostLoadGameInitialization()
 {
-    gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
+    // gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
 
     // gameLogic.start();
     gameLogic.startMenu();
@@ -21348,6 +21348,8 @@ function wrapupLoadingScreen()
 
 function initGlovesAndBag(scene, camera, renderer)
 {
+    playerHud = new _playerHud_js__WEBPACK_IMPORTED_MODULE_5__.PlayerHud(camera, audioListener);
+
     heavyBag = new _bag_js__WEBPACK_IMPORTED_MODULE_2__.HeavyBag(audioListener, scene, camera, renderer);
     heavyBag.visible = false;
     doubleEndedBag = new _doubleEndedBag_js__WEBPACK_IMPORTED_MODULE_3__.DoubleEndedBag(audioListener, scene, camera, renderer, playerHud);
@@ -21384,7 +21386,7 @@ function initScene(scene, camera, renderer)
 {
     (0,_textBox_js__WEBPACK_IMPORTED_MODULE_11__.initializeTextBoxSystem)();
     
-    playerHud = new _playerHud_js__WEBPACK_IMPORTED_MODULE_5__.PlayerHud(camera, audioListener);
+    
 
     // heavyBag = new HeavyBag(audioListener, scene, camera, renderer);
     // heavyBag.visible = false;
@@ -22382,7 +22384,7 @@ function formatTimeString(timeInSeconds)
 
 class BoxingSession
 {
-    constructor(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndBag, numRounds, roundDuration, restDuration, bagType, doBagSwapEachRound)
+    constructor(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndBag)
     {
         this.scene = scene;
         this.audioListener = audioListener;
@@ -22394,8 +22396,9 @@ class BoxingSession
         this.renderer = renderer;
 
         this.menu = menu; //new MainMenu(scene, pageUI);
-        let _this = this;
-        menu.onStartCb = () => {_this.startGame()}
+        this.menu.boxingSession = this;
+        // let _this = this;
+        // menu.onStartCb = () => {_this.startGame()}
 
         // this.initialize(numRounds, roundDuration, restDuration);
 
@@ -23540,12 +23543,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MainMenu": () => (/* binding */ MainMenu)
 /* harmony export */ });
 /* harmony import */ var three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three-mesh-ui */ "./node_modules/three-mesh-ui/build/three-mesh-ui.module.js");
-/* harmony import */ var three_mesh_ui_src_utils_block_layout_JustifyContent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three-mesh-ui/src/utils/block-layout/JustifyContent */ "./node_modules/three-mesh-ui/src/utils/block-layout/JustifyContent.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
-/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _uiPanel_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./uiPanel.js */ "./src/uiPanel.js");
-/* harmony import */ var _box_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./box.js */ "./src/box.js");
+/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
+/* harmony import */ var three_mesh_ui_src_utils_block_layout_JustifyContent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three-mesh-ui/src/utils/block-layout/JustifyContent */ "./node_modules/three-mesh-ui/src/utils/block-layout/JustifyContent.js");
+/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! html2canvas */ "./node_modules/html2canvas/dist/html2canvas.js");
+/* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./uiPanel.js */ "./src/uiPanel.js");
+/* harmony import */ var _box_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./box.js */ "./src/box.js");
 /* provided dependency */ var THREE = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
 
 
 // import {CanvasTexture} from 'three/examples/jsm/interactive/HTMLMesh';
@@ -23556,24 +23562,7 @@ __webpack_require__.r(__webpack_exports__);
 
 // import { contentDirection } from 'three-mesh-ui/src/utils/block-layout/ContentDirection.js';
 
-let logoTexture = new THREE.TextureLoader().load("./content/heavy_bag_trainer_logo.png");
-
-function generateLinearGradient() {
-    var canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-
-    var ctx = canvas.getContext('2d');
-
-    var gradient = ctx.createLinearGradient(0, 0, 0, 64);
-    gradient.addColorStop(0, 'black');
-    gradient.addColorStop(1, 'white');
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 64, 64);
-
-    return canvas;
-}
+// let logoTexture = new THREE.TextureLoader().load("./content/heavy_bag_trainer_logo.png");
 
 let _x = new THREE.Vector3();
 let _y = new THREE.Vector3();
@@ -23609,17 +23598,17 @@ class MenuInputController
 
         //setup callbacks
         let _this = this;
-        _box_js__WEBPACK_IMPORTED_MODULE_4__.gControllers.leftControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad, model) => {
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad, model) => {
             _this.setupInputController(_this.leftInputController, targetRaySpace, gripSpace, gamepad, model);
 
         });
-        _box_js__WEBPACK_IMPORTED_MODULE_4__.gControllers.rightControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad, model) => {
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad, model) => {
             _this.setupInputController(_this.rightInputController, targetRaySpace, gripSpace, gamepad, model);
         });
-        _box_js__WEBPACK_IMPORTED_MODULE_4__.gControllers.leftControllerDisconnectedCallbacks.push(() => {
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerDisconnectedCallbacks.push(() => {
             _this.wrapupInputController(_this.leftInputController);
         });
-        _box_js__WEBPACK_IMPORTED_MODULE_4__.gControllers.leftControllerDisconnectedCallbacks.push(() => {
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerDisconnectedCallbacks.push(() => {
             _this.wrapupInputController(_this.rightInputController);
         });
     }
@@ -23679,6 +23668,7 @@ class MenuInputController
 
 
         controller.raycaster = new THREE.Raycaster();
+        controller.raycaster.layers.set(0);
 
         this.dummy = new THREE.Mesh(
             new THREE.BoxGeometry(0.5, 0.5, 0.5),
@@ -23862,7 +23852,12 @@ class MainMenu
             restTime: 30,
             roundCount: 5,
             bagType: 0,
+            workoutType: 0,
+            whichScriptedWorkout: 0,
+            doBagSwap: false,
         };
+
+        this.readSettings();
 
 
 
@@ -23883,7 +23878,7 @@ class MainMenu
     }
     createSimpleStartMenu()
     {
-        this.startMenuBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_3__.UIPanel(512, 512, {
+        this.startMenuBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__.UIPanel(1024, 768, {
             fontFamily: './content/ROCKB.TTF-msdf.json',
             fontTexture: './content/ROCKBTTF.png',
             contentDirection: 'column',
@@ -23902,7 +23897,8 @@ class MainMenu
         this.startMenuBase.addImage("./content/heavy_bag_trainer_logo.png", {
             width: 400,
             height: 200,
-            margin: 8
+            margin: 8,
+            offset: 15/512,
         });
 
         let _this = this;
@@ -23911,18 +23907,16 @@ class MainMenu
         
         this.startMenuBase.addButton(()=>{_this.onSettingsButtonClicked()}, {...defaultButtonOptions, name: "SettingsButton"}).addText("Settings");
 
-        // this.scene.add(this.startMenuBase);
-
         this.startMenuBase.position.y = 1.5;
         this.startMenuBase.position.z = -1.2;
     }
 
     createSettingsMenu()
     {
-        this.settingsMenuBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_3__.UIPanel(512, 512, {
+        this.settingsMenuBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__.UIPanel(1024, 768, {
             fontFamily: './content/ROCKB.TTF-msdf.json',
             fontTexture: './content/ROCKBTTF.png',
-            contentDirection: 'column',
+            // contentDirection: 'column',
             // justifyContent: 'top', //space-between',
             backgroundOpacity: 1.0,
             backgroundColor: new THREE.Color(0x000000),
@@ -23939,18 +23933,18 @@ class MainMenu
         this.settingsMenuBase.position.z = -1.2;
 
 
-        let settingsContainer = this.settingsMenuBase.addHorizontalLayoutSubBlock(512-64, {borderWidth: 2, offset:16, borderRadius: 0.0});
+        let settingsContainer = this.settingsMenuBase.addHorizontalLayoutSubBlock(1.0, {borderWidth: 2, offset:16, borderRadius: 0.0});
         let _this = this;
 
         let settingsBlock;
         let settingValueBlock;
 
-        let kSettingsBlockHeight = 48;
-        let kSettingsBlockLabelWidth = 170;
-        let kSettingsUpDownSize = 32;
+        let kSettingsBlockHeight = 48*2;
+        let kSettingsBlockLabelWidth = 170*2;
+        let kSettingsFieldWidth = 190*2;
 
         let settingsBlockDefaultOptions = {
-            borderWidth: 1,
+            borderWidth: 0,
             borderRadius: 0.0, 
             contentDirection:'row', 
             justifyContent: 'start',
@@ -23988,7 +23982,7 @@ class MainMenu
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Round Time:", settingsLabelDefaultOptions);
         settingsBlock.addButton(()=>{_this.onRoundTimeChanged(-30)}, settingsUpDownButtonDefaultOptions).addText("-");
-        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(190, settingsValueBlockDefaultOptions);
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.roundTimeValueTextField = settingValueBlock.addText(this.formatTime(this.settings.roundTime), settingsValueTextDefaultOptions);
         settingsBlock.addButton(()=>{_this.onRoundTimeChanged(30)}, settingsUpDownButtonDefaultOptions).addText("+");
 
@@ -23996,15 +23990,30 @@ class MainMenu
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Rest Time:", settingsLabelDefaultOptions);
         settingsBlock.addButton(()=>{_this.onRestTimeChanged(-10)}, settingsUpDownButtonDefaultOptions).addText("-");
-        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(190, settingsValueBlockDefaultOptions);
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.restTimeValueTextField = settingValueBlock.addText(this.formatTime(this.settings.restTime), settingsValueTextDefaultOptions);
         settingsBlock.addButton(()=>{_this.onRestTimeChanged(10)}, settingsUpDownButtonDefaultOptions).addText("+");
+
+
+        // // Workout Type
+        // settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        // settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Workout:", settingsLabelDefaultOptions);
+        // settingsBlock.addButton(()=>{_this.onWorkoutTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
+        // settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(190, settingsValueBlockDefaultOptions);
+        // this.workoutTypeValueTextField = settingValueBlock.addText(this.getWorkoutTypeString(this.settings.workoutType), settingsValueTextDefaultOptions);
+        // settingsBlock.addButton(()=>{_this.onWorkoutTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
+
+
+        // this.roundOptionsParent = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight * 3);
+
+        // Timed Round Options
+        // this.timedRoundContainer = this.roundOptionsParent.addVerticalLayoutSubBlock(kSettingsBlockHeight * 3);
 
         // Round Count
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Rounds:", settingsLabelDefaultOptions);
         settingsBlock.addButton(()=>{_this.onRoundCountChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
-        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(190, settingsValueBlockDefaultOptions);
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.roundCountValueTextField = settingValueBlock.addText(this.settings.roundCount.toString(), settingsValueTextDefaultOptions);
         settingsBlock.addButton(()=>{_this.onRoundCountChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
 
@@ -24012,12 +24021,35 @@ class MainMenu
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Bag Type:", settingsLabelDefaultOptions);
         settingsBlock.addButton(()=>{_this.onBagTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
-        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(190, settingsValueBlockDefaultOptions);
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.bagTypeValueTextField = settingValueBlock.addText(this.getBagTypeString(), settingsValueTextDefaultOptions);
         settingsBlock.addButton(()=>{_this.onBagTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
 
+        // Swap Bag
+        settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Swap Bag:", settingsLabelDefaultOptions);
+        settingsBlock.addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("-");
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
+        this.swapBagValueTextField = settingValueBlock.addText(this.getSwapBagString(), settingsValueTextDefaultOptions);
+        settingsBlock.addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("+");
+
+        // // Scripted Round Options
+
+        // this.scriptedRoundContainer = this.roundOptionsParent.addVerticalLayoutSubBlock(kSettingsBlockHeight * 3);
+
+        // // Workout Selection
+        // settingsBlock = this.timedRoundContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight * 3, settingsBlockDefaultOptions);
+        // settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Rounds:", settingsLabelDefaultOptions);
+        // settingsBlock.addButton(()=>{_this.onWorkoutSelectionChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
+        // settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(190, settingsValueBlockDefaultOptions);
+        // this.workoutSelectionValueTextField = settingValueBlock.addText(workoutData[this.settings.whichScriptedWorkout][0].uiShortText, settingsValueTextDefaultOptions);
+        // settingsBlock.addButton(()=>{_this.onWorkoutSelectionChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
+
+        // this.roundOptionsParent.remove(this.scriptedRoundContainer);
+        // this.roundOptionsParent.update(true, true, true);
+        
         // Cancel / Accept
-        let okCancelBlock = settingsContainer.addVerticalLayoutSubBlock(64, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
+        let okCancelBlock = settingsContainer.addVerticalLayoutSubBlock(64*2, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
         okCancelBlock.addButton(()=>{_this.onSettingsCancelClicked()}, {...defaultButtonOptions, width: 150}).addText("Cancel");
         okCancelBlock.addButton(()=>{_this.onSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("Accept");
 
@@ -24076,258 +24108,183 @@ class MainMenu
         }
     }
 
+   
+    onSwapBagChanged()
+    {
+        this.settings.doBagSwap = !this.settings.doBagSwap;
+        this.swapBagValueTextField.set({content: this.getSwapBagString()});
+
+        // this.uiSwapBagTypeButton.innerHTML = this.getBagSwapString();
+    }
+
+    getSwapBagString()
+    {
+        return this.settings.doBagSwap ? "YES" : "NO"; //"&#x2713;" : "";
+    }
+
+    getWorkoutTypeString()
+    {
+        if (this.settings.workoutType == 0)
+        {
+            return "TIMED";
+        }
+        else if (this.settings.workoutType == 1)
+        {
+            return "SCRIPTED";
+        }
+    }
+
+    onWorkoutTypeChanged(val)
+    {
+        this.settings.workoutType = (this.settings.workoutType + val + 2) % 2;
+        this.workoutTypeValueTextField.set({content:this.getWorkoutTypeString()});
+        // this.uiWorkoutTypeDisplay.innerHTML = this.getWorkoutTypeString();
+
+        if (this.settings.workoutType == 0)
+        {
+            this.roundOptionsParent.remove(this.scriptedRoundContainer);
+            this.roundOptionsParent.add(this.timedRoundContainer);
+            this.roundOptionsParent.update(true, true, true);
+            // this.timedRoundContainer.visible = true;
+            // this.timedRoundContainer.offset = 7/512;
+            
+        }
+        else
+        {
+            this.roundOptionsParent.remove(this.timedRoundContainer);
+            this.roundOptionsParent.add(this.scriptedRoundContainer);
+            this.roundOptionsParent.update(true, true, true);
+
+            // this.timedRoundContainer.visible = false;
+            // this.timedRoundContainer.offset = -1.0;
+        }
+    }
+
+    onWorkoutSelectionChanged(val)
+    {
+        this.settings.whichScriptedWorkout = (this.settings.whichScriptedWorkout + val + _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData.length) % _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData.length;
+        this.workoutSelectionValueTextField.set({content: _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].uiShortText});
+    }
+
     onStartButtonClicked()
     {
+        this.readSettings();
+
         this.scene.remove(this.startMenuBase);
         this.inputController.shutdown();
         
-        this.onStartCb();
+        this.boxingSession.initialize(this.settings.roundCount, this.settings.roundTime, this.settings.restTime, this.settings.bagType, this.settings.doBagSwap, this.settings.workoutType, this.settings.whichScriptedWorkout);
+        this.boxingSession.startGame();
+        // this.onStartCb();
     }
 
     onSettingsButtonClicked()
     {
+        this.readSettings();
+
+        this.originalSettings = {...this.settings}; //copy settings into originalSettings
+
         this.setCurrentMenu(this.settingsMenuBase);
     }
 
     onSettingsCancelClicked()
     {
+        this.settings = this.originalSettings;
         this.setCurrentMenu(this.startMenuBase);
     }
+
     onSettingsAcceptClicked()
     {
+        this.writeSettings();
         this.setCurrentMenu(this.startMenuBase);
     }
 
-    OLDcreateSettingsMenu()
+    writeSettings()
     {
-        const kOffset = 0.0001;
+        window.localStorage.setItem("cfg_roundTime", this.settings.roundTime);
+        window.localStorage.setItem("cfg_roundCount", this.settings.roundCount);
+        window.localStorage.setItem("cfg_restTime", this.settings.restTime);
+        window.localStorage.setItem("cfg_bagType", this.settings.bagType);
+        window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
+        window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
+        // window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.whichScriptedWorkout][0].uid);
 
-        const workoutMenuBase = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-            width: 0.85,
-            height: 0.5,
-            fontFamily: './content/ROCKB.TTF-msdf.json',
-            fontTexture: './content/ROCKBTTF.png',
-            contentDirection: 'column',
-            // justifyContent: 'space-between',
-            backgroundOpacity: 1.0,
-            backgroundColor: new THREE.Color(0x000000),
-            padding: 0.025,
-            offset: 0,
-            borderWidth: 0.004,
-            borderColor: new THREE.Color( 0x9f7909 ),
-            borderRadius: 0.0,
-            
-        });
-
-        const workoutSettingsContainer = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-            width: 0.8,
-            height: 0.45,
-            // padding: 0.01,
-            justifyContent: 'space-between',
-            offset: kOffset,
-            borderWidth: 0.0,
-            borderOpacity: 0.0,
-            backgroundColor: new THREE.Color(0x000000),
-            backgroundOpacity: 1.0,
-        })
-
-
-        let settingsStrings = [
-            "Round Time",
-            "Rest Time", 
-            // "Workout",
-            "Rounds",
-            "Bag Type",
-            "Swap Bag Each Round"
-
-        ];
-
-
-        for (let i = 0; i < settingsStrings.length; i++)
+    }
+    readSettings()
+    {
+        if (!window.localStorage.getItem("first_run"))
         {
-            let itemContainer = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-                width: 0.7,
-                height: 0.05,
-                justifyContent: 'start',
-                backgroundColor: new THREE.Color(0x000000),
-                backgroundOpacity: 1.0,
-                contentDirection: 'row',
-                offset: kOffset,
-                // margin: 0.03
-            });
-
-
-            let labelBlock = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-                width: 0.3,
-                height: 0.04,
-                bestFit: 'auto',
-                justifyContent: 'start',
-                alignItems: 'start',
-                offset: kOffset,
-                backgroundColor: new THREE.Color(0x000000),
-                backgroundOpacity: 1.0,
-            });
-            let label = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Text({
-                content: settingsStrings[i],
-                fontColor: new THREE.Color(0x9f7909),
-                textAlign: 'left',
-                justifyContent: 'start',
-                offset: kOffset,
-            });
-            labelBlock.add(label);
-
-            let downButton = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-                width: 0.04,
-                height: 0.04,
-                backgroundColor: new THREE.Color(0x000000),
-                backgroundOpacity: 0.25,
-                bestFit: 'auto',
-                offset: kOffset,
-                // borderRadius: 0.02,
-                borderWidth: 0.002,
-                borderOpacity: 1.0,
-            });
-
-            let minusText = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Text({
-                content:"-",
-                fontColor: new THREE.Color(0x9f7909),
-                offset: kOffset,
-            });
-            downButton.add(minusText);
-
-
-            let setting = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-                width: 0.3,
-                height: 0.04,
-                backgroundColor: new THREE.Color(0x00ffff),
-                backgroundOpacity: 0.25,
-                bestFit: 'auto',
-                offset: kOffset,
-            })
-
-            let upButton = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-                width: 0.04,
-                height: 0.04,
-                backgroundColor: new THREE.Color(0x000000),
-                backgroundOpacity: 0.25,
-                bestFit: 'auto',
-                offset: kOffset,
-                // borderRadius: 0.02,
-                borderWidth: 0.002,
-                borderOpacity: 1.0,
-            });
-            let upText = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Text({
-                content:"+",
-                fontColor: new THREE.Color(0x9f7909),
-                offset: kOffset,
-            });
-            upButton.add(upText);
-
-            itemContainer.add(labelBlock, downButton, setting, upButton);
-            // itemContainer.add(downButton);
-            // itemContainer.add(setting);
-            // itemContainer.add(upButton);
-
-            workoutSettingsContainer.add(itemContainer);
+            window.localStorage.setItem("first_run", "true");
+            window.localStorage.setItem("cfg_roundTime", this.roundTime);
+            window.localStorage.setItem("cfg_roundCount", this.roundCount);
+            window.localStorage.setItem("cfg_restTime", this.restTime);
+            window.localStorage.setItem("cfg_bagType", this.bagType);
+            window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
+            window.localStorage.setItem("cfg_workoutType", this.workoutType);
+            window.localStorage.setItem("cfg_scriptedWorkoutId", _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.whichScriptedWorkout][0].uid);
+            window.localStorage.setItem("cfg_arMode", this.arMode ? 1 : 0)
         }
+        else
+        {
+            let val;
+            val = window.localStorage.getItem("cfg_roundTime");
+            if (val)
+            {
+                this.settings.roundTime = parseInt(val);
+            }
 
-        let acceptCancelContainer = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-            width: 0.7,
-            height: 0.04,
-            contentDirection: 'row',
-            justifyContent: 'space-around',
-            backgroundColor: new THREE.Color(0x000000),
-            backgroundOpacity: 1.0,
-            offset: kOffset,
-        });
-        let acceptButton = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-            width: 0.2,
-            height: 0.04,
-            bestFit: 'auto',
-            offset: kOffset,
-            borderWidth: 0.002,
-            borderOpacity: 1.0,
-            backgroundColor: new THREE.Color(0x000000),
-            backgroundOpacity: 1.0,
-        });
-        let acceptText = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Text({
-            content:"Accept",
-            fontColor: new THREE.Color(0x9f7909),
-            offset: kOffset,
-        });
-        acceptButton.add(acceptText);
+            val = window.localStorage.getItem("cfg_roundCount");
+            if (val)
+            {
+                this.settings.roundCount = parseInt(val);
+            }
 
-        let cancelButton = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Block({
-            width: 0.2,
-            height: 0.04,
-            bestFit: 'auto',
-            offset: kOffset,
-            borderWidth: 0.002,
-            borderOpacity: 1.0,
-            backgroundColor: new THREE.Color(0x000000),
-            backgroundOpacity: 1.0,
-        });
-        let cancelText = new three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].Text({
-            content:"Cancel",
-            fontColor: new THREE.Color(0x9f7909),
-            offset: kOffset,
-        });
-        cancelButton.add(cancelText);
+            val = window.localStorage.getItem("cfg_restTime");
+            if (val)
+            {
+                this.settings.restTime = parseInt(val);
+            }
 
-        acceptCancelContainer.add(cancelButton, acceptButton);
+            val = window.localStorage.getItem("cfg_bagType");
+            if (val)
+            {
+                this.settings.bagType = parseInt(val);
+            }
 
-        workoutSettingsContainer.add(acceptCancelContainer);
+            val = window.localStorage.getItem("cfg_bagSwap");
+            if (val)
+            {
+                this.settings.doBagSwap = (parseInt(val) == 1);
+            }
+            
+            val = window.localStorage.getItem("cfg_workoutType")
+            if (val)
+            {
+                this.settings.workoutType = parseInt(val);
+            }
+            
+            // val = window.localStorage.getItem("cfg_scriptedWorkoutId");
+            // if (val)
+            // {
+            //     let matchCfgId = (element) => element[0].uid == val;
+            //     let matchedIndex = workoutData.findIndex(matchCfgId);
+            //     if (matchedIndex < 0)
+            //     {
+            //         //failed to match
+            //         this.whichScriptedWorkout = 0;
+            //     }
+            //     else
+            //     {
+            //         this.whichScriptedWorkout = matchedIndex;
+            //     }
+            // }
 
-        workoutMenuBase.add(workoutSettingsContainer);
-
-
-        this.scene.add(workoutMenuBase);
-        workoutMenuBase.position.y = 1.5;
-        workoutMenuBase.position.z = -0.1;
-
-
-
-        // const container = new ThreeMeshUI.Block({
-        //     width: 1.0,
-        //     height: 0.6,
-        //     padding: 0.2,
-        //     fontFamily: './content/ROCKB.TTF-msdf.json',
-        //     fontTexture: './content/ROCKBTTF.png',
-        //     borderRadius: 0.0
-        //    });
-        // // container.position.z = -0.1;
-        // // container.position.y = 1.5;
-           
-        // const startButton = new ThreeMeshUI.Block({
-        //     width: 0.4,
-        //     height: 0.2,
-        //     padding: 0.01,
-        //     backgroundColor: new THREE.Color(0xffff00),
-        //     backgroundOpacity: 0.25
-
-        // });
-
-
-        // const anotherBlock = new ThreeMeshUI.Block({
-        //     width: 0.7,
-        //     height: 0.3,
-        //     backgroundColor: new THREE.Color(0x00ffff),
-        //     backgroundOpacity: 0.25
-        // });
-
-
-        //    //
-           
-        //    const text = new ThreeMeshUI.Text({
-        //     content: "Some text to be displayed",
-        //     fontColor: new THREE.Color(0xff00ff),
-        //    });
-
-        //    container.add(startButton, anotherBlock);
-        //    anotherBlock.add(text);
-           
-        //    // scene is a THREE.Scene (see three.js)
-        //    this.scene.add( container );
+            // val = window.localStorage.getItem("cfg_arMode");
+            // if (val)
+            // {
+            //     this.arMode = false; //(parseInt(val) == 1);
+            // }
+        }
     }
 
     update(dt)
@@ -27413,7 +27370,7 @@ __webpack_require__.r(__webpack_exports__);
 
 //  import { UI_CONSTANTS } from '../../Constants';
  const UI_CONSTANTS = {
-	UI_PIXELS_PER_METER: 512,
+	UI_PIXELS_PER_METER: 1024,
 	UI_FADE_TIME: 300, // in ms
 	UI_OFFSET_BUFFER: 7 / 512, // distance individual UI panels are from one another, to prevent z-fighting.
 };
@@ -27452,7 +27409,7 @@ const updateMatrixRecursively = (object) => {
          // width and height can be 'auto', so we need to check that they're numbers
          // before converting
          if (options[option] && !isNaN(options[option])) {
-             options[option] = options[option] / UI_CONSTANTS.UI_PIXELS_PER_METER;
+             options[option] = 2.0 * options[option] / UI_CONSTANTS.UI_PIXELS_PER_METER;
          }
      }
  
@@ -27634,10 +27591,10 @@ const updateMatrixRecursively = (object) => {
  
      getInteractableElements() {
          if (this.background) {
-             return [this.background, ...this.panel.getInteractableElements()];
+             return [this.background, ...this.panel.getInteractableElements()].filter( x => x.visible);
          }
  
-         return [this.panel, ...this.panel.getInteractableElements()];
+         return [this.panel, ...this.panel.getInteractableElements()].filter( x => x.visible);
      }
  
      getToggles() {
