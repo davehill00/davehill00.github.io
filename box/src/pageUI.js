@@ -158,23 +158,27 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiStartButton);
 
         
-        this.uiConfigureButton = document.createElement("button");
-        this.uiConfigureButton.style.fontSize = "2.25vw"
-        this.uiConfigureButton.style.borderWidth = "0.4vw";
-        this.uiConfigureButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; // ... with bullet chars instead of periods
-        this.uiConfigureButton.disabled = true;
-        this.uiConfigureButton.onclick = () => {this.onConfigureClicked()};
-        this.uiButtonGroup.appendChild(this.uiConfigureButton);
+        if (false)
+        {
+            this.uiConfigureButton = document.createElement("button");
+            this.uiConfigureButton.style.fontSize = "2.25vw"
+            this.uiConfigureButton.style.borderWidth = "0.4vw";
+            this.uiConfigureButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; // ... with bullet chars instead of periods
+            this.uiConfigureButton.disabled = true;
+            this.uiConfigureButton.onclick = () => {this.onConfigureClicked()};
+            this.uiButtonGroup.appendChild(this.uiConfigureButton);
+        }
+        
 
-        this.uiARVRButton = document.createElement("button");
-        this.uiARVRButton.style.fontSize = "2.25vw"
-        this.uiARVRButton.style.borderWidth = "0.4vw";
-        this.uiARVRButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; //this.arMode ? "AR Mode Selected" : "VR Mode Selected";
-        this.uiARVRButton.disabled = true;
+        // this.uiARVRButton = document.createElement("button");
+        // this.uiARVRButton.style.fontSize = "2.25vw"
+        // this.uiARVRButton.style.borderWidth = "0.4vw";
+        // this.uiARVRButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; //this.arMode ? "AR Mode Selected" : "VR Mode Selected";
+        // this.uiARVRButton.disabled = true;
         // this.uiARVRButton.style.visibility = "hidden";
         // this.uiARVRButton.style.display = "none";
-        console.log("UI AR VR BUtton Display Style = " + this.uiARVRButton.style.display);
-        this.uiARVRButton.onclick = () => {this.onToggleARVRClicked()};
+        // console.log("UI AR VR BUtton Display Style = " + this.uiARVRButton.style.display);
+        // this.uiARVRButton.onclick = () => {this.onToggleARVRClicked()};
         // this.uiButtonGroup.appendChild(this.uiARVRButton);
 
         // this.uiARVRToggle = document.createElement("label");
@@ -195,7 +199,7 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9.1&beta;";
+        appVersionText.innerHTML = "Version 0.9.2&beta;";
         // appVersionText.innerHTML = "Version 0.9";
         appVersionText.className = "app_version_text";
         
@@ -536,10 +540,10 @@ export class PageUI
         this.uiStartButton.disabled = false;
         this.uiStartButton.classList.remove("webxr_not_found");
         this.uiStartButton.innerHTML = "START";
-        this.uiConfigureButton.disabled = false;
-        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
+        // this.uiConfigureButton.disabled = false;
+        // this.uiConfigureButton.innerHTML = this.getMatchConfigString();
 
-        this.uiConfigureButton.style.display = "";
+        // this.uiConfigureButton.style.display = "";
 
         this.layersPolyfill = new WebXRLayersPolyfill()
 
@@ -704,7 +708,7 @@ export class PageUI
         this.uiConfigurationContainer.style.height = "0%";
         this.uiConfigurationGroup.style.visibility = "hidden";
 
-        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
+        // this.uiConfigureButton.innerHTML = this.getMatchConfigString();
     }
 
     getMatchConfigString()

@@ -22669,6 +22669,9 @@ class BoxingSession
 
     startGame()
     {
+
+        this.soundEndOfRound.play();
+        
         this.state = SESSION_INTRO;
         this.elapsedTime = 0.0;
         this.currentRound = 0;
@@ -24336,7 +24339,9 @@ class MainMenu
         this.hide();
         this.inputController.shutdown();
         
-        this.boxingSession.initialize(this.settings.roundCount, this.settings.roundTime, this.settings.restTime, this.settings.bagType, this.settings.doBagSwap, this.settings.workoutType, this.settings.whichScriptedWorkout);
+
+        // @TODO - replace with workoutType when I hook up that part of the UI
+        this.boxingSession.initialize(this.settings.roundCount, this.settings.roundTime, this.settings.restTime, this.settings.bagType, this.settings.doBagSwap, /*this.settings.workoutType*/ 0, this.settings.whichScriptedWorkout);
         this.boxingSession.startGame();
         // this.onStartCb();
     }
@@ -24346,6 +24351,14 @@ class MainMenu
         this.readSettings();
 
         this.originalSettings = {...this.settings}; //copy settings into originalSettings
+
+        this.onRoundTimeChanged(0);
+        this.onRestTimeChanged(0);
+        this.onRoundCountChanged(0);
+        this.onBagTypeChanged(0);
+        this.onSwapBagChanged();
+
+        three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].update();
 
         this.setCurrentMenu(this.settingsMenuBase);
     }
@@ -24955,23 +24968,19 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiStartButton);
 
         
-        this.uiConfigureButton = document.createElement("button");
-        this.uiConfigureButton.style.fontSize = "2.25vw"
-        this.uiConfigureButton.style.borderWidth = "0.4vw";
-        this.uiConfigureButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; // ... with bullet chars instead of periods
-        this.uiConfigureButton.disabled = true;
-        this.uiConfigureButton.onclick = () => {this.onConfigureClicked()};
-        this.uiButtonGroup.appendChild(this.uiConfigureButton);
+        if (false)
+        {}
+        
 
-        this.uiARVRButton = document.createElement("button");
-        this.uiARVRButton.style.fontSize = "2.25vw"
-        this.uiARVRButton.style.borderWidth = "0.4vw";
-        this.uiARVRButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; //this.arMode ? "AR Mode Selected" : "VR Mode Selected";
-        this.uiARVRButton.disabled = true;
+        // this.uiARVRButton = document.createElement("button");
+        // this.uiARVRButton.style.fontSize = "2.25vw"
+        // this.uiARVRButton.style.borderWidth = "0.4vw";
+        // this.uiARVRButton.innerHTML = "&#x2022;&#x2022;&#x2022;"; //this.arMode ? "AR Mode Selected" : "VR Mode Selected";
+        // this.uiARVRButton.disabled = true;
         // this.uiARVRButton.style.visibility = "hidden";
         // this.uiARVRButton.style.display = "none";
-        console.log("UI AR VR BUtton Display Style = " + this.uiARVRButton.style.display);
-        this.uiARVRButton.onclick = () => {this.onToggleARVRClicked()};
+        // console.log("UI AR VR BUtton Display Style = " + this.uiARVRButton.style.display);
+        // this.uiARVRButton.onclick = () => {this.onToggleARVRClicked()};
         // this.uiButtonGroup.appendChild(this.uiARVRButton);
 
         // this.uiARVRToggle = document.createElement("label");
@@ -24992,7 +25001,7 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9.1&beta;";
+        appVersionText.innerHTML = "Version 0.9.2&beta;";
         // appVersionText.innerHTML = "Version 0.9";
         appVersionText.className = "app_version_text";
         
@@ -25333,10 +25342,10 @@ class PageUI
         this.uiStartButton.disabled = false;
         this.uiStartButton.classList.remove("webxr_not_found");
         this.uiStartButton.innerHTML = "START";
-        this.uiConfigureButton.disabled = false;
-        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
+        // this.uiConfigureButton.disabled = false;
+        // this.uiConfigureButton.innerHTML = this.getMatchConfigString();
 
-        this.uiConfigureButton.style.display = "";
+        // this.uiConfigureButton.style.display = "";
 
         this.layersPolyfill = new webxr_layers_polyfill_build_webxr_layers_polyfill_module_js__WEBPACK_IMPORTED_MODULE_1__["default"]()
 
@@ -25501,7 +25510,7 @@ class PageUI
         this.uiConfigurationContainer.style.height = "0%";
         this.uiConfigurationGroup.style.visibility = "hidden";
 
-        this.uiConfigureButton.innerHTML = this.getMatchConfigString();
+        // this.uiConfigureButton.innerHTML = this.getMatchConfigString();
     }
 
     getMatchConfigString()

@@ -758,7 +758,9 @@ export class MainMenu
         this.hide();
         this.inputController.shutdown();
         
-        this.boxingSession.initialize(this.settings.roundCount, this.settings.roundTime, this.settings.restTime, this.settings.bagType, this.settings.doBagSwap, this.settings.workoutType, this.settings.whichScriptedWorkout);
+
+        // @TODO - replace with workoutType when I hook up that part of the UI
+        this.boxingSession.initialize(this.settings.roundCount, this.settings.roundTime, this.settings.restTime, this.settings.bagType, this.settings.doBagSwap, /*this.settings.workoutType*/ 0, this.settings.whichScriptedWorkout);
         this.boxingSession.startGame();
         // this.onStartCb();
     }
@@ -768,6 +770,14 @@ export class MainMenu
         this.readSettings();
 
         this.originalSettings = {...this.settings}; //copy settings into originalSettings
+
+        this.onRoundTimeChanged(0);
+        this.onRestTimeChanged(0);
+        this.onRoundCountChanged(0);
+        this.onBagTypeChanged(0);
+        this.onSwapBagChanged();
+
+        ThreeMeshUI.update();
 
         this.setCurrentMenu(this.settingsMenuBase);
     }

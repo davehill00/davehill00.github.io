@@ -329,6 +329,9 @@ export class BoxingSession
 
     startGame()
     {
+
+        this.soundEndOfRound.play();
+        
         this.state = SESSION_INTRO;
         this.elapsedTime = 0.0;
         this.currentRound = 0;
