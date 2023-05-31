@@ -324,6 +324,7 @@ export class BoxingSession
     startMenu()
     {
         this.state = SESSION_MENU;
+        this.menu.show();
     }
 
     startGame()

@@ -12536,6 +12536,14 @@ vec4 sampleTexture() {
 
 void main() {
 
+	vec4 textureSample = sampleTexture();
+	vec3 blendedColor = textureSample.rgb * u_color;
+	float blendedOpacity = u_opacity * textureSample.a;
+	vec4 frameColor = vec4( blendedColor, blendedOpacity );
+
+	gl_FragColor = frameColor; //vec4(u_color, 1.0);
+
+	/*
 	float edgeDist = getEdgeDist();
 	float change = fwidth( edgeDist );
 
@@ -12554,6 +12562,7 @@ void main() {
 		float stp = smoothstep( edgeDist + change, edgeDist, u_borderWidth * -1.0 );
 		gl_FragColor = mix( frameColor, borderColor, stp );
 	}
+	*/
 
 	#include <clipping_planes_fragment>
 }
@@ -12826,17 +12835,16 @@ function computeMikkTSpaceTangents( geometry, MikkTSpace, negateSign = true ) {
 
 		if ( attribute.normalized || attribute.isInterleavedBufferAttribute ) {
 
-			const srcArray = attribute.isInterleavedBufferAttribute ? attribute.data.array : attribute.array;
 			const dstArray = new Float32Array( attribute.getCount() * attribute.itemSize );
 
 			for ( let i = 0, j = 0; i < attribute.getCount(); i ++ ) {
 
-				dstArray[ j ++ ] = MathUtils.denormalize( attribute.getX( i ), srcArray );
-				dstArray[ j ++ ] = MathUtils.denormalize( attribute.getY( i ), srcArray );
+				dstArray[ j ++ ] = attribute.getX( i );
+				dstArray[ j ++ ] = attribute.getY( i );
 
 				if ( attribute.itemSize > 2 ) {
 
-					dstArray[ j ++ ] = MathUtils.denormalize( attribute.getZ( i ), srcArray );
+					dstArray[ j ++ ] = attribute.getZ( i );
 
 				}
 
@@ -13175,7 +13183,7 @@ function interleaveAttributes( attributes ) {
 	let arrayLength = 0;
 	let stride = 0;
 
-	// calculate the the length and type of the interleavedBuffer
+	// calculate the length and type of the interleavedBuffer
 	for ( let i = 0, l = attributes.length; i < l; ++ i ) {
 
 		const attribute = attributes[ i ];
@@ -13345,7 +13353,7 @@ function estimateBytesUsed( geometry ) {
 /**
  * @param {BufferGeometry} geometry
  * @param {number} tolerance
- * @return {BufferGeometry>}
+ * @return {BufferGeometry}
  */
 function mergeVertices( geometry, tolerance = 1e-4 ) {
 
@@ -13363,22 +13371,33 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 	// attributes and new attribute arrays
 	const attributeNames = Object.keys( geometry.attributes );
-	const attrArrays = {};
-	const morphAttrsArrays = {};
+	const tmpAttributes = {};
+	const tmpMorphAttributes = {};
 	const newIndices = [];
 	const getters = [ 'getX', 'getY', 'getZ', 'getW' ];
+	const setters = [ 'setX', 'setY', 'setZ', 'setW' ];
 
-	// initialize the arrays
+	// Initialize the arrays, allocating space conservatively. Extra
+	// space will be trimmed in the last step.
 	for ( let i = 0, l = attributeNames.length; i < l; i ++ ) {
 
 		const name = attributeNames[ i ];
+		const attr = geometry.attributes[ name ];
 
-		attrArrays[ name ] = [];
+		tmpAttributes[ name ] = new BufferAttribute(
+			new attr.array.constructor( attr.count * attr.itemSize ),
+			attr.itemSize,
+			attr.normalized
+		);
 
 		const morphAttr = geometry.morphAttributes[ name ];
 		if ( morphAttr ) {
 
-			morphAttrsArrays[ name ] = new Array( morphAttr.length ).fill().map( () => [] );
+			tmpMorphAttributes[ name ] = new BufferAttribute(
+				new morphAttr.array.constructor( morphAttr.count * morphAttr.itemSize ),
+				morphAttr.itemSize,
+				morphAttr.normalized
+			);
 
 		}
 
@@ -13416,26 +13435,27 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 		} else {
 
-			// copy data to the new index in the attribute arrays
+			// copy data to the new index in the temporary attributes
 			for ( let j = 0, l = attributeNames.length; j < l; j ++ ) {
 
 				const name = attributeNames[ j ];
 				const attribute = geometry.getAttribute( name );
 				const morphAttr = geometry.morphAttributes[ name ];
 				const itemSize = attribute.itemSize;
-				const newarray = attrArrays[ name ];
-				const newMorphArrays = morphAttrsArrays[ name ];
+				const newarray = tmpAttributes[ name ];
+				const newMorphArrays = tmpMorphAttributes[ name ];
 
 				for ( let k = 0; k < itemSize; k ++ ) {
 
 					const getterFunc = getters[ k ];
-					newarray.push( attribute[ getterFunc ]( index ) );
+					const setterFunc = setters[ k ];
+					newarray[ setterFunc ]( nextIndex, attribute[ getterFunc ]( index ) );
 
 					if ( morphAttr ) {
 
 						for ( let m = 0, ml = morphAttr.length; m < ml; m ++ ) {
 
-							newMorphArrays[ m ].push( morphAttr[ m ][ getterFunc ]( index ) );
+							newMorphArrays[ m ][ setterFunc ]( nextIndex, morphAttr[ m ][ getterFunc ]( index ) );
 
 						}
 
@@ -13453,31 +13473,29 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 	}
 
-	// Generate typed arrays from new attribute arrays and update
-	// the attributeBuffers
+	// generate result BufferGeometry
 	const result = geometry.clone();
-	for ( let i = 0, l = attributeNames.length; i < l; i ++ ) {
+	for ( const name in geometry.attributes ) {
 
-		const name = attributeNames[ i ];
-		const oldAttribute = geometry.getAttribute( name );
+		const tmpAttribute = tmpAttributes[ name ];
 
-		const buffer = new oldAttribute.array.constructor( attrArrays[ name ] );
-		const attribute = new BufferAttribute( buffer, oldAttribute.itemSize, oldAttribute.normalized );
+		result.setAttribute( name, new BufferAttribute(
+			tmpAttribute.array.slice( 0, nextIndex * tmpAttribute.itemSize ),
+			tmpAttribute.itemSize,
+			tmpAttribute.normalized,
+		) );
 
-		result.setAttribute( name, attribute );
+		if ( ! ( name in tmpMorphAttributes ) ) continue;
 
-		// Update the attribute arrays
-		if ( name in morphAttrsArrays ) {
+		for ( let j = 0; j < tmpMorphAttributes[ name ].length; j ++ ) {
 
-			for ( let j = 0; j < morphAttrsArrays[ name ].length; j ++ ) {
+			const tmpMorphAttribute = tmpMorphAttributes[ name ][ j ];
 
-				const oldMorphAttribute = geometry.morphAttributes[ name ][ j ];
-
-				const buffer = new oldMorphAttribute.array.constructor( morphAttrsArrays[ name ][ j ] );
-				const morphAttribute = new BufferAttribute( buffer, oldMorphAttribute.itemSize, oldMorphAttribute.normalized );
-				result.morphAttributes[ name ][ j ] = morphAttribute;
-
-			}
+			result.morphAttributes[ name ][ j ] = new BufferAttribute(
+				tmpMorphAttribute.array.slice( 0, nextIndex * tmpMorphAttribute.itemSize ),
+				tmpMorphAttribute.itemSize,
+				tmpMorphAttribute.normalized,
+			);
 
 		}
 
@@ -13494,7 +13512,7 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 /**
  * @param {BufferGeometry} geometry
  * @param {number} drawMode
- * @return {BufferGeometry>}
+ * @return {BufferGeometry}
  */
 function toTrianglesDrawMode( geometry, drawMode ) {
 
@@ -20546,7 +20564,7 @@ let renderer = null;
 let quadCamera = null;
 let quadScene = null;
 let quadScreen = null;
-let threeQuadLayer = null;
+let scoreboardQuadLayer = null;
 
 let quadPng = null;
 
@@ -20622,7 +20640,7 @@ function initialize()
     audioListener = new three__WEBPACK_IMPORTED_MODULE_13__.AudioListener();
     camera.add( audioListener );
 
-    renderer = new three__WEBPACK_IMPORTED_MODULE_13__.WebGLRenderer( {antialias: true});
+    renderer = new three__WEBPACK_IMPORTED_MODULE_13__.WebGLRenderer( {antialias: true, precision: 'highp'});
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
@@ -20677,7 +20695,7 @@ function initialize()
     gControllers = new _controllers_js__WEBPACK_IMPORTED_MODULE_6__.Controllers(scene, renderer);
 
     initGlovesAndBag(scene, camera, renderer);
-    menu = new _menu_js__WEBPACK_IMPORTED_MODULE_12__.MainMenu(scene, pageUI);
+    menu = new _menu_js__WEBPACK_IMPORTED_MODULE_12__.MainMenu(scene, renderer, pageUI);
 }
 
 function setupHandForController(hand, controllerSpace, gamepad)
@@ -20994,18 +21012,18 @@ function render(time, frame) {
     renderer.render(scene, camera);
 
     let session = renderer.xr.getSession();
-    if (session)
+    if (session && frame)
     {
-        if ((threeQuadLayer && quadScreen && (bDoBlackoutFade || quadScreen.needsRenderUpdate || (pageUI.layersPolyfill && pageUI.layersPolyfill.injected))))
+        if ( (scoreboardQuadLayer && quadScreen && (bDoBlackoutFade || quadScreen.needsRenderUpdate || (pageUI.layersPolyfill && pageUI.layersPolyfill.injected))))
         {
             quadScreen.needsRenderUpdate = false;
 
-            let renderProps = renderer.properties.get(threeQuadLayer.renderTarget);
+            let renderProps = renderer.properties.get(scoreboardQuadLayer.renderTarget);
             renderProps.__ignoreDepthValues = false;
 
             
             // set viewport, rendertarget, and renderTargetTextures
-            threeQuadLayer.setupToRender(renderer, frame);
+            scoreboardQuadLayer.setupToRender(renderer, frame);
             
             renderer.xr.enabled = false;
             renderer.setClearColor(clearColorQuadScene, 1.0);
@@ -21013,10 +21031,8 @@ function render(time, frame) {
             renderer.setClearColor(clearColorBlack, 0.0);
             renderer.xr.enabled = true;
         }
-        else
-        {
-            // console.log("skip render")
-        }
+
+        menu.render(renderer, frame);
     }
 }
 
@@ -21036,6 +21052,8 @@ function onSessionStart()
         loadingScreen = true;
         setupLoadingScreen();
     }
+
+    menu.onSessionStart();
 
 
     // initGlovesAndBag(scene, camera, renderer);
@@ -21067,7 +21085,7 @@ function onSessionStart()
         renderer.xr.setFoveation(1.0);
     }
 
-    threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
+    scoreboardQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
     // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
 
     // let stuffToHideInArMode_MaterialNames = [
@@ -21193,7 +21211,7 @@ function doPostLoadGameInitialization()
     // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
 
     // position screen and quad layer
-    let quadLayer = threeQuadLayer.layer; //renderer.xr.getQuadLayer();
+    let quadLayer = scoreboardQuadLayer.layer; //renderer.xr.getQuadLayer();
 
     // get TV screen location
     if(quadScreen != null)
@@ -21333,8 +21351,13 @@ function loadingScreenRender(time, frame)
 
 function wrapupLoadingScreen()
 {
-    loadingQuadLayer = null;
-    loadingScene = null;
+    if(loadingQuadLayer != null)
+    {
+        renderer.xr.unregisterQuadLayer(loadingQuadLayer);
+        loadingQuadLayer = null;
+        loadingScene = null;
+    
+    }
 
     scene.add(blackoutQuad);
     bDoBlackoutFade = true;
@@ -21343,7 +21366,9 @@ function wrapupLoadingScreen()
 
     renderer.setAnimationLoop(render);
     quadScreen.needsRenderUpdate = true;
-    renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+    
+
+    renderer.xr.registerQuadLayer(scoreboardQuadLayer, -1);
 }
 
 function initGlovesAndBag(scene, camera, renderer)
@@ -22639,6 +22664,7 @@ class BoxingSession
     startMenu()
     {
         this.state = SESSION_MENU;
+        this.menu.show();
     }
 
     startGame()
@@ -23564,10 +23590,17 @@ __webpack_require__.r(__webpack_exports__);
 
 // let logoTexture = new THREE.TextureLoader().load("./content/heavy_bag_trainer_logo.png");
 
+let dotTexture = new THREE.TextureLoader().load("./content/small_dot.png");
+let clearColor = new THREE.Color(0x000000);
+
 let _x = new THREE.Vector3();
 let _y = new THREE.Vector3();
 let _z = new THREE.Vector3();
 let _intersection = {};
+
+let worldToLocal = new THREE.Matrix4();
+
+let worldHit = [];
 
 class MenuInputController
 {
@@ -23641,9 +23674,48 @@ class MenuInputController
 
         const kWidth = 0.0035;
         const halfLength = 0.25;
+        let rayMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 1.0});
+        rayMaterial.customProgramCacheKey = function() { return 'ray_material'; };
+
+        rayMaterial.onBeforeCompile = (shader) => {
+            shader.vertexShader = shader.vertexShader.replace(
+                "#include <clipping_planes_pars_vertex>",
+                `#include <clipping_planes_pars_vertex>
+                varying vec3 vLocalPosition;
+                `
+            )
+            .replace(
+                "#include <begin_vertex>",
+                `#include <begin_vertex>
+                vLocalPosition = position;`
+            );
+
+            console.log("VERTEX SHADER----");
+            console.log(shader.vertexShader);
+
+
+            shader.fragmentShader = shader.fragmentShader.replace(
+                "#include <dithering_pars_fragment>",
+                `#include <dithering_pars_fragment>
+                varying vec3 vLocalPosition;`
+            )
+            .replace(
+                "vec4 diffuseColor = vec4( diffuse, opacity );",
+                `vec4 diffuseColor = vec4( diffuse, opacity );
+                diffuseColor.a = smoothstep(1.0, 0.0, 
+                    saturate( (vLocalPosition.z + -0.05)/(-0.2) ) ); //0.25 + vLocalPosition.z saturate(vLocalPosition.z + 0.2), (vLocalPosition.z < -0.2) ? 0.5 : 1.0;
+                `
+            )
+            console.log("FRAGMENT SHADER----");
+            console.log(shader.fragmentShader);
+            // shader.fragmentShader = shader.fragmentShader.replace(
+            //     ""
+            // )
+        }
         let ray = new THREE.Mesh(
             new THREE.BoxGeometry(kWidth, kWidth, 2.0 * halfLength),
-            new THREE.MeshBasicMaterial({color: 0xffffff})
+            // new THREE.MeshBasicMaterial({color: 0xffffff})
+            rayMaterial
         );
         ray.position.z -= halfLength + 0.003;
         ray.position.y -= 0.001;
@@ -23658,8 +23730,8 @@ class MenuInputController
         this.scene.add(controller.gripSpace);
 
         let dot = new THREE.Mesh(
-            new THREE.BoxGeometry(kWidth*2, kWidth*2, kWidth),
-            new THREE.MeshBasicMaterial({color: 0xffffff})
+            new THREE.PlaneGeometry(kWidth*4, kWidth*4), //, kWidth),
+            new THREE.MeshBasicMaterial({color: 0xffffff, map: dotTexture, transparent: true})
         );
         controller.gripSpace.add(dot);
         
@@ -23669,35 +23741,9 @@ class MenuInputController
 
         controller.raycaster = new THREE.Raycaster();
         controller.raycaster.layers.set(0);
-
-        this.dummy = new THREE.Mesh(
-            new THREE.BoxGeometry(0.5, 0.5, 0.5),
-            new THREE.MeshBasicMaterial({color: 0xff00ff})
-        );
-
-        this.dummy.position.y = 1.5;
-        this.dummy.position.z = -1.0;
-
-
-        let x = new THREE.Mesh(
-            new THREE.BoxGeometry(0.01, 0.01, 0.01),
-            new THREE.MeshBasicMaterial({color: 0xff0000})
-        );
-        x.position.set(0.0, 1.5, 0.0);
-        this.scene.add(x);
-
-        let y = new THREE.Mesh(
-            new THREE.BoxGeometry(0.01, 0.01, 0.01),
-            new THREE.MeshBasicMaterial({color: 0x00ff00})
-        );
-        y.position.set(0.0, 1.5, -2.0);
-        this.scene.add(y);
-        
+      
         this.leftHits = [];
-        this.rightHits = [];
-
-        // this.scene.add(this.dummy);
-        
+        this.rightHits = [];       
     }
     wrapupInputController(controller)
     {
@@ -23710,7 +23756,7 @@ class MenuInputController
         this.scene.remove(controller.gripSpace);
     }
 
-    update(dt, menu)
+    update(dt, menu, worldGeo)
     {
         if (!this.leftInputController.envMapSet)
         {
@@ -23733,16 +23779,17 @@ class MenuInputController
             this.rightInputController.envMapSet = true;
         }
 
+
         let interactables = menu.getInteractableElements();
-        this.doControllerHitCheck(this.leftInputController, interactables);
-        this.doControllerHitCheck(this.rightInputController, interactables);
+        this.doControllerHitCheck(this.leftInputController, worldGeo, interactables);
+        this.doControllerHitCheck(this.rightInputController, worldGeo, interactables);
 
         this.doControllerInput(this.leftInputController);
         this.doControllerInput(this.rightInputController);
 
     }
 
-    doControllerHitCheck(inputController, interactables)
+    doControllerHitCheck(inputController, worldGeo, interactables)
     {
         if (inputController.isSetUp)
         {
@@ -23752,48 +23799,76 @@ class MenuInputController
             dir.negate();
             inputController.raycaster.set(from, dir);
 
-            let prevHovered = null;
-            if (inputController.hits.length > 0)
-            {
-                prevHovered = inputController.hits[0].object.parent;
-                
-            }
-            inputController.hits.length = 0;
+            
 
-            inputController.raycaster.intersectObjects(interactables, false, inputController.hits);
-
-            if (inputController.hits.length > 0)
+            worldHit.length = 0;
+            inputController.raycaster.intersectObject(worldGeo, false, worldHit)
+            if (worldHit.length > 0)
             {
-                inputController.contactDot.position.z = -inputController.hits[0].distance + 0.02;
+
+                // set the contact dot
+                inputController.contactDot.position.z = -worldHit[0].distance + 0.02;
                 inputController.contactDot.visible = true;
-
-                let curHovered = inputController.hits[0].object.parent;
                 
-                if (prevHovered !== null && curHovered != prevHovered && prevHovered.isButton)
-                {
-                    prevHovered.setState('idle');
-                }
+                // translate world hit into panel space (i.e., local space on the world geo)
+                worldToLocal.copy(worldGeo.matrixWorld);
+                worldToLocal.invert();
+                
+                _x.copy(worldHit[0].point);
+                _x.applyMatrix4(worldToLocal);
 
-                if (curHovered != prevHovered && curHovered.isButton)
+                // set up ray caster to test in panel space against interactables
+                _x.z += 10;
+                _z.set(0,0,-1);
+                inputController.raycaster.set(_x, _z);
+
+
+                let prevHovered = null;
+                if (inputController.hits.length > 0)
                 {
-                    curHovered.setState('hovered');
-                    if (inputController.gamepad.hapticActuators != null)
+                    prevHovered = inputController.hits[0].object.parent;
+                    
+                }
+                inputController.hits.length = 0;
+
+                inputController.raycaster.intersectObjects(interactables, false, inputController.hits);
+
+                if (inputController.hits.length > 0)
+                {
+                    
+
+                    let curHovered = inputController.hits[0].object.parent;
+                    
+                    if (prevHovered !== null && curHovered != prevHovered && prevHovered.isButton)
                     {
-                        let hapticActuator = inputController.gamepad.hapticActuators[0];
-                        if( hapticActuator != null)
+                        prevHovered.setState('idle');
+                    }
+
+                    if (curHovered != prevHovered && curHovered.isButton)
+                    {
+                        curHovered.setState('hovered');
+                        if (inputController.gamepad.hapticActuators != null)
                         {
-                            hapticActuator.pulse( 0.6, 15 );
+                            let hapticActuator = inputController.gamepad.hapticActuators[0];
+                            if( hapticActuator != null)
+                            {
+                                hapticActuator.pulse( 0.6, 15 );
+                            }
                         }
                     }
+                }
+                else
+                {
+                    if (prevHovered !== null && prevHovered.isButton)
+                    {
+                        prevHovered.setState('idle');
+                    }
+
+                    inputController.contactDot.visible = false;
                 }
             }
             else
             {
-                if (prevHovered !== null && prevHovered.isButton)
-                {
-                    prevHovered.setState('idle');
-                }
-
                 inputController.contactDot.visible = false;
             }
         }
@@ -23830,12 +23905,12 @@ let defaultButtonOptions = {
     width: 256,
     height: 48,
     borderRadius: 0.0,
-    borderWidth: 3,
+    borderWidth: 0,
     backgroundColor: new THREE.Color(0x000000),
     hoverColor: new THREE.Color(0x332703),
     fontColor: new THREE.Color(0x9f7909),
     fontHoverColor: new THREE.Color(0xa67f0a),
-    margin: 4
+    margin: 0
 }
 let defaultButtonTextOptions = {
     fontSize: 28,
@@ -23843,7 +23918,7 @@ let defaultButtonTextOptions = {
 
 class MainMenu
 {
-    constructor(scene, pageUI)
+    constructor(scene, renderer, pageUI)
     {
         this.scene = scene;
         this.inputController = new MenuInputController(scene);
@@ -23857,25 +23932,62 @@ class MainMenu
             doBagSwap: false,
         };
 
+        
+        this.renderer = renderer;
+        this.uiQuadLayerHolePunch = new THREE.Mesh(
+            new THREE.PlaneGeometry(1.0, 0.75),
+            new THREE.MeshBasicMaterial(
+                {
+                    colorWrite: false,
+                }
+            )
+        );
+        this.uiQuadLayerHolePunch.position.set(0.0, 1.5, -1.2);
+        this.uiQuadLayer = null;
+        
+        this.uiQuadScene = new THREE.Scene();
+        this.uiQuadCamera = new THREE.OrthographicCamera(-1.0, 1.0, 0.75, -0.75, 0.1, 100);
+        this.uiQuadScene.add(this.uiQuadCamera);
+
+
         this.readSettings();
-
-
-
-
+        
         this.createSimpleStartMenu();
         this.createSettingsMenu();
         this.setCurrentMenu(this.startMenuBase);
+    }
+
+    onSessionStart()
+    {
+        this.uiQuadLayer = this.renderer.xr.createQuadLayer(2048, 2*768, 1.0, 0.75);
+        this.uiQuadLayer.layer.transform = new XRRigidTransform(this.uiQuadLayerHolePunch.position, this.uiQuadLayerHolePunch.quaternion);
+    }
+
+    show()
+    {
+        this.scene.add(this.uiQuadLayerHolePunch);
+        this.renderer.xr.registerQuadLayer(this.uiQuadLayer, -2);
+        console.assert(this.uiQuadCamera != null);
+        this.doRenderLoop = true;
+    }
+
+    hide()
+    {
+        this.scene.remove(this.uiQuadLayerHolePunch);
+        this.renderer.xr.unregisterQuadLayer(this.uiQuadLayer);
+        this.doRenderLoop = false;
     }
 
     setCurrentMenu(menu)
     {
         if (this.currentMenu)
         {
-            this.scene.remove(this.currentMenu);
+            this.uiQuadScene.remove(this.currentMenu);
         }
-        this.scene.add(menu);
+        this.uiQuadScene.add(menu);
         this.currentMenu = menu;
     }
+
     createSimpleStartMenu()
     {
         this.startMenuBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__.UIPanel(1024, 768, {
@@ -23884,31 +23996,41 @@ class MainMenu
             contentDirection: 'column',
             // justifyContent: 'top', //space-between',
             backgroundOpacity: 1.0,
-            backgroundColor: new THREE.Color(0x000000),
+            backgroundColor: new THREE.Color(0x9f7909),
             padding: 8,
-            offset: 0,
-            borderWidth: 8,
-            borderColor: new THREE.Color( 0x9f7909 ),
+            // offset: 0,
+            borderWidth: 0,
+            // borderColor: new THREE.Color( 0x9f7909 ),
             borderRadius: 0.0,
         });
         
-        
+        if (true)
+        {
+            let backplate = this.startMenuBase.addHorizontalLayoutSubBlock(1.0, {backgroundColor: new THREE.Color(0x000000), offset: 16, borderRadius: 0.0, backgroundOpacity: 1.0, padding: 8});
 
-        this.startMenuBase.addImage("./content/heavy_bag_trainer_logo.png", {
-            width: 400,
-            height: 200,
-            margin: 8,
-            offset: 15/512,
-        });
+            backplate.addImage("./content/heavy_bag_trainer_logo.png", {
+                width: 400,
+                height: 200,
+                margin: 8,
+                // offset: 15/512,
+            });
 
-        let _this = this;
-        this.startMenuBase.addButton(()=>{_this.onStartButtonClicked()}, {...defaultButtonOptions, borderWidth: 6, height: 56, name: "StartButton"})
-            .addText("START", {...defaultButtonTextOptions, fontSize: 40});
-        
-        this.startMenuBase.addButton(()=>{_this.onSettingsButtonClicked()}, {...defaultButtonOptions, name: "SettingsButton"}).addText("Settings");
+            let _this = this;
+            backplate
+                .addVerticalLayoutSubBlock((56+8+8)*2, {borderRadius: 0.0, padding: 0, margin: 0})
+                .addHorizontalLayoutSubBlock((256+8+8)*2, {backgroundColor: new THREE.Color(0x9f7909), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 8, margin: 0})
+                .addButton(()=>{_this.onStartButtonClicked()}, {...defaultButtonOptions, borderWidth: 0, height: 56, name: "StartButton", margin: 0})
+                .addText("START", {...defaultButtonTextOptions, fontSize: 40});
+            
+            backplate
+                .addVerticalLayoutSubBlock((48+6+6)*2, {borderRadius: 0.0, padding: 0, margin: 4})
+                .addHorizontalLayoutSubBlock((260+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 6, margin: 0})
+                .addButton(()=>{_this.onSettingsButtonClicked()}, {...defaultButtonOptions, name: "SettingsButton", width: 260})
+                .addText("Settings");
+        }
 
-        this.startMenuBase.position.y = 1.5;
-        this.startMenuBase.position.z = -1.2;
+        // this.startMenuBase.position.y = 1.5;
+        this.startMenuBase.position.z = -0.5;
     }
 
     createSettingsMenu()
@@ -23919,21 +24041,23 @@ class MainMenu
             // contentDirection: 'column',
             // justifyContent: 'top', //space-between',
             backgroundOpacity: 1.0,
-            backgroundColor: new THREE.Color(0x000000),
-            padding: 32,
-            offset: 0,
-            borderWidth: 8,
-            borderColor: new THREE.Color( 0x9f7909 ),
+            backgroundColor: new THREE.Color(0x9f7909),
+            padding: 8,
+            // padding: 32,
+            // offset: 0,
+            borderWidth: 0,
+            // borderColor: new THREE.Color( 0x9f7909 ),
             fontColor: new THREE.Color( 0x9f7909 ),
             borderRadius: 0.0,
-            name: "SettingsMenu Base"
+            name: "SettingsMenu Base",
+            margin: 0
         });
 
-        this.settingsMenuBase.position.y = 1.5;
-        this.settingsMenuBase.position.z = -1.2;
+        // this.settingsMenuBase.position.y = 1.5;
+        this.settingsMenuBase.position.z = -0.5;
 
 
-        let settingsContainer = this.settingsMenuBase.addHorizontalLayoutSubBlock(1.0, {borderWidth: 2, offset:16, borderRadius: 0.0});
+        let settingsContainer = this.settingsMenuBase.addHorizontalLayoutSubBlock((1024-32), {borderWidth: 0, offset: 8, borderRadius: 0.0, margin: 0, backgroundColor: new THREE.Color(0x000000), backgroundOpacity: 1.0});
         let _this = this;
 
         let settingsBlock;
@@ -23966,7 +24090,9 @@ class MainMenu
             ...defaultButtonOptions, 
             width: 32, 
             height: 32,
-            borderRadius: 12
+            borderRadius: 0,
+            borderWidth: 0,
+            backgroundOpacity: 0.0,
         };
         let settingsValueBlockDefaultOptions = {
             borderRadius: 0.0, 
@@ -23981,18 +24107,30 @@ class MainMenu
         // Round Time
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Round Time:", settingsLabelDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onRoundTimeChanged(-30)}, settingsUpDownButtonDefaultOptions).addText("-");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onRoundTimeChanged(-30)}, settingsUpDownButtonDefaultOptions).addText("-");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.roundTimeValueTextField = settingValueBlock.addText(this.formatTime(this.settings.roundTime), settingsValueTextDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onRoundTimeChanged(30)}, settingsUpDownButtonDefaultOptions).addText("+");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onRoundTimeChanged(30)}, settingsUpDownButtonDefaultOptions).addText("+");
 
         // Rest Time
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Rest Time:", settingsLabelDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onRestTimeChanged(-10)}, settingsUpDownButtonDefaultOptions).addText("-");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onRestTimeChanged(-10)}, settingsUpDownButtonDefaultOptions).addText("-");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.restTimeValueTextField = settingValueBlock.addText(this.formatTime(this.settings.restTime), settingsValueTextDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onRestTimeChanged(10)}, settingsUpDownButtonDefaultOptions).addText("+");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onRestTimeChanged(10)}, settingsUpDownButtonDefaultOptions).addText("+");
 
 
         // // Workout Type
@@ -24012,26 +24150,44 @@ class MainMenu
         // Round Count
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Rounds:", settingsLabelDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onRoundCountChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onRoundCountChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.roundCountValueTextField = settingValueBlock.addText(this.settings.roundCount.toString(), settingsValueTextDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onRoundCountChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onRoundCountChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
 
         // Bag Type
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Bag Type:", settingsLabelDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onBagTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onBagTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.bagTypeValueTextField = settingValueBlock.addText(this.getBagTypeString(), settingsValueTextDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onBagTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onBagTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
 
         // Swap Bag
         settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Swap Bag:", settingsLabelDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("-");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("-");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.swapBagValueTextField = settingValueBlock.addText(this.getSwapBagString(), settingsValueTextDefaultOptions);
-        settingsBlock.addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("+");
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("+");
 
         // // Scripted Round Options
 
@@ -24050,8 +24206,14 @@ class MainMenu
         
         // Cancel / Accept
         let okCancelBlock = settingsContainer.addVerticalLayoutSubBlock(64*2, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
-        okCancelBlock.addButton(()=>{_this.onSettingsCancelClicked()}, {...defaultButtonOptions, width: 150}).addText("Cancel");
-        okCancelBlock.addButton(()=>{_this.onSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("Accept");
+        okCancelBlock
+            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addButton(()=>{_this.onSettingsCancelClicked()}, {...defaultButtonOptions, width: 150}).addText("CANCEL");
+        okCancelBlock
+            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addButton(()=>{_this.onSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("ACCEPT");
 
 
 
@@ -24170,7 +24332,8 @@ class MainMenu
     {
         this.readSettings();
 
-        this.scene.remove(this.startMenuBase);
+        // this.scene.remove(this.startMenuBase);
+        this.hide();
         this.inputController.shutdown();
         
         this.boxingSession.initialize(this.settings.roundCount, this.settings.roundTime, this.settings.restTime, this.settings.bagType, this.settings.doBagSwap, this.settings.workoutType, this.settings.whichScriptedWorkout);
@@ -24290,7 +24453,26 @@ class MainMenu
     update(dt)
     {
         three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].update();
-        this.inputController.update(dt, this.currentMenu);
+        this.inputController.update(dt, this.currentMenu, this.uiQuadLayerHolePunch);
+    }
+
+    render(renderer, frame)
+    {
+        if (this.doRenderLoop)
+        {
+            let renderProps = renderer.properties.get(this.uiQuadLayer.renderTarget);
+            renderProps.__ignoreDepthValues = false;
+
+            
+            // set viewport, rendertarget, and renderTargetTextures
+            this.uiQuadLayer.setupToRender(renderer, frame);
+            
+            renderer.xr.enabled = false;
+            renderer.setClearColor(clearColor, 1.0);
+            renderer.render(this.uiQuadScene, this.uiQuadCamera);
+            renderer.setClearColor(clearColor, 0.0);
+            renderer.xr.enabled = true;
+        }
     }
 }
 
@@ -27372,7 +27554,7 @@ __webpack_require__.r(__webpack_exports__);
  const UI_CONSTANTS = {
 	UI_PIXELS_PER_METER: 1024,
 	UI_FADE_TIME: 300, // in ms
-	UI_OFFSET_BUFFER: 7 / 512, // distance individual UI panels are from one another, to prevent z-fighting.
+	UI_OFFSET_BUFFER: 32 / 512, // distance individual UI panels are from one another, to prevent z-fighting.
 };
 
  //  import { updateMatrixRecursively } from '../../utils/object3dUtils';
@@ -57741,6 +57923,8 @@ class WebXRManager extends EventDispatcher {
 		let initialRenderTarget = null;
 		let newRenderTarget = null;
 
+		let quadLayers = [];
+
 		const controllers = [];
 		const controllerInputSources = [];
 
@@ -57789,6 +57973,7 @@ class WebXRManager extends EventDispatcher {
 		};
 
 		this.setQuadRenderer = function(_quadRenderer) {
+			quadRenderer = _quadRenderer;
 		};
 
 		this.getControllerGrip = function ( index ) {
@@ -58561,28 +58746,51 @@ class WebXRManager extends EventDispatcher {
 
 		};
 
-		this.registerQuadLayer = function(quadLayer, order) {
+		this.registerQuadLayer = function ( quadLayer, order ) {
 
-			let layers = [];
-			if (quadLayer != null) {
+			quadLayers.push(
+				{
+					layer: quadLayer,
+					order: order
+				}
+			);
+			quadLayers = quadLayers.sort(
+				function ( a, b ) {
 
-				if (order < 0) {
-
-					layers = [quadLayer.layer, glProjLayer];
-
-				} else {
-
-					layers = [glProjLayer, quadLayer.layer];
+					return a.order - b.order;
 
 				}
+			);
 
-			}
-			else
+			const layers = [];
+
+			for (let i = 0; i < quadLayers.length; i++)
 			{
-
-				layers = [glProjLayer];
+				layers.push(quadLayers[i].layer.layer);
 
 			}
+
+			layers.push( glProjLayer );
+
+			session.updateRenderState( { layers: layers } );
+
+		};
+
+		
+
+		this.unregisterQuadLayer = function ( quadLayer ) {
+
+			quadLayers = quadLayers.filter( ( layer ) => layer.layer !== quadLayer );
+
+			const layers = [];
+
+			for (let i = 0; i < quadLayers.length; i++)
+			{
+				layers.push(quadLayers[i].layer.layer);
+
+			}
+
+			layers.push( glProjLayer );
 
 			session.updateRenderState( { layers: layers } );
 

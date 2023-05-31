@@ -15,7 +15,7 @@
  const UI_CONSTANTS = {
 	UI_PIXELS_PER_METER: 1024,
 	UI_FADE_TIME: 300, // in ms
-	UI_OFFSET_BUFFER: 7 / 512, // distance individual UI panels are from one another, to prevent z-fighting.
+	UI_OFFSET_BUFFER: 32 / 512, // distance individual UI panels are from one another, to prevent z-fighting.
 };
 
  //  import { updateMatrixRecursively } from '../../utils/object3dUtils';

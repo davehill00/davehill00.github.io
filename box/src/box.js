@@ -41,7 +41,7 @@ let renderer = null;
 let quadCamera = null;
 let quadScene = null;
 let quadScreen = null;
-let threeQuadLayer = null;
+let scoreboardQuadLayer = null;
 
 let quadPng = null;
 
@@ -117,7 +117,7 @@ function initialize()
     audioListener = new THREE.AudioListener();
     camera.add( audioListener );
 
-    renderer = new THREE.WebGLRenderer( {antialias: true});
+    renderer = new THREE.WebGLRenderer( {antialias: true, precision: 'highp'});
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
@@ -172,7 +172,7 @@ function initialize()
     gControllers = new Controllers(scene, renderer);
 
     initGlovesAndBag(scene, camera, renderer);
-    menu = new MainMenu(scene, pageUI);
+    menu = new MainMenu(scene, renderer, pageUI);
 }
 
 function setupHandForController(hand, controllerSpace, gamepad)
@@ -496,18 +496,18 @@ function render(time, frame) {
     renderer.render(scene, camera);
 
     let session = renderer.xr.getSession();
-    if (session)
+    if (session && frame)
     {
-        if ((threeQuadLayer && quadScreen && (bDoBlackoutFade || quadScreen.needsRenderUpdate || (pageUI.layersPolyfill && pageUI.layersPolyfill.injected))))
+        if ( (scoreboardQuadLayer && quadScreen && (bDoBlackoutFade || quadScreen.needsRenderUpdate || (pageUI.layersPolyfill && pageUI.layersPolyfill.injected))))
         {
             quadScreen.needsRenderUpdate = false;
 
-            let renderProps = renderer.properties.get(threeQuadLayer.renderTarget);
+            let renderProps = renderer.properties.get(scoreboardQuadLayer.renderTarget);
             renderProps.__ignoreDepthValues = false;
 
             
             // set viewport, rendertarget, and renderTargetTextures
-            threeQuadLayer.setupToRender(renderer, frame);
+            scoreboardQuadLayer.setupToRender(renderer, frame);
             
             renderer.xr.enabled = false;
             renderer.setClearColor(clearColorQuadScene, 1.0);
@@ -515,10 +515,8 @@ function render(time, frame) {
             renderer.setClearColor(clearColorBlack, 0.0);
             renderer.xr.enabled = true;
         }
-        else
-        {
-            // console.log("skip render")
-        }
+
+        menu.render(renderer, frame);
     }
 }
 
@@ -538,6 +536,8 @@ function onSessionStart()
         loadingScreen = true;
         setupLoadingScreen();
     }
+
+    menu.onSessionStart();
 
 
     // initGlovesAndBag(scene, camera, renderer);
@@ -569,7 +569,7 @@ function onSessionStart()
         renderer.xr.setFoveation(1.0);
     }
 
-    threeQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
+    scoreboardQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
     // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
 
     // let stuffToHideInArMode_MaterialNames = [
@@ -695,7 +695,7 @@ function doPostLoadGameInitialization()
     // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
 
     // position screen and quad layer
-    let quadLayer = threeQuadLayer.layer; //renderer.xr.getQuadLayer();
+    let quadLayer = scoreboardQuadLayer.layer; //renderer.xr.getQuadLayer();
 
     // get TV screen location
     if(quadScreen != null)
@@ -835,8 +835,13 @@ function loadingScreenRender(time, frame)
 
 function wrapupLoadingScreen()
 {
-    loadingQuadLayer = null;
-    loadingScene = null;
+    if(loadingQuadLayer != null)
+    {
+        renderer.xr.unregisterQuadLayer(loadingQuadLayer);
+        loadingQuadLayer = null;
+        loadingScene = null;
+    
+    }
 
     scene.add(blackoutQuad);
     bDoBlackoutFade = true;
@@ -845,7 +850,9 @@ function wrapupLoadingScreen()
 
     renderer.setAnimationLoop(render);
     quadScreen.needsRenderUpdate = true;
-    renderer.xr.registerQuadLayer(threeQuadLayer, -1);
+    
+
+    renderer.xr.registerQuadLayer(scoreboardQuadLayer, -1);
 }
 
 function initGlovesAndBag(scene, camera, renderer)
