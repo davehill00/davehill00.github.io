@@ -20695,6 +20695,8 @@ function initialize()
     gControllers = new _controllers_js__WEBPACK_IMPORTED_MODULE_6__.Controllers(scene, renderer);
 
     initGlovesAndBag(scene, camera, renderer);
+    (0,_textBox_js__WEBPACK_IMPORTED_MODULE_11__.initializeTextBoxSystem)();
+
     menu = new _menu_js__WEBPACK_IMPORTED_MODULE_12__.MainMenu(scene, renderer, pageUI);
 }
 
@@ -21079,11 +21081,8 @@ function onSessionStart()
         adjustTargetFrameRate(0);
     }
 
-    if (renderer.xr.setFoveation)
-    {
-        console.log("SETTING FOVEATION ON XR OBJECT");
-        renderer.xr.setFoveation(1.0);
-    }
+    if (false)
+    {}
 
     scoreboardQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
     // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
@@ -21409,7 +21408,7 @@ function initGlovesAndBag(scene, camera, renderer)
 
 function initScene(scene, camera, renderer)
 {
-    (0,_textBox_js__WEBPACK_IMPORTED_MODULE_11__.initializeTextBoxSystem)();
+    // initializeTextBoxSystem();
     
     
 
@@ -23578,12 +23577,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var html2canvas__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(html2canvas__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./uiPanel.js */ "./src/uiPanel.js");
 /* harmony import */ var _box_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./box.js */ "./src/box.js");
+/* harmony import */ var _textBox_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./textBox.js */ "./src/textBox.js");
 /* provided dependency */ var THREE = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 
 
 
 
 // import {CanvasTexture} from 'three/examples/jsm/interactive/HTMLMesh';
+
 
 
 
@@ -23693,8 +23694,8 @@ class MenuInputController
                 vLocalPosition = position;`
             );
 
-            console.log("VERTEX SHADER----");
-            console.log(shader.vertexShader);
+            // console.log("VERTEX SHADER----");
+            // console.log(shader.vertexShader);
 
 
             shader.fragmentShader = shader.fragmentShader.replace(
@@ -23709,11 +23710,8 @@ class MenuInputController
                     saturate( (vLocalPosition.z + -0.05)/(-0.2) ) ); //0.25 + vLocalPosition.z saturate(vLocalPosition.z + 0.2), (vLocalPosition.z < -0.2) ? 0.5 : 1.0;
                 `
             )
-            console.log("FRAGMENT SHADER----");
-            console.log(shader.fragmentShader);
-            // shader.fragmentShader = shader.fragmentShader.replace(
-            //     ""
-            // )
+            // console.log("FRAGMENT SHADER----");
+            // console.log(shader.fragmentShader);
         }
         let ray = new THREE.Mesh(
             new THREE.BoxGeometry(kWidth, kWidth, 2.0 * halfLength),
@@ -23919,6 +23917,47 @@ let defaultButtonTextOptions = {
     fontSize: 28,
 }
 
+let kSettingsBlockHeight = 48*2;
+let kSettingsBlockLabelWidth = 170*2;
+let kSettingsFieldWidth = 190*2;
+
+let settingsBlockDefaultOptions = {
+    borderWidth: 0,
+    borderRadius: 0.0, 
+    contentDirection:'row', 
+    justifyContent: 'start',
+};
+let settingsLabelBlockDefaultOptions = 
+{
+    borderWidth: 0,
+    borderRadius: 0.0,
+    justifyContent: 'center', 
+};
+let settingsLabelDefaultOptions = {
+    fontSize: 24, 
+    fontColor: new THREE.Color(0x9f7909), 
+    textAlign:'right',
+    // justifyContent: 'start',
+    // name: settingsStrings[i] + "_textLabel"
+};
+let settingsUpDownButtonDefaultOptions = {
+    ...defaultButtonOptions, 
+    width: 32, 
+    height: 32,
+    borderRadius: 0,
+    borderWidth: 0,
+    backgroundOpacity: 0.0,
+};
+let settingsValueBlockDefaultOptions = {
+    borderRadius: 0.0, 
+    borderWidth: 0, 
+    // bestFit: 'auto', 
+    justifyContent:'center'
+};
+let settingsValueTextDefaultOptions = {
+    fontColor: new THREE.Color(0x9f7909)
+};
+
 class MainMenu
 {
     constructor(scene, renderer, pageUI)
@@ -23956,7 +23995,7 @@ class MainMenu
         this.readSettings();
         
         this.createSimpleStartMenu();
-        this.createSettingsMenu();
+        // this.createSettingsMenu();
         this.setCurrentMenu(this.startMenuBase);
     }
 
@@ -23981,13 +24020,16 @@ class MainMenu
         this.doRenderLoop = false;
     }
 
-    setCurrentMenu(menu)
+    setCurrentMenu(menu, addToScene = true)
     {
         if (this.currentMenu)
         {
             this.uiQuadScene.remove(this.currentMenu);
         }
-        this.uiQuadScene.add(menu);
+        if (addToScene)
+        {
+            this.uiQuadScene.add(menu);
+        }
         this.currentMenu = menu;
     }
 
@@ -24012,8 +24054,8 @@ class MainMenu
             let backplate = this.startMenuBase.addHorizontalLayoutSubBlock(1.0, {backgroundColor: new THREE.Color(0x000000), offset: 16, borderRadius: 0.0, backgroundOpacity: 1.0, padding: 8});
 
             backplate.addImage("./content/heavy_bag_trainer_logo.png", {
-                width: 400,
-                height: 200,
+                width: 380,
+                height: 190,
                 margin: 8,
                 // offset: 15/512,
             });
@@ -24025,11 +24067,45 @@ class MainMenu
                 .addButton(()=>{_this.onStartButtonClicked()}, {...defaultButtonOptions, borderWidth: 0, height: 56, name: "StartButton", margin: 0})
                 .addText("START", {...defaultButtonTextOptions, fontSize: 40});
             
-            backplate
-                .addVerticalLayoutSubBlock((48+6+6)*2, {borderRadius: 0.0, padding: 0, margin: 4})
-                .addHorizontalLayoutSubBlock((260+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 6, margin: 0})
-                .addButton(()=>{_this.onSettingsButtonClicked()}, {...defaultButtonOptions, name: "SettingsButton", width: 260})
-                .addText("Settings");
+
+                
+            let settingsContainer = backplate
+                .addVerticalLayoutSubBlock((56+6+6)*2, {borderRadius: 0.0, padding: 6, margin: 0})
+                .addHorizontalLayoutSubBlock((260+6+6)*2, {backgroundColor: new THREE.Color(0x000000), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 0, margin: 0, contentDirection: 'row'});
+
+            settingsContainer
+                .addHorizontalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x0040ff), backgroundOpacity: 0.0, margin: 0.0, padding: 0.0, offset: 8})
+                .addVerticalLayoutSubBlock(56*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 0.0, offset: 8, justifyContent: 'center'})
+                .addButton(()=>{_this.onWorkoutTypeChanged(-1)}, {
+                    ...defaultButtonOptions, 
+                    width: 32, 
+                    height: 50,
+                    borderRadius: 0,
+                    borderWidth: 0,
+                    backgroundOpacity: 0.0,
+                }).addText("-");
+
+            settingsContainer.addHorizontalLayoutSubBlock(4, {backgroundColor: new THREE.Color(0x000000)});
+
+            let workoutTypeButton = settingsContainer
+                .addHorizontalLayoutSubBlock((180+4+4)*2, {backgroundColor: new THREE.Color(0xff00ff), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 0, margin: 0, contentDirection: 'row'})
+                .addVerticalLayoutSubBlock(56*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 0.0, offset: 8, justifyContent: 'center'})
+                .addButton(()=>{_this.onSettingsButtonClicked()}, {...defaultButtonOptions, name: "SettingsButton", height: 50, width: 180});
+            this.workoutTypeValueTextField = workoutTypeButton.addText(this.getMatchConfigString(), {...defaultButtonTextOptions, fontSize: 16});
+
+            settingsContainer.addHorizontalLayoutSubBlock(4, {backgroundColor: new THREE.Color(0x000000)});
+
+            settingsContainer
+                .addHorizontalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x0040ff), backgroundOpacity: 0.0, margin: 0.0, padding: 0.0, offset: 8})
+                .addVerticalLayoutSubBlock(56*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 0.0, offset: 8, justifyContent: 'center'})
+                .addButton(()=>{_this.onWorkoutTypeChanged(1)}, {
+                    ...defaultButtonOptions, 
+                    width: 32, 
+                    height: 50,
+                    borderRadius: 0,
+                    borderWidth: 0,
+                    backgroundOpacity: 0.0,
+                }).addText("+");
         }
 
         // this.startMenuBase.position.y = 1.5;
@@ -24055,60 +24131,18 @@ class MainMenu
             name: "SettingsMenu Base",
             margin: 0
         });
+        this.settingsMenuBase.position.z = -5.5;
+        this.settingsContainer = this.settingsMenuBase.addHorizontalLayoutSubBlock((1024-32), {borderWidth: 0, offset: 8, borderRadius: 0.0, margin: 0, backgroundColor: new THREE.Color(0x000000), backgroundOpacity: 1.0});
 
-        // this.settingsMenuBase.position.y = 1.5;
-        this.settingsMenuBase.position.z = -0.5;
-
-
-        let settingsContainer = this.settingsMenuBase.addHorizontalLayoutSubBlock((1024-32), {borderWidth: 0, offset: 8, borderRadius: 0.0, margin: 0, backgroundColor: new THREE.Color(0x000000), backgroundOpacity: 1.0});
         let _this = this;
 
         let settingsBlock;
         let settingValueBlock;
 
-        let kSettingsBlockHeight = 48*2;
-        let kSettingsBlockLabelWidth = 170*2;
-        let kSettingsFieldWidth = 190*2;
 
-        let settingsBlockDefaultOptions = {
-            borderWidth: 0,
-            borderRadius: 0.0, 
-            contentDirection:'row', 
-            justifyContent: 'start',
-        };
-        let settingsLabelBlockDefaultOptions = 
-        {
-            borderWidth: 0,
-            borderRadius: 0.0,
-            justifyContent: 'center', 
-        };
-        let settingsLabelDefaultOptions = {
-            fontSize: 24, 
-            fontColor: new THREE.Color(0x9f7909), 
-            textAlign:'right',
-            // justifyContent: 'start',
-            // name: settingsStrings[i] + "_textLabel"
-        };
-        let settingsUpDownButtonDefaultOptions = {
-            ...defaultButtonOptions, 
-            width: 32, 
-            height: 32,
-            borderRadius: 0,
-            borderWidth: 0,
-            backgroundOpacity: 0.0,
-        };
-        let settingsValueBlockDefaultOptions = {
-            borderRadius: 0.0, 
-            borderWidth: 0, 
-            // bestFit: 'auto', 
-            justifyContent:'center'
-        };
-        let settingsValueTextDefaultOptions = {
-            fontColor: new THREE.Color(0x9f7909)
-        };
 
         // Round Time
-        settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Round Time:", settingsLabelDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
@@ -24122,7 +24156,7 @@ class MainMenu
             .addButton(()=>{_this.onRoundTimeChanged(30)}, settingsUpDownButtonDefaultOptions).addText("+");
 
         // Rest Time
-        settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Rest Time:", settingsLabelDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
@@ -24135,23 +24169,73 @@ class MainMenu
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
             .addButton(()=>{_this.onRestTimeChanged(10)}, settingsUpDownButtonDefaultOptions).addText("+");
 
+        
+        if (this.settings.workoutType == 0)
+        {
+            this.createSettingsMenuTimedRounds();
+        }
+        else
+        {
+            this.createSettingsMenuScripted();
+        }
 
-        // // Workout Type
-        // settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
-        // settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Workout:", settingsLabelDefaultOptions);
-        // settingsBlock.addButton(()=>{_this.onWorkoutTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
-        // settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(190, settingsValueBlockDefaultOptions);
-        // this.workoutTypeValueTextField = settingValueBlock.addText(this.getWorkoutTypeString(this.settings.workoutType), settingsValueTextDefaultOptions);
-        // settingsBlock.addButton(()=>{_this.onWorkoutTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
 
 
-        // this.roundOptionsParent = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight * 3);
+         // Cancel / Accept
+         let okCancelBlock = this.settingsContainer.addVerticalLayoutSubBlock(64*2, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
+         okCancelBlock
+             .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+             .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+             .addButton(()=>{_this.onSettingsCancelClicked()}, {...defaultButtonOptions, width: 150}).addText("CANCEL");
+         okCancelBlock
+             .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+             .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+             .addButton(()=>{_this.onSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("ACCEPT");
+ 
+    }
 
+    createSettingsMenuScripted()
+    {
+        let _this = this;
+
+        let settingsBlock = this.settingsContainer
+            .addVerticalLayoutSubBlock(380, {backgroundColor: new THREE.Color(0x00ffff), backgroundOpacity: 0.0, contentDirection:'row', justifyContent: 'start'});
+            
+
+        settingsBlock
+            .addHorizontalLayoutSubBlock((48 + 6 + 6)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 6, contentDirection: 'row', justifyContent: 'center'})
+            .addVerticalLayoutSubBlock(350, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 6, justifyContent:'center'})
+            .addButton(()=>{_this.onWorkoutSelectionChanged(1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText("-");
+        
+        let workoutDescriptionField = settingsBlock
+            .addHorizontalLayoutSubBlock(1024 - (160*2), {backgroundOpacity: 1.0, backgroundColor: new THREE.Color(0x000000)});
+
+        this.workoutDescriptionTextBox = new _textBox_js__WEBPACK_IMPORTED_MODULE_6__.TextBox(1000, "left", 0.67, "top", 0.32, 0x9f7909, "", "", false);
+        this.workoutDescriptionTextBox.position.z = -1.0;
+        this.workoutDescriptionTextBox.position.y = 0.00;
+        this.workoutDescriptionTextBox.displayMessage(_workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].introText);
+        
+        this.uiQuadScene.add(this.workoutDescriptionTextBox);
+
+        settingsBlock
+            .addHorizontalLayoutSubBlock((48 + 6 + 6)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 6, contentDirection: 'row', justifyContent: 'center'})
+            .addVerticalLayoutSubBlock(350, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 6, justifyContent:'center'})
+            .addButton(()=>{_this.onWorkoutSelectionChanged(1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText("+");
+        
+
+    }
+
+    createSettingsMenuTimedRounds()
+    {
+        let _this = this;
+
+        let settingsBlock;
+        let settingValueBlock;
+       
         // Timed Round Options
-        // this.timedRoundContainer = this.roundOptionsParent.addVerticalLayoutSubBlock(kSettingsBlockHeight * 3);
-
+       
         // Round Count
-        settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Rounds:", settingsLabelDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
@@ -24165,7 +24249,7 @@ class MainMenu
             .addButton(()=>{_this.onRoundCountChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
 
         // Bag Type
-        settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Bag Type:", settingsLabelDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
@@ -24179,7 +24263,7 @@ class MainMenu
             .addButton(()=>{_this.onBagTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
 
         // Swap Bag
-        settingsBlock = settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
         settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Swap Bag:", settingsLabelDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
@@ -24192,32 +24276,8 @@ class MainMenu
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
             .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("+");
 
-        // // Scripted Round Options
-
-        // this.scriptedRoundContainer = this.roundOptionsParent.addVerticalLayoutSubBlock(kSettingsBlockHeight * 3);
-
-        // // Workout Selection
-        // settingsBlock = this.timedRoundContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight * 3, settingsBlockDefaultOptions);
-        // settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Rounds:", settingsLabelDefaultOptions);
-        // settingsBlock.addButton(()=>{_this.onWorkoutSelectionChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
-        // settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(190, settingsValueBlockDefaultOptions);
-        // this.workoutSelectionValueTextField = settingValueBlock.addText(workoutData[this.settings.whichScriptedWorkout][0].uiShortText, settingsValueTextDefaultOptions);
-        // settingsBlock.addButton(()=>{_this.onWorkoutSelectionChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
-
-        // this.roundOptionsParent.remove(this.scriptedRoundContainer);
-        // this.roundOptionsParent.update(true, true, true);
-        
-        // Cancel / Accept
-        let okCancelBlock = settingsContainer.addVerticalLayoutSubBlock(64*2, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
-        okCancelBlock
-            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
-            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
-            .addButton(()=>{_this.onSettingsCancelClicked()}, {...defaultButtonOptions, width: 150}).addText("CANCEL");
-        okCancelBlock
-            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
-            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
-            .addButton(()=>{_this.onSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("ACCEPT");
-
+               
+       
 
 
         // this.scene.add(this.settingsMenuBase);
@@ -24302,33 +24362,55 @@ class MainMenu
     onWorkoutTypeChanged(val)
     {
         this.settings.workoutType = (this.settings.workoutType + val + 2) % 2;
-        this.workoutTypeValueTextField.set({content:this.getWorkoutTypeString()});
+        this.workoutTypeValueTextField.set({content:this.getMatchConfigString()});
+        
+        window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
+
         // this.uiWorkoutTypeDisplay.innerHTML = this.getWorkoutTypeString();
 
-        if (this.settings.workoutType == 0)
-        {
-            this.roundOptionsParent.remove(this.scriptedRoundContainer);
-            this.roundOptionsParent.add(this.timedRoundContainer);
-            this.roundOptionsParent.update(true, true, true);
-            // this.timedRoundContainer.visible = true;
-            // this.timedRoundContainer.offset = 7/512;
+        // if (this.settings.workoutType == 0)
+        // {
+        //     this.roundOptionsParent.remove(this.scriptedRoundContainer);
+        //     this.roundOptionsParent.add(this.timedRoundContainer);
+        //     this.roundOptionsParent.update(true, true, true);
+        //     // this.timedRoundContainer.visible = true;
+        //     // this.timedRoundContainer.offset = 7/512;
             
-        }
-        else
-        {
-            this.roundOptionsParent.remove(this.timedRoundContainer);
-            this.roundOptionsParent.add(this.scriptedRoundContainer);
-            this.roundOptionsParent.update(true, true, true);
+        // }
+        // else
+        // {
+        //     this.roundOptionsParent.remove(this.timedRoundContainer);
+        //     this.roundOptionsParent.add(this.scriptedRoundContainer);
+        //     this.roundOptionsParent.update(true, true, true);
 
-            // this.timedRoundContainer.visible = false;
-            // this.timedRoundContainer.offset = -1.0;
-        }
+        //     // this.timedRoundContainer.visible = false;
+        //     // this.timedRoundContainer.offset = -1.0;
+        // }
     }
 
     onWorkoutSelectionChanged(val)
     {
         this.settings.whichScriptedWorkout = (this.settings.whichScriptedWorkout + val + _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData.length) % _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData.length;
-        this.workoutSelectionValueTextField.set({content: _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].uiShortText});
+        this.workoutDescriptionTextBox.displayMessage(_workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].introText);
+    }
+
+    getMatchConfigString()
+    {
+        let matchDescription;
+        if (this.settings.workoutType == 0)
+        {
+            let roundOrRounds = (this.settings.roundCount > 1) ? 
+            (" Rounds,\n" + this.formatTime(this.settings.restTime) + " Rest") : " Round";
+
+            matchDescription = this.settings.roundCount.toString() + " x " + this.formatTime(this.settings.roundTime) + roundOrRounds;
+        }
+        else
+        {
+            matchDescription = _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].uiShortText + 
+            "\n" + this.formatTime(this.settings.roundTime) + " Round, " + this.formatTime(this.settings.restTime) + " Rest";
+        }
+
+        return matchDescription; //this.roundCount.toString() + " x " + this.formatTime(this.roundTime) + roundOrRounds;
     }
 
     onStartButtonClicked()
@@ -24341,37 +24423,48 @@ class MainMenu
         
 
         // @TODO - replace with workoutType when I hook up that part of the UI
-        this.boxingSession.initialize(this.settings.roundCount, this.settings.roundTime, this.settings.restTime, this.settings.bagType, this.settings.doBagSwap, /*this.settings.workoutType*/ 0, this.settings.whichScriptedWorkout);
+        this.boxingSession.initialize(this.settings.roundCount, this.settings.roundTime, this.settings.restTime, this.settings.bagType, this.settings.doBagSwap, this.settings.workoutType, this.settings.whichScriptedWorkout);
         this.boxingSession.startGame();
         // this.onStartCb();
     }
 
     onSettingsButtonClicked()
     {
+        // let workoutType = this.settings.workoutType;
         this.readSettings();
 
         this.originalSettings = {...this.settings}; //copy settings into originalSettings
 
+        this.createSettingsMenu();
+
         this.onRoundTimeChanged(0);
         this.onRestTimeChanged(0);
-        this.onRoundCountChanged(0);
-        this.onBagTypeChanged(0);
-        this.onSwapBagChanged();
+        if (this.settings.workoutType == 0)
+        {
+            this.onRoundCountChanged(0);
+            this.onBagTypeChanged(0);
+            this.onSwapBagChanged();
+        }
+
+        // this.settings.workoutType = workoutType;
 
         three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].update();
-
-        this.setCurrentMenu(this.settingsMenuBase);
+       
+        this.setCurrentMenu(this.settingsMenuBase, true);
     }
 
     onSettingsCancelClicked()
     {
         this.settings = this.originalSettings;
+        this.uiQuadScene.remove(this.workoutDescriptionTextBox);
         this.setCurrentMenu(this.startMenuBase);
     }
 
     onSettingsAcceptClicked()
     {
         this.writeSettings();
+        this.uiQuadScene.remove(this.workoutDescriptionTextBox);
+        this.onWorkoutTypeChanged(0);
         this.setCurrentMenu(this.startMenuBase);
     }
 
@@ -24383,7 +24476,7 @@ class MainMenu
         window.localStorage.setItem("cfg_bagType", this.settings.bagType);
         window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
         window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
-        // window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.whichScriptedWorkout][0].uid);
+        window.localStorage.setItem("cfg_scriptedWorkoutId", _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].uid);
 
     }
     readSettings()
@@ -24391,14 +24484,14 @@ class MainMenu
         if (!window.localStorage.getItem("first_run"))
         {
             window.localStorage.setItem("first_run", "true");
-            window.localStorage.setItem("cfg_roundTime", this.roundTime);
-            window.localStorage.setItem("cfg_roundCount", this.roundCount);
-            window.localStorage.setItem("cfg_restTime", this.restTime);
-            window.localStorage.setItem("cfg_bagType", this.bagType);
-            window.localStorage.setItem("cfg_bagSwap", this.doBagSwap ? 1 : 0);
-            window.localStorage.setItem("cfg_workoutType", this.workoutType);
-            window.localStorage.setItem("cfg_scriptedWorkoutId", _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.whichScriptedWorkout][0].uid);
-            window.localStorage.setItem("cfg_arMode", this.arMode ? 1 : 0)
+            window.localStorage.setItem("cfg_roundTime", this.settings.roundTime);
+            window.localStorage.setItem("cfg_roundCount", this.settings.roundCount);
+            window.localStorage.setItem("cfg_restTime", this.settings.restTime);
+            window.localStorage.setItem("cfg_bagType", this.settings.bagType);
+            window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
+            window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
+            window.localStorage.setItem("cfg_scriptedWorkoutId", _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].uid);
+            window.localStorage.setItem("cfg_arMode", this.settings.arMode ? 1 : 0)
         }
         else
         {
@@ -24439,21 +24532,21 @@ class MainMenu
                 this.settings.workoutType = parseInt(val);
             }
             
-            // val = window.localStorage.getItem("cfg_scriptedWorkoutId");
-            // if (val)
-            // {
-            //     let matchCfgId = (element) => element[0].uid == val;
-            //     let matchedIndex = workoutData.findIndex(matchCfgId);
-            //     if (matchedIndex < 0)
-            //     {
-            //         //failed to match
-            //         this.whichScriptedWorkout = 0;
-            //     }
-            //     else
-            //     {
-            //         this.whichScriptedWorkout = matchedIndex;
-            //     }
-            // }
+            val = window.localStorage.getItem("cfg_scriptedWorkoutId");
+            if (val)
+            {
+                let matchCfgId = (element) => element[0].uid == val;
+                let matchedIndex = _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData.findIndex(matchCfgId);
+                if (matchedIndex < 0)
+                {
+                    //failed to match
+                    this.settings.whichScriptedWorkout = 0;
+                }
+                else
+                {
+                    this.settings.whichScriptedWorkout = matchedIndex;
+                }
+            }
 
             // val = window.localStorage.getItem("cfg_arMode");
             // if (val)
@@ -25001,7 +25094,7 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9.2&beta;";
+        appVersionText.innerHTML = "Version 0.9.3&beta;";
         // appVersionText.innerHTML = "Version 0.9";
         appVersionText.className = "app_version_text";
         
@@ -26496,7 +26589,7 @@ class TextBox extends three__WEBPACK_IMPORTED_MODULE_1__.Group
                 transparent: true,
                 color: color,
                 opacity: 1.0,
-                alphaTest: 0.2,
+                alphaTest: 0.42,
                 negate: false
             }));
 
@@ -27241,19 +27334,128 @@ module.exports = function createMSDFShader (opt) {
   if (webGL2)
   {
     //console.log("BUILDING WebGL2 Shaders");
-    vertexShaderCode = [
-      '#version 300 es',
-      'in vec2 uv;',
-      'in vec4 position;',
-      'uniform mat4 projectionMatrix;',
-      'uniform mat4 modelViewMatrix;',
-      'out vec2 vUv;',
-      'void main() {',
-      'vUv = uv;',
-      'gl_Position = projectionMatrix * modelViewMatrix * position;',
-      '}'
-    ].join('\n');
+    // vertexShaderCode = [
+    //   '#version 300 es',
+    //   'in vec2 uv;',
+    //   'in vec4 position;',
+    //   'uniform mat4 projectionMatrix;',
+    //   'uniform mat4 modelViewMatrix;',
+    //   'out vec2 vUv;',
+    //   'void main() {',
+    //   'vUv = uv;',
+    //   'gl_Position = projectionMatrix * modelViewMatrix * position;',
+    //   '}'
+    // ].join('\n');
 
+    vertexShaderCode = 
+    `#version 300 es
+    in vec2 uv;
+    in vec4 position;
+    uniform mat4 projectionMatrix;
+    uniform mat4 modelViewMatrix;
+
+    out vec2 vUv;
+    
+    void main() {
+    
+      vUv = uv;
+      vec4 mvPosition = modelViewMatrix * position;
+      gl_Position = projectionMatrix * mvPosition;
+      // gl_Position.z -= 0.00001;
+    
+    }`;
+
+    fragmentShaderCode = 
+    `#version 300 es
+    
+    precision highp float;
+
+    uniform float opacity;
+    uniform vec3 color;
+    uniform float pxRange;
+    uniform sampler2D map;
+    in vec2 vUv;
+    out vec4 result;
+
+    // uniform sampler2D u_texture;
+    // uniform vec3 u_color;
+    // uniform float u_opacity;
+    // uniform float u_pxRange;
+    // uniform bool u_useRGSS;
+    
+    // varying vec2 vUv;
+    
+    // #include <clipping_planes_pars_fragment>
+    
+    // functions from the original msdf repo:
+    // https://github.com/Chlumsky/msdfgen#using-a-multi-channel-distance-field
+    
+    float median(float r, float g, float b) {
+      return max(min(r, g), min(max(r, g), b));
+    }
+    
+    float screenPxRange() {
+      vec2 unitRange = vec2(pxRange)/vec2(textureSize(map, 0));
+      vec2 screenTexSize = vec2(1.0)/fwidth(vUv);
+      return max(0.5*dot(unitRange, screenTexSize), 1.0);
+    }
+    
+    float tap(vec2 offsetUV) {
+      vec3 msd = texture( map, offsetUV ).rgb;
+      float sd = median(msd.r, msd.g, msd.b);
+      float screenPxDistance = screenPxRange() * (sd - 0.5);
+      float alpha = clamp(screenPxDistance + 0.5, 0.0, 1.0);
+      return alpha;
+    }
+    
+    void main() {
+    
+      float alpha;
+    
+      if ( true ) {
+    
+        // shader-based supersampling based on https://bgolus.medium.com/sharper-mipmapping-using-shader-based-supersampling-ed7aadb47bec
+        // per pixel partial derivatives
+        vec2 dx = dFdx(vUv);
+        vec2 dy = dFdy(vUv);
+    
+        // rotated grid uv offsets
+        vec2 uvOffsets = vec2(0.125, 0.375);
+        vec2 offsetUV = vec2(0.0, 0.0);
+    
+        // supersampled using 2x2 rotated grid
+        alpha = 0.0;
+        offsetUV.xy = vUv + uvOffsets.x * dx + uvOffsets.y * dy;
+        alpha += tap(offsetUV);
+        offsetUV.xy = vUv - uvOffsets.x * dx - uvOffsets.y * dy;
+        alpha += tap(offsetUV);
+        offsetUV.xy = vUv + uvOffsets.y * dx - uvOffsets.x * dy;
+        alpha += tap(offsetUV);
+        offsetUV.xy = vUv - uvOffsets.y * dx + uvOffsets.x * dy;
+        alpha += tap(offsetUV);
+        alpha *= 0.25;
+    
+      } else {
+    
+        alpha = tap( vUv );
+    
+      }
+    
+    
+      // apply the opacity
+      alpha *= opacity;
+    
+      // this is useful to avoid z-fighting when quads overlap because of kerning
+      if ( alpha < 0.3) discard;
+    
+    
+      result = vec4( color, alpha );
+    
+      // #include <clipping_planes_fragment>
+    
+    }
+    `;
+    /*
     fragmentShaderCode = [
       '#version 300 es',
       'precision ' + precision + ' float;',
@@ -27277,6 +27479,7 @@ module.exports = function createMSDFShader (opt) {
         : '  if (result.a < ' + alphaTest + ') discard;',
       '}'
     ].join('\n');
+    */
   }
   else
   {
@@ -27323,7 +27526,9 @@ module.exports = function createMSDFShader (opt) {
     uniforms: {
       opacity: { type: 'f', value: opacity },
       map: { type: 't', value: map || new THREE.Texture() },
-      color: { type: 'c', value: new THREE.Color(color) }
+      color: { type: 'c', value: new THREE.Color(color) },
+      pxRange: {type: 'f', value: 4},
+
     },
     vertexShader: vertexShaderCode,
     fragmentShader: fragmentShaderCode

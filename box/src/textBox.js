@@ -64,7 +64,7 @@ export class TextBox extends THREE.Group
                 transparent: true,
                 color: color,
                 opacity: 1.0,
-                alphaTest: 0.2,
+                alphaTest: 0.42,
                 negate: false
             }));
 

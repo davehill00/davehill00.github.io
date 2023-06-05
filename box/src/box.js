@@ -172,6 +172,8 @@ function initialize()
     gControllers = new Controllers(scene, renderer);
 
     initGlovesAndBag(scene, camera, renderer);
+    initializeTextBoxSystem();
+
     menu = new MainMenu(scene, renderer, pageUI);
 }
 
@@ -563,7 +565,7 @@ function onSessionStart()
         adjustTargetFrameRate(0);
     }
 
-    if (renderer.xr.setFoveation)
+    if (false && renderer.xr.setFoveation)
     {
         console.log("SETTING FOVEATION ON XR OBJECT");
         renderer.xr.setFoveation(1.0);
@@ -893,7 +895,7 @@ function initGlovesAndBag(scene, camera, renderer)
 
 function initScene(scene, camera, renderer)
 {
-    initializeTextBoxSystem();
+    // initializeTextBoxSystem();
     
     
 
