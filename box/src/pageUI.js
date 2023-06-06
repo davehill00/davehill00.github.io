@@ -199,8 +199,8 @@ export class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9.3&beta;";
-        // appVersionText.innerHTML = "Version 0.9";
+        // appVersionText.innerHTML = "Version 0.9.3&beta;";
+        // appVersionText.innerHTML = "Version 0.9.3";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -546,6 +546,17 @@ export class PageUI
         // this.uiConfigureButton.style.display = "";
 
         this.layersPolyfill = new WebXRLayersPolyfill()
+
+        if (navigator.xr.offerSession !== undefined) {
+            navigator.xr.offerSession('immersive-vr', {
+              requiredFeatures: ['local-floor'],
+              optionalFeatures: ['layers']
+            }).then((session) => {
+            //   xrButton.setSession(session);
+            //   session.isImmersive = true;
+              this.onSessionStarted(session);
+            });
+          }
 
     }
     

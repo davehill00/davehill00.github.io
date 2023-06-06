@@ -23480,12 +23480,12 @@ class Glove extends THREE.Group
         if (this.gamepad != null && this.gamepad.hapticActuators != null)
         {
             let kIntensity = 1.0;
-            let kMilliseconds = 20; //16;
+            let kMilliseconds = 50; //20; //16;
             let hapticActuator = this.gamepad.hapticActuators[0];
             if( hapticActuator != null)
             {
                 hapticActuator.pulse( kIntensity, kMilliseconds );
-                // console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
+                console.log("FIRE PULSE ON HIT: " + kIntensity + ", " + kMilliseconds);
             }
         }
     }
@@ -25441,6 +25441,17 @@ class PageUI
         // this.uiConfigureButton.style.display = "";
 
         this.layersPolyfill = new webxr_layers_polyfill_build_webxr_layers_polyfill_module_js__WEBPACK_IMPORTED_MODULE_1__["default"]()
+
+        if (navigator.xr.offerSession !== undefined) {
+            navigator.xr.offerSession('immersive-vr', {
+              requiredFeatures: ['local-floor'],
+              optionalFeatures: ['layers']
+            }).then((session) => {
+            //   xrButton.setSession(session);
+            //   session.isImmersive = true;
+              this.onSessionStarted(session);
+            });
+          }
 
     }
     
