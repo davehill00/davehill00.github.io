@@ -1,0 +1,14 @@
+{
+  "name": "Heavy Bag Trainer",
+  "short_name": "Heavy Bag Trainer",
+  "description": "Heavy Bag Trainer",
+  "display": "fullscreen",
+  "theme_color": "#000000",
+  "start_url": "./index-beta.html",
+  "scope": "./",
+  "icons": [{
+    "src": "https://massivesmoke.netlify.app/smoke-bomb.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }]
+}
