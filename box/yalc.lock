@@ -2,9 +2,9 @@
   "version": "v1",
   "packages": {
     "three": {
-      "signature": "db0aa9f94e69653f2127e7069d598a50",
+      "signature": "6bc2fc79c1631fcc0ca25afe62cae8c4",
       "file": true,
-      "replaced": "0.148"
+      "replaced": "0.147"
     },
     "webxr-layers-polyfill": {
       "signature": "a89bbc0f00286be21042d31ff1a6ec98",

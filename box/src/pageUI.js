@@ -565,8 +565,8 @@ export class PageUI
         this.uiStartButton.innerHTML = "Click here to try it on your Meta Quest Headset.";
         this.uiStartButton.classList.add("webxr_not_found");
         this.uiStartButton.disabled = false;
-        this.uiARVRButton.style.display = "none";
-        this.uiARVRButton.disabled = true;
+        // this.uiARVRButton.style.display = "none";
+        // this.uiARVRButton.disabled = true;
         this.uiStartButton.onclick = () => {
             let hasParam = window.location.href.match('[?]');
             console.log("hasParam = " + hasParam);

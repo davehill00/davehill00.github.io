@@ -436,7 +436,9 @@ function onSessionStart()
 {
     document.body.removeChild(moreButton);
     document.body.removeChild(lessButton);
-    messageMesh.visible = true;
+    if (messageMesh) {
+        messageMesh.visible = true;
+    }
 }
 
 function onSessionEnd()
