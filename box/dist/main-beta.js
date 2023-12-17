@@ -474,7 +474,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #5D1719;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    /* color:#8d1414; */\r\n    /* border-color: #8d1414; */\r\n    color:#9f7909;\r\n    border-color:#9f7909;\r\n    font-size: 2vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7a0940;\r\n     /* // #303030; */\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 110px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n\r\n\r\n@media only screen and (orientation: portrait) {\r\n    /* .title_image\r\n    {\r\n        width: auto;\r\n        height: 25%;     \r\n    } \r\n    */\r\n    .button_container\r\n    {\r\n        width: 90%;\r\n        margin-left: 5%;\r\n    }\r\n    .button_group\r\n    {\r\n        width: 80%;\r\n    }\r\n  }", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":["html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #5D1719;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    /* color:#8d1414; */\r\n    /* border-color: #8d1414; */\r\n    color:#9f7909;\r\n    border-color:#9f7909;\r\n    font-size: 2vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7a0940;\r\n     /* // #303030; */\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 110px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n\r\n\r\n@media only screen and (orientation: portrait) {\r\n    /* .title_image\r\n    {\r\n        width: auto;\r\n        height: 25%;     \r\n    } \r\n    */\r\n    .button_container\r\n    {\r\n        width: 90%;\r\n        margin-left: 5%;\r\n    }\r\n    .button_group\r\n    {\r\n        width: 80%;\r\n    }\r\n  }"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "html, body {\n    overflow: hidden;\n  }\n\n.buttonText {\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    color:#9f7909;\n}\n.descriptionText {\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color: #e0e0e0;\n}\n.descriptionBox {\n    background-color: #505050;\n    opacity: 100%;\n    padding-left: 24px;\n    padding-right: 16px;\n    padding-top: 0px;\n    padding-bottom: 0px;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    position: relative;\n    top: 0px;\n}\n.titleBox {\n    background-color: #cc5010;\n    padding-left: 24px;\n    padding-right: 16px;\n    padding-top: 0px;\n    padding-bottom: 0px;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    text-align: center;\n    opacity: 100%;\n}\n.box {\n    background-color: #505050;\n    opacity: 100%;\n    padding: 2vw;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    position: relative;\n    top: 0px;\n}\nbody {\n    background-color: #5D1719;\n    margin: 0px;\n}\n\n.vrbutton\n{\n    font-family: 'Kameron', serif;\n    font-size: 20px;\n    color:#9f7909;\n    border-color: #9f7909;\n    border-width: 8px;\n    width: 30%;\n    height: 10%;\n    position: absolute;\n    bottom: 20px;\n}\n\na:link {\n    color: #ff8020;\n}\na:visited {\n    color: #cc5010;\n}\na:hover {\n    color: #ee6010;\n}\n.ui_container\n{\n    position: absolute;\n    top: 0%;\n    left: 2.5%;\n    height: 100%;\n    width: 95%;\n}\n.ui_backplate\n{\n    background-color: #5D1719;\n    opacity: 100%;\n    position: absolute;\n    /* top: 2.5%;\n    left: 2.5%;\n    height: 95%;\n    width: 95%; */\n    top: 0px;\n    left: 0px;\n    height: 100%;\n    width: 100%;\n    /* margin-left: auto;\n    margin-right: auto; */\n}\n.title_image {\n    max-width: 100%;\n    display: block;\n    margin-left: auto;\n    margin-right: auto;\n    /* padding-top: 12px; */\n    padding-top: 12px;\n    width: 30%;\n    height: auto;\n    transition: width 0.7s, height 0.7s;\n    transition-timing-function: ease-in-out;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n}\n.configuration_label\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    /* 32px; */\n    color:#9f7909;\n    background-color: #000000;\n    \n    height: 40px;\n    padding-top: 6px;\n    margin-top: auto;\n    margin-bottom: auto;    \n    display:inline;\n}\n.configuration_container\n{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    /* height: 20%; */\n    width: 100%;\n    margin-top: -30px;\n    /* border: 3px solid green; */\n}\n.configuration_group\n{\n    display: block;\n    width: 70%;\n    max-width: 800px;\n    /* min-width: 400px; */\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 0.9vw;\n    border-style: solid;\n    margin: 32px;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n    /* height: 30%; */\n}\n.ok_cancel_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    /* margin: 4px; */\n    width: 40%;\n    /* height: 40%; */\n}\n.button_container\n{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 70%;\n    margin-left: 15%;\n    margin-top: 5px;\n    /* border: 3px solid green; */\n}\n.button_group\n{\n    width: 40%;\n    display: block;\n    /* border: 3px solid red; */\n}\nbutton\n{\n    font-family: 'Kameron', sans-serif;\n    /* font-size: 48px; */\n    font-size: 5vw;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 0.9vw;\n    /* 12px */\n    border-style: solid;\n    margin: 4px;\n    width: 100%;\n    height: 50%;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n}\nbutton:disabled\n{\n    color:#83713a;\n    border-color: #83713a;\n}\n.webxr_not_found\n{\n    /* color:#8d1414; */\n    /* border-color: #8d1414; */\n    color:#9f7909;\n    border-color:#9f7909;\n    font-size: 2vw;\n}\n\n.plus_minus_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    border-radius: 50%;\n    /* margin: 4px; */\n    width: 40px;\n    height: 40px;\n}\n\n.plus_minus_container\n{\n    display: flex;\n    justify-content: flex-start;\n    width: 90%;\n    margin-left: 5%;\n    /* border: 3px solid red; */\n}\n.plus_minus_container:not first-child\n{\n    justify-content: flex-end;\n}\n\n.next_prev_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    /* border-radius: 25%; */\n    /* margin: 4px; */\n    /* margin-top: 33%; */\n    width: 40px;\n    height: auto;\n}\n.workout_description_text\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 22px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7a0940;\n     /* // #303030; */\n    border-width: 2px;\n    border-style: solid;\n    /* border-radius: 25%; */\n    /* margin: 4px; */\n    margin: 6px;\n    width: 100%;\n    height: 110px;\n    padding: 9px;\n    padding-left: 8px;\n    padding-right: 8px;\n\n}\nul \n{\n    /* list-style-type: none; */\n    margin: 0;\n    /* padding: 0; */\n}\n\n.push_right\n{\n    margin-left: auto;\n}\n.about_panel_container\n{\n    display: flex;\n    justify-content: center;\n    /* align-items: center; */\n    width: 100%;\n    height: 20%;\n    padding: 16px;\n    border: 3px solid green;\n}\n.about_panel_group\n{\n    display: block;\n    /* justify-content: center; */\n    width: 90%;\n    height: 100%;\n\n    border:#9f7909;\n    border-style: solid;\n    border-width: 8px;\n    background-color: black;\n\n    margin-top: 1vh;\n}\n.about_panel_iframe\n{\n    border-style:none;\n    width: 100%;\n    min-height: 35vh;\n\n    /* border:yellowgreen;\n    border-width: 8px;\n    border-style: solid; */\n}\n.about_close_button\n{\n    font-size: 32px;\n    display: block;\n    height: auto;\n    width: 50%;\n    margin-left: 25%;\n    border-width: 6px;\n    justify-content: center;\n    box-shadow: none;\n}\n\n\n.app_version_text\n{\n    /* display: block; */\n    padding-bottom: 0%;\n\n    display: flex;\n    justify-content: center;\n\n    font-family: 'Kameron', sans-serif;\n    font-size: 16px;\n    color:#9f7909;\n}\n\n\n@media only screen and (orientation: portrait) {\n    /* .title_image\n    {\n        width: auto;\n        height: 25%;     \n    } \n    */\n    .button_container\n    {\n        width: 90%;\n        margin-left: 5%;\n    }\n    .button_group\n    {\n        width: 80%;\n    }\n  }", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":["html, body {\n    overflow: hidden;\n  }\n\n.buttonText {\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    color:#9f7909;\n}\n.descriptionText {\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color: #e0e0e0;\n}\n.descriptionBox {\n    background-color: #505050;\n    opacity: 100%;\n    padding-left: 24px;\n    padding-right: 16px;\n    padding-top: 0px;\n    padding-bottom: 0px;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    position: relative;\n    top: 0px;\n}\n.titleBox {\n    background-color: #cc5010;\n    padding-left: 24px;\n    padding-right: 16px;\n    padding-top: 0px;\n    padding-bottom: 0px;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    text-align: center;\n    opacity: 100%;\n}\n.box {\n    background-color: #505050;\n    opacity: 100%;\n    padding: 2vw;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    position: relative;\n    top: 0px;\n}\nbody {\n    background-color: #5D1719;\n    margin: 0px;\n}\n\n.vrbutton\n{\n    font-family: 'Kameron', serif;\n    font-size: 20px;\n    color:#9f7909;\n    border-color: #9f7909;\n    border-width: 8px;\n    width: 30%;\n    height: 10%;\n    position: absolute;\n    bottom: 20px;\n}\n\na:link {\n    color: #ff8020;\n}\na:visited {\n    color: #cc5010;\n}\na:hover {\n    color: #ee6010;\n}\n.ui_container\n{\n    position: absolute;\n    top: 0%;\n    left: 2.5%;\n    height: 100%;\n    width: 95%;\n}\n.ui_backplate\n{\n    background-color: #5D1719;\n    opacity: 100%;\n    position: absolute;\n    /* top: 2.5%;\n    left: 2.5%;\n    height: 95%;\n    width: 95%; */\n    top: 0px;\n    left: 0px;\n    height: 100%;\n    width: 100%;\n    /* margin-left: auto;\n    margin-right: auto; */\n}\n.title_image {\n    max-width: 100%;\n    display: block;\n    margin-left: auto;\n    margin-right: auto;\n    /* padding-top: 12px; */\n    padding-top: 12px;\n    width: 30%;\n    height: auto;\n    transition: width 0.7s, height 0.7s;\n    transition-timing-function: ease-in-out;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n}\n.configuration_label\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    /* 32px; */\n    color:#9f7909;\n    background-color: #000000;\n    \n    height: 40px;\n    padding-top: 6px;\n    margin-top: auto;\n    margin-bottom: auto;    \n    display:inline;\n}\n.configuration_container\n{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    /* height: 20%; */\n    width: 100%;\n    margin-top: -30px;\n    /* border: 3px solid green; */\n}\n.configuration_group\n{\n    display: block;\n    width: 70%;\n    max-width: 800px;\n    /* min-width: 400px; */\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 0.9vw;\n    border-style: solid;\n    margin: 32px;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n    /* height: 30%; */\n}\n.ok_cancel_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    /* margin: 4px; */\n    width: 40%;\n    /* height: 40%; */\n}\n.button_container\n{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 70%;\n    margin-left: 15%;\n    margin-top: 5px;\n    /* border: 3px solid green; */\n}\n.button_group\n{\n    width: 40%;\n    display: block;\n    /* border: 3px solid red; */\n}\nbutton\n{\n    font-family: 'Kameron', sans-serif;\n    /* font-size: 48px; */\n    font-size: 5vw;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 0.9vw;\n    /* 12px */\n    border-style: solid;\n    margin: 4px;\n    width: 100%;\n    height: 50%;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n}\nbutton:disabled\n{\n    color:#83713a;\n    border-color: #83713a;\n}\n.webxr_not_found\n{\n    /* color:#8d1414; */\n    /* border-color: #8d1414; */\n    color:#9f7909;\n    border-color:#9f7909;\n    font-size: 2vw;\n}\n\n.plus_minus_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    border-radius: 50%;\n    /* margin: 4px; */\n    width: 40px;\n    height: 40px;\n}\n\n.plus_minus_container\n{\n    display: flex;\n    justify-content: flex-start;\n    width: 90%;\n    margin-left: 5%;\n    /* border: 3px solid red; */\n}\n.plus_minus_container:not first-child\n{\n    justify-content: flex-end;\n}\n\n.next_prev_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    /* border-radius: 25%; */\n    /* margin: 4px; */\n    /* margin-top: 33%; */\n    width: 40px;\n    height: auto;\n}\n.workout_description_text\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 22px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7a0940;\n     /* // #303030; */\n    border-width: 2px;\n    border-style: solid;\n    /* border-radius: 25%; */\n    /* margin: 4px; */\n    margin: 6px;\n    width: 100%;\n    height: 110px;\n    padding: 9px;\n    padding-left: 8px;\n    padding-right: 8px;\n\n}\nul \n{\n    /* list-style-type: none; */\n    margin: 0;\n    /* padding: 0; */\n}\n\n.push_right\n{\n    margin-left: auto;\n}\n.about_panel_container\n{\n    display: flex;\n    justify-content: center;\n    /* align-items: center; */\n    width: 100%;\n    height: 20%;\n    padding: 16px;\n    border: 3px solid green;\n}\n.about_panel_group\n{\n    display: block;\n    /* justify-content: center; */\n    width: 90%;\n    height: 100%;\n\n    border:#9f7909;\n    border-style: solid;\n    border-width: 8px;\n    background-color: black;\n\n    margin-top: 1vh;\n}\n.about_panel_iframe\n{\n    border-style:none;\n    width: 100%;\n    min-height: 35vh;\n\n    /* border:yellowgreen;\n    border-width: 8px;\n    border-style: solid; */\n}\n.about_close_button\n{\n    font-size: 32px;\n    display: block;\n    height: auto;\n    width: 50%;\n    margin-left: 25%;\n    border-width: 6px;\n    justify-content: center;\n    box-shadow: none;\n}\n\n\n.app_version_text\n{\n    /* display: block; */\n    padding-bottom: 0%;\n\n    display: flex;\n    justify-content: center;\n\n    font-family: 'Kameron', sans-serif;\n    font-size: 16px;\n    color:#9f7909;\n}\n\n\n@media only screen and (orientation: portrait) {\n    /* .title_image\n    {\n        width: auto;\n        height: 25%;     \n    } \n    */\n    .button_container\n    {\n        width: 90%;\n        margin-left: 5%;\n    }\n    .button_group\n    {\n        width: 80%;\n    }\n  }"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -12536,14 +12536,6 @@ vec4 sampleTexture() {
 
 void main() {
 
-	vec4 textureSample = sampleTexture();
-	vec3 blendedColor = textureSample.rgb * u_color;
-	float blendedOpacity = u_opacity * textureSample.a;
-	vec4 frameColor = vec4( blendedColor, blendedOpacity );
-
-	gl_FragColor = frameColor; //vec4(u_color, 1.0);
-
-	/*
 	float edgeDist = getEdgeDist();
 	float change = fwidth( edgeDist );
 
@@ -12562,7 +12554,6 @@ void main() {
 		float stp = smoothstep( edgeDist + change, edgeDist, u_borderWidth * -1.0 );
 		gl_FragColor = mix( frameColor, borderColor, stp );
 	}
-	*/
 
 	#include <clipping_planes_fragment>
 }
@@ -12835,16 +12826,17 @@ function computeMikkTSpaceTangents( geometry, MikkTSpace, negateSign = true ) {
 
 		if ( attribute.normalized || attribute.isInterleavedBufferAttribute ) {
 
+			const srcArray = attribute.isInterleavedBufferAttribute ? attribute.data.array : attribute.array;
 			const dstArray = new Float32Array( attribute.getCount() * attribute.itemSize );
 
 			for ( let i = 0, j = 0; i < attribute.getCount(); i ++ ) {
 
-				dstArray[ j ++ ] = attribute.getX( i );
-				dstArray[ j ++ ] = attribute.getY( i );
+				dstArray[ j ++ ] = MathUtils.denormalize( attribute.getX( i ), srcArray );
+				dstArray[ j ++ ] = MathUtils.denormalize( attribute.getY( i ), srcArray );
 
 				if ( attribute.itemSize > 2 ) {
 
-					dstArray[ j ++ ] = attribute.getZ( i );
+					dstArray[ j ++ ] = MathUtils.denormalize( attribute.getZ( i ), srcArray );
 
 				}
 
@@ -13183,7 +13175,7 @@ function interleaveAttributes( attributes ) {
 	let arrayLength = 0;
 	let stride = 0;
 
-	// calculate the length and type of the interleavedBuffer
+	// calculate the the length and type of the interleavedBuffer
 	for ( let i = 0, l = attributes.length; i < l; ++ i ) {
 
 		const attribute = attributes[ i ];
@@ -13353,7 +13345,7 @@ function estimateBytesUsed( geometry ) {
 /**
  * @param {BufferGeometry} geometry
  * @param {number} tolerance
- * @return {BufferGeometry}
+ * @return {BufferGeometry>}
  */
 function mergeVertices( geometry, tolerance = 1e-4 ) {
 
@@ -13371,33 +13363,22 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 	// attributes and new attribute arrays
 	const attributeNames = Object.keys( geometry.attributes );
-	const tmpAttributes = {};
-	const tmpMorphAttributes = {};
+	const attrArrays = {};
+	const morphAttrsArrays = {};
 	const newIndices = [];
 	const getters = [ 'getX', 'getY', 'getZ', 'getW' ];
-	const setters = [ 'setX', 'setY', 'setZ', 'setW' ];
 
-	// Initialize the arrays, allocating space conservatively. Extra
-	// space will be trimmed in the last step.
+	// initialize the arrays
 	for ( let i = 0, l = attributeNames.length; i < l; i ++ ) {
 
 		const name = attributeNames[ i ];
-		const attr = geometry.attributes[ name ];
 
-		tmpAttributes[ name ] = new BufferAttribute(
-			new attr.array.constructor( attr.count * attr.itemSize ),
-			attr.itemSize,
-			attr.normalized
-		);
+		attrArrays[ name ] = [];
 
 		const morphAttr = geometry.morphAttributes[ name ];
 		if ( morphAttr ) {
 
-			tmpMorphAttributes[ name ] = new BufferAttribute(
-				new morphAttr.array.constructor( morphAttr.count * morphAttr.itemSize ),
-				morphAttr.itemSize,
-				morphAttr.normalized
-			);
+			morphAttrsArrays[ name ] = new Array( morphAttr.length ).fill().map( () => [] );
 
 		}
 
@@ -13435,27 +13416,26 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 		} else {
 
-			// copy data to the new index in the temporary attributes
+			// copy data to the new index in the attribute arrays
 			for ( let j = 0, l = attributeNames.length; j < l; j ++ ) {
 
 				const name = attributeNames[ j ];
 				const attribute = geometry.getAttribute( name );
 				const morphAttr = geometry.morphAttributes[ name ];
 				const itemSize = attribute.itemSize;
-				const newarray = tmpAttributes[ name ];
-				const newMorphArrays = tmpMorphAttributes[ name ];
+				const newarray = attrArrays[ name ];
+				const newMorphArrays = morphAttrsArrays[ name ];
 
 				for ( let k = 0; k < itemSize; k ++ ) {
 
 					const getterFunc = getters[ k ];
-					const setterFunc = setters[ k ];
-					newarray[ setterFunc ]( nextIndex, attribute[ getterFunc ]( index ) );
+					newarray.push( attribute[ getterFunc ]( index ) );
 
 					if ( morphAttr ) {
 
 						for ( let m = 0, ml = morphAttr.length; m < ml; m ++ ) {
 
-							newMorphArrays[ m ][ setterFunc ]( nextIndex, morphAttr[ m ][ getterFunc ]( index ) );
+							newMorphArrays[ m ].push( morphAttr[ m ][ getterFunc ]( index ) );
 
 						}
 
@@ -13473,29 +13453,31 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 	}
 
-	// generate result BufferGeometry
+	// Generate typed arrays from new attribute arrays and update
+	// the attributeBuffers
 	const result = geometry.clone();
-	for ( const name in geometry.attributes ) {
+	for ( let i = 0, l = attributeNames.length; i < l; i ++ ) {
 
-		const tmpAttribute = tmpAttributes[ name ];
+		const name = attributeNames[ i ];
+		const oldAttribute = geometry.getAttribute( name );
 
-		result.setAttribute( name, new BufferAttribute(
-			tmpAttribute.array.slice( 0, nextIndex * tmpAttribute.itemSize ),
-			tmpAttribute.itemSize,
-			tmpAttribute.normalized,
-		) );
+		const buffer = new oldAttribute.array.constructor( attrArrays[ name ] );
+		const attribute = new BufferAttribute( buffer, oldAttribute.itemSize, oldAttribute.normalized );
 
-		if ( ! ( name in tmpMorphAttributes ) ) continue;
+		result.setAttribute( name, attribute );
 
-		for ( let j = 0; j < tmpMorphAttributes[ name ].length; j ++ ) {
+		// Update the attribute arrays
+		if ( name in morphAttrsArrays ) {
 
-			const tmpMorphAttribute = tmpMorphAttributes[ name ][ j ];
+			for ( let j = 0; j < morphAttrsArrays[ name ].length; j ++ ) {
 
-			result.morphAttributes[ name ][ j ] = new BufferAttribute(
-				tmpMorphAttribute.array.slice( 0, nextIndex * tmpMorphAttribute.itemSize ),
-				tmpMorphAttribute.itemSize,
-				tmpMorphAttribute.normalized,
-			);
+				const oldMorphAttribute = geometry.morphAttributes[ name ][ j ];
+
+				const buffer = new oldMorphAttribute.array.constructor( morphAttrsArrays[ name ][ j ] );
+				const morphAttribute = new BufferAttribute( buffer, oldMorphAttribute.itemSize, oldMorphAttribute.normalized );
+				result.morphAttributes[ name ][ j ] = morphAttribute;
+
+			}
 
 		}
 
@@ -13512,7 +13494,7 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 /**
  * @param {BufferGeometry} geometry
  * @param {number} drawMode
- * @return {BufferGeometry}
+ * @return {BufferGeometry>}
  */
 function toTrianglesDrawMode( geometry, drawMode ) {
 
@@ -16046,7 +16028,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @license
  * webxr-layers-polyfill
- * Version 1.0.5
+ * Version 1.1.0
  * Copyright (c) 2021 Facebook, Inc. and its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16315,7 +16297,6 @@ class XRCompositionLayerPolyfill {
             this.context = context;
         }
         this.blendTextureSourceAlpha = true;
-        this.chromaticAberrationCorrection = false;
     }
     destroy() {
         this._colorTextures = [];
@@ -25094,8 +25075,8 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9.3&beta;";
-        // appVersionText.innerHTML = "Version 0.9";
+        // appVersionText.innerHTML = "Version 0.9.3&beta;";
+        // appVersionText.innerHTML = "Version 0.9.3";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -25460,8 +25441,8 @@ class PageUI
         this.uiStartButton.innerHTML = "Click here to try it on your Meta Quest Headset.";
         this.uiStartButton.classList.add("webxr_not_found");
         this.uiStartButton.disabled = false;
-        this.uiARVRButton.style.display = "none";
-        this.uiARVRButton.disabled = true;
+        // this.uiARVRButton.style.display = "none";
+        // this.uiARVRButton.disabled = true;
         this.uiStartButton.onclick = () => {
             let hasParam = window.location.href.match('[?]');
             console.log("hasParam = " + hasParam);
@@ -61315,16 +61296,47 @@ function WebGLRenderer( parameters = {} ) {
 
 		const overrideMaterial = scene.isScene === true ? scene.overrideMaterial : null;
 
-		for ( let i = 0, l = renderList.length; i < l; i ++ ) {
+		if ( camera.isArrayCamera ) {
 
-			const renderItem = renderList[ i ];
+			const cameras = camera.cameras;
 
-			const object = renderItem.object;
-			const geometry = renderItem.geometry;
-			const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
-			const group = renderItem.group;
+			for ( let i = 0, l = cameras.length; i < l; i ++ ) {
 
-			if ( object.layers.test( camera.layers ) ) {
+				const camera2 = cameras[ i ];
+
+				state.viewport( _currentViewport.copy( camera2.viewport ) );
+
+				currentRenderState.setupLightsView( camera2 );
+
+				for ( let j = 0, jl = renderList.length; j < jl; j ++ ) {
+
+					const renderItem = renderList[ j ];
+
+					const object = renderItem.object;
+					const geometry = renderItem.geometry;
+					const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
+					const group = renderItem.group;
+
+					if ( object.layers.test( camera2.layers ) ) {
+
+						renderObject( object, scene, camera2, geometry, material, group );
+
+					}
+
+				}
+
+			}
+
+		} else {
+
+			for ( let j = 0, jl = renderList.length; j < jl; j ++ ) {
+
+				const renderItem = renderList[ j ];
+
+				const object = renderItem.object;
+				const geometry = renderItem.geometry;
+				const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
+				const group = renderItem.group;
 
 				renderObject( object, scene, camera, geometry, material, group );
 
@@ -83311,6 +83323,7 @@ if ( typeof window !== 'undefined' ) {
 }
 
 
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGhyZWUubW9kdWxlLmpzIiwic291cmNlcyI6W10sInNvdXJjZXNDb250ZW50IjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiJ9
 
 
 /***/ }),
