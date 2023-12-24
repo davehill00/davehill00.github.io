@@ -12536,6 +12536,14 @@ vec4 sampleTexture() {
 
 void main() {
 
+	vec4 textureSample = sampleTexture();
+	vec3 blendedColor = textureSample.rgb * u_color;
+	float blendedOpacity = u_opacity * textureSample.a;
+	vec4 frameColor = vec4( blendedColor, blendedOpacity );
+
+	gl_FragColor = frameColor; //vec4(u_color, 1.0);
+
+	/*
 	float edgeDist = getEdgeDist();
 	float change = fwidth( edgeDist );
 
@@ -12554,6 +12562,7 @@ void main() {
 		float stp = smoothstep( edgeDist + change, edgeDist, u_borderWidth * -1.0 );
 		gl_FragColor = mix( frameColor, borderColor, stp );
 	}
+	*/
 
 	#include <clipping_planes_fragment>
 }
@@ -12826,17 +12835,16 @@ function computeMikkTSpaceTangents( geometry, MikkTSpace, negateSign = true ) {
 
 		if ( attribute.normalized || attribute.isInterleavedBufferAttribute ) {
 
-			const srcArray = attribute.isInterleavedBufferAttribute ? attribute.data.array : attribute.array;
 			const dstArray = new Float32Array( attribute.getCount() * attribute.itemSize );
 
 			for ( let i = 0, j = 0; i < attribute.getCount(); i ++ ) {
 
-				dstArray[ j ++ ] = MathUtils.denormalize( attribute.getX( i ), srcArray );
-				dstArray[ j ++ ] = MathUtils.denormalize( attribute.getY( i ), srcArray );
+				dstArray[ j ++ ] = attribute.getX( i );
+				dstArray[ j ++ ] = attribute.getY( i );
 
 				if ( attribute.itemSize > 2 ) {
 
-					dstArray[ j ++ ] = MathUtils.denormalize( attribute.getZ( i ), srcArray );
+					dstArray[ j ++ ] = attribute.getZ( i );
 
 				}
 
@@ -13175,7 +13183,7 @@ function interleaveAttributes( attributes ) {
 	let arrayLength = 0;
 	let stride = 0;
 
-	// calculate the the length and type of the interleavedBuffer
+	// calculate the length and type of the interleavedBuffer
 	for ( let i = 0, l = attributes.length; i < l; ++ i ) {
 
 		const attribute = attributes[ i ];
@@ -13345,7 +13353,7 @@ function estimateBytesUsed( geometry ) {
 /**
  * @param {BufferGeometry} geometry
  * @param {number} tolerance
- * @return {BufferGeometry>}
+ * @return {BufferGeometry}
  */
 function mergeVertices( geometry, tolerance = 1e-4 ) {
 
@@ -13363,22 +13371,33 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 	// attributes and new attribute arrays
 	const attributeNames = Object.keys( geometry.attributes );
-	const attrArrays = {};
-	const morphAttrsArrays = {};
+	const tmpAttributes = {};
+	const tmpMorphAttributes = {};
 	const newIndices = [];
 	const getters = [ 'getX', 'getY', 'getZ', 'getW' ];
+	const setters = [ 'setX', 'setY', 'setZ', 'setW' ];
 
-	// initialize the arrays
+	// Initialize the arrays, allocating space conservatively. Extra
+	// space will be trimmed in the last step.
 	for ( let i = 0, l = attributeNames.length; i < l; i ++ ) {
 
 		const name = attributeNames[ i ];
+		const attr = geometry.attributes[ name ];
 
-		attrArrays[ name ] = [];
+		tmpAttributes[ name ] = new BufferAttribute(
+			new attr.array.constructor( attr.count * attr.itemSize ),
+			attr.itemSize,
+			attr.normalized
+		);
 
 		const morphAttr = geometry.morphAttributes[ name ];
 		if ( morphAttr ) {
 
-			morphAttrsArrays[ name ] = new Array( morphAttr.length ).fill().map( () => [] );
+			tmpMorphAttributes[ name ] = new BufferAttribute(
+				new morphAttr.array.constructor( morphAttr.count * morphAttr.itemSize ),
+				morphAttr.itemSize,
+				morphAttr.normalized
+			);
 
 		}
 
@@ -13416,26 +13435,27 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 		} else {
 
-			// copy data to the new index in the attribute arrays
+			// copy data to the new index in the temporary attributes
 			for ( let j = 0, l = attributeNames.length; j < l; j ++ ) {
 
 				const name = attributeNames[ j ];
 				const attribute = geometry.getAttribute( name );
 				const morphAttr = geometry.morphAttributes[ name ];
 				const itemSize = attribute.itemSize;
-				const newarray = attrArrays[ name ];
-				const newMorphArrays = morphAttrsArrays[ name ];
+				const newarray = tmpAttributes[ name ];
+				const newMorphArrays = tmpMorphAttributes[ name ];
 
 				for ( let k = 0; k < itemSize; k ++ ) {
 
 					const getterFunc = getters[ k ];
-					newarray.push( attribute[ getterFunc ]( index ) );
+					const setterFunc = setters[ k ];
+					newarray[ setterFunc ]( nextIndex, attribute[ getterFunc ]( index ) );
 
 					if ( morphAttr ) {
 
 						for ( let m = 0, ml = morphAttr.length; m < ml; m ++ ) {
 
-							newMorphArrays[ m ].push( morphAttr[ m ][ getterFunc ]( index ) );
+							newMorphArrays[ m ][ setterFunc ]( nextIndex, morphAttr[ m ][ getterFunc ]( index ) );
 
 						}
 
@@ -13453,31 +13473,29 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 
 	}
 
-	// Generate typed arrays from new attribute arrays and update
-	// the attributeBuffers
+	// generate result BufferGeometry
 	const result = geometry.clone();
-	for ( let i = 0, l = attributeNames.length; i < l; i ++ ) {
+	for ( const name in geometry.attributes ) {
 
-		const name = attributeNames[ i ];
-		const oldAttribute = geometry.getAttribute( name );
+		const tmpAttribute = tmpAttributes[ name ];
 
-		const buffer = new oldAttribute.array.constructor( attrArrays[ name ] );
-		const attribute = new BufferAttribute( buffer, oldAttribute.itemSize, oldAttribute.normalized );
+		result.setAttribute( name, new BufferAttribute(
+			tmpAttribute.array.slice( 0, nextIndex * tmpAttribute.itemSize ),
+			tmpAttribute.itemSize,
+			tmpAttribute.normalized,
+		) );
 
-		result.setAttribute( name, attribute );
+		if ( ! ( name in tmpMorphAttributes ) ) continue;
 
-		// Update the attribute arrays
-		if ( name in morphAttrsArrays ) {
+		for ( let j = 0; j < tmpMorphAttributes[ name ].length; j ++ ) {
 
-			for ( let j = 0; j < morphAttrsArrays[ name ].length; j ++ ) {
+			const tmpMorphAttribute = tmpMorphAttributes[ name ][ j ];
 
-				const oldMorphAttribute = geometry.morphAttributes[ name ][ j ];
-
-				const buffer = new oldMorphAttribute.array.constructor( morphAttrsArrays[ name ][ j ] );
-				const morphAttribute = new BufferAttribute( buffer, oldMorphAttribute.itemSize, oldMorphAttribute.normalized );
-				result.morphAttributes[ name ][ j ] = morphAttribute;
-
-			}
+			result.morphAttributes[ name ][ j ] = new BufferAttribute(
+				tmpMorphAttribute.array.slice( 0, nextIndex * tmpMorphAttribute.itemSize ),
+				tmpMorphAttribute.itemSize,
+				tmpMorphAttribute.normalized,
+			);
 
 		}
 
@@ -13494,7 +13512,7 @@ function mergeVertices( geometry, tolerance = 1e-4 ) {
 /**
  * @param {BufferGeometry} geometry
  * @param {number} drawMode
- * @return {BufferGeometry>}
+ * @return {BufferGeometry}
  */
 function toTrianglesDrawMode( geometry, drawMode ) {
 
@@ -20484,11 +20502,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "gControllers": () => (/* binding */ gControllers),
 /* harmony export */   "setDirectionalLightPositionFromBlenderQuaternion": () => (/* binding */ setDirectionalLightPositionFromBlenderQuaternion)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! three/examples/jsm/loaders/BasisTextureLoader.js */ "./node_modules/three/examples/jsm/loaders/BasisTextureLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! three/examples/jsm/loaders/TGALoader.js */ "./node_modules/three/examples/jsm/loaders/TGALoader.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! three/examples/jsm/loaders/BasisTextureLoader.js */ "./node_modules/three/examples/jsm/loaders/BasisTextureLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! three/examples/jsm/loaders/TGALoader.js */ "./node_modules/three/examples/jsm/loaders/TGALoader.js");
 /* harmony import */ var _overrideXRFrameGetViewerPose_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./overrideXRFrameGetViewerPose.js */ "./src/overrideXRFrameGetViewerPose.js");
 /* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
 /* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
@@ -20496,12 +20514,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
 /* harmony import */ var _playerHud_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./playerHud.js */ "./src/playerHud.js");
 /* harmony import */ var _controllers_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./controllers.js */ "./src/controllers.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
-/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
-/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
-/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
-/* harmony import */ var _textBox_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./textBox.js */ "./src/textBox.js");
-/* harmony import */ var _menu_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./menu.js */ "./src/menu.js");
+/* harmony import */ var _music_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./music.js */ "./src/music.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
+/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
+/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
+/* harmony import */ var _textBox_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./textBox.js */ "./src/textBox.js");
+/* harmony import */ var _menu_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./menu.js */ "./src/menu.js");
+
 
 
 
@@ -20517,6 +20537,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var inputProfilesList = __webpack_require__( /*! @webxr-input-profiles/registry/dist/profilesList.json */ "./node_modules/@webxr-input-profiles/registry/dist/profilesList.json");
 // import * as TWEEN from '@tweenjs/tween.js';
+
 
 
 
@@ -20556,6 +20577,8 @@ let leftHand = {};
 let rightHand = {};
 
 let audioListener = null;
+let musicManager = null;
+
 let heavyBag  = null;
 let doubleEndedBag = null;
 
@@ -20573,11 +20596,11 @@ let basisLoader = null;
 let envMapObjects = {}
 let hud = null;
 let pageUI = null;
-let clearColorBlack = new three__WEBPACK_IMPORTED_MODULE_13__.Color(0x000000);
-let clearColorQuadScene = new three__WEBPACK_IMPORTED_MODULE_13__.Color(0x808080);
+let clearColorBlack = new three__WEBPACK_IMPORTED_MODULE_14__.Color(0x000000);
+let clearColorQuadScene = new three__WEBPACK_IMPORTED_MODULE_14__.Color(0x808080);
 let menu = null;
 
-const blackoutMaterial = new three__WEBPACK_IMPORTED_MODULE_13__.MeshBasicMaterial(
+const blackoutMaterial = new three__WEBPACK_IMPORTED_MODULE_14__.MeshBasicMaterial(
     {
         color:0x000000, 
         opacity:0.0, 
@@ -20586,8 +20609,8 @@ const blackoutMaterial = new three__WEBPACK_IMPORTED_MODULE_13__.MeshBasicMateri
         fog: false
     }
 );
-const blackoutQuad = new three__WEBPACK_IMPORTED_MODULE_13__.Mesh(
-    new three__WEBPACK_IMPORTED_MODULE_13__.PlaneGeometry(1000.0, 1000.0, 1, 1),
+const blackoutQuad = new three__WEBPACK_IMPORTED_MODULE_14__.Mesh(
+    new three__WEBPACK_IMPORTED_MODULE_14__.PlaneGeometry(1000.0, 1000.0, 1, 1),
     blackoutMaterial);
 blackoutQuad.position.z = -0.1;
 let bDoBlackoutFade = false;
@@ -20597,8 +20620,8 @@ let kBlackoutFadeInTime = 0.5;
 
 let gControllers = null;
 
-let matrixOverridePose = new three__WEBPACK_IMPORTED_MODULE_13__.Matrix4().compose(
-    new three__WEBPACK_IMPORTED_MODULE_13__.Vector3(0,1.6,0), new three__WEBPACK_IMPORTED_MODULE_13__.Quaternion().setFromEuler(new three__WEBPACK_IMPORTED_MODULE_13__.Euler(-0.707, 0, 0)), new three__WEBPACK_IMPORTED_MODULE_13__.Vector3(1,1,1));
+let matrixOverridePose = new three__WEBPACK_IMPORTED_MODULE_14__.Matrix4().compose(
+    new three__WEBPACK_IMPORTED_MODULE_14__.Vector3(0,1.6,0), new three__WEBPACK_IMPORTED_MODULE_14__.Quaternion().setFromEuler(new three__WEBPACK_IMPORTED_MODULE_14__.Euler(-0.707, 0, 0)), new three__WEBPACK_IMPORTED_MODULE_14__.Vector3(1,1,1));
 
 // OverrideXRFrameGetViewerPose(matrixOverridePose.toArray()); // Enable this to hard-code the viewpoint for consistent performance testing
 
@@ -20606,8 +20629,8 @@ initialize();
 
 function initialize()
 {
-    scene = new three__WEBPACK_IMPORTED_MODULE_13__.Scene();
-    camera = new three__WEBPACK_IMPORTED_MODULE_13__.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 30);
+    scene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
+    camera = new three__WEBPACK_IMPORTED_MODULE_14__.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 30);
     camera.position.z = 0.0;
     camera.position.y = 1.3;
     //camera.rotation.x = -0.17;
@@ -20616,12 +20639,13 @@ function initialize()
 
     scene.add(camera);
 
-    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_8__.StatsHud(camera);
+    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_9__.StatsHud(camera);
 
-    audioListener = new three__WEBPACK_IMPORTED_MODULE_13__.AudioListener();
+    audioListener = new three__WEBPACK_IMPORTED_MODULE_14__.AudioListener();
     camera.add( audioListener );
+    musicManager = new _music_js__WEBPACK_IMPORTED_MODULE_7__.MusicManager(audioListener);
 
-    renderer = new three__WEBPACK_IMPORTED_MODULE_13__.WebGLRenderer( {antialias: true, precision: 'highp'});
+    renderer = new three__WEBPACK_IMPORTED_MODULE_14__.WebGLRenderer( {antialias: true, precision: 'highp'});
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
@@ -20630,10 +20654,10 @@ function initialize()
 
     let qH = 0.52;
     let qW = 0.52 * 16/10;
-    quadCamera = new three__WEBPACK_IMPORTED_MODULE_13__.OrthographicCamera(-qW, qW, qH, -qH, 0.01, 100)
+    quadCamera = new three__WEBPACK_IMPORTED_MODULE_14__.OrthographicCamera(-qW, qW, qH, -qH, 0.01, 100)
     quadCamera.position.z = 3;
 
-    quadScene = new three__WEBPACK_IMPORTED_MODULE_13__.Scene();
+    quadScene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
     // quadScene.add(new THREE.DirectionalLight(0x808080, 3.0));
     // quadScene.add(new THREE.HemisphereLight(0xeeeeff, 0xaa9944, 0.2));
     quadScene.add(quadCamera);
@@ -20646,23 +20670,23 @@ function initialize()
     renderer.setClearColor(clearColorBlack);
  
     renderer.physicallyCorrectLights = true;
-    renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_13__.sRGBEncoding;
+    renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_14__.sRGBEncoding;
     // renderer.shadowMap.enabled = true;
     // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_13__.ACESFilmicToneMapping;
+    renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_14__.ACESFilmicToneMapping;
     // renderer.toneMappingExposure = 1.25;
 
     renderer.domElement.setAttribute("data-html2canvas-ignore", "true");
     document.body.appendChild(renderer.domElement);
     // document.body.appendChild(quadRenderer.domElement);
-    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_9__.PageUI(renderer);
+    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_10__.PageUI(renderer);
     // pageUI.checkForXR();
 
 
     // document.body.appendChild(renderer.domElement);
 
-    clock = new three__WEBPACK_IMPORTED_MODULE_13__.Clock();
+    clock = new three__WEBPACK_IMPORTED_MODULE_14__.Clock();
 
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
@@ -20676,9 +20700,9 @@ function initialize()
     gControllers = new _controllers_js__WEBPACK_IMPORTED_MODULE_6__.Controllers(scene, renderer);
 
     initGlovesAndBag(scene, camera, renderer);
-    (0,_textBox_js__WEBPACK_IMPORTED_MODULE_11__.initializeTextBoxSystem)();
+    (0,_textBox_js__WEBPACK_IMPORTED_MODULE_12__.initializeTextBoxSystem)();
 
-    menu = new _menu_js__WEBPACK_IMPORTED_MODULE_12__.MainMenu(scene, renderer, pageUI);
+    menu = new _menu_js__WEBPACK_IMPORTED_MODULE_13__.MainMenu(scene, renderer, pageUI);
 }
 
 function setupHandForController(hand, controllerSpace, gamepad)
@@ -20757,9 +20781,9 @@ function loadLevelAssets(addLoadingScreenDelay)
     // post-load fixups
 
     
-    const loadingManager = new three__WEBPACK_IMPORTED_MODULE_13__.LoadingManager();
+    const loadingManager = new three__WEBPACK_IMPORTED_MODULE_14__.LoadingManager();
     loadingManager.addHandler(/\.basis$/i, basisLoader);
-    loadingManager.addHandler( /\.tga$/i, new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_14__.TGALoader() );
+    loadingManager.addHandler( /\.tga$/i, new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_15__.TGALoader() );
 
     Promise.all(lightmapPromises)
         
@@ -20767,16 +20791,16 @@ function loadLevelAssets(addLoadingScreenDelay)
             () => {
                 return new Promise( (resolve) => {
                     //console.log("LOAD GLTF");
-                    let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_15__.GLTFLoader(loadingManager);
+                    let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_16__.GLTFLoader(loadingManager);
                     loader.load('./content/gym_v8.gltf', resolve);
                 })
             })
         .then(
             (gltf) => {
-                console.log("GLTF is: " + gltf);
+                // console.log("GLTF is: " + gltf);
                 return new Promise(
                     (resolve) => {
-                    console.log("DO GLTF FIXUPS")
+                    // console.log("DO GLTF FIXUPS")
                     for (let i = 0; i < gltf.scene.children.length; i++)
                     {                
                         let obj = gltf.scene.children[i];
@@ -20789,10 +20813,10 @@ function loadLevelAssets(addLoadingScreenDelay)
                             if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
                             {}
 
-                            console.log("NODE: " + node.name);
+                            // console.log("NODE: " + node.name);
                             let nodeLightmap = lightmaps[node.name];
                             if (nodeLightmap && node.material && 'lightMap' in node.material) {
-                                console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                                // console.log("--> LIGHTMAP: " + nodeLightmap.name);
                                 node.material.lightMap = nodeLightmap;
                                 node.material.lightMapIntensity = 1.0;
                                 node.material.needsUpdate = true;
@@ -20821,13 +20845,13 @@ function loadLevelAssets(addLoadingScreenDelay)
                             }
                         });
 
-                        console.log("OBJECT: " + obj.name);
+                        // console.log("OBJECT: " + obj.name);
                         if (obj.name == "Screen")
                         {
-                            console.log
+                            // console.log
                             obj.material.emissiveIntensity = 0.03;
                             obj.material.color.setRGB(0.86, 0.86, 0.965);
-                            let loader = new three__WEBPACK_IMPORTED_MODULE_13__.TextureLoader();
+                            let loader = new three__WEBPACK_IMPORTED_MODULE_14__.TextureLoader();
                             let tvBkgd = loader.load("./content/tv_background2.png");
                             tvBkgd.flipY = false;
                     
@@ -20847,7 +20871,7 @@ function loadLevelAssets(addLoadingScreenDelay)
                     }
                     scene.add(gltf.scene);
                     initScene(scene, camera, renderer);
-                    console.log("DONE LOADING AND FIXUPS");
+                    // console.log("DONE LOADING AND FIXUPS");
                     resolve();
                 });
             })
@@ -21021,7 +21045,7 @@ function render(time, frame) {
 
 function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX, bQuatY, bQuatZ)
 {
-    const quaternion = new three__WEBPACK_IMPORTED_MODULE_13__.Quaternion(bQuatX, bQuatZ, -bQuatY, bQuatW);
+    const quaternion = new three__WEBPACK_IMPORTED_MODULE_14__.Quaternion(bQuatX, bQuatZ, -bQuatY, bQuatW);
     light.position.set(0.0, 20.0, 0.0);
     light.position.applyQuaternion(quaternion);
 }
@@ -21035,6 +21059,8 @@ function onSessionStart()
         loadingScreen = true;
         setupLoadingScreen();
     }
+
+    musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_7__.MM_INTRO);
 
     menu.onSessionStart();
 
@@ -21203,9 +21229,9 @@ function doPostLoadGameInitialization()
         // quadLayer.height = 0.52;
         // quadLayer.width = quadLayer.height * 16/10;
         // set up the hole-punch mesh in the same place
-        let holePunchMesh = new three__WEBPACK_IMPORTED_MODULE_13__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_13__.PlaneGeometry(2.0 * quadLayer.width, 2.0 * quadLayer.height),
-            new three__WEBPACK_IMPORTED_MODULE_13__.MeshBasicMaterial(
+        let holePunchMesh = new three__WEBPACK_IMPORTED_MODULE_14__.Mesh(
+            new three__WEBPACK_IMPORTED_MODULE_14__.PlaneGeometry(2.0 * quadLayer.width, 2.0 * quadLayer.height),
+            new three__WEBPACK_IMPORTED_MODULE_14__.MeshBasicMaterial(
                 {
                     colorWrite: false,
                 }
@@ -21233,6 +21259,7 @@ function doPostLoadGameInitialization()
         if(e.session.visibilityState === 'visible-blurred') 
         {
             bPause = true;
+            musicManager.onBlur();
             gameLogic.pause();
             if (leftHand.glove)
             {
@@ -21246,6 +21273,7 @@ function doPostLoadGameInitialization()
         else
         {
             bPause = false;
+            musicManager.onFocus();
             gameLogic.resume();
             if (leftHand.glove)
             {
@@ -21272,8 +21300,8 @@ function onSessionEnd()
 let loadingQuadLayer = null;
 let loadingCamera = null;
 let loadingScene = null;
-let loadingScreenQuadLocation = new three__WEBPACK_IMPORTED_MODULE_13__.Vector3(0.0, 1.0, -3.0);
-let loadingScreenQuadQuaternion = new three__WEBPACK_IMPORTED_MODULE_13__.Quaternion();
+let loadingScreenQuadLocation = new three__WEBPACK_IMPORTED_MODULE_14__.Vector3(0.0, 1.0, -3.0);
+let loadingScreenQuadQuaternion = new three__WEBPACK_IMPORTED_MODULE_14__.Quaternion();
 function setupLoadingScreen()
 {
     loadingQuadLayer = renderer.xr.createQuadLayer(1024, 1024, 1.0, 1.0);
@@ -21285,15 +21313,15 @@ function setupLoadingScreen()
     
     //@TODO --- set up loading camera, loading scene, get it rendering while loading is happening (with progress bar?)
 
-    loadingCamera = new three__WEBPACK_IMPORTED_MODULE_13__.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.01, 100)
+    loadingCamera = new three__WEBPACK_IMPORTED_MODULE_14__.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.01, 100)
     loadingCamera.position.z = 20;
 
-    loadingScene = new three__WEBPACK_IMPORTED_MODULE_13__.Scene();
+    loadingScene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
     loadingScene.add(loadingCamera);
-    let logo = new three__WEBPACK_IMPORTED_MODULE_13__.TextureLoader().load('./content/heavy_bag_trainer_logo.png');
-    let loadingScreenMesh = new three__WEBPACK_IMPORTED_MODULE_13__.Mesh(
-        new three__WEBPACK_IMPORTED_MODULE_13__.PlaneGeometry(1.0, 0.5),
-        new three__WEBPACK_IMPORTED_MODULE_13__.MeshBasicMaterial( {color: 0x808080, map: logo} ));
+    let logo = new three__WEBPACK_IMPORTED_MODULE_14__.TextureLoader().load('./content/heavy_bag_trainer_logo.png');
+    let loadingScreenMesh = new three__WEBPACK_IMPORTED_MODULE_14__.Mesh(
+        new three__WEBPACK_IMPORTED_MODULE_14__.PlaneGeometry(1.0, 0.5),
+        new three__WEBPACK_IMPORTED_MODULE_14__.MeshBasicMaterial( {color: 0x808080, map: logo} ));
     loadingScreenMesh.rotation.x = 0.707;
     loadingScreenMesh.position.z = -10
     
@@ -21307,7 +21335,7 @@ function setupLoadingScreen()
     renderer.setAnimationLoop( loadingScreenRender );
 }
 
-let emptyScene = new three__WEBPACK_IMPORTED_MODULE_13__.Scene();
+let emptyScene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
 
 function loadingScreenRender(time, frame)
 {
@@ -21413,7 +21441,7 @@ function initScene(scene, camera, renderer)
 
     // gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
-    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_4__.BoxingSession(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_4__.BoxingSession(scene, pageUI, menu, camera, renderer, audioListener, musicManager, heavyBag, doubleEndedBag); //, 3, 120, 20, 0, true);
 
     if ( true && gameLogic.TV != null)
     {
@@ -21491,7 +21519,7 @@ function updateHands(dt, accumulatedTime)
 
 function LoadEnvMapPromise()
 {
-    pmremGenerator = new three__WEBPACK_IMPORTED_MODULE_13__.PMREMGenerator( renderer );
+    pmremGenerator = new three__WEBPACK_IMPORTED_MODULE_14__.PMREMGenerator( renderer );
     pmremGenerator.compileEquirectangularShader();
 
     // THREE.DefaultLoadingManager.onLoad = function ( ) {
@@ -21503,7 +21531,7 @@ function LoadEnvMapPromise()
 
     return new Promise( (resolve, reject) => {
         
-        new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_16__.EXRLoader()
+        new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_17__.EXRLoader()
             // .setDataType( THREE.HalfFloatType )
             .load( './content/gym_v8_envmap_2.exr',  ( texture ) => {
 
@@ -21519,7 +21547,7 @@ function LoadEnvMapPromise()
 
 function InitBasisLoader()
 {
-    basisLoader = new three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_17__.BasisTextureLoader();
+    basisLoader = new three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_18__.BasisTextureLoader();
     basisLoader.setTranscoderPath( './basis/' );
     basisLoader.detectSupport( renderer );
 }
@@ -21527,12 +21555,12 @@ function InitBasisLoader()
 function LoadLightmapPromise(meshName, filepath)
 {
     return new Promise( (resolve, reject) => {
-        new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_14__.TGALoader().load(filepath, (texture) => 
+        new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_15__.TGALoader().load(filepath, (texture) => 
         {
             console.log("LOADED: " + meshName + " -> " + filepath);
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = three__WEBPACK_IMPORTED_MODULE_13__.LinearEncoding; //RGBDEncoding;
+            texture.encoding = three__WEBPACK_IMPORTED_MODULE_14__.LinearEncoding; //RGBDEncoding;
             lightmaps[meshName] = texture;
             resolve();
         });
@@ -21547,7 +21575,7 @@ function LoadBasisLightmapPromise(meshName, filepath)
         basisLoader.load(filepath, (texture) => {
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = three__WEBPACK_IMPORTED_MODULE_13__.LinearEncoding; //RGBDEncoding  ;
+            texture.encoding = three__WEBPACK_IMPORTED_MODULE_14__.LinearEncoding; //RGBDEncoding  ;
             lightmaps[meshName] = texture;
             resolve();
         });
@@ -21560,7 +21588,7 @@ function LoadBasisAoPromise(meshName, filepath)
         basisLoader.load(filepath, (texture) => {
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = three__WEBPACK_IMPORTED_MODULE_13__.LinearEncoding; //RGBDEncoding;
+            texture.encoding = three__WEBPACK_IMPORTED_MODULE_14__.LinearEncoding; //RGBDEncoding;
             aomaps[meshName] = texture;
             resolve();
         });
@@ -22311,13 +22339,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "kPunchNamesShort": () => (/* binding */ kPunchNamesShort),
 /* harmony export */   "kRedColor": () => (/* binding */ kRedColor)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var _textBox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./textBox */ "./src/textBox.js");
 /* harmony import */ var _movingAverage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./movingAverage.js */ "./src/movingAverage.js");
-/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
-/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
-/* harmony import */ var _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BoxingRounds.js */ "./src/BoxingRounds.js");
-/* harmony import */ var _punchDetector__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./punchDetector */ "./src/punchDetector.js");
+/* harmony import */ var _music_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./music.js */ "./src/music.js");
+/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
+/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
+/* harmony import */ var _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BoxingRounds.js */ "./src/BoxingRounds.js");
+/* harmony import */ var _punchDetector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./punchDetector */ "./src/punchDetector.js");
+
 
 
 
@@ -22369,13 +22399,13 @@ const kRestGetReadyDuration = 5.0;
 const kWorkoutTextBoxSmallFontSize = 500; //470;
 const kWorkoutTextBoxBigFontSize = 350;
 
-const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_6__.Color(0x000000);
-const kGreenColor = new three__WEBPACK_IMPORTED_MODULE_6__.Color(0x00721b);
-const kRedColor = new three__WEBPACK_IMPORTED_MODULE_6__.Color(0x5D1719);
+const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x000000);
+const kGreenColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x00721b);
+const kRedColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x5D1719);
 kRedColor.multiplyScalar(1.5);
-const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_6__.Color(0x404040);
+const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x404040);
 
-let tVec0 = new three__WEBPACK_IMPORTED_MODULE_6__.Vector3();
+let tVec0 = new three__WEBPACK_IMPORTED_MODULE_7__.Vector3();
 
 function formatTimeString(timeInSeconds)
 {
@@ -22389,10 +22419,12 @@ function formatTimeString(timeInSeconds)
 
 class BoxingSession
 {
-    constructor(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndBag)
+    constructor(scene, pageUI, menu, camera, renderer, audioListener, musicManager, heavyBag, doubleEndBag)
     {
         this.scene = scene;
         this.audioListener = audioListener;
+        this.musicManager = musicManager;
+
         this.heavyBag = heavyBag;
         this.doubleEndBag = doubleEndBag;
         this.TV = null;
@@ -22411,45 +22443,45 @@ class BoxingSession
         doubleEndBag.punchCallbacks.push((glove, speed, velocity) => {this.onBagHit(glove, speed, velocity)});
         
         this.punchingStats = new PunchingStats(scene);
-        this.punchDetector = new _punchDetector__WEBPACK_IMPORTED_MODULE_5__.PunchDetector();
+        this.punchDetector = new _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PunchDetector();
         this.lastPunchType = null;
         //load assets here
         
         // sounds
-        this.sound321 = new three__WEBPACK_IMPORTED_MODULE_6__.PositionalAudio(audioListener);
+        this.sound321 = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
         this.sound321.setRefDistance(40.0);
         this.sound321.setVolume(1.0);
-        new three__WEBPACK_IMPORTED_MODULE_6__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
             "./content/simple_bell.mp3", 
             (buffer) => 
             {
                 this.sound321.buffer = buffer;
             });
         
-        this.soundEndOfRound = new three__WEBPACK_IMPORTED_MODULE_6__.PositionalAudio(audioListener);
+        this.soundEndOfRound = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
         this.soundEndOfRound.setVolume(1.0);
         this.soundEndOfRound.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_6__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
             "./content/endOfRound.mp3",
             (buffer) => 
             {
                 this.soundEndOfRound.buffer = buffer;
             });
         
-        this.soundGetReady = new three__WEBPACK_IMPORTED_MODULE_6__.PositionalAudio(audioListener);
+        this.soundGetReady = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
         this.soundGetReady.setVolume(0.5);
         this.soundGetReady.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_6__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
             "./content/3x-Punch-Kick-A3-med-www.fesliyanstudios.com.mp3",
             (buffer) =>
             {
                 this.soundGetReady.buffer = buffer;
             });
 
-        this.soundNewInstructions = new three__WEBPACK_IMPORTED_MODULE_6__.PositionalAudio(audioListener);
+        this.soundNewInstructions = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
         this.soundNewInstructions.setVolume(1.0);
         this.soundNewInstructions.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_6__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
             "./content/new_instructions.mp3",
             (buffer) => 
             {
@@ -22482,13 +22514,13 @@ class BoxingSession
 
         this.currentTimeInWholeSeconds = -1.0;
 
-        this.headingArrow = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_6__.BoxGeometry(0.05, 0.05, 0.5),
-            new three__WEBPACK_IMPORTED_MODULE_6__.MeshBasicMaterial({color: 0x804080})
+        this.headingArrow = new three__WEBPACK_IMPORTED_MODULE_7__.Mesh(
+            new three__WEBPACK_IMPORTED_MODULE_7__.BoxGeometry(0.05, 0.05, 0.5),
+            new three__WEBPACK_IMPORTED_MODULE_7__.MeshBasicMaterial({color: 0x804080})
         );
-        this.punchArrow = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_6__.BoxGeometry(0.05, 0.05, 0.5),
-            new three__WEBPACK_IMPORTED_MODULE_6__.MeshBasicMaterial({color: 0x408040})
+        this.punchArrow = new three__WEBPACK_IMPORTED_MODULE_7__.Mesh(
+            new three__WEBPACK_IMPORTED_MODULE_7__.BoxGeometry(0.05, 0.05, 0.5),
+            new three__WEBPACK_IMPORTED_MODULE_7__.MeshBasicMaterial({color: 0x408040})
         );
 
         this.headingArrow.position.set(0.0, 0.1, -1.0);
@@ -22555,7 +22587,7 @@ class BoxingSession
         }
         else
         {
-            this.initializeScriptedWorkout(_workoutData_js__WEBPACK_IMPORTED_MODULE_3__.workoutData[whichScriptedWorkout], roundDuration);
+            this.initializeScriptedWorkout(_workoutData_js__WEBPACK_IMPORTED_MODULE_4__.workoutData[whichScriptedWorkout], roundDuration);
         }
 
         //this.boxingRoundInfo = new BoxingRound(roundDuration);
@@ -22573,7 +22605,7 @@ class BoxingSession
         this.boxingRounds = [null];
 
         //Set up this message before we start swapping bags
-        this.workoutIntroMessage = "FREESTYLE " + (bagSwap ? "ALTERNATING BAGS" : (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG ? "HEAVY BAG" : "DOUBLE-END BAG")) + ":\n"+
+        this.workoutIntroMessage = "FREESTYLE " + (bagSwap ? "ALTERNATING BAGS" : (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG ? "HEAVY BAG" : "DOUBLE-END BAG")) + ":\n"+
         " \u2022 " + numRounds + " rounds, " + formatTimeString(roundDuration) + " per round.\n" + 
         " \u2022 Focus on form, go for speed, or try some new moves.";
 
@@ -22581,16 +22613,16 @@ class BoxingSession
         for (let i = 0; i < this.numRounds; i++)
         {
             this.boxingRounds.push(
-                new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
+                new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
             if (bagSwap)
             {
-                if (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG)
+                if (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG)
                 {
-                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_DOUBLE_END_BAG;
+                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG;
                 }
                 else
                 {
-                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG;
+                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG;
                 }
             }
         }
@@ -22606,29 +22638,29 @@ class BoxingSession
             let round;
             let roundNumber = i+1;
             let roundInfo = info[roundNumber];
-            if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_SCRIPTED)
+            if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_SCRIPTED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.ScriptedBoxingRound(info, roundDuration, roundNumber);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.ScriptedBoxingRound(info, roundDuration, roundNumber);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_NUM_PUNCHES)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_PUNCHES)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.TimeAdjustedNumberOfPunchesBoxingRound(roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimeAdjustedNumberOfPunchesBoxingRound(roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_NUM_SPECIFIC_PUNCHES)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_SPECIFIC_PUNCHES)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.NumberOfSpecificPunchesBoxingRound(roundInfo, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.NumberOfSpecificPunchesBoxingRound(roundInfo, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_TIMED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_TIMED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_SPEED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_SPEED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds, roundInfo.introText);
             }
             else
             {
@@ -22667,6 +22699,7 @@ class BoxingSession
         this.heavyBag.leftGlove.show();
         this.heavyBag.rightGlove.show();
 
+        this.musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_2__.MM_INTRO_UPBEAT);
 
     }
 
@@ -22760,6 +22793,7 @@ class BoxingSession
                     }
                     
                     //START THE ROUND
+                    
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
                     // this.playedAlmostDoneAlert = false;
@@ -22775,6 +22809,26 @@ class BoxingSession
                     this.workoutStageTextBox.visible = true;
 
                     this.boxingRoundInfo.start(this, this.elapsedTime);
+
+                    let intensity = _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_0;
+                    switch(this.currentRound)
+                    {
+                        case 0:
+                        case 1:
+                            intensity = _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_0;
+                            break;
+                        case 2:
+                            intensity = _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_1;
+                            break;
+                        case 3:
+                            intensity = _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_2;
+                            break;
+                        default:
+                            intensity = (this.currentRound % 2) ? _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_2 : _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_3;
+                            break;
+                    }
+                    this.musicManager.play(intensity);
+                    
 
                     // update the TV screen
                     this.updateRoundsMessage();
@@ -22822,6 +22876,7 @@ class BoxingSession
                             }
                         }
                         this.state = SESSION_OUTRO;
+                        this.musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_2__.MM_OUTRO);
                     }
                     else
                     {
@@ -22829,6 +22884,7 @@ class BoxingSession
                         this.hideBag();
 
                         this.state = SESSION_REST;
+                        this.musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_2__.MM_INTRAROUND);
                     }
 
                     
@@ -22871,6 +22927,8 @@ class BoxingSession
         this.showBagForNextRound();
         this.soundGetReady.play();
 
+        
+
         this.elapsedTime = 0.0;
         this.workoutIntroTextBox.visible = true;
         this.workoutStageTextBox.visible = false;
@@ -22888,10 +22946,10 @@ class BoxingSession
         {
             switch(this.currentBagType)
             {
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG:
                     this.heavyBag.fadeOut();
                     break;
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_DOUBLE_END_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG:
                     this.doubleEndBag.fadeOut();
                     break;
             }
@@ -22906,18 +22964,18 @@ class BoxingSession
         {
             switch(desiredBagType)
             {
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG:
                     this.heavyBag.fadeIn();
-                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG;
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG;
                     break;
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_DOUBLE_END_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG:
                     this.doubleEndBag.fadeIn();
-                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_DOUBLE_END_BAG;
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG;
                     break;
             }
             
         }
-        if (this.currentBagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG)
+        if (this.currentBagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG)
         {
             this.punchDetector.initialize(this.heavyBag);
         }
@@ -23165,10 +23223,10 @@ class PunchingStats
         let message;
         message = "WORKOUT COMPLETE:\n"
         message += " \u2022 Total time:\u00a0" + formatTimeString(this.elapsedWorkoutTime) + "\n";
-        message += " \u2022 Jab:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_JAB] + ", Straight:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_STRAIGHT] 
-                + ", L\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_RIGHT_HOOK] 
-                + ", L\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_LEFT_UPPERCUT] + ", R\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_RIGHT_UPPERCUT] + 
-                ", Other:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_UNKNOWN] + "\n";
+        message += " \u2022 Jab:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_JAB] + ", Straight:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_STRAIGHT] 
+                + ", L\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_RIGHT_HOOK] 
+                + ", L\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_LEFT_UPPERCUT] + ", R\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_RIGHT_UPPERCUT] + 
+                ", Other:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN] + "\n";
         message += " \u2022 Max:\u00a0" + this.maxSpeed.toFixed(1) + "\u00a0m/s, Avg:\u00a0" + (this.accumulatedSpeedForAverage/Math.max(this.punches,1)).toFixed(1) + "\u00a0m/s";
         return message;
     }
@@ -23214,7 +23272,7 @@ class PunchingStats
 
 
         //console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
-        if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_UNKNOWN))
+        if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN))
         {
             this.lastPunchType = lastPunchType;
             this.lastPunchTypeCount = 1;
@@ -23228,7 +23286,7 @@ class PunchingStats
         {
             this.punchRecordLength = 0;
         }
-        this.punchRecord[this.punchRecordLength++] = (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_UNKNOWN) ? "?" : lastPunchType;
+        this.punchRecord[this.punchRecordLength++] = (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN) ? "?" : lastPunchType;
 
         // A repeated punch will only count as an xN if it happens within this window of time.
         // This allows for Jab-Straight-Jab, Jab-Straight-Jab without getting an x2 on the second Jab.
@@ -24811,6 +24869,188 @@ class MultiInstanceSound extends three__WEBPACK_IMPORTED_MODULE_0__.Group
 
 /***/ }),
 
+/***/ "./src/music.js":
+/*!**********************!*\
+  !*** ./src/music.js ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MM_INTRAROUND": () => (/* binding */ MM_INTRAROUND),
+/* harmony export */   "MM_INTRO": () => (/* binding */ MM_INTRO),
+/* harmony export */   "MM_INTRO_UPBEAT": () => (/* binding */ MM_INTRO_UPBEAT),
+/* harmony export */   "MM_OUTRO": () => (/* binding */ MM_OUTRO),
+/* harmony export */   "MM_ROUND_INTENSITY_0": () => (/* binding */ MM_ROUND_INTENSITY_0),
+/* harmony export */   "MM_ROUND_INTENSITY_1": () => (/* binding */ MM_ROUND_INTENSITY_1),
+/* harmony export */   "MM_ROUND_INTENSITY_2": () => (/* binding */ MM_ROUND_INTENSITY_2),
+/* harmony export */   "MM_ROUND_INTENSITY_3": () => (/* binding */ MM_ROUND_INTENSITY_3),
+/* harmony export */   "MusicManager": () => (/* binding */ MusicManager)
+/* harmony export */ });
+/* provided dependency */ var THREE = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+/*
+
+What kind of interface to I want?
+
+There are some sections of music I can plan -- intro, pre-round, during-round, between-rounds, outro
+I can also set intensity of action and music manager can react accordingly
+
+Music manager can listen to blur/focus events to determine what to do with music in response to that.
+
+*/
+const MM_INTRO = 0;
+const MM_INTRO_UPBEAT = 1;
+const MM_ROUND_INTENSITY_0 = 2;
+const MM_ROUND_INTENSITY_1 = 3;
+const MM_ROUND_INTENSITY_2 = 4;
+const MM_ROUND_INTENSITY_3 = 5;
+const MM_INTRAROUND = 6;
+const MM_OUTRO = 7;
+
+const kRegularVolume = 0.5 ;
+const kPausedVolume = 0.15;
+
+const labels = [
+    "MM_INTRO",
+    "MM_INTRO_UPBEAT",
+    "MM_ROUND_INTENSITY_0",
+    "MM_ROUND_INTENSITY_1",
+    "MM_ROUND_INTENSITY_2",
+    "MM_ROUND_INTENSITY_3",
+    "MM_INTRAROUND",
+    "MM_OUTRO"
+];
+
+class MusicManager
+{
+    constructor(audioListener)
+    {
+        // load some music tracks
+        
+        this.audioListener = audioListener;
+        this.startTime = -1;
+        this.currentLoop = null;
+
+        this.loops = [];
+
+        this._loadLoop(MM_INTRO, "./content/HBT_Intro.ogg");
+        this._loadLoop(MM_INTRO_UPBEAT, "./content/HBT_Upbeat_Intro.ogg");
+        this._loadLoop(MM_ROUND_INTENSITY_0, "./content/HBT_Main_Intensity0.ogg");
+        this._loadLoop(MM_ROUND_INTENSITY_1, "./content/HBT_Main_Intensity1.ogg");
+        this._loadLoop(MM_ROUND_INTENSITY_2, "./content/HBT_Main_Intensity2.ogg");
+        this._loadLoop(MM_ROUND_INTENSITY_3, "./content/HBT_Main_Intensity3.ogg");
+        this._loadLoop(MM_INTRAROUND, "./content/HBT_Between_Rounds.ogg");
+        this._loadLoop(MM_OUTRO, "./content/HBT_Outro.ogg")            
+    }
+    _loadLoop(which, path)
+    {
+        let sound = new THREE.Audio(this.audioListener);
+        this.loops[which] = sound;
+
+        new THREE.AudioLoader().load(
+            path,
+            (buffer) => 
+            {
+                sound.setBuffer(buffer);
+                sound.setLoop(true);
+                sound.setVolume(kRegularVolume);
+                
+            }
+        )
+        
+    }
+
+    start()
+    {
+        this.startTime = this.audioListener.context.currentTime;
+        this.bpm = 96.0;
+        this.bps = this.bpm / 60.0;
+        this.secondsPerBeat = 60.0 / this.bpm;
+        this.secondsPerBar = this.secondsPerBeat * 4.0; // assume 4 beats per bar
+    }
+
+    play(which)
+    {
+        if (this.startTime === -1)
+        {
+            this.start();
+        }
+
+        if (which !== this.currentLoopId)
+        {
+
+            let transitionTime = this.timeToNextBar();
+
+            console.log("Audio Transition to " + labels[which] + " in " + transitionTime + " seconds.");
+            if (this.currentLoop !== null)
+            {
+                console.log("\tStop " + labels[this.currentLoopId]);
+                this.currentLoop.stop(transitionTime)
+            }
+
+            this.currentLoop = this.loops[which];
+            this.currentLoopId = which;
+
+            // @TODO - do we want to offset into the new loop based on which bar we're on?
+            if (this.currentLoop !== null)
+            {
+                console.log("\tPlay " + labels[this.currentLoopId]);
+                this.currentLoop.play(transitionTime);
+            }
+        }
+    }
+
+    // timeToNextBeat()
+    // {
+    //     let elapsed = this.audioListener.context.currentTime - this.startTime;
+    //     let nextBeatNumber = Math.ceil(elapsed / this.bps);
+    //     let nextBeatTime = (nextBeatNumber * this.bps);
+    //     return nextBeatTime;
+    // }
+
+    timeToNextBar()
+    {
+
+        let elapsed = this.audioListener.context.currentTime - this.startTime;
+        //assume 4 beats per bar
+        // seconds * beats/second / 4 beats/bar
+        // let nextBarNumber = Math.ceil(elapsed / this.bps / 4);
+        // seconds * 1.6 beats/second = 17.6 beats / 4 = 4.25 bars = bar #5
+        let nextBarNumber = Math.ceil(elapsed / this.secondsPerBar); // Math.ceil(elapsed * this.bps / 4);
+        let nextBarTime = nextBarNumber * this.secondsPerBar - elapsed;
+
+        console.log("AUDIO TRANSITION");
+        console.log("Elapsed: " + elapsed);
+        console.log("Next Bar Number: " + nextBarNumber);
+        console.log("Next Bar Time: " + nextBarTime);
+
+        // Elapsed: 13.728
+        // Next Bar Number: 6
+        // Next Bar Time: 15
+
+        // 13.7 * 1.6 / 4 = 5.48 --> 6
+
+        // 96bpm --> 1.6bps --> 4 / 1.6 = 2.5 seconds per bar
+
+        return nextBarTime;
+    }
+
+    onBlur()
+    {
+        this.currentLoop.setVolume(kPausedVolume, 0.1);
+    }
+
+    onFocus()
+    {
+        this.currentLoop.setVolume(kRegularVolume, 0.1);
+    }
+}
+
+/***/ }),
+
 /***/ "./src/overrideXRFrameGetViewerPose.js":
 /*!*********************************************!*\
   !*** ./src/overrideXRFrameGetViewerPose.js ***!
@@ -25075,8 +25315,8 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        // appVersionText.innerHTML = "Version 0.9.3&beta;";
-        // appVersionText.innerHTML = "Version 0.9.3";
+        appVersionText.innerHTML = "Version 0.9.4&beta;";
+        // appVersionText.innerHTML = "Version 0.9.4";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -77261,7 +77501,7 @@ class Audio extends Object3D {
 
 	}
 
-	pause() {
+	pause( delay = 0 ) {
 
 		if ( this.hasPlaybackControl === false ) {
 
@@ -77284,7 +77524,7 @@ class Audio extends Object3D {
 
 			}
 
-			this.source.stop();
+			this.source.stop(this.context.currentTime + delay);
 			this.source.onended = null;
 
 			this.isPlaying = false;
@@ -77295,7 +77535,7 @@ class Audio extends Object3D {
 
 	}
 
-	stop() {
+	stop( delay = 0 ) {
 
 		if ( this.hasPlaybackControl === false ) {
 
@@ -77306,7 +77546,7 @@ class Audio extends Object3D {
 
 		this._progress = 0;
 
-		this.source.stop();
+		this.source.stop(this.context.currentTime + delay);
 		this.source.onended = null;
 		this.isPlaying = false;
 
@@ -77515,9 +77755,9 @@ class Audio extends Object3D {
 
 	}
 
-	setVolume( value ) {
+	setVolume( value, rate = 0.01 ) {
 
-		this.gain.gain.setTargetAtTime( value, this.context.currentTime, 0.01 );
+		this.gain.gain.setTargetAtTime( value, this.context.currentTime, rate );
 
 		return this;
 
@@ -83323,7 +83563,6 @@ if ( typeof window !== 'undefined' ) {
 }
 
 
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGhyZWUubW9kdWxlLmpzIiwic291cmNlcyI6W10sInNvdXJjZXNDb250ZW50IjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiJ9
 
 
 /***/ }),
