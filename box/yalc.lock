@@ -2,17 +2,12 @@
   "version": "v1",
   "packages": {
     "three": {
-      "signature": "db0aa9f94e69653f2127e7069d598a50",
+      "signature": "92ce2b869e85ae7ea44db78ccaa4b74e",
       "file": true,
-      "replaced": "0.148"
-    },
-    "webxr-layers-polyfill": {
-      "signature": "a89bbc0f00286be21042d31ff1a6ec98",
-      "file": true,
-      "replaced": "^1.0.5"
+      "replaced": "0.147"
     },
     "three-mesh-ui": {
-      "signature": "b80f72794620872d31f96bf7f935a845",
+      "signature": "2d945296845819f55bcdf4dd503fecf5",
       "file": true,
       "replaced": "^6.5.4"
     }

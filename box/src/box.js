@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import {BasisTextureLoader} from 'three/examples/jsm/loaders/BasisTextureLoader.js'
 import {TGALoader} from 'three/examples/jsm/loaders/TGALoader.js'
+
 import {OverrideXRFrameGetViewerPose} from "./overrideXRFrameGetViewerPose.js";
 import {HTMLMesh} from 'three/examples/jsm/interactive/HTMLMesh.js'
 
@@ -21,6 +22,7 @@ import {DoubleEndedBag} from './doubleEndedBag.js';
 import {BoxingSession} from './gamelogic.js';
 import {PlayerHud} from './playerHud.js';
 import { Controllers} from './controllers.js';
+import {MusicManager, MM_INTRO} from './music.js';
 
 import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-controllers';
 import { Session } from './gamelogic.js';
@@ -52,6 +54,8 @@ let leftHand = {};
 let rightHand = {};
 
 let audioListener = null;
+let musicManager = null;
+
 let heavyBag  = null;
 let doubleEndedBag = null;
 
@@ -116,6 +120,7 @@ function initialize()
 
     audioListener = new THREE.AudioListener();
     camera.add( audioListener );
+    musicManager = new MusicManager(audioListener);
 
     renderer = new THREE.WebGLRenderer( {antialias: true, precision: 'highp'});
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -269,10 +274,10 @@ function loadLevelAssets(addLoadingScreenDelay)
             })
         .then(
             (gltf) => {
-                console.log("GLTF is: " + gltf);
+                // console.log("GLTF is: " + gltf);
                 return new Promise(
                     (resolve) => {
-                    console.log("DO GLTF FIXUPS")
+                    // console.log("DO GLTF FIXUPS")
                     for (let i = 0; i < gltf.scene.children.length; i++)
                     {                
                         let obj = gltf.scene.children[i];
@@ -290,10 +295,10 @@ function loadLevelAssets(addLoadingScreenDelay)
                                 node.material = simpleMat;
                             }
 
-                            console.log("NODE: " + node.name);
+                            // console.log("NODE: " + node.name);
                             let nodeLightmap = lightmaps[node.name];
                             if (nodeLightmap && node.material && 'lightMap' in node.material) {
-                                console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                                // console.log("--> LIGHTMAP: " + nodeLightmap.name);
                                 node.material.lightMap = nodeLightmap;
                                 node.material.lightMapIntensity = 1.0;
                                 node.material.needsUpdate = true;
@@ -322,10 +327,10 @@ function loadLevelAssets(addLoadingScreenDelay)
                             }
                         });
 
-                        console.log("OBJECT: " + obj.name);
+                        // console.log("OBJECT: " + obj.name);
                         if (obj.name == "Screen")
                         {
-                            console.log
+                            // console.log
                             obj.material.emissiveIntensity = 0.03;
                             obj.material.color.setRGB(0.86, 0.86, 0.965);
                             let loader = new THREE.TextureLoader();
@@ -348,7 +353,7 @@ function loadLevelAssets(addLoadingScreenDelay)
                     }
                     scene.add(gltf.scene);
                     initScene(scene, camera, renderer);
-                    console.log("DONE LOADING AND FIXUPS");
+                    // console.log("DONE LOADING AND FIXUPS");
                     resolve();
                 });
             })
@@ -538,6 +543,8 @@ function onSessionStart()
         loadingScreen = true;
         setupLoadingScreen();
     }
+
+    musicManager.play(MM_INTRO);
 
     menu.onSessionStart();
 
@@ -739,6 +746,7 @@ function doPostLoadGameInitialization()
         if(e.session.visibilityState === 'visible-blurred') 
         {
             bPause = true;
+            musicManager.onBlur();
             gameLogic.pause();
             if (leftHand.glove)
             {
@@ -752,6 +760,7 @@ function doPostLoadGameInitialization()
         else
         {
             bPause = false;
+            musicManager.onFocus();
             gameLogic.resume();
             if (leftHand.glove)
             {
@@ -919,7 +928,7 @@ function initScene(scene, camera, renderer)
 
     // gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
-    gameLogic = new BoxingSession(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
+    gameLogic = new BoxingSession(scene, pageUI, menu, camera, renderer, audioListener, musicManager, heavyBag, doubleEndedBag); //, 3, 120, 20, 0, true);
 
     if (true && gameLogic.TV != null)
     {

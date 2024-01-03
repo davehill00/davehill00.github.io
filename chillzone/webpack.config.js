@@ -16,7 +16,8 @@ module.exports = {
   // Webpack will bundle all JavaScript into this file
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main.js'
+    filename: 'main.js',
+    // hashFunction: 'xxhash64'
   },
 
   devServer: {

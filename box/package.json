@@ -24,7 +24,7 @@
     "three": "file:.yalc/three",
     "three-mesh-ui": "file:.yalc/three-mesh-ui",
     "webgl-debug": "^2.0.1",
-    "webxr-layers-polyfill": "file:.yalc/webxr-layers-polyfill",
+    "webxr-layers-polyfill": "^1.1.0",
     "xtend": "^4.0.2",
     "yarn": "^1.22.19"
   },

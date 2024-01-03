@@ -474,7 +474,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #5D1719;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    /* color:#8d1414; */\r\n    /* border-color: #8d1414; */\r\n    color:#9f7909;\r\n    border-color:#9f7909;\r\n    font-size: 2vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7a0940;\r\n     /* // #303030; */\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 110px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n\r\n\r\n@media only screen and (orientation: portrait) {\r\n    /* .title_image\r\n    {\r\n        width: auto;\r\n        height: 25%;     \r\n    } \r\n    */\r\n    .button_container\r\n    {\r\n        width: 90%;\r\n        margin-left: 5%;\r\n    }\r\n    .button_group\r\n    {\r\n        width: 80%;\r\n    }\r\n  }", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":["html, body {\r\n    overflow: hidden;\r\n  }\r\n\r\n.buttonText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n}\r\n.descriptionText {\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color: #e0e0e0;\r\n}\r\n.descriptionBox {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\n.titleBox {\r\n    background-color: #cc5010;\r\n    padding-left: 24px;\r\n    padding-right: 16px;\r\n    padding-top: 0px;\r\n    padding-bottom: 0px;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    text-align: center;\r\n    opacity: 100%;\r\n}\r\n.box {\r\n    background-color: #505050;\r\n    opacity: 100%;\r\n    padding: 2vw;\r\n    margin: 2vw;\r\n    border: solid;\r\n    border-radius: 8px;\r\n    position: relative;\r\n    top: 0px;\r\n}\r\nbody {\r\n    background-color: #5D1719;\r\n    margin: 0px;\r\n}\r\n\r\n.vrbutton\r\n{\r\n    font-family: 'Kameron', serif;\r\n    font-size: 20px;\r\n    color:#9f7909;\r\n    border-color: #9f7909;\r\n    border-width: 8px;\r\n    width: 30%;\r\n    height: 10%;\r\n    position: absolute;\r\n    bottom: 20px;\r\n}\r\n\r\na:link {\r\n    color: #ff8020;\r\n}\r\na:visited {\r\n    color: #cc5010;\r\n}\r\na:hover {\r\n    color: #ee6010;\r\n}\r\n.ui_container\r\n{\r\n    position: absolute;\r\n    top: 0%;\r\n    left: 2.5%;\r\n    height: 100%;\r\n    width: 95%;\r\n}\r\n.ui_backplate\r\n{\r\n    background-color: #5D1719;\r\n    opacity: 100%;\r\n    position: absolute;\r\n    /* top: 2.5%;\r\n    left: 2.5%;\r\n    height: 95%;\r\n    width: 95%; */\r\n    top: 0px;\r\n    left: 0px;\r\n    height: 100%;\r\n    width: 100%;\r\n    /* margin-left: auto;\r\n    margin-right: auto; */\r\n}\r\n.title_image {\r\n    max-width: 100%;\r\n    display: block;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    /* padding-top: 12px; */\r\n    padding-top: 12px;\r\n    width: 30%;\r\n    height: auto;\r\n    transition: width 0.7s, height 0.7s;\r\n    transition-timing-function: ease-in-out;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\n.configuration_label\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    /* 32px; */\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    \r\n    height: 40px;\r\n    padding-top: 6px;\r\n    margin-top: auto;\r\n    margin-bottom: auto;    \r\n    display:inline;\r\n}\r\n.configuration_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    /* height: 20%; */\r\n    width: 100%;\r\n    margin-top: -30px;\r\n    /* border: 3px solid green; */\r\n}\r\n.configuration_group\r\n{\r\n    display: block;\r\n    width: 70%;\r\n    max-width: 800px;\r\n    /* min-width: 400px; */\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    border-style: solid;\r\n    margin: 32px;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n    /* height: 30%; */\r\n}\r\n.ok_cancel_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 32px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* margin: 4px; */\r\n    width: 40%;\r\n    /* height: 40%; */\r\n}\r\n.button_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    width: 70%;\r\n    margin-left: 15%;\r\n    margin-top: 5px;\r\n    /* border: 3px solid green; */\r\n}\r\n.button_group\r\n{\r\n    width: 40%;\r\n    display: block;\r\n    /* border: 3px solid red; */\r\n}\r\nbutton\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    /* font-size: 48px; */\r\n    font-size: 5vw;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 0.9vw;\r\n    /* 12px */\r\n    border-style: solid;\r\n    margin: 4px;\r\n    width: 100%;\r\n    height: 50%;\r\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\r\n}\r\nbutton:disabled\r\n{\r\n    color:#83713a;\r\n    border-color: #83713a;\r\n}\r\n.webxr_not_found\r\n{\r\n    /* color:#8d1414; */\r\n    /* border-color: #8d1414; */\r\n    color:#9f7909;\r\n    border-color:#9f7909;\r\n    font-size: 2vw;\r\n}\r\n\r\n.plus_minus_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    border-radius: 50%;\r\n    /* margin: 4px; */\r\n    width: 40px;\r\n    height: 40px;\r\n}\r\n\r\n.plus_minus_container\r\n{\r\n    display: flex;\r\n    justify-content: flex-start;\r\n    width: 90%;\r\n    margin-left: 5%;\r\n    /* border: 3px solid red; */\r\n}\r\n.plus_minus_container:not first-child\r\n{\r\n    justify-content: flex-end;\r\n}\r\n\r\n.next_prev_button\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 24px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7909;\r\n    border-width: 4px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    /* margin-top: 33%; */\r\n    width: 40px;\r\n    height: auto;\r\n}\r\n.workout_description_text\r\n{\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 22px;\r\n    color:#9f7909;\r\n    background-color: #000000;\r\n    border-color: #9f7a0940;\r\n     /* // #303030; */\r\n    border-width: 2px;\r\n    border-style: solid;\r\n    /* border-radius: 25%; */\r\n    /* margin: 4px; */\r\n    margin: 6px;\r\n    width: 100%;\r\n    height: 110px;\r\n    padding: 9px;\r\n    padding-left: 8px;\r\n    padding-right: 8px;\r\n\r\n}\r\nul \r\n{\r\n    /* list-style-type: none; */\r\n    margin: 0;\r\n    /* padding: 0; */\r\n}\r\n\r\n.push_right\r\n{\r\n    margin-left: auto;\r\n}\r\n.about_panel_container\r\n{\r\n    display: flex;\r\n    justify-content: center;\r\n    /* align-items: center; */\r\n    width: 100%;\r\n    height: 20%;\r\n    padding: 16px;\r\n    border: 3px solid green;\r\n}\r\n.about_panel_group\r\n{\r\n    display: block;\r\n    /* justify-content: center; */\r\n    width: 90%;\r\n    height: 100%;\r\n\r\n    border:#9f7909;\r\n    border-style: solid;\r\n    border-width: 8px;\r\n    background-color: black;\r\n\r\n    margin-top: 1vh;\r\n}\r\n.about_panel_iframe\r\n{\r\n    border-style:none;\r\n    width: 100%;\r\n    min-height: 35vh;\r\n\r\n    /* border:yellowgreen;\r\n    border-width: 8px;\r\n    border-style: solid; */\r\n}\r\n.about_close_button\r\n{\r\n    font-size: 32px;\r\n    display: block;\r\n    height: auto;\r\n    width: 50%;\r\n    margin-left: 25%;\r\n    border-width: 6px;\r\n    justify-content: center;\r\n    box-shadow: none;\r\n}\r\n\r\n\r\n.app_version_text\r\n{\r\n    /* display: block; */\r\n    padding-bottom: 0%;\r\n\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    font-family: 'Kameron', sans-serif;\r\n    font-size: 16px;\r\n    color:#9f7909;\r\n}\r\n\r\n\r\n@media only screen and (orientation: portrait) {\r\n    /* .title_image\r\n    {\r\n        width: auto;\r\n        height: 25%;     \r\n    } \r\n    */\r\n    .button_container\r\n    {\r\n        width: 90%;\r\n        margin-left: 5%;\r\n    }\r\n    .button_group\r\n    {\r\n        width: 80%;\r\n    }\r\n  }"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "html, body {\n    overflow: hidden;\n  }\n\n.buttonText {\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    color:#9f7909;\n}\n.descriptionText {\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color: #e0e0e0;\n}\n.descriptionBox {\n    background-color: #505050;\n    opacity: 100%;\n    padding-left: 24px;\n    padding-right: 16px;\n    padding-top: 0px;\n    padding-bottom: 0px;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    position: relative;\n    top: 0px;\n}\n.titleBox {\n    background-color: #cc5010;\n    padding-left: 24px;\n    padding-right: 16px;\n    padding-top: 0px;\n    padding-bottom: 0px;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    text-align: center;\n    opacity: 100%;\n}\n.box {\n    background-color: #505050;\n    opacity: 100%;\n    padding: 2vw;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    position: relative;\n    top: 0px;\n}\nbody {\n    background-color: #5D1719;\n    margin: 0px;\n}\n\n.vrbutton\n{\n    font-family: 'Kameron', serif;\n    font-size: 20px;\n    color:#9f7909;\n    border-color: #9f7909;\n    border-width: 8px;\n    width: 30%;\n    height: 10%;\n    position: absolute;\n    bottom: 20px;\n}\n\na:link {\n    color: #ff8020;\n}\na:visited {\n    color: #cc5010;\n}\na:hover {\n    color: #ee6010;\n}\n.ui_container\n{\n    position: absolute;\n    top: 0%;\n    left: 2.5%;\n    height: 100%;\n    width: 95%;\n}\n.ui_backplate\n{\n    background-color: #5D1719;\n    opacity: 100%;\n    position: absolute;\n    /* top: 2.5%;\n    left: 2.5%;\n    height: 95%;\n    width: 95%; */\n    top: 0px;\n    left: 0px;\n    height: 100%;\n    width: 100%;\n    /* margin-left: auto;\n    margin-right: auto; */\n}\n.title_image {\n    max-width: 100%;\n    display: block;\n    margin-left: auto;\n    margin-right: auto;\n    /* padding-top: 12px; */\n    padding-top: 12px;\n    width: 30%;\n    height: auto;\n    transition: width 0.7s, height 0.7s;\n    transition-timing-function: ease-in-out;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n}\n.configuration_label\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    /* 32px; */\n    color:#9f7909;\n    background-color: #000000;\n    \n    height: 40px;\n    padding-top: 6px;\n    margin-top: auto;\n    margin-bottom: auto;    \n    display:inline;\n}\n.configuration_container\n{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    /* height: 20%; */\n    width: 100%;\n    margin-top: -30px;\n    /* border: 3px solid green; */\n}\n.configuration_group\n{\n    display: block;\n    width: 70%;\n    max-width: 800px;\n    /* min-width: 400px; */\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 0.9vw;\n    border-style: solid;\n    margin: 32px;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n    /* height: 30%; */\n}\n.ok_cancel_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    /* margin: 4px; */\n    width: 40%;\n    /* height: 40%; */\n}\n.button_container\n{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 70%;\n    margin-left: 15%;\n    margin-top: 5px;\n    /* border: 3px solid green; */\n}\n.button_group\n{\n    width: 40%;\n    display: block;\n    /* border: 3px solid red; */\n}\nbutton\n{\n    font-family: 'Kameron', sans-serif;\n    /* font-size: 48px; */\n    font-size: 5vw;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 0.9vw;\n    /* 12px */\n    border-style: solid;\n    margin: 4px;\n    width: 100%;\n    height: 50%;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n}\nbutton:disabled\n{\n    color:#83713a;\n    border-color: #83713a;\n}\n.webxr_not_found\n{\n    /* color:#8d1414; */\n    /* border-color: #8d1414; */\n    color:#9f7909;\n    border-color:#9f7909;\n    font-size: 2vw;\n}\n\n.plus_minus_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    border-radius: 50%;\n    /* margin: 4px; */\n    width: 40px;\n    height: 40px;\n}\n\n.plus_minus_container\n{\n    display: flex;\n    justify-content: flex-start;\n    width: 90%;\n    margin-left: 5%;\n    /* border: 3px solid red; */\n}\n.plus_minus_container:not first-child\n{\n    justify-content: flex-end;\n}\n\n.next_prev_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    /* border-radius: 25%; */\n    /* margin: 4px; */\n    /* margin-top: 33%; */\n    width: 40px;\n    height: auto;\n}\n.workout_description_text\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 22px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7a0940;\n     /* // #303030; */\n    border-width: 2px;\n    border-style: solid;\n    /* border-radius: 25%; */\n    /* margin: 4px; */\n    margin: 6px;\n    width: 100%;\n    height: 110px;\n    padding: 9px;\n    padding-left: 8px;\n    padding-right: 8px;\n\n}\nul \n{\n    /* list-style-type: none; */\n    margin: 0;\n    /* padding: 0; */\n}\n\n.push_right\n{\n    margin-left: auto;\n}\n.about_panel_container\n{\n    display: flex;\n    justify-content: center;\n    /* align-items: center; */\n    width: 100%;\n    height: 20%;\n    padding: 16px;\n    border: 3px solid green;\n}\n.about_panel_group\n{\n    display: block;\n    /* justify-content: center; */\n    width: 90%;\n    height: 100%;\n\n    border:#9f7909;\n    border-style: solid;\n    border-width: 8px;\n    background-color: black;\n\n    margin-top: 1vh;\n}\n.about_panel_iframe\n{\n    border-style:none;\n    width: 100%;\n    min-height: 35vh;\n\n    /* border:yellowgreen;\n    border-width: 8px;\n    border-style: solid; */\n}\n.about_close_button\n{\n    font-size: 32px;\n    display: block;\n    height: auto;\n    width: 50%;\n    margin-left: 25%;\n    border-width: 6px;\n    justify-content: center;\n    box-shadow: none;\n}\n\n\n.app_version_text\n{\n    /* display: block; */\n    padding-bottom: 0%;\n\n    display: flex;\n    justify-content: center;\n\n    font-family: 'Kameron', sans-serif;\n    font-size: 16px;\n    color:#9f7909;\n}\n\n\n@media only screen and (orientation: portrait) {\n    /* .title_image\n    {\n        width: auto;\n        height: 25%;     \n    } \n    */\n    .button_container\n    {\n        width: 90%;\n        margin-left: 5%;\n    }\n    .button_group\n    {\n        width: 80%;\n    }\n  }", "",{"version":3,"sources":["webpack://./src/styles.css"],"names":[],"mappings":"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","sourcesContent":["html, body {\n    overflow: hidden;\n  }\n\n.buttonText {\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    color:#9f7909;\n}\n.descriptionText {\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color: #e0e0e0;\n}\n.descriptionBox {\n    background-color: #505050;\n    opacity: 100%;\n    padding-left: 24px;\n    padding-right: 16px;\n    padding-top: 0px;\n    padding-bottom: 0px;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    position: relative;\n    top: 0px;\n}\n.titleBox {\n    background-color: #cc5010;\n    padding-left: 24px;\n    padding-right: 16px;\n    padding-top: 0px;\n    padding-bottom: 0px;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    text-align: center;\n    opacity: 100%;\n}\n.box {\n    background-color: #505050;\n    opacity: 100%;\n    padding: 2vw;\n    margin: 2vw;\n    border: solid;\n    border-radius: 8px;\n    position: relative;\n    top: 0px;\n}\nbody {\n    background-color: #5D1719;\n    margin: 0px;\n}\n\n.vrbutton\n{\n    font-family: 'Kameron', serif;\n    font-size: 20px;\n    color:#9f7909;\n    border-color: #9f7909;\n    border-width: 8px;\n    width: 30%;\n    height: 10%;\n    position: absolute;\n    bottom: 20px;\n}\n\na:link {\n    color: #ff8020;\n}\na:visited {\n    color: #cc5010;\n}\na:hover {\n    color: #ee6010;\n}\n.ui_container\n{\n    position: absolute;\n    top: 0%;\n    left: 2.5%;\n    height: 100%;\n    width: 95%;\n}\n.ui_backplate\n{\n    background-color: #5D1719;\n    opacity: 100%;\n    position: absolute;\n    /* top: 2.5%;\n    left: 2.5%;\n    height: 95%;\n    width: 95%; */\n    top: 0px;\n    left: 0px;\n    height: 100%;\n    width: 100%;\n    /* margin-left: auto;\n    margin-right: auto; */\n}\n.title_image {\n    max-width: 100%;\n    display: block;\n    margin-left: auto;\n    margin-right: auto;\n    /* padding-top: 12px; */\n    padding-top: 12px;\n    width: 30%;\n    height: auto;\n    transition: width 0.7s, height 0.7s;\n    transition-timing-function: ease-in-out;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n}\n.configuration_label\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    /* 32px; */\n    color:#9f7909;\n    background-color: #000000;\n    \n    height: 40px;\n    padding-top: 6px;\n    margin-top: auto;\n    margin-bottom: auto;    \n    display:inline;\n}\n.configuration_container\n{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    /* height: 20%; */\n    width: 100%;\n    margin-top: -30px;\n    /* border: 3px solid green; */\n}\n.configuration_group\n{\n    display: block;\n    width: 70%;\n    max-width: 800px;\n    /* min-width: 400px; */\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 0.9vw;\n    border-style: solid;\n    margin: 32px;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n    /* height: 30%; */\n}\n.ok_cancel_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 32px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    /* margin: 4px; */\n    width: 40%;\n    /* height: 40%; */\n}\n.button_container\n{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 70%;\n    margin-left: 15%;\n    margin-top: 5px;\n    /* border: 3px solid green; */\n}\n.button_group\n{\n    width: 40%;\n    display: block;\n    /* border: 3px solid red; */\n}\nbutton\n{\n    font-family: 'Kameron', sans-serif;\n    /* font-size: 48px; */\n    font-size: 5vw;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 0.9vw;\n    /* 12px */\n    border-style: solid;\n    margin: 4px;\n    width: 100%;\n    height: 50%;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.25);\n}\nbutton:disabled\n{\n    color:#83713a;\n    border-color: #83713a;\n}\n.webxr_not_found\n{\n    /* color:#8d1414; */\n    /* border-color: #8d1414; */\n    color:#9f7909;\n    border-color:#9f7909;\n    font-size: 2vw;\n}\n\n.plus_minus_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    border-radius: 50%;\n    /* margin: 4px; */\n    width: 40px;\n    height: 40px;\n}\n\n.plus_minus_container\n{\n    display: flex;\n    justify-content: flex-start;\n    width: 90%;\n    margin-left: 5%;\n    /* border: 3px solid red; */\n}\n.plus_minus_container:not first-child\n{\n    justify-content: flex-end;\n}\n\n.next_prev_button\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 24px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7909;\n    border-width: 4px;\n    border-style: solid;\n    /* border-radius: 25%; */\n    /* margin: 4px; */\n    /* margin-top: 33%; */\n    width: 40px;\n    height: auto;\n}\n.workout_description_text\n{\n    font-family: 'Kameron', sans-serif;\n    font-size: 22px;\n    color:#9f7909;\n    background-color: #000000;\n    border-color: #9f7a0940;\n     /* // #303030; */\n    border-width: 2px;\n    border-style: solid;\n    /* border-radius: 25%; */\n    /* margin: 4px; */\n    margin: 6px;\n    width: 100%;\n    height: 110px;\n    padding: 9px;\n    padding-left: 8px;\n    padding-right: 8px;\n\n}\nul \n{\n    /* list-style-type: none; */\n    margin: 0;\n    /* padding: 0; */\n}\n\n.push_right\n{\n    margin-left: auto;\n}\n.about_panel_container\n{\n    display: flex;\n    justify-content: center;\n    /* align-items: center; */\n    width: 100%;\n    height: 20%;\n    padding: 16px;\n    border: 3px solid green;\n}\n.about_panel_group\n{\n    display: block;\n    /* justify-content: center; */\n    width: 90%;\n    height: 100%;\n\n    border:#9f7909;\n    border-style: solid;\n    border-width: 8px;\n    background-color: black;\n\n    margin-top: 1vh;\n}\n.about_panel_iframe\n{\n    border-style:none;\n    width: 100%;\n    min-height: 35vh;\n\n    /* border:yellowgreen;\n    border-width: 8px;\n    border-style: solid; */\n}\n.about_close_button\n{\n    font-size: 32px;\n    display: block;\n    height: auto;\n    width: 50%;\n    margin-left: 25%;\n    border-width: 6px;\n    justify-content: center;\n    box-shadow: none;\n}\n\n\n.app_version_text\n{\n    /* display: block; */\n    padding-bottom: 0%;\n\n    display: flex;\n    justify-content: center;\n\n    font-family: 'Kameron', sans-serif;\n    font-size: 16px;\n    color:#9f7909;\n}\n\n\n@media only screen and (orientation: portrait) {\n    /* .title_image\n    {\n        width: auto;\n        height: 25%;     \n    } \n    */\n    .button_container\n    {\n        width: 90%;\n        margin-left: 5%;\n    }\n    .button_group\n    {\n        width: 80%;\n    }\n  }"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -16046,7 +16046,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * @license
  * webxr-layers-polyfill
- * Version 1.0.5
+ * Version 1.1.0
  * Copyright (c) 2021 Facebook, Inc. and its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16315,7 +16315,6 @@ class XRCompositionLayerPolyfill {
             this.context = context;
         }
         this.blendTextureSourceAlpha = true;
-        this.chromaticAberrationCorrection = false;
     }
     destroy() {
         this._colorTextures = [];
@@ -20503,11 +20502,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "gControllers": () => (/* binding */ gControllers),
 /* harmony export */   "setDirectionalLightPositionFromBlenderQuaternion": () => (/* binding */ setDirectionalLightPositionFromBlenderQuaternion)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! three/examples/jsm/loaders/BasisTextureLoader.js */ "./node_modules/three/examples/jsm/loaders/BasisTextureLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! three/examples/jsm/loaders/TGALoader.js */ "./node_modules/three/examples/jsm/loaders/TGALoader.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! three/examples/jsm/loaders/EXRLoader.js */ "./node_modules/three/examples/jsm/loaders/EXRLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! three/examples/jsm/loaders/BasisTextureLoader.js */ "./node_modules/three/examples/jsm/loaders/BasisTextureLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! three/examples/jsm/loaders/TGALoader.js */ "./node_modules/three/examples/jsm/loaders/TGALoader.js");
 /* harmony import */ var _overrideXRFrameGetViewerPose_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./overrideXRFrameGetViewerPose.js */ "./src/overrideXRFrameGetViewerPose.js");
 /* harmony import */ var _glove_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./glove.js */ "./src/glove.js");
 /* harmony import */ var _bag_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./bag.js */ "./src/bag.js");
@@ -20515,12 +20514,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _gamelogic_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./gamelogic.js */ "./src/gamelogic.js");
 /* harmony import */ var _playerHud_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./playerHud.js */ "./src/playerHud.js");
 /* harmony import */ var _controllers_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./controllers.js */ "./src/controllers.js");
-/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
-/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
-/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
-/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
-/* harmony import */ var _textBox_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./textBox.js */ "./src/textBox.js");
-/* harmony import */ var _menu_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./menu.js */ "./src/menu.js");
+/* harmony import */ var _music_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./music.js */ "./src/music.js");
+/* harmony import */ var _webxr_input_profiles_motion_controllers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @webxr-input-profiles/motion-controllers */ "./node_modules/@webxr-input-profiles/motion-controllers/dist/motion-controllers.module.js");
+/* harmony import */ var _StatsHud_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./StatsHud.js */ "./src/StatsHud.js");
+/* harmony import */ var _pageUI_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./pageUI.js */ "./src/pageUI.js");
+/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./styles.css */ "./src/styles.css");
+/* harmony import */ var _textBox_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./textBox.js */ "./src/textBox.js");
+/* harmony import */ var _menu_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./menu.js */ "./src/menu.js");
+
 
 
 
@@ -20536,6 +20537,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var inputProfilesList = __webpack_require__( /*! @webxr-input-profiles/registry/dist/profilesList.json */ "./node_modules/@webxr-input-profiles/registry/dist/profilesList.json");
 // import * as TWEEN from '@tweenjs/tween.js';
+
 
 
 
@@ -20575,6 +20577,8 @@ let leftHand = {};
 let rightHand = {};
 
 let audioListener = null;
+let musicManager = null;
+
 let heavyBag  = null;
 let doubleEndedBag = null;
 
@@ -20592,11 +20596,11 @@ let basisLoader = null;
 let envMapObjects = {}
 let hud = null;
 let pageUI = null;
-let clearColorBlack = new three__WEBPACK_IMPORTED_MODULE_13__.Color(0x000000);
-let clearColorQuadScene = new three__WEBPACK_IMPORTED_MODULE_13__.Color(0x808080);
+let clearColorBlack = new three__WEBPACK_IMPORTED_MODULE_14__.Color(0x000000);
+let clearColorQuadScene = new three__WEBPACK_IMPORTED_MODULE_14__.Color(0x808080);
 let menu = null;
 
-const blackoutMaterial = new three__WEBPACK_IMPORTED_MODULE_13__.MeshBasicMaterial(
+const blackoutMaterial = new three__WEBPACK_IMPORTED_MODULE_14__.MeshBasicMaterial(
     {
         color:0x000000, 
         opacity:0.0, 
@@ -20605,8 +20609,8 @@ const blackoutMaterial = new three__WEBPACK_IMPORTED_MODULE_13__.MeshBasicMateri
         fog: false
     }
 );
-const blackoutQuad = new three__WEBPACK_IMPORTED_MODULE_13__.Mesh(
-    new three__WEBPACK_IMPORTED_MODULE_13__.PlaneGeometry(1000.0, 1000.0, 1, 1),
+const blackoutQuad = new three__WEBPACK_IMPORTED_MODULE_14__.Mesh(
+    new three__WEBPACK_IMPORTED_MODULE_14__.PlaneGeometry(1000.0, 1000.0, 1, 1),
     blackoutMaterial);
 blackoutQuad.position.z = -0.1;
 let bDoBlackoutFade = false;
@@ -20616,8 +20620,8 @@ let kBlackoutFadeInTime = 0.5;
 
 let gControllers = null;
 
-let matrixOverridePose = new three__WEBPACK_IMPORTED_MODULE_13__.Matrix4().compose(
-    new three__WEBPACK_IMPORTED_MODULE_13__.Vector3(0,1.6,0), new three__WEBPACK_IMPORTED_MODULE_13__.Quaternion().setFromEuler(new three__WEBPACK_IMPORTED_MODULE_13__.Euler(-0.707, 0, 0)), new three__WEBPACK_IMPORTED_MODULE_13__.Vector3(1,1,1));
+let matrixOverridePose = new three__WEBPACK_IMPORTED_MODULE_14__.Matrix4().compose(
+    new three__WEBPACK_IMPORTED_MODULE_14__.Vector3(0,1.6,0), new three__WEBPACK_IMPORTED_MODULE_14__.Quaternion().setFromEuler(new three__WEBPACK_IMPORTED_MODULE_14__.Euler(-0.707, 0, 0)), new three__WEBPACK_IMPORTED_MODULE_14__.Vector3(1,1,1));
 
 // OverrideXRFrameGetViewerPose(matrixOverridePose.toArray()); // Enable this to hard-code the viewpoint for consistent performance testing
 
@@ -20625,8 +20629,8 @@ initialize();
 
 function initialize()
 {
-    scene = new three__WEBPACK_IMPORTED_MODULE_13__.Scene();
-    camera = new three__WEBPACK_IMPORTED_MODULE_13__.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 30);
+    scene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
+    camera = new three__WEBPACK_IMPORTED_MODULE_14__.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 30);
     camera.position.z = 0.0;
     camera.position.y = 1.3;
     //camera.rotation.x = -0.17;
@@ -20635,12 +20639,13 @@ function initialize()
 
     scene.add(camera);
 
-    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_8__.StatsHud(camera);
+    hud = new _StatsHud_js__WEBPACK_IMPORTED_MODULE_9__.StatsHud(camera);
 
-    audioListener = new three__WEBPACK_IMPORTED_MODULE_13__.AudioListener();
+    audioListener = new three__WEBPACK_IMPORTED_MODULE_14__.AudioListener();
     camera.add( audioListener );
+    musicManager = new _music_js__WEBPACK_IMPORTED_MODULE_7__.MusicManager(audioListener);
 
-    renderer = new three__WEBPACK_IMPORTED_MODULE_13__.WebGLRenderer( {antialias: true, precision: 'highp'});
+    renderer = new three__WEBPACK_IMPORTED_MODULE_14__.WebGLRenderer( {antialias: true, precision: 'highp'});
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.setOpaqueSort(opaqueSort);
     renderer.xr.enabled = true;
@@ -20649,10 +20654,10 @@ function initialize()
 
     let qH = 0.52;
     let qW = 0.52 * 16/10;
-    quadCamera = new three__WEBPACK_IMPORTED_MODULE_13__.OrthographicCamera(-qW, qW, qH, -qH, 0.01, 100)
+    quadCamera = new three__WEBPACK_IMPORTED_MODULE_14__.OrthographicCamera(-qW, qW, qH, -qH, 0.01, 100)
     quadCamera.position.z = 3;
 
-    quadScene = new three__WEBPACK_IMPORTED_MODULE_13__.Scene();
+    quadScene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
     // quadScene.add(new THREE.DirectionalLight(0x808080, 3.0));
     // quadScene.add(new THREE.HemisphereLight(0xeeeeff, 0xaa9944, 0.2));
     quadScene.add(quadCamera);
@@ -20665,23 +20670,23 @@ function initialize()
     renderer.setClearColor(clearColorBlack);
  
     renderer.physicallyCorrectLights = true;
-    renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_13__.sRGBEncoding;
+    renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_14__.sRGBEncoding;
     // renderer.shadowMap.enabled = true;
     // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_13__.ACESFilmicToneMapping;
+    renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_14__.ACESFilmicToneMapping;
     // renderer.toneMappingExposure = 1.25;
 
     renderer.domElement.setAttribute("data-html2canvas-ignore", "true");
     document.body.appendChild(renderer.domElement);
     // document.body.appendChild(quadRenderer.domElement);
-    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_9__.PageUI(renderer);
+    pageUI = new _pageUI_js__WEBPACK_IMPORTED_MODULE_10__.PageUI(renderer);
     // pageUI.checkForXR();
 
 
     // document.body.appendChild(renderer.domElement);
 
-    clock = new three__WEBPACK_IMPORTED_MODULE_13__.Clock();
+    clock = new three__WEBPACK_IMPORTED_MODULE_14__.Clock();
 
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
@@ -20695,9 +20700,9 @@ function initialize()
     gControllers = new _controllers_js__WEBPACK_IMPORTED_MODULE_6__.Controllers(scene, renderer);
 
     initGlovesAndBag(scene, camera, renderer);
-    (0,_textBox_js__WEBPACK_IMPORTED_MODULE_11__.initializeTextBoxSystem)();
+    (0,_textBox_js__WEBPACK_IMPORTED_MODULE_12__.initializeTextBoxSystem)();
 
-    menu = new _menu_js__WEBPACK_IMPORTED_MODULE_12__.MainMenu(scene, renderer, pageUI);
+    menu = new _menu_js__WEBPACK_IMPORTED_MODULE_13__.MainMenu(scene, renderer, pageUI);
 }
 
 function setupHandForController(hand, controllerSpace, gamepad)
@@ -20776,9 +20781,9 @@ function loadLevelAssets(addLoadingScreenDelay)
     // post-load fixups
 
     
-    const loadingManager = new three__WEBPACK_IMPORTED_MODULE_13__.LoadingManager();
+    const loadingManager = new three__WEBPACK_IMPORTED_MODULE_14__.LoadingManager();
     loadingManager.addHandler(/\.basis$/i, basisLoader);
-    loadingManager.addHandler( /\.tga$/i, new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_14__.TGALoader() );
+    loadingManager.addHandler( /\.tga$/i, new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_15__.TGALoader() );
 
     Promise.all(lightmapPromises)
         
@@ -20786,16 +20791,16 @@ function loadLevelAssets(addLoadingScreenDelay)
             () => {
                 return new Promise( (resolve) => {
                     //console.log("LOAD GLTF");
-                    let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_15__.GLTFLoader(loadingManager);
+                    let loader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_16__.GLTFLoader(loadingManager);
                     loader.load('./content/gym_v8.gltf', resolve);
                 })
             })
         .then(
             (gltf) => {
-                console.log("GLTF is: " + gltf);
+                // console.log("GLTF is: " + gltf);
                 return new Promise(
                     (resolve) => {
-                    console.log("DO GLTF FIXUPS")
+                    // console.log("DO GLTF FIXUPS")
                     for (let i = 0; i < gltf.scene.children.length; i++)
                     {                
                         let obj = gltf.scene.children[i];
@@ -20808,10 +20813,10 @@ function loadLevelAssets(addLoadingScreenDelay)
                             if (false) //node.name == "Room" || node.name == "Ceiling" || node.name == "Screen")
                             {}
 
-                            console.log("NODE: " + node.name);
+                            // console.log("NODE: " + node.name);
                             let nodeLightmap = lightmaps[node.name];
                             if (nodeLightmap && node.material && 'lightMap' in node.material) {
-                                console.log("--> LIGHTMAP: " + nodeLightmap.name);
+                                // console.log("--> LIGHTMAP: " + nodeLightmap.name);
                                 node.material.lightMap = nodeLightmap;
                                 node.material.lightMapIntensity = 1.0;
                                 node.material.needsUpdate = true;
@@ -20840,13 +20845,13 @@ function loadLevelAssets(addLoadingScreenDelay)
                             }
                         });
 
-                        console.log("OBJECT: " + obj.name);
+                        // console.log("OBJECT: " + obj.name);
                         if (obj.name == "Screen")
                         {
-                            console.log
+                            // console.log
                             obj.material.emissiveIntensity = 0.03;
                             obj.material.color.setRGB(0.86, 0.86, 0.965);
-                            let loader = new three__WEBPACK_IMPORTED_MODULE_13__.TextureLoader();
+                            let loader = new three__WEBPACK_IMPORTED_MODULE_14__.TextureLoader();
                             let tvBkgd = loader.load("./content/tv_background2.png");
                             tvBkgd.flipY = false;
                     
@@ -20866,7 +20871,7 @@ function loadLevelAssets(addLoadingScreenDelay)
                     }
                     scene.add(gltf.scene);
                     initScene(scene, camera, renderer);
-                    console.log("DONE LOADING AND FIXUPS");
+                    // console.log("DONE LOADING AND FIXUPS");
                     resolve();
                 });
             })
@@ -21040,7 +21045,7 @@ function render(time, frame) {
 
 function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX, bQuatY, bQuatZ)
 {
-    const quaternion = new three__WEBPACK_IMPORTED_MODULE_13__.Quaternion(bQuatX, bQuatZ, -bQuatY, bQuatW);
+    const quaternion = new three__WEBPACK_IMPORTED_MODULE_14__.Quaternion(bQuatX, bQuatZ, -bQuatY, bQuatW);
     light.position.set(0.0, 20.0, 0.0);
     light.position.applyQuaternion(quaternion);
 }
@@ -21054,6 +21059,8 @@ function onSessionStart()
         loadingScreen = true;
         setupLoadingScreen();
     }
+
+    musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_7__.MM_INTRO);
 
     menu.onSessionStart();
 
@@ -21222,9 +21229,9 @@ function doPostLoadGameInitialization()
         // quadLayer.height = 0.52;
         // quadLayer.width = quadLayer.height * 16/10;
         // set up the hole-punch mesh in the same place
-        let holePunchMesh = new three__WEBPACK_IMPORTED_MODULE_13__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_13__.PlaneGeometry(2.0 * quadLayer.width, 2.0 * quadLayer.height),
-            new three__WEBPACK_IMPORTED_MODULE_13__.MeshBasicMaterial(
+        let holePunchMesh = new three__WEBPACK_IMPORTED_MODULE_14__.Mesh(
+            new three__WEBPACK_IMPORTED_MODULE_14__.PlaneGeometry(2.0 * quadLayer.width, 2.0 * quadLayer.height),
+            new three__WEBPACK_IMPORTED_MODULE_14__.MeshBasicMaterial(
                 {
                     colorWrite: false,
                 }
@@ -21252,6 +21259,7 @@ function doPostLoadGameInitialization()
         if(e.session.visibilityState === 'visible-blurred') 
         {
             bPause = true;
+            musicManager.onBlur();
             gameLogic.pause();
             if (leftHand.glove)
             {
@@ -21265,6 +21273,7 @@ function doPostLoadGameInitialization()
         else
         {
             bPause = false;
+            musicManager.onFocus();
             gameLogic.resume();
             if (leftHand.glove)
             {
@@ -21291,8 +21300,8 @@ function onSessionEnd()
 let loadingQuadLayer = null;
 let loadingCamera = null;
 let loadingScene = null;
-let loadingScreenQuadLocation = new three__WEBPACK_IMPORTED_MODULE_13__.Vector3(0.0, 1.0, -3.0);
-let loadingScreenQuadQuaternion = new three__WEBPACK_IMPORTED_MODULE_13__.Quaternion();
+let loadingScreenQuadLocation = new three__WEBPACK_IMPORTED_MODULE_14__.Vector3(0.0, 1.0, -3.0);
+let loadingScreenQuadQuaternion = new three__WEBPACK_IMPORTED_MODULE_14__.Quaternion();
 function setupLoadingScreen()
 {
     loadingQuadLayer = renderer.xr.createQuadLayer(1024, 1024, 1.0, 1.0);
@@ -21304,15 +21313,15 @@ function setupLoadingScreen()
     
     //@TODO --- set up loading camera, loading scene, get it rendering while loading is happening (with progress bar?)
 
-    loadingCamera = new three__WEBPACK_IMPORTED_MODULE_13__.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.01, 100)
+    loadingCamera = new three__WEBPACK_IMPORTED_MODULE_14__.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.01, 100)
     loadingCamera.position.z = 20;
 
-    loadingScene = new three__WEBPACK_IMPORTED_MODULE_13__.Scene();
+    loadingScene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
     loadingScene.add(loadingCamera);
-    let logo = new three__WEBPACK_IMPORTED_MODULE_13__.TextureLoader().load('./content/heavy_bag_trainer_logo.png');
-    let loadingScreenMesh = new three__WEBPACK_IMPORTED_MODULE_13__.Mesh(
-        new three__WEBPACK_IMPORTED_MODULE_13__.PlaneGeometry(1.0, 0.5),
-        new three__WEBPACK_IMPORTED_MODULE_13__.MeshBasicMaterial( {color: 0x808080, map: logo} ));
+    let logo = new three__WEBPACK_IMPORTED_MODULE_14__.TextureLoader().load('./content/heavy_bag_trainer_logo.png');
+    let loadingScreenMesh = new three__WEBPACK_IMPORTED_MODULE_14__.Mesh(
+        new three__WEBPACK_IMPORTED_MODULE_14__.PlaneGeometry(1.0, 0.5),
+        new three__WEBPACK_IMPORTED_MODULE_14__.MeshBasicMaterial( {color: 0x808080, map: logo} ));
     loadingScreenMesh.rotation.x = 0.707;
     loadingScreenMesh.position.z = -10
     
@@ -21326,7 +21335,7 @@ function setupLoadingScreen()
     renderer.setAnimationLoop( loadingScreenRender );
 }
 
-let emptyScene = new three__WEBPACK_IMPORTED_MODULE_13__.Scene();
+let emptyScene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
 
 function loadingScreenRender(time, frame)
 {
@@ -21432,7 +21441,7 @@ function initScene(scene, camera, renderer)
 
     // gameLogic = new BoxingSession(scene, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
 
-    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_4__.BoxingSession(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndedBag, 3, 120, 20, 0, true);
+    gameLogic = new _gamelogic_js__WEBPACK_IMPORTED_MODULE_4__.BoxingSession(scene, pageUI, menu, camera, renderer, audioListener, musicManager, heavyBag, doubleEndedBag); //, 3, 120, 20, 0, true);
 
     if ( true && gameLogic.TV != null)
     {
@@ -21510,7 +21519,7 @@ function updateHands(dt, accumulatedTime)
 
 function LoadEnvMapPromise()
 {
-    pmremGenerator = new three__WEBPACK_IMPORTED_MODULE_13__.PMREMGenerator( renderer );
+    pmremGenerator = new three__WEBPACK_IMPORTED_MODULE_14__.PMREMGenerator( renderer );
     pmremGenerator.compileEquirectangularShader();
 
     // THREE.DefaultLoadingManager.onLoad = function ( ) {
@@ -21522,7 +21531,7 @@ function LoadEnvMapPromise()
 
     return new Promise( (resolve, reject) => {
         
-        new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_16__.EXRLoader()
+        new three_examples_jsm_loaders_EXRLoader_js__WEBPACK_IMPORTED_MODULE_17__.EXRLoader()
             // .setDataType( THREE.HalfFloatType )
             .load( './content/gym_v8_envmap_2.exr',  ( texture ) => {
 
@@ -21538,7 +21547,7 @@ function LoadEnvMapPromise()
 
 function InitBasisLoader()
 {
-    basisLoader = new three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_17__.BasisTextureLoader();
+    basisLoader = new three_examples_jsm_loaders_BasisTextureLoader_js__WEBPACK_IMPORTED_MODULE_18__.BasisTextureLoader();
     basisLoader.setTranscoderPath( './basis/' );
     basisLoader.detectSupport( renderer );
 }
@@ -21546,12 +21555,12 @@ function InitBasisLoader()
 function LoadLightmapPromise(meshName, filepath)
 {
     return new Promise( (resolve, reject) => {
-        new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_14__.TGALoader().load(filepath, (texture) => 
+        new three_examples_jsm_loaders_TGALoader_js__WEBPACK_IMPORTED_MODULE_15__.TGALoader().load(filepath, (texture) => 
         {
             console.log("LOADED: " + meshName + " -> " + filepath);
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = three__WEBPACK_IMPORTED_MODULE_13__.LinearEncoding; //RGBDEncoding;
+            texture.encoding = three__WEBPACK_IMPORTED_MODULE_14__.LinearEncoding; //RGBDEncoding;
             lightmaps[meshName] = texture;
             resolve();
         });
@@ -21566,7 +21575,7 @@ function LoadBasisLightmapPromise(meshName, filepath)
         basisLoader.load(filepath, (texture) => {
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = three__WEBPACK_IMPORTED_MODULE_13__.LinearEncoding; //RGBDEncoding  ;
+            texture.encoding = three__WEBPACK_IMPORTED_MODULE_14__.LinearEncoding; //RGBDEncoding  ;
             lightmaps[meshName] = texture;
             resolve();
         });
@@ -21579,7 +21588,7 @@ function LoadBasisAoPromise(meshName, filepath)
         basisLoader.load(filepath, (texture) => {
             texture.name = filepath;
             texture.flipY = false;
-            texture.encoding = three__WEBPACK_IMPORTED_MODULE_13__.LinearEncoding; //RGBDEncoding;
+            texture.encoding = three__WEBPACK_IMPORTED_MODULE_14__.LinearEncoding; //RGBDEncoding;
             aomaps[meshName] = texture;
             resolve();
         });
@@ -22330,13 +22339,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "kPunchNamesShort": () => (/* binding */ kPunchNamesShort),
 /* harmony export */   "kRedColor": () => (/* binding */ kRedColor)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var _textBox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./textBox */ "./src/textBox.js");
 /* harmony import */ var _movingAverage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./movingAverage.js */ "./src/movingAverage.js");
-/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
-/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
-/* harmony import */ var _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BoxingRounds.js */ "./src/BoxingRounds.js");
-/* harmony import */ var _punchDetector__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./punchDetector */ "./src/punchDetector.js");
+/* harmony import */ var _music_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./music.js */ "./src/music.js");
+/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
+/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
+/* harmony import */ var _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BoxingRounds.js */ "./src/BoxingRounds.js");
+/* harmony import */ var _punchDetector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./punchDetector */ "./src/punchDetector.js");
+
 
 
 
@@ -22388,13 +22399,13 @@ const kRestGetReadyDuration = 5.0;
 const kWorkoutTextBoxSmallFontSize = 500; //470;
 const kWorkoutTextBoxBigFontSize = 350;
 
-const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_6__.Color(0x000000);
-const kGreenColor = new three__WEBPACK_IMPORTED_MODULE_6__.Color(0x00721b);
-const kRedColor = new three__WEBPACK_IMPORTED_MODULE_6__.Color(0x5D1719);
+const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x000000);
+const kGreenColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x00721b);
+const kRedColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x5D1719);
 kRedColor.multiplyScalar(1.5);
-const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_6__.Color(0x404040);
+const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x404040);
 
-let tVec0 = new three__WEBPACK_IMPORTED_MODULE_6__.Vector3();
+let tVec0 = new three__WEBPACK_IMPORTED_MODULE_7__.Vector3();
 
 function formatTimeString(timeInSeconds)
 {
@@ -22408,10 +22419,12 @@ function formatTimeString(timeInSeconds)
 
 class BoxingSession
 {
-    constructor(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndBag)
+    constructor(scene, pageUI, menu, camera, renderer, audioListener, musicManager, heavyBag, doubleEndBag)
     {
         this.scene = scene;
         this.audioListener = audioListener;
+        this.musicManager = musicManager;
+
         this.heavyBag = heavyBag;
         this.doubleEndBag = doubleEndBag;
         this.TV = null;
@@ -22430,45 +22443,45 @@ class BoxingSession
         doubleEndBag.punchCallbacks.push((glove, speed, velocity) => {this.onBagHit(glove, speed, velocity)});
         
         this.punchingStats = new PunchingStats(scene);
-        this.punchDetector = new _punchDetector__WEBPACK_IMPORTED_MODULE_5__.PunchDetector();
+        this.punchDetector = new _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PunchDetector();
         this.lastPunchType = null;
         //load assets here
         
         // sounds
-        this.sound321 = new three__WEBPACK_IMPORTED_MODULE_6__.PositionalAudio(audioListener);
+        this.sound321 = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
         this.sound321.setRefDistance(40.0);
         this.sound321.setVolume(1.0);
-        new three__WEBPACK_IMPORTED_MODULE_6__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
             "./content/simple_bell.mp3", 
             (buffer) => 
             {
                 this.sound321.buffer = buffer;
             });
         
-        this.soundEndOfRound = new three__WEBPACK_IMPORTED_MODULE_6__.PositionalAudio(audioListener);
+        this.soundEndOfRound = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
         this.soundEndOfRound.setVolume(1.0);
         this.soundEndOfRound.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_6__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
             "./content/endOfRound.mp3",
             (buffer) => 
             {
                 this.soundEndOfRound.buffer = buffer;
             });
         
-        this.soundGetReady = new three__WEBPACK_IMPORTED_MODULE_6__.PositionalAudio(audioListener);
+        this.soundGetReady = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
         this.soundGetReady.setVolume(0.5);
         this.soundGetReady.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_6__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
             "./content/3x-Punch-Kick-A3-med-www.fesliyanstudios.com.mp3",
             (buffer) =>
             {
                 this.soundGetReady.buffer = buffer;
             });
 
-        this.soundNewInstructions = new three__WEBPACK_IMPORTED_MODULE_6__.PositionalAudio(audioListener);
+        this.soundNewInstructions = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
         this.soundNewInstructions.setVolume(1.0);
         this.soundNewInstructions.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_6__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
             "./content/new_instructions.mp3",
             (buffer) => 
             {
@@ -22501,13 +22514,13 @@ class BoxingSession
 
         this.currentTimeInWholeSeconds = -1.0;
 
-        this.headingArrow = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_6__.BoxGeometry(0.05, 0.05, 0.5),
-            new three__WEBPACK_IMPORTED_MODULE_6__.MeshBasicMaterial({color: 0x804080})
+        this.headingArrow = new three__WEBPACK_IMPORTED_MODULE_7__.Mesh(
+            new three__WEBPACK_IMPORTED_MODULE_7__.BoxGeometry(0.05, 0.05, 0.5),
+            new three__WEBPACK_IMPORTED_MODULE_7__.MeshBasicMaterial({color: 0x804080})
         );
-        this.punchArrow = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_6__.BoxGeometry(0.05, 0.05, 0.5),
-            new three__WEBPACK_IMPORTED_MODULE_6__.MeshBasicMaterial({color: 0x408040})
+        this.punchArrow = new three__WEBPACK_IMPORTED_MODULE_7__.Mesh(
+            new three__WEBPACK_IMPORTED_MODULE_7__.BoxGeometry(0.05, 0.05, 0.5),
+            new three__WEBPACK_IMPORTED_MODULE_7__.MeshBasicMaterial({color: 0x408040})
         );
 
         this.headingArrow.position.set(0.0, 0.1, -1.0);
@@ -22574,7 +22587,7 @@ class BoxingSession
         }
         else
         {
-            this.initializeScriptedWorkout(_workoutData_js__WEBPACK_IMPORTED_MODULE_3__.workoutData[whichScriptedWorkout], roundDuration);
+            this.initializeScriptedWorkout(_workoutData_js__WEBPACK_IMPORTED_MODULE_4__.workoutData[whichScriptedWorkout], roundDuration);
         }
 
         //this.boxingRoundInfo = new BoxingRound(roundDuration);
@@ -22592,7 +22605,7 @@ class BoxingSession
         this.boxingRounds = [null];
 
         //Set up this message before we start swapping bags
-        this.workoutIntroMessage = "FREESTYLE " + (bagSwap ? "ALTERNATING BAGS" : (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG ? "HEAVY BAG" : "DOUBLE-END BAG")) + ":\n"+
+        this.workoutIntroMessage = "FREESTYLE " + (bagSwap ? "ALTERNATING BAGS" : (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG ? "HEAVY BAG" : "DOUBLE-END BAG")) + ":\n"+
         " \u2022 " + numRounds + " rounds, " + formatTimeString(roundDuration) + " per round.\n" + 
         " \u2022 Focus on form, go for speed, or try some new moves.";
 
@@ -22600,16 +22613,16 @@ class BoxingSession
         for (let i = 0; i < this.numRounds; i++)
         {
             this.boxingRounds.push(
-                new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
+                new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
             if (bagSwap)
             {
-                if (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG)
+                if (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG)
                 {
-                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_DOUBLE_END_BAG;
+                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG;
                 }
                 else
                 {
-                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG;
+                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG;
                 }
             }
         }
@@ -22625,29 +22638,29 @@ class BoxingSession
             let round;
             let roundNumber = i+1;
             let roundInfo = info[roundNumber];
-            if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_SCRIPTED)
+            if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_SCRIPTED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.ScriptedBoxingRound(info, roundDuration, roundNumber);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.ScriptedBoxingRound(info, roundDuration, roundNumber);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_NUM_PUNCHES)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_PUNCHES)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.TimeAdjustedNumberOfPunchesBoxingRound(roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimeAdjustedNumberOfPunchesBoxingRound(roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_NUM_SPECIFIC_PUNCHES)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_SPECIFIC_PUNCHES)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.NumberOfSpecificPunchesBoxingRound(roundInfo, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.NumberOfSpecificPunchesBoxingRound(roundInfo, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_TIMED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_TIMED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUNDTYPE_SPEED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_SPEED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_4__.SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds, roundInfo.introText);
             }
             else
             {
@@ -22686,6 +22699,7 @@ class BoxingSession
         this.heavyBag.leftGlove.show();
         this.heavyBag.rightGlove.show();
 
+        this.musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_2__.MM_INTRO_UPBEAT);
 
     }
 
@@ -22779,6 +22793,7 @@ class BoxingSession
                     }
                     
                     //START THE ROUND
+                    
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
                     // this.playedAlmostDoneAlert = false;
@@ -22794,6 +22809,26 @@ class BoxingSession
                     this.workoutStageTextBox.visible = true;
 
                     this.boxingRoundInfo.start(this, this.elapsedTime);
+
+                    let intensity = _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_0;
+                    switch(this.currentRound)
+                    {
+                        case 0:
+                        case 1:
+                            intensity = _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_0;
+                            break;
+                        case 2:
+                            intensity = _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_1;
+                            break;
+                        case 3:
+                            intensity = _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_2;
+                            break;
+                        default:
+                            intensity = (this.currentRound % 2) ? _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_2 : _music_js__WEBPACK_IMPORTED_MODULE_2__.MM_ROUND_INTENSITY_3;
+                            break;
+                    }
+                    this.musicManager.play(intensity);
+                    
 
                     // update the TV screen
                     this.updateRoundsMessage();
@@ -22841,6 +22876,7 @@ class BoxingSession
                             }
                         }
                         this.state = SESSION_OUTRO;
+                        this.musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_2__.MM_OUTRO);
                     }
                     else
                     {
@@ -22848,6 +22884,7 @@ class BoxingSession
                         this.hideBag();
 
                         this.state = SESSION_REST;
+                        this.musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_2__.MM_INTRAROUND);
                     }
 
                     
@@ -22890,6 +22927,8 @@ class BoxingSession
         this.showBagForNextRound();
         this.soundGetReady.play();
 
+        
+
         this.elapsedTime = 0.0;
         this.workoutIntroTextBox.visible = true;
         this.workoutStageTextBox.visible = false;
@@ -22907,10 +22946,10 @@ class BoxingSession
         {
             switch(this.currentBagType)
             {
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG:
                     this.heavyBag.fadeOut();
                     break;
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_DOUBLE_END_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG:
                     this.doubleEndBag.fadeOut();
                     break;
             }
@@ -22925,18 +22964,18 @@ class BoxingSession
         {
             switch(desiredBagType)
             {
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG:
                     this.heavyBag.fadeIn();
-                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG;
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG;
                     break;
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_DOUBLE_END_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG:
                     this.doubleEndBag.fadeIn();
-                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_DOUBLE_END_BAG;
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG;
                     break;
             }
             
         }
-        if (this.currentBagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_3__.ROUND_HEAVY_BAG)
+        if (this.currentBagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG)
         {
             this.punchDetector.initialize(this.heavyBag);
         }
@@ -23184,10 +23223,10 @@ class PunchingStats
         let message;
         message = "WORKOUT COMPLETE:\n"
         message += " \u2022 Total time:\u00a0" + formatTimeString(this.elapsedWorkoutTime) + "\n";
-        message += " \u2022 Jab:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_JAB] + ", Straight:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_STRAIGHT] 
-                + ", L\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_RIGHT_HOOK] 
-                + ", L\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_LEFT_UPPERCUT] + ", R\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_RIGHT_UPPERCUT] + 
-                ", Other:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_UNKNOWN] + "\n";
+        message += " \u2022 Jab:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_JAB] + ", Straight:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_STRAIGHT] 
+                + ", L\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_RIGHT_HOOK] 
+                + ", L\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_LEFT_UPPERCUT] + ", R\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_RIGHT_UPPERCUT] + 
+                ", Other:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN] + "\n";
         message += " \u2022 Max:\u00a0" + this.maxSpeed.toFixed(1) + "\u00a0m/s, Avg:\u00a0" + (this.accumulatedSpeedForAverage/Math.max(this.punches,1)).toFixed(1) + "\u00a0m/s";
         return message;
     }
@@ -23233,7 +23272,7 @@ class PunchingStats
 
 
         //console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
-        if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_UNKNOWN))
+        if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN))
         {
             this.lastPunchType = lastPunchType;
             this.lastPunchTypeCount = 1;
@@ -23247,7 +23286,7 @@ class PunchingStats
         {
             this.punchRecordLength = 0;
         }
-        this.punchRecord[this.punchRecordLength++] = (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_5__.PUNCH_UNKNOWN) ? "?" : lastPunchType;
+        this.punchRecord[this.punchRecordLength++] = (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN) ? "?" : lastPunchType;
 
         // A repeated punch will only count as an xN if it happens within this window of time.
         // This allows for Jab-Straight-Jab, Jab-Straight-Jab without getting an x2 on the second Jab.
@@ -24830,6 +24869,188 @@ class MultiInstanceSound extends three__WEBPACK_IMPORTED_MODULE_0__.Group
 
 /***/ }),
 
+/***/ "./src/music.js":
+/*!**********************!*\
+  !*** ./src/music.js ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MM_INTRAROUND": () => (/* binding */ MM_INTRAROUND),
+/* harmony export */   "MM_INTRO": () => (/* binding */ MM_INTRO),
+/* harmony export */   "MM_INTRO_UPBEAT": () => (/* binding */ MM_INTRO_UPBEAT),
+/* harmony export */   "MM_OUTRO": () => (/* binding */ MM_OUTRO),
+/* harmony export */   "MM_ROUND_INTENSITY_0": () => (/* binding */ MM_ROUND_INTENSITY_0),
+/* harmony export */   "MM_ROUND_INTENSITY_1": () => (/* binding */ MM_ROUND_INTENSITY_1),
+/* harmony export */   "MM_ROUND_INTENSITY_2": () => (/* binding */ MM_ROUND_INTENSITY_2),
+/* harmony export */   "MM_ROUND_INTENSITY_3": () => (/* binding */ MM_ROUND_INTENSITY_3),
+/* harmony export */   "MusicManager": () => (/* binding */ MusicManager)
+/* harmony export */ });
+/* provided dependency */ var THREE = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+/*
+
+What kind of interface to I want?
+
+There are some sections of music I can plan -- intro, pre-round, during-round, between-rounds, outro
+I can also set intensity of action and music manager can react accordingly
+
+Music manager can listen to blur/focus events to determine what to do with music in response to that.
+
+*/
+const MM_INTRO = 0;
+const MM_INTRO_UPBEAT = 1;
+const MM_ROUND_INTENSITY_0 = 2;
+const MM_ROUND_INTENSITY_1 = 3;
+const MM_ROUND_INTENSITY_2 = 4;
+const MM_ROUND_INTENSITY_3 = 5;
+const MM_INTRAROUND = 6;
+const MM_OUTRO = 7;
+
+const kRegularVolume = 0.5 ;
+const kPausedVolume = 0.15;
+
+const labels = [
+    "MM_INTRO",
+    "MM_INTRO_UPBEAT",
+    "MM_ROUND_INTENSITY_0",
+    "MM_ROUND_INTENSITY_1",
+    "MM_ROUND_INTENSITY_2",
+    "MM_ROUND_INTENSITY_3",
+    "MM_INTRAROUND",
+    "MM_OUTRO"
+];
+
+class MusicManager
+{
+    constructor(audioListener)
+    {
+        // load some music tracks
+        
+        this.audioListener = audioListener;
+        this.startTime = -1;
+        this.currentLoop = null;
+
+        this.loops = [];
+
+        this._loadLoop(MM_INTRO, "./content/HBT_Intro.ogg");
+        this._loadLoop(MM_INTRO_UPBEAT, "./content/HBT_Upbeat_Intro.ogg");
+        this._loadLoop(MM_ROUND_INTENSITY_0, "./content/HBT_Main_Intensity0.ogg");
+        this._loadLoop(MM_ROUND_INTENSITY_1, "./content/HBT_Main_Intensity1.ogg");
+        this._loadLoop(MM_ROUND_INTENSITY_2, "./content/HBT_Main_Intensity2.ogg");
+        this._loadLoop(MM_ROUND_INTENSITY_3, "./content/HBT_Main_Intensity3.ogg");
+        this._loadLoop(MM_INTRAROUND, "./content/HBT_Between_Rounds.ogg");
+        this._loadLoop(MM_OUTRO, "./content/HBT_Outro.ogg")            
+    }
+    _loadLoop(which, path)
+    {
+        let sound = new THREE.Audio(this.audioListener);
+        this.loops[which] = sound;
+
+        new THREE.AudioLoader().load(
+            path,
+            (buffer) => 
+            {
+                sound.setBuffer(buffer);
+                sound.setLoop(true);
+                sound.setVolume(kRegularVolume);
+                
+            }
+        )
+        
+    }
+
+    start()
+    {
+        this.startTime = this.audioListener.context.currentTime;
+        this.bpm = 96.0;
+        this.bps = this.bpm / 60.0;
+        this.secondsPerBeat = 60.0 / this.bpm;
+        this.secondsPerBar = this.secondsPerBeat * 4.0; // assume 4 beats per bar
+    }
+
+    play(which)
+    {
+        if (this.startTime === -1)
+        {
+            this.start();
+        }
+
+        if (which !== this.currentLoopId)
+        {
+
+            let transitionTime = this.timeToNextBar();
+
+            console.log("Audio Transition to " + labels[which] + " in " + transitionTime + " seconds.");
+            if (this.currentLoop !== null)
+            {
+                console.log("\tStop " + labels[this.currentLoopId]);
+                this.currentLoop.stop(transitionTime)
+            }
+
+            this.currentLoop = this.loops[which];
+            this.currentLoopId = which;
+
+            // @TODO - do we want to offset into the new loop based on which bar we're on?
+            if (this.currentLoop !== null)
+            {
+                console.log("\tPlay " + labels[this.currentLoopId]);
+                this.currentLoop.play(transitionTime);
+            }
+        }
+    }
+
+    // timeToNextBeat()
+    // {
+    //     let elapsed = this.audioListener.context.currentTime - this.startTime;
+    //     let nextBeatNumber = Math.ceil(elapsed / this.bps);
+    //     let nextBeatTime = (nextBeatNumber * this.bps);
+    //     return nextBeatTime;
+    // }
+
+    timeToNextBar()
+    {
+
+        let elapsed = this.audioListener.context.currentTime - this.startTime;
+        //assume 4 beats per bar
+        // seconds * beats/second / 4 beats/bar
+        // let nextBarNumber = Math.ceil(elapsed / this.bps / 4);
+        // seconds * 1.6 beats/second = 17.6 beats / 4 = 4.25 bars = bar #5
+        let nextBarNumber = Math.ceil(elapsed / this.secondsPerBar); // Math.ceil(elapsed * this.bps / 4);
+        let nextBarTime = nextBarNumber * this.secondsPerBar - elapsed;
+
+        console.log("AUDIO TRANSITION");
+        console.log("Elapsed: " + elapsed);
+        console.log("Next Bar Number: " + nextBarNumber);
+        console.log("Next Bar Time: " + nextBarTime);
+
+        // Elapsed: 13.728
+        // Next Bar Number: 6
+        // Next Bar Time: 15
+
+        // 13.7 * 1.6 / 4 = 5.48 --> 6
+
+        // 96bpm --> 1.6bps --> 4 / 1.6 = 2.5 seconds per bar
+
+        return nextBarTime;
+    }
+
+    onBlur()
+    {
+        this.currentLoop.setVolume(kPausedVolume, 0.1);
+    }
+
+    onFocus()
+    {
+        this.currentLoop.setVolume(kRegularVolume, 0.1);
+    }
+}
+
+/***/ }),
+
 /***/ "./src/overrideXRFrameGetViewerPose.js":
 /*!*********************************************!*\
   !*** ./src/overrideXRFrameGetViewerPose.js ***!
@@ -25094,8 +25315,8 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9.3&beta;";
-        // appVersionText.innerHTML = "Version 0.9";
+        appVersionText.innerHTML = "Version 0.9.4&beta;";
+        // appVersionText.innerHTML = "Version 0.9.4";
         appVersionText.className = "app_version_text";
         
         this.uiButtonGroup.appendChild(appVersionText);
@@ -25460,8 +25681,8 @@ class PageUI
         this.uiStartButton.innerHTML = "Click here to try it on your Meta Quest Headset.";
         this.uiStartButton.classList.add("webxr_not_found");
         this.uiStartButton.disabled = false;
-        this.uiARVRButton.style.display = "none";
-        this.uiARVRButton.disabled = true;
+        // this.uiARVRButton.style.display = "none";
+        // this.uiARVRButton.disabled = true;
         this.uiStartButton.onclick = () => {
             let hasParam = window.location.href.match('[?]');
             console.log("hasParam = " + hasParam);
@@ -61315,16 +61536,47 @@ function WebGLRenderer( parameters = {} ) {
 
 		const overrideMaterial = scene.isScene === true ? scene.overrideMaterial : null;
 
-		for ( let i = 0, l = renderList.length; i < l; i ++ ) {
+		if ( camera.isArrayCamera ) {
 
-			const renderItem = renderList[ i ];
+			const cameras = camera.cameras;
 
-			const object = renderItem.object;
-			const geometry = renderItem.geometry;
-			const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
-			const group = renderItem.group;
+			for ( let i = 0, l = cameras.length; i < l; i ++ ) {
 
-			if ( object.layers.test( camera.layers ) ) {
+				const camera2 = cameras[ i ];
+
+				state.viewport( _currentViewport.copy( camera2.viewport ) );
+
+				currentRenderState.setupLightsView( camera2 );
+
+				for ( let j = 0, jl = renderList.length; j < jl; j ++ ) {
+
+					const renderItem = renderList[ j ];
+
+					const object = renderItem.object;
+					const geometry = renderItem.geometry;
+					const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
+					const group = renderItem.group;
+
+					if ( object.layers.test( camera2.layers ) ) {
+
+						renderObject( object, scene, camera2, geometry, material, group );
+
+					}
+
+				}
+
+			}
+
+		} else {
+
+			for ( let j = 0, jl = renderList.length; j < jl; j ++ ) {
+
+				const renderItem = renderList[ j ];
+
+				const object = renderItem.object;
+				const geometry = renderItem.geometry;
+				const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
+				const group = renderItem.group;
 
 				renderObject( object, scene, camera, geometry, material, group );
 
@@ -77249,7 +77501,7 @@ class Audio extends Object3D {
 
 	}
 
-	pause() {
+	pause( delay = 0 ) {
 
 		if ( this.hasPlaybackControl === false ) {
 
@@ -77272,7 +77524,7 @@ class Audio extends Object3D {
 
 			}
 
-			this.source.stop();
+			this.source.stop(this.context.currentTime + delay);
 			this.source.onended = null;
 
 			this.isPlaying = false;
@@ -77283,7 +77535,7 @@ class Audio extends Object3D {
 
 	}
 
-	stop() {
+	stop( delay = 0 ) {
 
 		if ( this.hasPlaybackControl === false ) {
 
@@ -77294,7 +77546,7 @@ class Audio extends Object3D {
 
 		this._progress = 0;
 
-		this.source.stop();
+		this.source.stop(this.context.currentTime + delay);
 		this.source.onended = null;
 		this.isPlaying = false;
 
@@ -77503,9 +77755,9 @@ class Audio extends Object3D {
 
 	}
 
-	setVolume( value ) {
+	setVolume( value, rate = 0.01 ) {
 
-		this.gain.gain.setTargetAtTime( value, this.context.currentTime, 0.01 );
+		this.gain.gain.setTargetAtTime( value, this.context.currentTime, rate );
 
 		return this;
 

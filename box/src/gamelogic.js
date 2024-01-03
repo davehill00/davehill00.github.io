@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { TextBox } from './textBox';
 import {MovingAverageEventsPerMinute} from './movingAverage.js';
+import { MM_INTRAROUND, MM_INTRO, MM_INTRO_UPBEAT, MM_OUTRO, MM_ROUND_INTENSITY_0, MM_ROUND_INTENSITY_1, MM_ROUND_INTENSITY_2, MM_ROUND_INTENSITY_3 } from './music.js';
 
 import {MainMenu} from './menu';
 
@@ -69,10 +70,12 @@ export function formatTimeString(timeInSeconds)
 
 export class BoxingSession
 {
-    constructor(scene, pageUI, menu, camera, renderer, audioListener, heavyBag, doubleEndBag)
+    constructor(scene, pageUI, menu, camera, renderer, audioListener, musicManager, heavyBag, doubleEndBag)
     {
         this.scene = scene;
         this.audioListener = audioListener;
+        this.musicManager = musicManager;
+
         this.heavyBag = heavyBag;
         this.doubleEndBag = doubleEndBag;
         this.TV = null;
@@ -347,6 +350,7 @@ export class BoxingSession
         this.heavyBag.leftGlove.show();
         this.heavyBag.rightGlove.show();
 
+        this.musicManager.play(MM_INTRO_UPBEAT);
 
     }
 
@@ -440,6 +444,7 @@ export class BoxingSession
                     }
                     
                     //START THE ROUND
+                    
                     this.state = SESSION_ROUND;
                     this.elapsedTime = 0.0;
                     // this.playedAlmostDoneAlert = false;
@@ -455,6 +460,26 @@ export class BoxingSession
                     this.workoutStageTextBox.visible = true;
 
                     this.boxingRoundInfo.start(this, this.elapsedTime);
+
+                    let intensity = MM_ROUND_INTENSITY_0;
+                    switch(this.currentRound)
+                    {
+                        case 0:
+                        case 1:
+                            intensity = MM_ROUND_INTENSITY_0;
+                            break;
+                        case 2:
+                            intensity = MM_ROUND_INTENSITY_1;
+                            break;
+                        case 3:
+                            intensity = MM_ROUND_INTENSITY_2;
+                            break;
+                        default:
+                            intensity = (this.currentRound % 2) ? MM_ROUND_INTENSITY_2 : MM_ROUND_INTENSITY_3;
+                            break;
+                    }
+                    this.musicManager.play(intensity);
+                    
 
                     // update the TV screen
                     this.updateRoundsMessage();
@@ -502,6 +527,7 @@ export class BoxingSession
                             }
                         }
                         this.state = SESSION_OUTRO;
+                        this.musicManager.play(MM_OUTRO);
                     }
                     else
                     {
@@ -509,6 +535,7 @@ export class BoxingSession
                         this.hideBag();
 
                         this.state = SESSION_REST;
+                        this.musicManager.play(MM_INTRAROUND);
                     }
 
                     
@@ -550,6 +577,8 @@ export class BoxingSession
         this.state = SESSION_GET_READY;
         this.showBagForNextRound();
         this.soundGetReady.play();
+
+        
 
         this.elapsedTime = 0.0;
         this.workoutIntroTextBox.visible = true;

@@ -2473,10 +2473,10 @@ three-mesh-ui@^6.5.4:
   resolved "https://registry.yarnpkg.com/three-mesh-ui/-/three-mesh-ui-6.5.4.tgz#68f0a5aba4dced0ed168d2574f45d93b55f4fd03"
   integrity sha512-QA2KlHrbj7zGjKqpNXcwvini8g5gOXb44ExdupVpxCqmHln/sWNGOmN0yIa/HjnMGYJWP4M+NchTHvwUp+MWIw==
 
-"three@file:.yalc/three":
-  version "0.146.0"
-  dependencies:
-    webgl-debug "^2.0.1"
+three@0.147:
+  version "0.147.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.147.0.tgz#1974af9e8e0c1efb3a8561334d57c0b6c29a7951"
+  integrity sha512-LPTOslYQXFkmvceQjFTNnVVli2LaVF6C99Pv34fJypp8NbQLbTlu3KinZ0zURghS5zEehK+VQyvWuPZ/Sm8fzw==
 
 thunky@^1.0.2:
   version "1.1.0"
@@ -2715,8 +2715,10 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-"webxr-layers-polyfill@file:.yalc/webxr-layers-polyfill":
-  version "1.0.5"
+webxr-layers-polyfill@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/webxr-layers-polyfill/-/webxr-layers-polyfill-1.1.0.tgz#8d00f2d6b46214d9e4d92a3e13884093f0ddef4e"
+  integrity sha512-GqWE6IFlut8a1Lnh9t1RPnOXud1rZ7wLPvWp7mqTDOYtgorXqlNMhEnI9EqjU33grBx0v3jm0Oc13opkAdmgMQ==
   dependencies:
     gl-matrix "^3.4.3"
 
