@@ -13,6 +13,10 @@ import { TextBox } from './textBox.js';
 
 // let logoTexture = new THREE.TextureLoader().load("./content/heavy_bag_trainer_logo.png");
 
+
+// FONT TEXTURE STRING:
+// ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*(),.<>/?;:'"\|`~•
+
 let dotTexture = new THREE.TextureLoader().load("./content/small_dot.png");
 let clearColor = new THREE.Color(0x000000);
 
