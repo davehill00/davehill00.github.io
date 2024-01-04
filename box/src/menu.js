@@ -15,7 +15,7 @@ import { TextBox } from './textBox.js';
 
 
 // FONT TEXTURE STRING:
-// ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*(),.<>/?;:'"\|`~-_=+[]{}•
+// ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*(),.<>  /?;:'"\|`~-_=+[]{}•
 
 let dotTexture = new THREE.TextureLoader().load("./content/small_dot.png");
 let clearColor = new THREE.Color(0x000000);
