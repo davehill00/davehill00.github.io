@@ -23633,6 +23633,10 @@ __webpack_require__.r(__webpack_exports__);
 
 // let logoTexture = new THREE.TextureLoader().load("./content/heavy_bag_trainer_logo.png");
 
+
+// FONT TEXTURE STRING:
+// ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*(),.<>  /?;:'"\|`~-_=+[]{}•
+
 let dotTexture = new THREE.TextureLoader().load("./content/small_dot.png");
 let clearColor = new THREE.Color(0x000000);
 
@@ -24122,7 +24126,7 @@ class MainMenu
                     borderRadius: 0,
                     borderWidth: 0,
                     backgroundOpacity: 0.0,
-                }).addText("-");
+                }).addText("<");
 
             settingsContainer.addHorizontalLayoutSubBlock(4, {backgroundColor: new THREE.Color(0x000000)});
 
@@ -24144,7 +24148,7 @@ class MainMenu
                     borderRadius: 0,
                     borderWidth: 0,
                     backgroundOpacity: 0.0,
-                }).addText("+");
+                }).addText(">");
         }
 
         // this.startMenuBase.position.y = 1.5;
@@ -24186,13 +24190,13 @@ class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRoundTimeChanged(-30)}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onRoundTimeChanged(-30)}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.roundTimeValueTextField = settingValueBlock.addText(this.formatTime(this.settings.roundTime), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRoundTimeChanged(30)}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onRoundTimeChanged(30)}, settingsUpDownButtonDefaultOptions).addText(">");
 
         // Rest Time
         settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
@@ -24200,13 +24204,13 @@ class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRestTimeChanged(-10)}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onRestTimeChanged(-10)}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.restTimeValueTextField = settingValueBlock.addText(this.formatTime(this.settings.restTime), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRestTimeChanged(10)}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onRestTimeChanged(10)}, settingsUpDownButtonDefaultOptions).addText(">");
 
         
         if (this.settings.workoutType == 0)
@@ -24244,7 +24248,7 @@ class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock((48 + 6 + 6)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 6, contentDirection: 'row', justifyContent: 'center'})
             .addVerticalLayoutSubBlock(350, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 6, justifyContent:'center'})
-            .addButton(()=>{_this.onWorkoutSelectionChanged(1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText("-");
+            .addButton(()=>{_this.onWorkoutSelectionChanged(-1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText("<");
         
         let workoutDescriptionField = settingsBlock
             .addHorizontalLayoutSubBlock(1024 - (160*2), {backgroundOpacity: 1.0, backgroundColor: new THREE.Color(0x000000)});
@@ -24259,7 +24263,7 @@ class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock((48 + 6 + 6)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 6, contentDirection: 'row', justifyContent: 'center'})
             .addVerticalLayoutSubBlock(350, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 6, justifyContent:'center'})
-            .addButton(()=>{_this.onWorkoutSelectionChanged(1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText("+");
+            .addButton(()=>{_this.onWorkoutSelectionChanged(1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText(">");
         
 
     }
@@ -24279,13 +24283,13 @@ class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRoundCountChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onRoundCountChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.roundCountValueTextField = settingValueBlock.addText(this.settings.roundCount.toString(), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRoundCountChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onRoundCountChanged(1)}, settingsUpDownButtonDefaultOptions).addText(">");
 
         // Bag Type
         settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
@@ -24293,13 +24297,13 @@ class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onBagTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onBagTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.bagTypeValueTextField = settingValueBlock.addText(this.getBagTypeString(), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onBagTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onBagTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText(">");
 
         // Swap Bag
         settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
@@ -24307,13 +24311,13 @@ class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.swapBagValueTextField = settingValueBlock.addText(this.getSwapBagString(), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText(">");
 
                
        
@@ -24910,7 +24914,7 @@ const MM_ROUND_INTENSITY_3 = 5;
 const MM_INTRAROUND = 6;
 const MM_OUTRO = 7;
 
-const kRegularVolume = 0.5 ;
+const kRegularVolume = 0.4 ;
 const kPausedVolume = 0.15;
 
 const labels = [
@@ -28686,10 +28690,10 @@ const ROUNDTYPE_NUM_SPECIFIC_PUNCHES = 5;
 let workoutData = [
     [
         {
-            introText: "INTRO WORKOUT:\n" +
+            introText: "BEGINNER WORKOUT:\n" +
                 " \u2022 Practice the basic punches.\n" + 
                 " \u2022 5 rounds of drills.",
-            uiShortText: "INTRO WORKOUT",
+            uiShortText: "BEGINNER",
             uiText: "INTRO WORKOUT:<ul><li>Practice the basic punches.</li><li>5 rounds of drills.</li></ul>",
             uid: 10,
             stages:[],
@@ -28791,35 +28795,11 @@ let workoutData = [
             ]
         },
         {
+            introText:
+                "HEAVY BAG FREESTYLE:\n"+
+                " \u2022 Practice the punches and combos you've learned.",
             bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_NUM_SPECIFIC_PUNCHES,
-            stages:
-            [
-                {
-                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__.PUNCH_JAB,
-                    numPunches: 25,
-                },
-                {
-                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__.PUNCH_STRAIGHT,
-                    numPunches: 25
-                },
-                {
-                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__.PUNCH_LEFT_HOOK,
-                    numPunches: 25,
-                },
-                {
-                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__.PUNCH_RIGHT_HOOK,
-                    numPunches: 25,
-                },
-                {
-                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__.PUNCH_LEFT_UPPERCUT,
-                    numPunches: 25
-                },
-                {
-                    punchType: _punchDetector__WEBPACK_IMPORTED_MODULE_0__.PUNCH_RIGHT_UPPERCUT,
-                    numPunches: 25
-                }
-            ]
+            roundType: ROUNDTYPE_TIMED,
         }
     ],
 
@@ -28829,21 +28809,20 @@ let workoutData = [
                 " \u2022 2- and 3-punch combos.\n" + 
                 " \u2022 Double-end bag speed round.\n" + 
                 " \u2022 7 rounds of drills.",
-            uiShortText: "INT. WORKOUT",
+            uiShortText: "INTERMEDIATE",
             uiText: "INTERMEDIATE WORKOUT:<ul><li>2- and 3-punch combos</li><li>Double-end bag speed round.</li><li>7 rounds of drills.</li></ul>",
             uid: 11,
             stages:[],
             bagType: null
         },
         { // WARM UP
-            numPunchesPerMinute: 100,
+            numPunchesPerMinute: 50,
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
         },
         {
             introText: "2-PUNCH COMBOS:\n" + 
-                " \u2022 Focus on form, then ramp up the speed.\n" +
-                " \u2022 Keep your guard up.",
+                " \u2022 Focus on form, then ramp up the speed.\n",
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:
@@ -28868,7 +28847,8 @@ let workoutData = [
         },
         {
             introText: "2-PUNCH COMBOS:\n" + 
-                " \u2022 Focus on form, then ramp up the speed.",
+                " \u2022 Focus on form, then ramp up the speed.\n" +
+                " \u2022 Keep your guard up.",
             bagType: ROUND_DOUBLE_END_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:
@@ -28900,7 +28880,7 @@ let workoutData = [
                     targetPPM: 250,
                 },
                 {
-                    startTimePercent: 0.25,
+                    startTimePercent: 0.50,
                     targetPPM: 275,
                 },
                 {
@@ -28976,14 +28956,14 @@ let workoutData = [
                 " \u2022 More complex combos.\n" + 
                 " \u2022 Double-end bag speed round.\n" + 
                 " \u2022 7 rounds of drills.",
-            uiShortText: "ADV. WORKOUT",
+            uiShortText: "ADVANCED",
             uiText: "ADVANCED WORKOUT:<ul><li>More complex combos</li><li>Double-end bag speed round.</li><li>7 rounds of drills.</li></ul>",
             uid: 12,
             stages:[],
             bagType: null
         },
         { // WARM UP
-            numPunchesPerMinute: 150,
+            numPunchesPerMinute: 100,
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
         },
@@ -29084,7 +29064,7 @@ let workoutData = [
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "1-3-2-2-1"
+                    descriptionText: "1-3-2-1-1"
                 }
             ]
         },
@@ -29097,7 +29077,7 @@ let workoutData = [
                     targetPPM: 275,
                 },
                 {
-                    startTimePercent: 0.25,
+                    startTimePercent: 0.50,
                     targetPPM: 300,
                 },
                 {

@@ -13,10 +13,10 @@ export const ROUNDTYPE_NUM_SPECIFIC_PUNCHES = 5;
 export let workoutData = [
     [
         {
-            introText: "INTRO WORKOUT:\n" +
+            introText: "BEGINNER WORKOUT:\n" +
                 " \u2022 Practice the basic punches.\n" + 
                 " \u2022 5 rounds of drills.",
-            uiShortText: "INTRO WORKOUT",
+            uiShortText: "BEGINNER",
             uiText: "INTRO WORKOUT:<ul><li>Practice the basic punches.</li><li>5 rounds of drills.</li></ul>",
             uid: 10,
             stages:[],
@@ -118,35 +118,11 @@ export let workoutData = [
             ]
         },
         {
+            introText:
+                "HEAVY BAG FREESTYLE:\n"+
+                " \u2022 Practice the punches and combos you've learned.",
             bagType: ROUND_HEAVY_BAG,
-            roundType: ROUNDTYPE_NUM_SPECIFIC_PUNCHES,
-            stages:
-            [
-                {
-                    punchType: PUNCH_JAB,
-                    numPunches: 25,
-                },
-                {
-                    punchType: PUNCH_STRAIGHT,
-                    numPunches: 25
-                },
-                {
-                    punchType: PUNCH_LEFT_HOOK,
-                    numPunches: 25,
-                },
-                {
-                    punchType: PUNCH_RIGHT_HOOK,
-                    numPunches: 25,
-                },
-                {
-                    punchType: PUNCH_LEFT_UPPERCUT,
-                    numPunches: 25
-                },
-                {
-                    punchType: PUNCH_RIGHT_UPPERCUT,
-                    numPunches: 25
-                }
-            ]
+            roundType: ROUNDTYPE_TIMED,
         }
     ],
 
@@ -156,21 +132,20 @@ export let workoutData = [
                 " \u2022 2- and 3-punch combos.\n" + 
                 " \u2022 Double-end bag speed round.\n" + 
                 " \u2022 7 rounds of drills.",
-            uiShortText: "INT. WORKOUT",
+            uiShortText: "INTERMEDIATE",
             uiText: "INTERMEDIATE WORKOUT:<ul><li>2- and 3-punch combos</li><li>Double-end bag speed round.</li><li>7 rounds of drills.</li></ul>",
             uid: 11,
             stages:[],
             bagType: null
         },
         { // WARM UP
-            numPunchesPerMinute: 100,
+            numPunchesPerMinute: 50,
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
         },
         {
             introText: "2-PUNCH COMBOS:\n" + 
-                " \u2022 Focus on form, then ramp up the speed.\n" +
-                " \u2022 Keep your guard up.",
+                " \u2022 Focus on form, then ramp up the speed.\n",
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:
@@ -195,7 +170,8 @@ export let workoutData = [
         },
         {
             introText: "2-PUNCH COMBOS:\n" + 
-                " \u2022 Focus on form, then ramp up the speed.",
+                " \u2022 Focus on form, then ramp up the speed.\n" +
+                " \u2022 Keep your guard up.",
             bagType: ROUND_DOUBLE_END_BAG,
             roundType: ROUNDTYPE_SCRIPTED,
             stages:
@@ -227,7 +203,7 @@ export let workoutData = [
                     targetPPM: 250,
                 },
                 {
-                    startTimePercent: 0.25,
+                    startTimePercent: 0.50,
                     targetPPM: 275,
                 },
                 {
@@ -303,14 +279,14 @@ export let workoutData = [
                 " \u2022 More complex combos.\n" + 
                 " \u2022 Double-end bag speed round.\n" + 
                 " \u2022 7 rounds of drills.",
-            uiShortText: "ADV. WORKOUT",
+            uiShortText: "ADVANCED",
             uiText: "ADVANCED WORKOUT:<ul><li>More complex combos</li><li>Double-end bag speed round.</li><li>7 rounds of drills.</li></ul>",
             uid: 12,
             stages:[],
             bagType: null
         },
         { // WARM UP
-            numPunchesPerMinute: 150,
+            numPunchesPerMinute: 100,
             bagType: ROUND_HEAVY_BAG,
             roundType: ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED
         },
@@ -411,7 +387,7 @@ export let workoutData = [
                 },
                 {
                     startTimePercent: 0.75,
-                    descriptionText: "1-3-2-2-1"
+                    descriptionText: "1-3-2-1-1"
                 }
             ]
         },
@@ -424,7 +400,7 @@ export let workoutData = [
                     targetPPM: 275,
                 },
                 {
-                    startTimePercent: 0.25,
+                    startTimePercent: 0.50,
                     targetPPM: 300,
                 },
                 {

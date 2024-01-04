@@ -506,7 +506,7 @@ export class MainMenu
                     borderRadius: 0,
                     borderWidth: 0,
                     backgroundOpacity: 0.0,
-                }).addText("-");
+                }).addText("<");
 
             settingsContainer.addHorizontalLayoutSubBlock(4, {backgroundColor: new THREE.Color(0x000000)});
 
@@ -528,7 +528,7 @@ export class MainMenu
                     borderRadius: 0,
                     borderWidth: 0,
                     backgroundOpacity: 0.0,
-                }).addText("+");
+                }).addText(">");
         }
 
         // this.startMenuBase.position.y = 1.5;
@@ -570,13 +570,13 @@ export class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRoundTimeChanged(-30)}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onRoundTimeChanged(-30)}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.roundTimeValueTextField = settingValueBlock.addText(this.formatTime(this.settings.roundTime), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRoundTimeChanged(30)}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onRoundTimeChanged(30)}, settingsUpDownButtonDefaultOptions).addText(">");
 
         // Rest Time
         settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
@@ -584,13 +584,13 @@ export class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRestTimeChanged(-10)}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onRestTimeChanged(-10)}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.restTimeValueTextField = settingValueBlock.addText(this.formatTime(this.settings.restTime), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRestTimeChanged(10)}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onRestTimeChanged(10)}, settingsUpDownButtonDefaultOptions).addText(">");
 
         
         if (this.settings.workoutType == 0)
@@ -628,7 +628,7 @@ export class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock((48 + 6 + 6)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 6, contentDirection: 'row', justifyContent: 'center'})
             .addVerticalLayoutSubBlock(350, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 6, justifyContent:'center'})
-            .addButton(()=>{_this.onWorkoutSelectionChanged(1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText("-");
+            .addButton(()=>{_this.onWorkoutSelectionChanged(-1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText("<");
         
         let workoutDescriptionField = settingsBlock
             .addHorizontalLayoutSubBlock(1024 - (160*2), {backgroundOpacity: 1.0, backgroundColor: new THREE.Color(0x000000)});
@@ -643,7 +643,7 @@ export class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock((48 + 6 + 6)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 6, contentDirection: 'row', justifyContent: 'center'})
             .addVerticalLayoutSubBlock(350, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 6, justifyContent:'center'})
-            .addButton(()=>{_this.onWorkoutSelectionChanged(1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText("+");
+            .addButton(()=>{_this.onWorkoutSelectionChanged(1)}, {...defaultButtonOptions, width:48, height: 328/2}).addText(">");
         
 
     }
@@ -663,13 +663,13 @@ export class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRoundCountChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onRoundCountChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.roundCountValueTextField = settingValueBlock.addText(this.settings.roundCount.toString(), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onRoundCountChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onRoundCountChanged(1)}, settingsUpDownButtonDefaultOptions).addText(">");
 
         // Bag Type
         settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
@@ -677,13 +677,13 @@ export class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onBagTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onBagTypeChanged(-1)}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.bagTypeValueTextField = settingValueBlock.addText(this.getBagTypeString(), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onBagTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onBagTypeChanged(1)}, settingsUpDownButtonDefaultOptions).addText(">");
 
         // Swap Bag
         settingsBlock = this.settingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
@@ -691,13 +691,13 @@ export class MainMenu
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("-");
+            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("<");
         settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
         this.swapBagValueTextField = settingValueBlock.addText(this.getSwapBagString(), settingsValueTextDefaultOptions);
         settingsBlock
             .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
             .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
-            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText("+");
+            .addButton(()=>{_this.onSwapBagChanged()}, settingsUpDownButtonDefaultOptions).addText(">");
 
                
        
