@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { TextBox } from './textBox';
 import {MovingAverageEventsPerMinute} from './movingAverage.js';
 import { MM_INTRAROUND, MM_INTRO, MM_INTRO_UPBEAT, MM_OUTRO, MM_ROUND_INTENSITY_0, MM_ROUND_INTENSITY_1, MM_ROUND_INTENSITY_2, MM_ROUND_INTENSITY_3 } from './music.js';
+import { getSfxVolume } from './box.js';
 
 import {MainMenu} from './menu';
 
@@ -101,7 +102,8 @@ export class BoxingSession
         // sounds
         this.sound321 = new THREE.PositionalAudio(audioListener);
         this.sound321.setRefDistance(40.0);
-        this.sound321.setVolume(1.0);
+        this.sound321.setVolume(1.0 * getSfxVolume());
+        this.sound321.defaultVolume = 1.0;
         new THREE.AudioLoader().load(
             "./content/simple_bell.mp3", 
             (buffer) => 
@@ -110,7 +112,8 @@ export class BoxingSession
             });
         
         this.soundEndOfRound = new THREE.PositionalAudio(audioListener);
-        this.soundEndOfRound.setVolume(1.0);
+        this.soundEndOfRound.setVolume(1.0 * getSfxVolume());
+        this.soundEndOfRound.defaultVolume = 1.0;
         this.soundEndOfRound.setRefDistance(40.0);
         new THREE.AudioLoader().load(
             "./content/endOfRound.mp3",
@@ -120,7 +123,8 @@ export class BoxingSession
             });
         
         this.soundGetReady = new THREE.PositionalAudio(audioListener);
-        this.soundGetReady.setVolume(0.5);
+        this.soundGetReady.setVolume(0.5 * getSfxVolume());
+        this.soundGetReady.defaultVolume = 0.5;
         this.soundGetReady.setRefDistance(40.0);
         new THREE.AudioLoader().load(
             "./content/3x-Punch-Kick-A3-med-www.fesliyanstudios.com.mp3",
@@ -130,7 +134,9 @@ export class BoxingSession
             });
 
         this.soundNewInstructions = new THREE.PositionalAudio(audioListener);
-        this.soundNewInstructions.setVolume(1.0);
+        this.soundNewInstructions.setVolume(1.0 * getSfxVolume());
+        this.soundNewInstructions.defaultVolume = 1.0;
+
         this.soundNewInstructions.setRefDistance(40.0);
         new THREE.AudioLoader().load(
             "./content/new_instructions.mp3",
@@ -330,9 +336,15 @@ export class BoxingSession
         this.menu.show();
     }
 
+    isInMenuState()
+    {
+        return this.state == SESSION_MENU;
+    }
+
     startGame()
     {
 
+        this.soundEndOfRound.setVolume(this.soundEndOfRound.defaultVolume * getSfxVolume());
         this.soundEndOfRound.play();
         
         this.state = SESSION_INTRO;
@@ -453,6 +465,7 @@ export class BoxingSession
 
 
                     // play "starting bell" sound
+                    this.sound321.setVolume(this.sound321.defaultVolume * getSfxVolume());
                     this.sound321.play();
 
                     this.currentRound++;
@@ -495,6 +508,8 @@ export class BoxingSession
 
                 this.boxingRoundInfo.update(this, this.elapsedTime);
 
+
+
                 // END OF THE ROUND
                 if (this.boxingRoundInfo.isOver(this.elapsedTime) || this.forceRoundOver == true )
                 {
@@ -505,6 +520,7 @@ export class BoxingSession
                     this.playedAlmostDoneAlert = false;
 
                     //play "end of round" sound
+                    this.soundEndOfRound.setVolume(this.soundEndOfRound.defaultVolume * getSfxVolume());
                     this.soundEndOfRound.play();
 
                     if ( this.boxingRoundInfo.didPlayerFail() || this.boxingRoundInfo.isFinalRound())
@@ -526,14 +542,20 @@ export class BoxingSession
                                 this.TV.needsRenderUpdate = true;
                             }
                         }
+                        
                         this.state = SESSION_OUTRO;
                         this.musicManager.play(MM_OUTRO);
+
+                        
+                        // this.menu.show();
+                        // this.menu.setCurrentScene(this.menu.twoOptionDialogBase);
                     }
                     else
                     {
                         this.displayWorkoutInfoMessage("Take a breather!", false);
                         this.hideBag();
 
+                        
                         this.state = SESSION_REST;
                         this.musicManager.play(MM_INTRAROUND);
                     }
@@ -548,6 +570,8 @@ export class BoxingSession
             case SESSION_REST:
                 this.elapsedTime += dt;
 
+                this.menu.update(dt);
+
                 // START OF THE NEXT ROUND
                 if (this.elapsedTime > this.restDuration)
                 {
@@ -561,8 +585,21 @@ export class BoxingSession
                 break;
             case SESSION_OUTRO:
                 //this.blankTimer();
+                
+                if (this.elapsedTime < 5.0 && (this.elapsedTime + dt) >= 5.0)
+                {
+                    this.menu.show();
+                    this.menu.showEndOfWorkoutDialog();
+                    this.heavyBag.fadeOut();
+                    this.doubleEndBag.fadeOut();
+                    this.heavyBag.leftGlove.hide();
+                    this.heavyBag.rightGlove.hide();
+                }
+                this.elapsedTime += dt;
+
                 this.updateTimer(0);
                 this.updateRoundsMessage();
+                this.menu.update(dt);
                 break;
         }
     }
@@ -576,6 +613,7 @@ export class BoxingSession
 
         this.state = SESSION_GET_READY;
         this.showBagForNextRound();
+        this.soundGetReady.setVolume(this.soundGetReady.defaultVolume * getSfxVolume());
         this.soundGetReady.play();
 
         
@@ -745,6 +783,7 @@ export class BoxingSession
         //console.log("display workout info message: " + message);
         if (wantUpdateSound)
         {
+            this.soundNewInstructions.setVolume(this.soundNewInstructions.defaultVolume * getSfxVolume());
             this.soundNewInstructions.play();
         }
         if (overrideColor)
@@ -760,6 +799,7 @@ export class BoxingSession
 
     playGetReadySound()
     {
+        this.soundGetReady.setVolume(this.soundGetReady.defaultVolume * getSfxVolume());
         this.soundGetReady.play();
     }
 

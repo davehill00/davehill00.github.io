@@ -17,7 +17,7 @@ export class PlayerHud
         this.audioListener = audioListener;
 
         this.screenQuad = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(10.0, 10.0, 1, 1), 
+            new THREE.PlaneGeometry(10.0, 10.0, 1, 1), 
             new THREE.MeshBasicMaterial(
                 {
                     color: 0xFF2020, 

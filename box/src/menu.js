@@ -7,8 +7,10 @@ import { justifyContent } from 'three-mesh-ui/src/utils/block-layout/JustifyCont
 import html2canvas from 'html2canvas';
 import {UIPanel} from './uiPanel.js';
 
-import {gControllers} from './box.js';
+import {gControllers, getSfxVolume, setSfxVolume, EndWebXRSession} from './box.js';
 import { TextBox } from './textBox.js';
+import { MultiInstanceSound } from './multiBufferSound.js';
+
 // import { contentDirection } from 'three-mesh-ui/src/utils/block-layout/ContentDirection.js';
 
 // let logoTexture = new THREE.TextureLoader().load("./content/heavy_bag_trainer_logo.png");
@@ -23,6 +25,8 @@ let clearColor = new THREE.Color(0x000000);
 let _x = new THREE.Vector3();
 let _y = new THREE.Vector3();
 let _z = new THREE.Vector3();
+let kZeroVector = new THREE.Vector3(0,0,0);
+
 let _intersection = {};
 
 let worldToLocal = new THREE.Matrix4();
@@ -34,6 +38,7 @@ class MenuInputController
     constructor(scene)
     {
         this.scene = scene;
+        this.active = false;
 
         this.leftInputController = 
         {
@@ -58,27 +63,88 @@ class MenuInputController
 
         //setup callbacks
         let _this = this;
-        gControllers.leftControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad, model) => {
+        this.callbacks = [];
+        let cb = (index, targetRaySpace, gripSpace, gamepad, model) => {
+            console.log("MENU: ControllerConnected CB - LEFT")
             _this.setupInputController(_this.leftInputController, targetRaySpace, gripSpace, gamepad, model);
 
-        });
-        gControllers.rightControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad, model) => {
+        };
+        this.callbacks.push(cb);
+        gControllers.leftControllerConnectedCallbacks.push(cb);
+        
+        cb = (index, targetRaySpace, gripSpace, gamepad, model) => {
+            console.log("MENU: ControllerConnected CB - RIGHT")
             _this.setupInputController(_this.rightInputController, targetRaySpace, gripSpace, gamepad, model);
-        });
-        gControllers.leftControllerDisconnectedCallbacks.push(() => {
+        }
+        this.callbacks.push(cb);
+        gControllers.rightControllerConnectedCallbacks.push(cb);
+
+
+        cb = () => {
+            console.log("MENU: ControllerDisconnected CB - LEFT")
             _this.wrapupInputController(_this.leftInputController);
-        });
-        gControllers.leftControllerDisconnectedCallbacks.push(() => {
+        };
+        this.callbacks.push(cb);
+        gControllers.leftControllerDisconnectedCallbacks.push(cb);
+
+        cb = () => {
+            console.log("MENU: ControllerDisconnected CB - RIGHT")
             _this.wrapupInputController(_this.rightInputController);
-        });
+        };
+        this.callbacks.push(cb);
+        gControllers.rightControllerDisconnectedCallbacks.push();
     }
 
     shutdown()
     {
+        // this.scene.remove(this.leftInputController.targetRaySpace);
+        // this.scene.remove(this.leftInputController.gripSpace);
+        // this.scene.remove(this.rightInputController.targetRaySpace);
+        // this.scene.remove(this.rightInputController.gripSpace);
+
+        let index;
+        index = gControllers.leftControllerConnectedCallbacks.indexOf(this.callbacks[0]); 
+        gControllers.leftControllerConnectedCallbacks.splice(index, 1);
+
+        index = gControllers.rightControllerConnectedCallbacks.indexOf(this.callbacks[1]); 
+        gControllers.rightControllerConnectedCallbacks.splice(index, 1);
+
+        index = gControllers.leftControllerDisconnectedCallbacks.indexOf(this.callbacks[2]); 
+        gControllers.leftControllerDisconnectedCallbacks.splice(index, 1);
+
+        index = gControllers.rightControllerDisconnectedCallbacks.indexOf(this.callbacks[3]); 
+        gControllers.rightControllerDisconnectedCallbacks.splice(index, 1);
+        
+        // gControllers.rightControllerConnectedCallbacks.remove(this.callbacks[1]);
+        // gControllers.leftControllerDisconnectedCallbacks.remove(this.callbacks[2]);
+        // gControllers.rightControllerDisconnectedCallbacks.remove(this.callbacks[3]);
+
         // this.leftInputController.model.visible = false;
         // this.leftInputController.targetRaySpace.visible = false;
-        this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
-        this.leftInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+        if (this.leftInputController  )
+        {
+            if (this.leftInputController.targetRaySpace) 
+            {
+                this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
+            }
+            if (this.leftInputController.gripSpace)
+            {
+                this.leftInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+            }
+        }
+        
+        if (this.rightInputController  )
+        {
+            if (this.rightInputController.targetRaySpace) 
+            {
+                this.rightInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
+            }
+            if (this.rightInputController.gripSpace)
+            {
+                this.rightInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+            }
+        }
+
         // this.leftInputController.contactDot.visible = false;
 
         this.rightInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
@@ -169,6 +235,69 @@ class MenuInputController
         this.leftHits = [];
         this.rightHits = [];       
     }
+
+    enable()
+    {
+        this.active = true;
+        this.leftInputController.visible = true;
+        this.rightInputController.visible = true;
+
+        if (this.leftInputController  )
+        {
+            if (this.leftInputController.targetRaySpace) 
+            {
+                this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = true});
+            }
+            if (this.leftInputController.gripSpace)
+            {
+                this.leftInputController.gripSpace.traverse( (obj)=>{obj.visible = true});
+            }
+        }
+        
+        if (this.rightInputController  )
+        {
+            if (this.rightInputController.targetRaySpace) 
+            {
+                this.rightInputController.targetRaySpace.traverse( (obj)=>{obj.visible = true});
+            }
+            if (this.rightInputController.gripSpace)
+            {
+                this.rightInputController.gripSpace.traverse( (obj)=>{obj.visible = true});
+            }
+        }
+    }
+    disable()
+    {
+        this.active = false;
+        this.leftInputController.visible = false;
+        this.rightInputController.visible = false;
+
+
+        if (this.leftInputController  )
+        {
+            if (this.leftInputController.targetRaySpace) 
+            {
+                this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
+            }
+            if (this.leftInputController.gripSpace)
+            {
+                this.leftInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+            }
+        }
+        
+        if (this.rightInputController  )
+        {
+            if (this.rightInputController.targetRaySpace) 
+            {
+                this.rightInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
+            }
+            if (this.rightInputController.gripSpace)
+            {
+                this.rightInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+            }
+        }
+        
+    }
     wrapupInputController(controller)
     {
         controller.gripSpace = null;
@@ -180,9 +309,18 @@ class MenuInputController
         this.scene.remove(controller.gripSpace);
     }
 
+    onSessionStart(session)
+    {
+
+        session.target.getSession().addEventListener("select", this.onSelect)
+    }
+
     update(dt, menu, worldGeo)
     {
-        if (!this.leftInputController.envMapSet)
+        if (!this.active)
+            return;
+
+        if (this.leftInputController && this.leftInputController.model && !this.leftInputController.envMapSet)
         {
             this.leftInputController.model.traverse( (child) => {
                 if(child.isMesh)
@@ -192,7 +330,7 @@ class MenuInputController
             } );
             this.leftInputController.envMapSet = true;
         }
-        if (!this.rightInputController.envMapSet)
+        if (this.rightInputController && this.rightInputController.model && !this.rightInputController.envMapSet)
         {
             this.rightInputController.model.traverse( (child) => {
                 if(child.isMesh)
@@ -205,11 +343,14 @@ class MenuInputController
 
 
         let interactables = menu.getInteractableElements();
-        this.doControllerHitCheck(this.leftInputController, worldGeo, interactables);
-        this.doControllerHitCheck(this.rightInputController, worldGeo, interactables);
+        if (this.rightInputController && this.leftInputController)
+        {
+            this.doControllerHitCheck(this.leftInputController, worldGeo, interactables);
+            this.doControllerHitCheck(this.rightInputController, worldGeo, interactables);
 
-        this.doControllerInput(this.leftInputController);
-        this.doControllerInput(this.rightInputController);
+            this.doControllerInput(this.leftInputController);
+            this.doControllerInput(this.rightInputController);
+        }
 
     }
 
@@ -235,7 +376,10 @@ class MenuInputController
                 inputController.contactDot.visible = true;
                 
                 // translate world hit into panel space (i.e., local space on the world geo)
-                worldToLocal.copy(worldGeo.matrixWorld);
+                // because worldGeo may contain a scale factor (since it's the hole-punch), create a copy without the scale before inverting it.
+                worldToLocal.extractRotation(worldGeo.matrixWorld); // <-- worldGeo.matrixWorld may contain a scale factor
+                worldToLocal.copyPosition(worldGeo.matrixWorld); // <-- worldGeo.matrixWorld may contain a scale factor
+                
                 worldToLocal.invert();
                 
                 _x.copy(worldHit[0].point);
@@ -271,7 +415,7 @@ class MenuInputController
                     if (curHovered != prevHovered && curHovered.isButton)
                     {
                         curHovered.setState('hovered');
-                        if (inputController.gamepad.hapticActuators != null)
+                        if (inputController.gamepad != null && inputController.gamepad.hapticActuators != null)
                         {
                             let hapticActuator = inputController.gamepad.hapticActuators[0];
                             if( hapticActuator != null)
@@ -298,11 +442,14 @@ class MenuInputController
         }
     }
 
-    doControllerInput(controller)
+    doControllerInput(controller, forceSelect = false)
     {
         if (controller.isSetUp)
         {
-            if (controller.gamepad.buttons[0].value > 0.25)
+            if (controller.gamepad !== null &&
+                controller.gamepad.buttons != null &&
+                (controller.gamepad.buttons[0].value > 0.25 ||
+                    controller.gamepad.buttons[4].pressed))
             {
                 if (!controller.triggerPressed)
                 {
@@ -323,6 +470,28 @@ class MenuInputController
             }
         }
     }
+
+    onSelect(data)
+    {
+        console.log("ON SELECT EVENT")
+        console.log(data);
+
+        if (data && data.inputSource && data.inputSource.profiles.includes('generic-hand'))
+        {
+            if (data.inputSource.handedness == "right")
+            {
+                this.doControllerInput(this.rightInputController, true);
+            }
+            else if (data.inputSource.handedness == "left")
+            {
+                this.doControllerInput(this.leftInputController, true);
+            }
+            else
+            {
+                console.log("UNKNOWN input source")
+            }
+        }
+    }
 }
 
 let defaultButtonOptions = {
@@ -338,6 +507,10 @@ let defaultButtonOptions = {
 }
 let defaultButtonTextOptions = {
     fontSize: 28,
+}
+
+let defaultTextOptions = {
+    fontColor: new THREE.Color(0x9f7909)
 }
 
 let kSettingsBlockHeight = 48*2;
@@ -383,7 +556,7 @@ let settingsValueTextDefaultOptions = {
 
 export class MainMenu
 {
-    constructor(scene, renderer, pageUI)
+    constructor(scene, renderer, pageUI, musicManager)
     {
         this.scene = scene;
         this.inputController = new MenuInputController(scene);
@@ -394,13 +567,25 @@ export class MainMenu
             bagType: 0,
             workoutType: 0,
             whichScriptedWorkout: 0,
+            sfxVolume: 0.8,
+            musicVolume: musicManager.getMusicVolume(),
             doBagSwap: false,
         };
 
-        
+        // this.sfxVolumeAdjustSound = new THREE.PositionalAudio(musicManager.audioListener);
+        // this.sfxVolumeAdjustSound.setRefDistance(40.0);
+        // this.sfxVolumeAdjustSound.setVolume(1.0);
+        // new THREE.AudioLoader().load(
+        //     "./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3",
+        //     (buffer) => { this.sfxVolumeAdjustSound.buffer = buffer; }
+        // )
+
+        this.sfxVolumeAdjustSound = new MultiInstanceSound(musicManager.audioListener, 3, ['./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3']);
+
+        this.musicManager = musicManager;
         this.renderer = renderer;
         this.uiQuadLayerHolePunch = new THREE.Mesh(
-            new THREE.PlaneGeometry(1.0, 0.75),
+            new THREE.PlaneGeometry(1.0, 0.85),
             new THREE.MeshBasicMaterial(
                 {
                     colorWrite: false,
@@ -409,23 +594,29 @@ export class MainMenu
         );
         this.uiQuadLayerHolePunch.position.set(0.0, 1.5, -1.2);
         this.uiQuadLayer = null;
+        this.uiQuadLayerHolePunch.add(this.sfxVolumeAdjustSound);
         
         this.uiQuadScene = new THREE.Scene();
         this.uiQuadCamera = new THREE.OrthographicCamera(-1.0, 1.0, 0.75, -0.75, 0.1, 100);
         this.uiQuadScene.add(this.uiQuadCamera);
 
 
+        console.log("READ MENU SETTINGS");
         this.readSettings();
         
         this.createSimpleStartMenu();
+        this.createAudioSettingsMenu();
+        this.createTwoOptionDialog();
         // this.createSettingsMenu();
         this.setCurrentMenu(this.startMenuBase);
     }
 
-    onSessionStart()
+    onSessionStart(session)
     {
-        this.uiQuadLayer = this.renderer.xr.createQuadLayer(2048, 2*768, 1.0, 0.75);
+        this.uiQuadLayer = this.renderer.xr.createQuadLayer(2048, 2*1024*0.85, 1.0, 0.75);
         this.uiQuadLayer.layer.transform = new XRRigidTransform(this.uiQuadLayerHolePunch.position, this.uiQuadLayerHolePunch.quaternion);
+
+        this.inputController.onSessionStart(session)
     }
 
     show()
@@ -434,6 +625,7 @@ export class MainMenu
         this.renderer.xr.registerQuadLayer(this.uiQuadLayer, -2);
         console.assert(this.uiQuadCamera != null);
         this.doRenderLoop = true;
+        this.inputController.enable();
     }
 
     hide()
@@ -441,6 +633,7 @@ export class MainMenu
         this.scene.remove(this.uiQuadLayerHolePunch);
         this.renderer.xr.unregisterQuadLayer(this.uiQuadLayer);
         this.doRenderLoop = false;
+        this.inputController.disable();
     }
 
     setCurrentMenu(menu, addToScene = true)
@@ -458,7 +651,7 @@ export class MainMenu
 
     createSimpleStartMenu()
     {
-        this.startMenuBase = new UIPanel(1024, 768, {
+        this.startMenuBase = new UIPanel(1024, 1024*0.85, {
             fontFamily: './content/ROCKB.TTF-msdf.json',
             fontTexture: './content/ROCKBTTF.png',
             contentDirection: 'column',
@@ -529,6 +722,17 @@ export class MainMenu
                     borderWidth: 0,
                     backgroundOpacity: 0.0,
                 }).addText(">");
+
+            let audioSettingsContainer = backplate
+            .addVerticalLayoutSubBlock((24+6+6)*2, {borderRadius: 0.0, padding: 6, margin: 0})
+            .addHorizontalLayoutSubBlock((176+6+6)*2, {backgroundColor: new THREE.Color(0x000000), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 0, margin: 0, contentDirection: 'row'});
+
+            let audioButton = audioSettingsContainer
+                .addHorizontalLayoutSubBlock((176+6+6)*2, {backgroundColor: new THREE.Color(0xff00ff), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 0, margin: 0, contentDirection: 'row'})
+                .addVerticalLayoutSubBlock(38*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 0.0, offset: 8, justifyContent: 'center'})
+                .addButton(()=>{_this.onAudioSettingsButtonClicked()}, {...defaultButtonOptions, name: "AudioSettingsButton", height: 30, width: 184-4});
+                audioButton.addText("Audio Options", {...defaultButtonTextOptions, fontSize: 16});
+            
         }
 
         // this.startMenuBase.position.y = 1.5;
@@ -707,6 +911,154 @@ export class MainMenu
 
     }
 
+    createAudioSettingsMenu()
+    {
+        this.audioSettingsMenuBase = new UIPanel(1024, 384, {
+            fontFamily: './content/ROCKB.TTF-msdf.json',
+            fontTexture: './content/ROCKBTTF.png',
+            // contentDirection: 'column',
+            // justifyContent: 'top', //space-between',
+            backgroundOpacity: 1.0,
+            backgroundColor: new THREE.Color(0x9f7909),
+            padding: 8,
+            // padding: 32,
+            // offset: 0,
+            borderWidth: 0,
+            // borderColor: new THREE.Color( 0x9f7909 ),
+            fontColor: new THREE.Color( 0x9f7909 ),
+            borderRadius: 0.0,
+            name: "SettingsMenu Base",
+            margin: 0
+        });
+        // this.uiQuadLayerHolePunch.scale.y = 384/(0.85 * 1024);
+        this.audioSettingsMenuBase.position.z = -5.5;
+        this.audioSettingsContainer = this.audioSettingsMenuBase.addHorizontalLayoutSubBlock((1024-32), {borderWidth: 0, offset: 8, borderRadius: 0.0, margin: 0, backgroundColor: new THREE.Color(0x000000), backgroundOpacity: 1.0});
+
+        let _this = this;
+
+        let settingsBlock;
+        let settingValueBlock;
+       
+        // Timed Round Options
+       
+        // SFX Volume
+        settingsBlock = this.audioSettingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("SFX:", settingsLabelDefaultOptions);
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onSfxVolumeChanged(-0.1)}, settingsUpDownButtonDefaultOptions).addText("<");
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
+        this.sfxVolumeValueTextField = settingValueBlock.addText(this.getVolumeString(this.settings.sfxVolume), settingsValueTextDefaultOptions);
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onSfxVolumeChanged(0.1)}, settingsUpDownButtonDefaultOptions).addText(">");
+
+        // Music Volume
+        settingsBlock = this.audioSettingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Music:", settingsLabelDefaultOptions);
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onMusicVolumeChanged(-0.1)}, settingsUpDownButtonDefaultOptions).addText("<");
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
+        this.musicVolumeTextField = settingValueBlock.addText(this.getVolumeString(this.settings.musicVolume), settingsValueTextDefaultOptions);
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onMusicVolumeChanged(0.1)}, settingsUpDownButtonDefaultOptions).addText(">");
+
+
+        // Cancel / Accept
+        let okCancelBlock = this.audioSettingsContainer.addVerticalLayoutSubBlock(64*2, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
+        okCancelBlock
+            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addButton(()=>{_this.onAudioSettingsCancelClicked()}, {...defaultButtonOptions, width: 150}).addText("CANCEL");
+        okCancelBlock
+            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addButton(()=>{_this.onAudioSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("ACCEPT");
+
+    }
+
+
+    createTwoOptionDialog()
+    {
+        this.twoOptionDialogBase = new UIPanel(1024, 512, {
+            fontFamily: './content/ROCKB.TTF-msdf.json',
+            fontTexture: './content/ROCKBTTF.png',
+            // contentDirection: 'column',
+            // justifyContent: 'top', //space-between',
+            backgroundOpacity: 1.0,
+            backgroundColor: new THREE.Color(0x9f7909),
+            padding: 8,
+            // padding: 32,
+            // offset: 0,
+            borderWidth: 0,
+            // borderColor: new THREE.Color( 0x9f7909 ),
+            fontColor: new THREE.Color( 0x9f7909 ),
+            borderRadius: 0.0,
+            name: "Two Option Dialog",
+            margin: 0
+        });
+
+        let _this = this;
+
+        // this.uiQuadLayerHolePunch.scale.y = 512/(0.85 * 1024);
+        this.twoOptionDialogBase.position.z = -5.5;
+        this.twoOptionDialogContainer = this.twoOptionDialogBase.addHorizontalLayoutSubBlock((1024-32), {borderWidth: 0, offset: 8, borderRadius: 0.0, margin: 0, backgroundColor: new THREE.Color(0x000000), backgroundOpacity: 1.0});
+
+
+        let messageBlock = this.twoOptionDialogContainer.addVerticalLayoutSubBlock(325, settingsBlockDefaultOptions);
+        this.twoOptionDialogTextBox = messageBlock.addText("Great job! Come back tomorrow for another workout.", {...defaultTextOptions, fontSize: 40});
+
+
+        let okCancelBlock = this.twoOptionDialogContainer.addVerticalLayoutSubBlock(64*2, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
+        okCancelBlock
+            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addButton(()=>{_this.onOkClicked()}, {...defaultButtonOptions, width: 150}).addText("OK");
+        // okCancelBlock
+        //     .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+        //     .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+        //     .addButton(()=>{_this.onAudioSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("ACCEPT");
+            
+        // let _this = this;
+
+        // let settingsBlock;
+        // let settingValueBlock;
+       
+        // // Timed Round Options
+       
+        // // SFX Volume
+        // settingsBlock = this.audioSettingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        // settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("SFX:", settingsLabelDefaultOptions);
+        // settingsBlock
+        //     .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+        //     .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+        //     .addButton(()=>{_this.onSfxVolumeChanged(-0.1)}, settingsUpDownButtonDefaultOptions).addText("<");
+        // settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
+        // this.sfxVolumeValueTextField = settingValueBlock.addText(this.getVolumeString(this.settings.sfxVolume), settingsValueTextDefaultOptions);
+        // settingsBlock
+        //     .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+        //     .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+        //     .addButton(()=>{_this.onSfxVolumeChanged(0.1)}, settingsUpDownButtonDefaultOptions).addText(">");
+    }
+
+    showEndOfWorkoutDialog()
+    {
+        this.twoOptionDialogTextBox.set({content: "Great job! Come back tomorrow for another workout."});
+        this.dialogOkayCB = this.exitGameCallback;
+        this._showTwoOptionDialog();
+    }
+    _showTwoOptionDialog()
+    {
+        this.setCurrentMenu(this.twoOptionDialogBase);
+        this.uiQuadLayerHolePunch.scale.y = 512/(0.85 * 1024);
+    }
+
     formatTime(value)
     {
         let hours = Math.floor(value / 3600);
@@ -736,6 +1088,31 @@ export class MainMenu
     {
         this.settings.roundCount = Math.max(1, Math.min(this.settings.roundCount + increment, 16));
         this.roundCountValueTextField.set({content: this.settings.roundCount.toString()});
+    }
+
+    onSfxVolumeChanged(increment)
+    {
+        this.settings.sfxVolume = Math.max(0.0, Math.min(this.settings.sfxVolume + increment, 1.0));
+        this.sfxVolumeValueTextField.set({content: this.getVolumeString(this.settings.sfxVolume)});
+        console.log( "SFX Volume = " + getSfxVolume() );
+
+        setSfxVolume(this.settings.sfxVolume);
+
+        this.sfxVolumeAdjustSound.play(kZeroVector, 1.0);
+        // this.sfxVolumeAdjustSound.setVolume(this.settings.sfxVolume);
+
+        console.log("Play VolChange SFX");
+        // this.sfxVolumeAdjustSound.play();
+        //@TODO - update audio engine
+    }
+
+    onMusicVolumeChanged(increment)
+    {
+        this.settings.musicVolume = Math.max(0.0, Math.min(this.settings.musicVolume + increment, 1.0));
+        this.musicVolumeTextField.set({content: this.getVolumeString(this.settings.musicVolume)});
+
+        //@TODO - update audio engine
+        this.musicManager.setMusicVolume(this.settings.musicVolume);
     }
 
     onBagTypeChanged(val)
@@ -780,6 +1157,14 @@ export class MainMenu
         {
             return "SCRIPTED";
         }
+    }
+
+    getVolumeString(value)
+    {
+        console.assert(0<=value && value <= 1.0);
+
+        return (value * 100).toFixed().toString();
+
     }
 
     onWorkoutTypeChanged(val)
@@ -842,7 +1227,8 @@ export class MainMenu
 
         // this.scene.remove(this.startMenuBase);
         this.hide();
-        this.inputController.shutdown();
+        this.inputController.disable();
+        //this.inputController.shutdown();
         
 
         // @TODO - replace with workoutType when I hook up that part of the UI
@@ -876,6 +1262,26 @@ export class MainMenu
         this.setCurrentMenu(this.settingsMenuBase, true);
     }
 
+    onAudioSettingsButtonClicked()
+    {
+        if (true)
+        {
+            this.originalSettings = {...this.settings};
+
+        //this.createAudioSettingsMenu();
+            this.uiQuadLayerHolePunch.scale.y = 384/(0.85 * 1024);
+            ThreeMeshUI.update();
+        
+            this.setCurrentMenu(this.audioSettingsMenuBase, true);
+        }
+        // else
+        // {
+        //     this.setCurrentMenu(this.twoOptionDialogBase, true);
+        //     this.uiQuadLayerHolePunch.scale.y = 512/(0.85 * 1024);
+        //     // ThreeMeshUI.update();
+        // }
+    }
+
     onSettingsCancelClicked()
     {
         this.settings = this.originalSettings;
@@ -889,6 +1295,30 @@ export class MainMenu
         this.uiQuadScene.remove(this.workoutDescriptionTextBox);
         this.onWorkoutTypeChanged(0);
         this.setCurrentMenu(this.startMenuBase);
+        
+    }
+
+    onAudioSettingsCancelClicked()
+    {
+        this.settings = this.originalSettings;
+        this.musicManager.setMusicVolume(this.settings.musicVolume);
+        this.setCurrentMenu(this.startMenuBase);
+        this.uiQuadLayerHolePunch.scale.y = 1.0;
+    }
+    onAudioSettingsAcceptClicked()
+    {
+        this.writeSettings();
+        this.setCurrentMenu(this.startMenuBase);
+        this.uiQuadLayerHolePunch.scale.y = 1.0;
+    }
+
+    onOkClicked()
+    {
+        this.dialogOkayCB();
+    }
+    exitGameCallback()
+    {
+        EndWebXRSession();
     }
 
     writeSettings()
@@ -900,6 +1330,8 @@ export class MainMenu
         window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
         window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
         window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.settings.whichScriptedWorkout][0].uid);
+        window.localStorage.setItem("cfg_sfxVolume", this.settings.sfxVolume );
+        window.localStorage.setItem("cfg_musicVolume", this.settings.musicVolume );
 
     }
     readSettings()
@@ -907,14 +1339,17 @@ export class MainMenu
         if (!window.localStorage.getItem("first_run"))
         {
             window.localStorage.setItem("first_run", "true");
-            window.localStorage.setItem("cfg_roundTime", this.settings.roundTime);
-            window.localStorage.setItem("cfg_roundCount", this.settings.roundCount);
-            window.localStorage.setItem("cfg_restTime", this.settings.restTime);
-            window.localStorage.setItem("cfg_bagType", this.settings.bagType);
-            window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
-            window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
-            window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.settings.whichScriptedWorkout][0].uid);
-            window.localStorage.setItem("cfg_arMode", this.settings.arMode ? 1 : 0)
+            this.writeSettings();
+            // window.localStorage.setItem("cfg_roundTime", this.settings.roundTime);
+            // window.localStorage.setItem("cfg_roundCount", this.settings.roundCount);
+            // window.localStorage.setItem("cfg_restTime", this.settings.restTime);
+            // window.localStorage.setItem("cfg_bagType", this.settings.bagType);
+            // window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
+            // window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
+            // window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.settings.whichScriptedWorkout][0].uid);
+            // window.localStorage.setItem("cfg_arMode", this.settings.arMode ? 1 : 0)
+            // window.localStorage.setItem("cfg_sfxVolume", this.settings.sfxVolume );
+            // window.localStorage.setItem("cfg_musicVolume", this.settings.musicVolume );
         }
         else
         {
@@ -969,6 +1404,21 @@ export class MainMenu
                 {
                     this.settings.whichScriptedWorkout = matchedIndex;
                 }
+            }
+
+            val = window.localStorage.getItem("cfg_sfxVolume");
+            if (val)
+            {
+                this.settings.sfxVolume = parseFloat(val);
+                setSfxVolume(this.settings.sfxVolume);
+            }
+            val = window.localStorage.getItem("cfg_musicVolume");
+            if (val)
+            {
+                
+                this.settings.musicVolume = parseFloat(val);
+                console.log("SET MUSIC VOLUME: " + this.settings.musicVolume);
+                this.musicManager.setMusicVolume(this.settings.musicVolume);
             }
 
             // val = window.localStorage.getItem("cfg_arMode");

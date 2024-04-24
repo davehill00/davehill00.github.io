@@ -68,7 +68,7 @@ let lightmaps = {};
 let aomaps = {};
 let basisLoader = null;
 
-
+let isQuest3 = false;
 
 let envMapObjects = {}
 let hud = null;
@@ -76,6 +76,12 @@ let pageUI = null;
 let clearColorBlack = new THREE.Color(0x000000);
 let clearColorQuadScene = new THREE.Color(0x808080);
 let menu = null;
+let shouldTerminateWebXrSession = false;
+let hasTerminatedWebXrSession = false;
+let gSfxVolume = 1.0;
+
+export function getSfxVolume() { return gSfxVolume; }
+export function setSfxVolume(val) { console.assert( 0 <= val && val <= 1); gSfxVolume = val; }
 
 const blackoutMaterial = new THREE.MeshBasicMaterial(
     {
@@ -125,8 +131,12 @@ function initialize()
     renderer = new THREE.WebGLRenderer( {antialias: true, precision: 'highp'});
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.setOpaqueSort(opaqueSort);
+
+    let uaString = window.navigator.userAgent;
+    isQuest3 = uaString.includes("OculusBrowser") && uaString.includes("Quest 3");
+
     renderer.xr.enabled = true;
-    renderer.xr.setFramebufferScaleFactor(1.0);
+    renderer.xr.setFramebufferScaleFactor(isQuest3 ? 1.25 : 1.0);
 
 
     let qH = 0.52;
@@ -168,6 +178,7 @@ function initialize()
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
+    renderer.xr.addEventListener('end', onXrEnd)
 
     InitBasisLoader();
 
@@ -179,32 +190,26 @@ function initialize()
     initGlovesAndBag(scene, camera, renderer);
     initializeTextBoxSystem();
 
-    menu = new MainMenu(scene, renderer, pageUI);
+    menu = new MainMenu(scene, renderer, pageUI, musicManager);
 }
 
 function setupHandForController(hand, controllerSpace, gamepad)
 {
+    console.log("SET UP HAND FOR CONTROLLER: " + hand )
     console.assert(hand.glove);
     hand.glove.setController(controllerSpace, gamepad);
-    hand.glove.hide();
-    hand.isSetUp = true;
 
-    // console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
-    // controllers[id].gamepad = evt.data.gamepad;
-    // if (evt.data.handedness == "left")
-    // {
-    //     console.assert(leftHand.glove);
-    //     leftHand.glove.setController(gripSpace, gamepad); //controllers[id]);
-    //     leftHand.glove.show();
-    //     leftHand.isSetUp = true;
-    // }
-    // else
-    // {
-    //     console.assert(rightHand.glove);
-    //     rightHand.glove.setController(controllers[id]);
-    //     rightHand.glove.show();
-    //     rightHand.isSetUp = true;
-    // }
+    if (gameLogic && !gameLogic.isInMenuState())
+    {
+        console.log("SHOWING GLOVE BECAUSE GAME IS IN NOT IN MENU STATE ")
+        hand.glove.show();
+    }
+    else
+    {
+        console.log("HIDING GLOVE BECAUSE GAME IS IN MENU STATE ")
+        hand.glove.hide();
+    }
+    hand.isSetUp = true;
 }
 
 function wrapupHandForController(hand)
@@ -414,6 +419,17 @@ function onFrameRateChange(evt)
 
 function render(time, frame) {
 
+    if (shouldTerminateWebXrSession || hasTerminatedWebXrSession)
+    {
+        console.log("TERMINATE SESSION IN RENDER LOOP");
+        if (!hasTerminatedWebXrSession)
+        {
+            renderer.xr.getSession().end();
+            hasTerminatedWebXrSession = true;
+        }
+        return;
+    }
+    
 
     let frameMs;
     if (lastTime !== null)
@@ -534,9 +550,8 @@ export function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, 
     light.position.applyQuaternion(quaternion);
 }
 
-function onSessionStart()
+function onSessionStart(_session)
 {
-
     let loadingScreen = false;
     if (pageUI.layersPolyfill && !pageUI.layersPolyfill.injected) //!pageUI.layersPolyfill || !pageUI.layersPolyfill.injected) 
     {
@@ -546,7 +561,7 @@ function onSessionStart()
 
     musicManager.play(MM_INTRO);
 
-    menu.onSessionStart();
+    menu.onSessionStart(_session);
 
 
     // initGlovesAndBag(scene, camera, renderer);
@@ -558,13 +573,18 @@ function onSessionStart()
     // gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
     // gameLogic.start();
 
+    // Determine what headset we're running on -- adjust performance settings appropriately.
+    
+
     let session = renderer.xr.getSession();
     if (session.supportedFrameRates)
     {
         console.log("SUPPORTED FRAMERATES: " + session.supportedFrameRates);
         refreshRates = session.supportedFrameRates;
         targetRefreshRateIdx = refreshRates.length-1;
-        while (refreshRates[targetRefreshRateIdx] > 90)
+        let maxFramerate = isQuest3 ? 120 : 90;
+        console.log("\tSelected max framerate: " + maxFramerate);
+        while (refreshRates[targetRefreshRateIdx] > maxFramerate)
         {
             targetRefreshRateIdx--;
         }
@@ -572,11 +592,18 @@ function onSessionStart()
         adjustTargetFrameRate(0);
     }
 
-    if (false && renderer.xr.setFoveation)
+    if (true && renderer.xr.setFoveation)
     {
         console.log("SETTING FOVEATION ON XR OBJECT");
-        renderer.xr.setFoveation(1.0);
+        let foveationLevel = isQuest3 ? 0.0 : 1.0;
+        console.log("\tSelected foveation level: " + foveationLevel);
+        renderer.xr.setFoveation( foveationLevel );
     }
+
+    // if (isQuest3)
+    // {
+    //     renderer.xr.setFramebufferScaleFactor(2.0);
+    // }
 
     scoreboardQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
     // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
@@ -750,10 +777,12 @@ function doPostLoadGameInitialization()
             gameLogic.pause();
             if (leftHand.glove)
             {
+                console.log("HIDE LEFT GLOVE")
                 leftHand.glove.hide();
             }
             if (rightHand.glove)
             {
+                console.log("HIDE RIGHT GLOVE")
                 rightHand.glove.hide();
             }
         }
@@ -764,10 +793,12 @@ function doPostLoadGameInitialization()
             gameLogic.resume();
             if (leftHand.glove)
             {
+                console.log("SHOW LEFT GLOVE")
                 leftHand.glove.show();
             }
             if (rightHand.glove)
             {
+                console.log("SHOW RIGHT GLOVE")
                 rightHand.glove.show();
             }
         }
@@ -778,10 +809,15 @@ function doPostLoadGameInitialization()
 
 function onSessionEnd()
 {
+    console.log("ON SESSION END");
     renderer.setAnimationLoop(null);
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
     gameLogic.pause();
     location.reload();
+}
+function onXrEnd()
+{
+    console.log("XR END");
 }
 
 let loadingQuadLayer = null;
@@ -826,21 +862,24 @@ let emptyScene = new THREE.Scene();
 
 function loadingScreenRender(time, frame)
 {
-    renderer.render(emptyScene, camera);
+    if (frame != null)
+    {
+        renderer.render(emptyScene, camera);
 
-    let renderProps = renderer.properties.get(loadingQuadLayer.renderTarget);
-    renderProps.__ignoreDepthValues = false;
+        let renderProps = renderer.properties.get(loadingQuadLayer.renderTarget);
+        renderProps.__ignoreDepthValues = false;
 
-    loadingQuadLayer.layer.transform = new XRRigidTransform( loadingScreenQuadLocation, loadingScreenQuadQuaternion );
+        loadingQuadLayer.layer.transform = new XRRigidTransform( loadingScreenQuadLocation, loadingScreenQuadQuaternion );
 
-    // set viewport, rendertarget, and renderTargetTextures
-    loadingQuadLayer.setupToRender(renderer, frame);
-    
-    renderer.xr.enabled = false;
-    renderer.setClearColor(clearColorBlack, 1.0);
-    renderer.render(loadingScene, loadingCamera);
-    renderer.setClearColor(clearColorBlack, 0.0);
-    renderer.xr.enabled = true;
+        // set viewport, rendertarget, and renderTargetTextures
+        loadingQuadLayer.setupToRender(renderer, frame);
+        
+        renderer.xr.enabled = false;
+        renderer.setClearColor(clearColorBlack, 1.0);
+        renderer.render(loadingScene, loadingCamera);
+        renderer.setClearColor(clearColorBlack, 0.0);
+        renderer.xr.enabled = true;
+    }
 
 }
 
@@ -1080,4 +1119,9 @@ function LoadBasisAoPromise(meshName, filepath)
             resolve();
         });
     });
+}
+
+export function EndWebXRSession()
+{
+    shouldTerminateWebXrSession = true;
 }

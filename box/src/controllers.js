@@ -43,85 +43,25 @@ export class Controllers
         this.rightControllerDisconnectedCallbacks = [];
 
         
-        // controllers.push(renderer.xr.getControllerGrip( 0 ));
-        // // let con0 = renderer.xr.getControllerGrip(0);
-        // // con0.add(controllerModelFactory.createControllerModel(con0));
-        // // scene.add(con0);
-        // controllers[0].controllerModel = controllerModelFactory.createControllerModel(controllers[0]);
-        // scene.add( controllers[0] );
-        
-        // renderer.xr.getControllerGrip(0).addEventListener("connected", (evt) => {
-        //     setupHandForController(0, evt);
-        // });
-        // renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
-        //     console.log("Lost Gamepad for Controller 0");
-        //     console.table(evt.data);
-    
-        //     if (evt.data == null)
-        //         return;
-    
-        //     controllers[0].gamepad = null;
-        //     if (evt.data.handedness == "left")
-        //     {
-        //         if (leftHand.glove != null)
-        //         {
-        //             leftHand.glove.hide();
-        //         }
-        //         leftHand.controller = null;
-        //         leftHand.isSetUp = false;
-        //     }
-        //     else
-        //     {
-        //         if (rightHand.glove != null)
-        //         {
-        //             rightHand.glove.hide();
-        //         }
-        //         rightHand.controller = null;
-        //         rightHand.isSetUp = false;
-        //     }
-            
-        // });
-    
-        // controllers.push(renderer.xr.getControllerGrip( 1 ));
-        // controllers[1].controllerModel = controllerModelFactory.createControllerModel(controllers[1]);
-        // scene.add( controllers[1] );
-       
-        // renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
-        //     setupHandForController(1, evt);
-        // });
-        // renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
-        //     console.log("Lost Gamepad for Controller 1");
-        //     console.table(evt.data);
-            
-        //     if (evt.data == null)
-        //         return;
-    
-        //     controllers[1].gamepad = null;
-    
-        //     if (evt.data.handedness == "left")
-        //     {
-        //         if (leftHand.glove != null)
-        //         {
-        //             leftHand.glove.hide();
-        //         }
-        //         leftHand.controller = null;
-        //         leftHand.isSetUp = false;
-        //     }
-        //     else
-        //     {
-        //         if (rightHand.glove != null)
-        //         {
-        //             rightHand.glove.hide();
-        //         }
-        //         rightHand.controller = null;
-        //         rightHand.isSetUp = false;
-        //     }
-        // });
+
 
     }
 
     controllerConnected(event, index)
     {
+        console.log("CONTROLLER CONNECTED");
+        console.log(event.data);
+
+        if (event.data.gamepad == null ||
+            event.data.gamepad.buttons.length < 2 ||
+            event.data.profiles.includes('generic-hand') ||
+            event.data.profiles.includes('oculus-hand'))
+        {
+            console.log("UNSUPPORTED CONTROLLER -- IGNORING:")
+            console.log(event.data);
+            return;
+        }
+
         this.controllerGamepads[index] = event.data.gamepad;
 
         if (event.data.handedness == "left")
@@ -144,19 +84,27 @@ export class Controllers
     {
         this.controllerGamepads[index] = null;
 
-        if (event.data.handedness == "left")
+        if (event && event.data)
         {
-            for(let cb of this.leftControllerDisconnectedCallbacks)
+            if (event.data.handedness == "left")
             {
-                cb();
+                for(let cb of this.leftControllerDisconnectedCallbacks)
+                {
+                    cb();
+                }
+            }
+            else if (event.data.handedness == "right")
+            {
+                for(let cb of this.rightControllerDisconnectedCallbacks)
+                {
+                    cb();
+                }
             }
         }
-        else if (event.data.handedness == "right")
+        else
         {
-            for(let cb of this.rightControllerDisconnectedCallbacks)
-            {
-                cb();
-            }
+            log("MALFORMED DISCONNECT EVENT - NO DATA");
+            log(event);
         }
     }
 

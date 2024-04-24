@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getSfxVolume } from './box.js';
 
 export class MultiInstanceSound extends THREE.Group
 {
@@ -39,7 +40,7 @@ export class MultiInstanceSound extends THREE.Group
             instance.stop();
 
         instance.position.copy(position);
-        instance.setVolume(volume);
+        instance.setVolume(volume * getSfxVolume(), 0.0001);
         
         // select the actual sound audio to play
         if(this.soundBuffers.length == 1)

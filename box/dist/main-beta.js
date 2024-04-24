@@ -20499,8 +20499,11 @@ class HeavyBag extends Bag
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "EndWebXRSession": () => (/* binding */ EndWebXRSession),
 /* harmony export */   "gControllers": () => (/* binding */ gControllers),
-/* harmony export */   "setDirectionalLightPositionFromBlenderQuaternion": () => (/* binding */ setDirectionalLightPositionFromBlenderQuaternion)
+/* harmony export */   "getSfxVolume": () => (/* binding */ getSfxVolume),
+/* harmony export */   "setDirectionalLightPositionFromBlenderQuaternion": () => (/* binding */ setDirectionalLightPositionFromBlenderQuaternion),
+/* harmony export */   "setSfxVolume": () => (/* binding */ setSfxVolume)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
@@ -20591,7 +20594,7 @@ let lightmaps = {};
 let aomaps = {};
 let basisLoader = null;
 
-
+let isQuest3 = false;
 
 let envMapObjects = {}
 let hud = null;
@@ -20599,6 +20602,12 @@ let pageUI = null;
 let clearColorBlack = new three__WEBPACK_IMPORTED_MODULE_14__.Color(0x000000);
 let clearColorQuadScene = new three__WEBPACK_IMPORTED_MODULE_14__.Color(0x808080);
 let menu = null;
+let shouldTerminateWebXrSession = false;
+let hasTerminatedWebXrSession = false;
+let gSfxVolume = 1.0;
+
+function getSfxVolume() { return gSfxVolume; }
+function setSfxVolume(val) { console.assert( 0 <= val && val <= 1); gSfxVolume = val; }
 
 const blackoutMaterial = new three__WEBPACK_IMPORTED_MODULE_14__.MeshBasicMaterial(
     {
@@ -20648,8 +20657,12 @@ function initialize()
     renderer = new three__WEBPACK_IMPORTED_MODULE_14__.WebGLRenderer( {antialias: true, precision: 'highp'});
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.setOpaqueSort(opaqueSort);
+
+    let uaString = window.navigator.userAgent;
+    isQuest3 = uaString.includes("OculusBrowser") && uaString.includes("Quest 3");
+
     renderer.xr.enabled = true;
-    renderer.xr.setFramebufferScaleFactor(1.0);
+    renderer.xr.setFramebufferScaleFactor(isQuest3 ? 1.25 : 1.0);
 
 
     let qH = 0.52;
@@ -20691,6 +20704,7 @@ function initialize()
 
     renderer.xr.addEventListener( 'sessionstart', onSessionStart);
     renderer.xr.addEventListener( 'sessionend', onSessionEnd);
+    renderer.xr.addEventListener('end', onXrEnd)
 
     InitBasisLoader();
 
@@ -20702,32 +20716,26 @@ function initialize()
     initGlovesAndBag(scene, camera, renderer);
     (0,_textBox_js__WEBPACK_IMPORTED_MODULE_12__.initializeTextBoxSystem)();
 
-    menu = new _menu_js__WEBPACK_IMPORTED_MODULE_13__.MainMenu(scene, renderer, pageUI);
+    menu = new _menu_js__WEBPACK_IMPORTED_MODULE_13__.MainMenu(scene, renderer, pageUI, musicManager);
 }
 
 function setupHandForController(hand, controllerSpace, gamepad)
 {
+    console.log("SET UP HAND FOR CONTROLLER: " + hand )
     console.assert(hand.glove);
     hand.glove.setController(controllerSpace, gamepad);
-    hand.glove.hide();
-    hand.isSetUp = true;
 
-    // console.log("Got Gamepad for Controller " + id + ": " + evt.data.handedness );
-    // controllers[id].gamepad = evt.data.gamepad;
-    // if (evt.data.handedness == "left")
-    // {
-    //     console.assert(leftHand.glove);
-    //     leftHand.glove.setController(gripSpace, gamepad); //controllers[id]);
-    //     leftHand.glove.show();
-    //     leftHand.isSetUp = true;
-    // }
-    // else
-    // {
-    //     console.assert(rightHand.glove);
-    //     rightHand.glove.setController(controllers[id]);
-    //     rightHand.glove.show();
-    //     rightHand.isSetUp = true;
-    // }
+    if (gameLogic && !gameLogic.isInMenuState())
+    {
+        console.log("SHOWING GLOVE BECAUSE GAME IS IN NOT IN MENU STATE ")
+        hand.glove.show();
+    }
+    else
+    {
+        console.log("HIDING GLOVE BECAUSE GAME IS IN MENU STATE ")
+        hand.glove.hide();
+    }
+    hand.isSetUp = true;
 }
 
 function wrapupHandForController(hand)
@@ -20932,6 +20940,17 @@ function onFrameRateChange(evt)
 
 function render(time, frame) {
 
+    if (shouldTerminateWebXrSession || hasTerminatedWebXrSession)
+    {
+        console.log("TERMINATE SESSION IN RENDER LOOP");
+        if (!hasTerminatedWebXrSession)
+        {
+            renderer.xr.getSession().end();
+            hasTerminatedWebXrSession = true;
+        }
+        return;
+    }
+    
 
     let frameMs;
     if (lastTime !== null)
@@ -21050,9 +21069,8 @@ function setDirectionalLightPositionFromBlenderQuaternion(light, bQuatW, bQuatX,
     light.position.applyQuaternion(quaternion);
 }
 
-function onSessionStart()
+function onSessionStart(_session)
 {
-
     let loadingScreen = false;
     if (pageUI.layersPolyfill && !pageUI.layersPolyfill.injected) //!pageUI.layersPolyfill || !pageUI.layersPolyfill.injected) 
     {
@@ -21062,7 +21080,7 @@ function onSessionStart()
 
     musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_7__.MM_INTRO);
 
-    menu.onSessionStart();
+    menu.onSessionStart(_session);
 
 
     // initGlovesAndBag(scene, camera, renderer);
@@ -21074,13 +21092,18 @@ function onSessionStart()
     // gameLogic.initialize(pageUI.roundCount, pageUI.roundTime, pageUI.restTime, pageUI.bagType, pageUI.doBagSwap, pageUI.workoutType, pageUI.whichScriptedWorkout);
     // gameLogic.start();
 
+    // Determine what headset we're running on -- adjust performance settings appropriately.
+    
+
     let session = renderer.xr.getSession();
     if (session.supportedFrameRates)
     {
         console.log("SUPPORTED FRAMERATES: " + session.supportedFrameRates);
         refreshRates = session.supportedFrameRates;
         targetRefreshRateIdx = refreshRates.length-1;
-        while (refreshRates[targetRefreshRateIdx] > 90)
+        let maxFramerate = isQuest3 ? 120 : 90;
+        console.log("\tSelected max framerate: " + maxFramerate);
+        while (refreshRates[targetRefreshRateIdx] > maxFramerate)
         {
             targetRefreshRateIdx--;
         }
@@ -21088,8 +21111,18 @@ function onSessionStart()
         adjustTargetFrameRate(0);
     }
 
-    if (false)
-    {}
+    if ( true && renderer.xr.setFoveation)
+    {
+        console.log("SETTING FOVEATION ON XR OBJECT");
+        let foveationLevel = isQuest3 ? 0.0 : 1.0;
+        console.log("\tSelected foveation level: " + foveationLevel);
+        renderer.xr.setFoveation( foveationLevel );
+    }
+
+    // if (isQuest3)
+    // {
+    //     renderer.xr.setFramebufferScaleFactor(2.0);
+    // }
 
     scoreboardQuadLayer = renderer.xr.createQuadLayer(800, 500, 0.85532, 0.52);
     // renderer.xr.registerQuadLayer(threeQuadLayer, -1);
@@ -21263,10 +21296,12 @@ function doPostLoadGameInitialization()
             gameLogic.pause();
             if (leftHand.glove)
             {
+                console.log("HIDE LEFT GLOVE")
                 leftHand.glove.hide();
             }
             if (rightHand.glove)
             {
+                console.log("HIDE RIGHT GLOVE")
                 rightHand.glove.hide();
             }
         }
@@ -21277,10 +21312,12 @@ function doPostLoadGameInitialization()
             gameLogic.resume();
             if (leftHand.glove)
             {
+                console.log("SHOW LEFT GLOVE")
                 leftHand.glove.show();
             }
             if (rightHand.glove)
             {
+                console.log("SHOW RIGHT GLOVE")
                 rightHand.glove.show();
             }
         }
@@ -21291,10 +21328,15 @@ function doPostLoadGameInitialization()
 
 function onSessionEnd()
 {
+    console.log("ON SESSION END");
     renderer.setAnimationLoop(null);
     //renderer.xr.getSession().removeEventListener('inputsourceschange', onInputSourcesChange);
     gameLogic.pause();
     location.reload();
+}
+function onXrEnd()
+{
+    console.log("XR END");
 }
 
 let loadingQuadLayer = null;
@@ -21339,21 +21381,24 @@ let emptyScene = new three__WEBPACK_IMPORTED_MODULE_14__.Scene();
 
 function loadingScreenRender(time, frame)
 {
-    renderer.render(emptyScene, camera);
+    if (frame != null)
+    {
+        renderer.render(emptyScene, camera);
 
-    let renderProps = renderer.properties.get(loadingQuadLayer.renderTarget);
-    renderProps.__ignoreDepthValues = false;
+        let renderProps = renderer.properties.get(loadingQuadLayer.renderTarget);
+        renderProps.__ignoreDepthValues = false;
 
-    loadingQuadLayer.layer.transform = new XRRigidTransform( loadingScreenQuadLocation, loadingScreenQuadQuaternion );
+        loadingQuadLayer.layer.transform = new XRRigidTransform( loadingScreenQuadLocation, loadingScreenQuadQuaternion );
 
-    // set viewport, rendertarget, and renderTargetTextures
-    loadingQuadLayer.setupToRender(renderer, frame);
-    
-    renderer.xr.enabled = false;
-    renderer.setClearColor(clearColorBlack, 1.0);
-    renderer.render(loadingScene, loadingCamera);
-    renderer.setClearColor(clearColorBlack, 0.0);
-    renderer.xr.enabled = true;
+        // set viewport, rendertarget, and renderTargetTextures
+        loadingQuadLayer.setupToRender(renderer, frame);
+        
+        renderer.xr.enabled = false;
+        renderer.setClearColor(clearColorBlack, 1.0);
+        renderer.render(loadingScene, loadingCamera);
+        renderer.setClearColor(clearColorBlack, 0.0);
+        renderer.xr.enabled = true;
+    }
 
 }
 
@@ -21595,6 +21640,11 @@ function LoadBasisAoPromise(meshName, filepath)
     });
 }
 
+function EndWebXRSession()
+{
+    shouldTerminateWebXrSession = true;
+}
+
 /***/ }),
 
 /***/ "./src/circleCircleIntersection.js":
@@ -21708,85 +21758,25 @@ class Controllers
         this.rightControllerDisconnectedCallbacks = [];
 
         
-        // controllers.push(renderer.xr.getControllerGrip( 0 ));
-        // // let con0 = renderer.xr.getControllerGrip(0);
-        // // con0.add(controllerModelFactory.createControllerModel(con0));
-        // // scene.add(con0);
-        // controllers[0].controllerModel = controllerModelFactory.createControllerModel(controllers[0]);
-        // scene.add( controllers[0] );
-        
-        // renderer.xr.getControllerGrip(0).addEventListener("connected", (evt) => {
-        //     setupHandForController(0, evt);
-        // });
-        // renderer.xr.getControllerGrip(0).addEventListener("disconnected", (evt) => {
-        //     console.log("Lost Gamepad for Controller 0");
-        //     console.table(evt.data);
-    
-        //     if (evt.data == null)
-        //         return;
-    
-        //     controllers[0].gamepad = null;
-        //     if (evt.data.handedness == "left")
-        //     {
-        //         if (leftHand.glove != null)
-        //         {
-        //             leftHand.glove.hide();
-        //         }
-        //         leftHand.controller = null;
-        //         leftHand.isSetUp = false;
-        //     }
-        //     else
-        //     {
-        //         if (rightHand.glove != null)
-        //         {
-        //             rightHand.glove.hide();
-        //         }
-        //         rightHand.controller = null;
-        //         rightHand.isSetUp = false;
-        //     }
-            
-        // });
-    
-        // controllers.push(renderer.xr.getControllerGrip( 1 ));
-        // controllers[1].controllerModel = controllerModelFactory.createControllerModel(controllers[1]);
-        // scene.add( controllers[1] );
-       
-        // renderer.xr.getControllerGrip(1).addEventListener("connected", (evt) => {
-        //     setupHandForController(1, evt);
-        // });
-        // renderer.xr.getControllerGrip(1).addEventListener("disconnected", (evt) => {
-        //     console.log("Lost Gamepad for Controller 1");
-        //     console.table(evt.data);
-            
-        //     if (evt.data == null)
-        //         return;
-    
-        //     controllers[1].gamepad = null;
-    
-        //     if (evt.data.handedness == "left")
-        //     {
-        //         if (leftHand.glove != null)
-        //         {
-        //             leftHand.glove.hide();
-        //         }
-        //         leftHand.controller = null;
-        //         leftHand.isSetUp = false;
-        //     }
-        //     else
-        //     {
-        //         if (rightHand.glove != null)
-        //         {
-        //             rightHand.glove.hide();
-        //         }
-        //         rightHand.controller = null;
-        //         rightHand.isSetUp = false;
-        //     }
-        // });
+
 
     }
 
     controllerConnected(event, index)
     {
+        console.log("CONTROLLER CONNECTED");
+        console.log(event.data);
+
+        if (event.data.gamepad == null ||
+            event.data.gamepad.buttons.length < 2 ||
+            event.data.profiles.includes('generic-hand') ||
+            event.data.profiles.includes('oculus-hand'))
+        {
+            console.log("UNSUPPORTED CONTROLLER -- IGNORING:")
+            console.log(event.data);
+            return;
+        }
+
         this.controllerGamepads[index] = event.data.gamepad;
 
         if (event.data.handedness == "left")
@@ -21809,19 +21799,27 @@ class Controllers
     {
         this.controllerGamepads[index] = null;
 
-        if (event.data.handedness == "left")
+        if (event && event.data)
         {
-            for(let cb of this.leftControllerDisconnectedCallbacks)
+            if (event.data.handedness == "left")
             {
-                cb();
+                for(let cb of this.leftControllerDisconnectedCallbacks)
+                {
+                    cb();
+                }
+            }
+            else if (event.data.handedness == "right")
+            {
+                for(let cb of this.rightControllerDisconnectedCallbacks)
+                {
+                    cb();
+                }
             }
         }
-        else if (event.data.handedness == "right")
+        else
         {
-            for(let cb of this.rightControllerDisconnectedCallbacks)
-            {
-                cb();
-            }
+            log("MALFORMED DISCONNECT EVENT - NO DATA");
+            log(event);
         }
     }
 
@@ -22339,14 +22337,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "kPunchNamesShort": () => (/* binding */ kPunchNamesShort),
 /* harmony export */   "kRedColor": () => (/* binding */ kRedColor)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var _textBox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./textBox */ "./src/textBox.js");
 /* harmony import */ var _movingAverage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./movingAverage.js */ "./src/movingAverage.js");
 /* harmony import */ var _music_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./music.js */ "./src/music.js");
-/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
-/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
-/* harmony import */ var _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BoxingRounds.js */ "./src/BoxingRounds.js");
-/* harmony import */ var _punchDetector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./punchDetector */ "./src/punchDetector.js");
+/* harmony import */ var _box_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./box.js */ "./src/box.js");
+/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
+/* harmony import */ var _workoutData_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./workoutData.js */ "./src/workoutData.js");
+/* harmony import */ var _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./BoxingRounds.js */ "./src/BoxingRounds.js");
+/* harmony import */ var _punchDetector__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./punchDetector */ "./src/punchDetector.js");
+
 
 
 
@@ -22399,13 +22399,13 @@ const kRestGetReadyDuration = 5.0;
 const kWorkoutTextBoxSmallFontSize = 500; //470;
 const kWorkoutTextBoxBigFontSize = 350;
 
-const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x000000);
-const kGreenColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x00721b);
-const kRedColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x5D1719);
+const kBlackColor = new three__WEBPACK_IMPORTED_MODULE_8__.Color(0x000000);
+const kGreenColor = new three__WEBPACK_IMPORTED_MODULE_8__.Color(0x00721b);
+const kRedColor = new three__WEBPACK_IMPORTED_MODULE_8__.Color(0x5D1719);
 kRedColor.multiplyScalar(1.5);
-const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_7__.Color(0x404040);
+const kGreyColor = new three__WEBPACK_IMPORTED_MODULE_8__.Color(0x404040);
 
-let tVec0 = new three__WEBPACK_IMPORTED_MODULE_7__.Vector3();
+let tVec0 = new three__WEBPACK_IMPORTED_MODULE_8__.Vector3();
 
 function formatTimeString(timeInSeconds)
 {
@@ -22443,45 +22443,50 @@ class BoxingSession
         doubleEndBag.punchCallbacks.push((glove, speed, velocity) => {this.onBagHit(glove, speed, velocity)});
         
         this.punchingStats = new PunchingStats(scene);
-        this.punchDetector = new _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PunchDetector();
+        this.punchDetector = new _punchDetector__WEBPACK_IMPORTED_MODULE_7__.PunchDetector();
         this.lastPunchType = null;
         //load assets here
         
         // sounds
-        this.sound321 = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
+        this.sound321 = new three__WEBPACK_IMPORTED_MODULE_8__.PositionalAudio(audioListener);
         this.sound321.setRefDistance(40.0);
-        this.sound321.setVolume(1.0);
-        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
+        this.sound321.setVolume(1.0 * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
+        this.sound321.defaultVolume = 1.0;
+        new three__WEBPACK_IMPORTED_MODULE_8__.AudioLoader().load(
             "./content/simple_bell.mp3", 
             (buffer) => 
             {
                 this.sound321.buffer = buffer;
             });
         
-        this.soundEndOfRound = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
-        this.soundEndOfRound.setVolume(1.0);
+        this.soundEndOfRound = new three__WEBPACK_IMPORTED_MODULE_8__.PositionalAudio(audioListener);
+        this.soundEndOfRound.setVolume(1.0 * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
+        this.soundEndOfRound.defaultVolume = 1.0;
         this.soundEndOfRound.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_8__.AudioLoader().load(
             "./content/endOfRound.mp3",
             (buffer) => 
             {
                 this.soundEndOfRound.buffer = buffer;
             });
         
-        this.soundGetReady = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
-        this.soundGetReady.setVolume(0.5);
+        this.soundGetReady = new three__WEBPACK_IMPORTED_MODULE_8__.PositionalAudio(audioListener);
+        this.soundGetReady.setVolume(0.5 * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
+        this.soundGetReady.defaultVolume = 0.5;
         this.soundGetReady.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_8__.AudioLoader().load(
             "./content/3x-Punch-Kick-A3-med-www.fesliyanstudios.com.mp3",
             (buffer) =>
             {
                 this.soundGetReady.buffer = buffer;
             });
 
-        this.soundNewInstructions = new three__WEBPACK_IMPORTED_MODULE_7__.PositionalAudio(audioListener);
-        this.soundNewInstructions.setVolume(1.0);
+        this.soundNewInstructions = new three__WEBPACK_IMPORTED_MODULE_8__.PositionalAudio(audioListener);
+        this.soundNewInstructions.setVolume(1.0 * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
+        this.soundNewInstructions.defaultVolume = 1.0;
+
         this.soundNewInstructions.setRefDistance(40.0);
-        new three__WEBPACK_IMPORTED_MODULE_7__.AudioLoader().load(
+        new three__WEBPACK_IMPORTED_MODULE_8__.AudioLoader().load(
             "./content/new_instructions.mp3",
             (buffer) => 
             {
@@ -22514,13 +22519,13 @@ class BoxingSession
 
         this.currentTimeInWholeSeconds = -1.0;
 
-        this.headingArrow = new three__WEBPACK_IMPORTED_MODULE_7__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_7__.BoxGeometry(0.05, 0.05, 0.5),
-            new three__WEBPACK_IMPORTED_MODULE_7__.MeshBasicMaterial({color: 0x804080})
+        this.headingArrow = new three__WEBPACK_IMPORTED_MODULE_8__.Mesh(
+            new three__WEBPACK_IMPORTED_MODULE_8__.BoxGeometry(0.05, 0.05, 0.5),
+            new three__WEBPACK_IMPORTED_MODULE_8__.MeshBasicMaterial({color: 0x804080})
         );
-        this.punchArrow = new three__WEBPACK_IMPORTED_MODULE_7__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_7__.BoxGeometry(0.05, 0.05, 0.5),
-            new three__WEBPACK_IMPORTED_MODULE_7__.MeshBasicMaterial({color: 0x408040})
+        this.punchArrow = new three__WEBPACK_IMPORTED_MODULE_8__.Mesh(
+            new three__WEBPACK_IMPORTED_MODULE_8__.BoxGeometry(0.05, 0.05, 0.5),
+            new three__WEBPACK_IMPORTED_MODULE_8__.MeshBasicMaterial({color: 0x408040})
         );
 
         this.headingArrow.position.set(0.0, 0.1, -1.0);
@@ -22587,7 +22592,7 @@ class BoxingSession
         }
         else
         {
-            this.initializeScriptedWorkout(_workoutData_js__WEBPACK_IMPORTED_MODULE_4__.workoutData[whichScriptedWorkout], roundDuration);
+            this.initializeScriptedWorkout(_workoutData_js__WEBPACK_IMPORTED_MODULE_5__.workoutData[whichScriptedWorkout], roundDuration);
         }
 
         //this.boxingRoundInfo = new BoxingRound(roundDuration);
@@ -22605,7 +22610,7 @@ class BoxingSession
         this.boxingRounds = [null];
 
         //Set up this message before we start swapping bags
-        this.workoutIntroMessage = "FREESTYLE " + (bagSwap ? "ALTERNATING BAGS" : (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG ? "HEAVY BAG" : "DOUBLE-END BAG")) + ":\n"+
+        this.workoutIntroMessage = "FREESTYLE " + (bagSwap ? "ALTERNATING BAGS" : (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_HEAVY_BAG ? "HEAVY BAG" : "DOUBLE-END BAG")) + ":\n"+
         " \u2022 " + numRounds + " rounds, " + formatTimeString(roundDuration) + " per round.\n" + 
         " \u2022 Focus on form, go for speed, or try some new moves.";
 
@@ -22613,16 +22618,16 @@ class BoxingSession
         for (let i = 0; i < this.numRounds; i++)
         {
             this.boxingRounds.push(
-                new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
+                new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_6__.TimedBoxingRound(roundDuration, i + 1, this.numRounds, bagType));
             if (bagSwap)
             {
-                if (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG)
+                if (bagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_HEAVY_BAG)
                 {
-                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG;
+                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_DOUBLE_END_BAG;
                 }
                 else
                 {
-                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG;
+                    bagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_HEAVY_BAG;
                 }
             }
         }
@@ -22638,29 +22643,29 @@ class BoxingSession
             let round;
             let roundNumber = i+1;
             let roundInfo = info[roundNumber];
-            if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_SCRIPTED)
+            if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUNDTYPE_SCRIPTED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.ScriptedBoxingRound(info, roundDuration, roundNumber);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_6__.ScriptedBoxingRound(info, roundDuration, roundNumber);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_PUNCHES)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUNDTYPE_NUM_PUNCHES)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_6__.NumberOfPunchesBoxingRound(roundInfo.numPunches, roundNumber, this.numRounds, roundInfo.bagType);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUNDTYPE_NUM_PUNCHES_TIMEADJUSTED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimeAdjustedNumberOfPunchesBoxingRound(roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_6__.TimeAdjustedNumberOfPunchesBoxingRound(roundDuration, roundInfo.numPunchesPerMinute, roundNumber, this.numRounds, roundInfo.bagType)
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_NUM_SPECIFIC_PUNCHES)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUNDTYPE_NUM_SPECIFIC_PUNCHES)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.NumberOfSpecificPunchesBoxingRound(roundInfo, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_6__.NumberOfSpecificPunchesBoxingRound(roundInfo, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_TIMED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUNDTYPE_TIMED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_6__.TimedBoxingRound(roundDuration, roundNumber, this.numRounds, roundInfo.bagType, roundInfo.introText);
             }
-            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUNDTYPE_SPEED)
+            else if (roundInfo.roundType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUNDTYPE_SPEED)
             {
-                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_5__.SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds, roundInfo.introText);
+                round = new _BoxingRounds_js__WEBPACK_IMPORTED_MODULE_6__.SpeedRound(roundInfo, roundDuration, roundNumber, this.numRounds, roundInfo.introText);
             }
             else
             {
@@ -22679,9 +22684,15 @@ class BoxingSession
         this.menu.show();
     }
 
+    isInMenuState()
+    {
+        return this.state == SESSION_MENU;
+    }
+
     startGame()
     {
 
+        this.soundEndOfRound.setVolume(this.soundEndOfRound.defaultVolume * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
         this.soundEndOfRound.play();
         
         this.state = SESSION_INTRO;
@@ -22802,6 +22813,7 @@ class BoxingSession
 
 
                     // play "starting bell" sound
+                    this.sound321.setVolume(this.sound321.defaultVolume * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
                     this.sound321.play();
 
                     this.currentRound++;
@@ -22844,6 +22856,8 @@ class BoxingSession
 
                 this.boxingRoundInfo.update(this, this.elapsedTime);
 
+
+
                 // END OF THE ROUND
                 if (this.boxingRoundInfo.isOver(this.elapsedTime) || this.forceRoundOver == true )
                 {
@@ -22854,6 +22868,7 @@ class BoxingSession
                     this.playedAlmostDoneAlert = false;
 
                     //play "end of round" sound
+                    this.soundEndOfRound.setVolume(this.soundEndOfRound.defaultVolume * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
                     this.soundEndOfRound.play();
 
                     if ( this.boxingRoundInfo.didPlayerFail() || this.boxingRoundInfo.isFinalRound())
@@ -22875,14 +22890,20 @@ class BoxingSession
                                 this.TV.needsRenderUpdate = true;
                             }
                         }
+                        
                         this.state = SESSION_OUTRO;
                         this.musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_2__.MM_OUTRO);
+
+                        
+                        // this.menu.show();
+                        // this.menu.setCurrentScene(this.menu.twoOptionDialogBase);
                     }
                     else
                     {
                         this.displayWorkoutInfoMessage("Take a breather!", false);
                         this.hideBag();
 
+                        
                         this.state = SESSION_REST;
                         this.musicManager.play(_music_js__WEBPACK_IMPORTED_MODULE_2__.MM_INTRAROUND);
                     }
@@ -22897,6 +22918,8 @@ class BoxingSession
             case SESSION_REST:
                 this.elapsedTime += dt;
 
+                this.menu.update(dt);
+
                 // START OF THE NEXT ROUND
                 if (this.elapsedTime > this.restDuration)
                 {
@@ -22910,8 +22933,21 @@ class BoxingSession
                 break;
             case SESSION_OUTRO:
                 //this.blankTimer();
+                
+                if (this.elapsedTime < 5.0 && (this.elapsedTime + dt) >= 5.0)
+                {
+                    this.menu.show();
+                    this.menu.showEndOfWorkoutDialog();
+                    this.heavyBag.fadeOut();
+                    this.doubleEndBag.fadeOut();
+                    this.heavyBag.leftGlove.hide();
+                    this.heavyBag.rightGlove.hide();
+                }
+                this.elapsedTime += dt;
+
                 this.updateTimer(0);
                 this.updateRoundsMessage();
+                this.menu.update(dt);
                 break;
         }
     }
@@ -22925,6 +22961,7 @@ class BoxingSession
 
         this.state = SESSION_GET_READY;
         this.showBagForNextRound();
+        this.soundGetReady.setVolume(this.soundGetReady.defaultVolume * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
         this.soundGetReady.play();
 
         
@@ -22946,10 +22983,10 @@ class BoxingSession
         {
             switch(this.currentBagType)
             {
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_HEAVY_BAG:
                     this.heavyBag.fadeOut();
                     break;
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_DOUBLE_END_BAG:
                     this.doubleEndBag.fadeOut();
                     break;
             }
@@ -22964,18 +23001,18 @@ class BoxingSession
         {
             switch(desiredBagType)
             {
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_HEAVY_BAG:
                     this.heavyBag.fadeIn();
-                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG;
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_HEAVY_BAG;
                     break;
-                case _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG:
+                case _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_DOUBLE_END_BAG:
                     this.doubleEndBag.fadeIn();
-                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_DOUBLE_END_BAG;
+                    this.currentBagType = _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_DOUBLE_END_BAG;
                     break;
             }
             
         }
-        if (this.currentBagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_4__.ROUND_HEAVY_BAG)
+        if (this.currentBagType == _workoutData_js__WEBPACK_IMPORTED_MODULE_5__.ROUND_HEAVY_BAG)
         {
             this.punchDetector.initialize(this.heavyBag);
         }
@@ -23094,6 +23131,7 @@ class BoxingSession
         //console.log("display workout info message: " + message);
         if (wantUpdateSound)
         {
+            this.soundNewInstructions.setVolume(this.soundNewInstructions.defaultVolume * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
             this.soundNewInstructions.play();
         }
         if (overrideColor)
@@ -23109,6 +23147,7 @@ class BoxingSession
 
     playGetReadySound()
     {
+        this.soundGetReady.setVolume(this.soundGetReady.defaultVolume * (0,_box_js__WEBPACK_IMPORTED_MODULE_3__.getSfxVolume)());
         this.soundGetReady.play();
     }
 
@@ -23223,10 +23262,10 @@ class PunchingStats
         let message;
         message = "WORKOUT COMPLETE:\n"
         message += " \u2022 Total time:\u00a0" + formatTimeString(this.elapsedWorkoutTime) + "\n";
-        message += " \u2022 Jab:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_JAB] + ", Straight:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_STRAIGHT] 
-                + ", L\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_RIGHT_HOOK] 
-                + ", L\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_LEFT_UPPERCUT] + ", R\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_RIGHT_UPPERCUT] + 
-                ", Other:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN] + "\n";
+        message += " \u2022 Jab:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_JAB] + ", Straight:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_STRAIGHT] 
+                + ", L\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_LEFT_HOOK] + ", R\u00a0Hook:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_RIGHT_HOOK] 
+                + ", L\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_LEFT_UPPERCUT] + ", R\u00a0Upper:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_RIGHT_UPPERCUT] + 
+                ", Other:\u00a0" + this.punchCounts[_punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_UNKNOWN] + "\n";
         message += " \u2022 Max:\u00a0" + this.maxSpeed.toFixed(1) + "\u00a0m/s, Avg:\u00a0" + (this.accumulatedSpeedForAverage/Math.max(this.punches,1)).toFixed(1) + "\u00a0m/s";
         return message;
     }
@@ -23272,7 +23311,7 @@ class PunchingStats
 
 
         //console.log("PUNCH TYPE: " + kPunchNames[lastPunchType]);
-        if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN))
+        if ((this.lastPunchType != lastPunchType) || (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_UNKNOWN))
         {
             this.lastPunchType = lastPunchType;
             this.lastPunchTypeCount = 1;
@@ -23286,7 +23325,7 @@ class PunchingStats
         {
             this.punchRecordLength = 0;
         }
-        this.punchRecord[this.punchRecordLength++] = (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_6__.PUNCH_UNKNOWN) ? "?" : lastPunchType;
+        this.punchRecord[this.punchRecordLength++] = (lastPunchType == _punchDetector__WEBPACK_IMPORTED_MODULE_7__.PUNCH_UNKNOWN) ? "?" : lastPunchType;
 
         // A repeated punch will only count as an xN if it happens within this window of time.
         // This allows for Jab-Straight-Jab, Jab-Straight-Jab without getting an x2 on the second Jab.
@@ -23617,12 +23656,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./uiPanel.js */ "./src/uiPanel.js");
 /* harmony import */ var _box_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./box.js */ "./src/box.js");
 /* harmony import */ var _textBox_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./textBox.js */ "./src/textBox.js");
+/* harmony import */ var _multiBufferSound_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./multiBufferSound.js */ "./src/multiBufferSound.js");
 /* provided dependency */ var THREE = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 
 
 
 
 // import {CanvasTexture} from 'three/examples/jsm/interactive/HTMLMesh';
+
+
 
 
 
@@ -23643,6 +23685,8 @@ let clearColor = new THREE.Color(0x000000);
 let _x = new THREE.Vector3();
 let _y = new THREE.Vector3();
 let _z = new THREE.Vector3();
+let kZeroVector = new THREE.Vector3(0,0,0);
+
 let _intersection = {};
 
 let worldToLocal = new THREE.Matrix4();
@@ -23654,6 +23698,7 @@ class MenuInputController
     constructor(scene)
     {
         this.scene = scene;
+        this.active = false;
 
         this.leftInputController = 
         {
@@ -23678,27 +23723,88 @@ class MenuInputController
 
         //setup callbacks
         let _this = this;
-        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad, model) => {
+        this.callbacks = [];
+        let cb = (index, targetRaySpace, gripSpace, gamepad, model) => {
+            console.log("MENU: ControllerConnected CB - LEFT")
             _this.setupInputController(_this.leftInputController, targetRaySpace, gripSpace, gamepad, model);
 
-        });
-        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerConnectedCallbacks.push((index, targetRaySpace, gripSpace, gamepad, model) => {
+        };
+        this.callbacks.push(cb);
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerConnectedCallbacks.push(cb);
+        
+        cb = (index, targetRaySpace, gripSpace, gamepad, model) => {
+            console.log("MENU: ControllerConnected CB - RIGHT")
             _this.setupInputController(_this.rightInputController, targetRaySpace, gripSpace, gamepad, model);
-        });
-        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerDisconnectedCallbacks.push(() => {
+        }
+        this.callbacks.push(cb);
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerConnectedCallbacks.push(cb);
+
+
+        cb = () => {
+            console.log("MENU: ControllerDisconnected CB - LEFT")
             _this.wrapupInputController(_this.leftInputController);
-        });
-        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerDisconnectedCallbacks.push(() => {
+        };
+        this.callbacks.push(cb);
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerDisconnectedCallbacks.push(cb);
+
+        cb = () => {
+            console.log("MENU: ControllerDisconnected CB - RIGHT")
             _this.wrapupInputController(_this.rightInputController);
-        });
+        };
+        this.callbacks.push(cb);
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerDisconnectedCallbacks.push();
     }
 
     shutdown()
     {
+        // this.scene.remove(this.leftInputController.targetRaySpace);
+        // this.scene.remove(this.leftInputController.gripSpace);
+        // this.scene.remove(this.rightInputController.targetRaySpace);
+        // this.scene.remove(this.rightInputController.gripSpace);
+
+        let index;
+        index = _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerConnectedCallbacks.indexOf(this.callbacks[0]); 
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerConnectedCallbacks.splice(index, 1);
+
+        index = _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerConnectedCallbacks.indexOf(this.callbacks[1]); 
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerConnectedCallbacks.splice(index, 1);
+
+        index = _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerDisconnectedCallbacks.indexOf(this.callbacks[2]); 
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerDisconnectedCallbacks.splice(index, 1);
+
+        index = _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerDisconnectedCallbacks.indexOf(this.callbacks[3]); 
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerDisconnectedCallbacks.splice(index, 1);
+        
+        // gControllers.rightControllerConnectedCallbacks.remove(this.callbacks[1]);
+        // gControllers.leftControllerDisconnectedCallbacks.remove(this.callbacks[2]);
+        // gControllers.rightControllerDisconnectedCallbacks.remove(this.callbacks[3]);
+
         // this.leftInputController.model.visible = false;
         // this.leftInputController.targetRaySpace.visible = false;
-        this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
-        this.leftInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+        if (this.leftInputController  )
+        {
+            if (this.leftInputController.targetRaySpace) 
+            {
+                this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
+            }
+            if (this.leftInputController.gripSpace)
+            {
+                this.leftInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+            }
+        }
+        
+        if (this.rightInputController  )
+        {
+            if (this.rightInputController.targetRaySpace) 
+            {
+                this.rightInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
+            }
+            if (this.rightInputController.gripSpace)
+            {
+                this.rightInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+            }
+        }
+
         // this.leftInputController.contactDot.visible = false;
 
         this.rightInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
@@ -23789,6 +23895,69 @@ class MenuInputController
         this.leftHits = [];
         this.rightHits = [];       
     }
+
+    enable()
+    {
+        this.active = true;
+        this.leftInputController.visible = true;
+        this.rightInputController.visible = true;
+
+        if (this.leftInputController  )
+        {
+            if (this.leftInputController.targetRaySpace) 
+            {
+                this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = true});
+            }
+            if (this.leftInputController.gripSpace)
+            {
+                this.leftInputController.gripSpace.traverse( (obj)=>{obj.visible = true});
+            }
+        }
+        
+        if (this.rightInputController  )
+        {
+            if (this.rightInputController.targetRaySpace) 
+            {
+                this.rightInputController.targetRaySpace.traverse( (obj)=>{obj.visible = true});
+            }
+            if (this.rightInputController.gripSpace)
+            {
+                this.rightInputController.gripSpace.traverse( (obj)=>{obj.visible = true});
+            }
+        }
+    }
+    disable()
+    {
+        this.active = false;
+        this.leftInputController.visible = false;
+        this.rightInputController.visible = false;
+
+
+        if (this.leftInputController  )
+        {
+            if (this.leftInputController.targetRaySpace) 
+            {
+                this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
+            }
+            if (this.leftInputController.gripSpace)
+            {
+                this.leftInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+            }
+        }
+        
+        if (this.rightInputController  )
+        {
+            if (this.rightInputController.targetRaySpace) 
+            {
+                this.rightInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
+            }
+            if (this.rightInputController.gripSpace)
+            {
+                this.rightInputController.gripSpace.traverse( (obj)=>{obj.visible = false});
+            }
+        }
+        
+    }
     wrapupInputController(controller)
     {
         controller.gripSpace = null;
@@ -23800,9 +23969,18 @@ class MenuInputController
         this.scene.remove(controller.gripSpace);
     }
 
+    onSessionStart(session)
+    {
+
+        session.target.getSession().addEventListener("select", this.onSelect)
+    }
+
     update(dt, menu, worldGeo)
     {
-        if (!this.leftInputController.envMapSet)
+        if (!this.active)
+            return;
+
+        if (this.leftInputController && this.leftInputController.model && !this.leftInputController.envMapSet)
         {
             this.leftInputController.model.traverse( (child) => {
                 if(child.isMesh)
@@ -23812,7 +23990,7 @@ class MenuInputController
             } );
             this.leftInputController.envMapSet = true;
         }
-        if (!this.rightInputController.envMapSet)
+        if (this.rightInputController && this.rightInputController.model && !this.rightInputController.envMapSet)
         {
             this.rightInputController.model.traverse( (child) => {
                 if(child.isMesh)
@@ -23825,11 +24003,14 @@ class MenuInputController
 
 
         let interactables = menu.getInteractableElements();
-        this.doControllerHitCheck(this.leftInputController, worldGeo, interactables);
-        this.doControllerHitCheck(this.rightInputController, worldGeo, interactables);
+        if (this.rightInputController && this.leftInputController)
+        {
+            this.doControllerHitCheck(this.leftInputController, worldGeo, interactables);
+            this.doControllerHitCheck(this.rightInputController, worldGeo, interactables);
 
-        this.doControllerInput(this.leftInputController);
-        this.doControllerInput(this.rightInputController);
+            this.doControllerInput(this.leftInputController);
+            this.doControllerInput(this.rightInputController);
+        }
 
     }
 
@@ -23855,7 +24036,10 @@ class MenuInputController
                 inputController.contactDot.visible = true;
                 
                 // translate world hit into panel space (i.e., local space on the world geo)
-                worldToLocal.copy(worldGeo.matrixWorld);
+                // because worldGeo may contain a scale factor (since it's the hole-punch), create a copy without the scale before inverting it.
+                worldToLocal.extractRotation(worldGeo.matrixWorld); // <-- worldGeo.matrixWorld may contain a scale factor
+                worldToLocal.copyPosition(worldGeo.matrixWorld); // <-- worldGeo.matrixWorld may contain a scale factor
+                
                 worldToLocal.invert();
                 
                 _x.copy(worldHit[0].point);
@@ -23891,7 +24075,7 @@ class MenuInputController
                     if (curHovered != prevHovered && curHovered.isButton)
                     {
                         curHovered.setState('hovered');
-                        if (inputController.gamepad.hapticActuators != null)
+                        if (inputController.gamepad != null && inputController.gamepad.hapticActuators != null)
                         {
                             let hapticActuator = inputController.gamepad.hapticActuators[0];
                             if( hapticActuator != null)
@@ -23918,11 +24102,14 @@ class MenuInputController
         }
     }
 
-    doControllerInput(controller)
+    doControllerInput(controller, forceSelect = false)
     {
         if (controller.isSetUp)
         {
-            if (controller.gamepad.buttons[0].value > 0.25)
+            if (controller.gamepad !== null &&
+                controller.gamepad.buttons != null &&
+                (controller.gamepad.buttons[0].value > 0.25 ||
+                    controller.gamepad.buttons[4].pressed))
             {
                 if (!controller.triggerPressed)
                 {
@@ -23943,6 +24130,28 @@ class MenuInputController
             }
         }
     }
+
+    onSelect(data)
+    {
+        console.log("ON SELECT EVENT")
+        console.log(data);
+
+        if (data && data.inputSource && data.inputSource.profiles.includes('generic-hand'))
+        {
+            if (data.inputSource.handedness == "right")
+            {
+                this.doControllerInput(this.rightInputController, true);
+            }
+            else if (data.inputSource.handedness == "left")
+            {
+                this.doControllerInput(this.leftInputController, true);
+            }
+            else
+            {
+                console.log("UNKNOWN input source")
+            }
+        }
+    }
 }
 
 let defaultButtonOptions = {
@@ -23958,6 +24167,10 @@ let defaultButtonOptions = {
 }
 let defaultButtonTextOptions = {
     fontSize: 28,
+}
+
+let defaultTextOptions = {
+    fontColor: new THREE.Color(0x9f7909)
 }
 
 let kSettingsBlockHeight = 48*2;
@@ -24003,7 +24216,7 @@ let settingsValueTextDefaultOptions = {
 
 class MainMenu
 {
-    constructor(scene, renderer, pageUI)
+    constructor(scene, renderer, pageUI, musicManager)
     {
         this.scene = scene;
         this.inputController = new MenuInputController(scene);
@@ -24014,13 +24227,25 @@ class MainMenu
             bagType: 0,
             workoutType: 0,
             whichScriptedWorkout: 0,
+            sfxVolume: 0.8,
+            musicVolume: musicManager.getMusicVolume(),
             doBagSwap: false,
         };
 
-        
+        // this.sfxVolumeAdjustSound = new THREE.PositionalAudio(musicManager.audioListener);
+        // this.sfxVolumeAdjustSound.setRefDistance(40.0);
+        // this.sfxVolumeAdjustSound.setVolume(1.0);
+        // new THREE.AudioLoader().load(
+        //     "./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3",
+        //     (buffer) => { this.sfxVolumeAdjustSound.buffer = buffer; }
+        // )
+
+        this.sfxVolumeAdjustSound = new _multiBufferSound_js__WEBPACK_IMPORTED_MODULE_7__.MultiInstanceSound(musicManager.audioListener, 3, ['./content/trim-Punch-Kick-A1-www.fesliyanstudios.com.mp3']);
+
+        this.musicManager = musicManager;
         this.renderer = renderer;
         this.uiQuadLayerHolePunch = new THREE.Mesh(
-            new THREE.PlaneGeometry(1.0, 0.75),
+            new THREE.PlaneGeometry(1.0, 0.85),
             new THREE.MeshBasicMaterial(
                 {
                     colorWrite: false,
@@ -24029,23 +24254,29 @@ class MainMenu
         );
         this.uiQuadLayerHolePunch.position.set(0.0, 1.5, -1.2);
         this.uiQuadLayer = null;
+        this.uiQuadLayerHolePunch.add(this.sfxVolumeAdjustSound);
         
         this.uiQuadScene = new THREE.Scene();
         this.uiQuadCamera = new THREE.OrthographicCamera(-1.0, 1.0, 0.75, -0.75, 0.1, 100);
         this.uiQuadScene.add(this.uiQuadCamera);
 
 
+        console.log("READ MENU SETTINGS");
         this.readSettings();
         
         this.createSimpleStartMenu();
+        this.createAudioSettingsMenu();
+        this.createTwoOptionDialog();
         // this.createSettingsMenu();
         this.setCurrentMenu(this.startMenuBase);
     }
 
-    onSessionStart()
+    onSessionStart(session)
     {
-        this.uiQuadLayer = this.renderer.xr.createQuadLayer(2048, 2*768, 1.0, 0.75);
+        this.uiQuadLayer = this.renderer.xr.createQuadLayer(2048, 2*1024*0.85, 1.0, 0.75);
         this.uiQuadLayer.layer.transform = new XRRigidTransform(this.uiQuadLayerHolePunch.position, this.uiQuadLayerHolePunch.quaternion);
+
+        this.inputController.onSessionStart(session)
     }
 
     show()
@@ -24054,6 +24285,7 @@ class MainMenu
         this.renderer.xr.registerQuadLayer(this.uiQuadLayer, -2);
         console.assert(this.uiQuadCamera != null);
         this.doRenderLoop = true;
+        this.inputController.enable();
     }
 
     hide()
@@ -24061,6 +24293,7 @@ class MainMenu
         this.scene.remove(this.uiQuadLayerHolePunch);
         this.renderer.xr.unregisterQuadLayer(this.uiQuadLayer);
         this.doRenderLoop = false;
+        this.inputController.disable();
     }
 
     setCurrentMenu(menu, addToScene = true)
@@ -24078,7 +24311,7 @@ class MainMenu
 
     createSimpleStartMenu()
     {
-        this.startMenuBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__.UIPanel(1024, 768, {
+        this.startMenuBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__.UIPanel(1024, 1024*0.85, {
             fontFamily: './content/ROCKB.TTF-msdf.json',
             fontTexture: './content/ROCKBTTF.png',
             contentDirection: 'column',
@@ -24149,6 +24382,17 @@ class MainMenu
                     borderWidth: 0,
                     backgroundOpacity: 0.0,
                 }).addText(">");
+
+            let audioSettingsContainer = backplate
+            .addVerticalLayoutSubBlock((24+6+6)*2, {borderRadius: 0.0, padding: 6, margin: 0})
+            .addHorizontalLayoutSubBlock((176+6+6)*2, {backgroundColor: new THREE.Color(0x000000), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 0, margin: 0, contentDirection: 'row'});
+
+            let audioButton = audioSettingsContainer
+                .addHorizontalLayoutSubBlock((176+6+6)*2, {backgroundColor: new THREE.Color(0xff00ff), borderRadius: 0.0, backgroundOpacity: 1.0, offset: 16, padding: 0, margin: 0, contentDirection: 'row'})
+                .addVerticalLayoutSubBlock(38*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 0.0, offset: 8, justifyContent: 'center'})
+                .addButton(()=>{_this.onAudioSettingsButtonClicked()}, {...defaultButtonOptions, name: "AudioSettingsButton", height: 30, width: 184-4});
+                audioButton.addText("Audio Options", {...defaultButtonTextOptions, fontSize: 16});
+            
         }
 
         // this.startMenuBase.position.y = 1.5;
@@ -24327,6 +24571,154 @@ class MainMenu
 
     }
 
+    createAudioSettingsMenu()
+    {
+        this.audioSettingsMenuBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__.UIPanel(1024, 384, {
+            fontFamily: './content/ROCKB.TTF-msdf.json',
+            fontTexture: './content/ROCKBTTF.png',
+            // contentDirection: 'column',
+            // justifyContent: 'top', //space-between',
+            backgroundOpacity: 1.0,
+            backgroundColor: new THREE.Color(0x9f7909),
+            padding: 8,
+            // padding: 32,
+            // offset: 0,
+            borderWidth: 0,
+            // borderColor: new THREE.Color( 0x9f7909 ),
+            fontColor: new THREE.Color( 0x9f7909 ),
+            borderRadius: 0.0,
+            name: "SettingsMenu Base",
+            margin: 0
+        });
+        // this.uiQuadLayerHolePunch.scale.y = 384/(0.85 * 1024);
+        this.audioSettingsMenuBase.position.z = -5.5;
+        this.audioSettingsContainer = this.audioSettingsMenuBase.addHorizontalLayoutSubBlock((1024-32), {borderWidth: 0, offset: 8, borderRadius: 0.0, margin: 0, backgroundColor: new THREE.Color(0x000000), backgroundOpacity: 1.0});
+
+        let _this = this;
+
+        let settingsBlock;
+        let settingValueBlock;
+       
+        // Timed Round Options
+       
+        // SFX Volume
+        settingsBlock = this.audioSettingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("SFX:", settingsLabelDefaultOptions);
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onSfxVolumeChanged(-0.1)}, settingsUpDownButtonDefaultOptions).addText("<");
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
+        this.sfxVolumeValueTextField = settingValueBlock.addText(this.getVolumeString(this.settings.sfxVolume), settingsValueTextDefaultOptions);
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onSfxVolumeChanged(0.1)}, settingsUpDownButtonDefaultOptions).addText(">");
+
+        // Music Volume
+        settingsBlock = this.audioSettingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("Music:", settingsLabelDefaultOptions);
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onMusicVolumeChanged(-0.1)}, settingsUpDownButtonDefaultOptions).addText("<");
+        settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
+        this.musicVolumeTextField = settingValueBlock.addText(this.getVolumeString(this.settings.musicVolume), settingsValueTextDefaultOptions);
+        settingsBlock
+            .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+            .addButton(()=>{_this.onMusicVolumeChanged(0.1)}, settingsUpDownButtonDefaultOptions).addText(">");
+
+
+        // Cancel / Accept
+        let okCancelBlock = this.audioSettingsContainer.addVerticalLayoutSubBlock(64*2, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
+        okCancelBlock
+            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addButton(()=>{_this.onAudioSettingsCancelClicked()}, {...defaultButtonOptions, width: 150}).addText("CANCEL");
+        okCancelBlock
+            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addButton(()=>{_this.onAudioSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("ACCEPT");
+
+    }
+
+
+    createTwoOptionDialog()
+    {
+        this.twoOptionDialogBase = new _uiPanel_js__WEBPACK_IMPORTED_MODULE_4__.UIPanel(1024, 512, {
+            fontFamily: './content/ROCKB.TTF-msdf.json',
+            fontTexture: './content/ROCKBTTF.png',
+            // contentDirection: 'column',
+            // justifyContent: 'top', //space-between',
+            backgroundOpacity: 1.0,
+            backgroundColor: new THREE.Color(0x9f7909),
+            padding: 8,
+            // padding: 32,
+            // offset: 0,
+            borderWidth: 0,
+            // borderColor: new THREE.Color( 0x9f7909 ),
+            fontColor: new THREE.Color( 0x9f7909 ),
+            borderRadius: 0.0,
+            name: "Two Option Dialog",
+            margin: 0
+        });
+
+        let _this = this;
+
+        // this.uiQuadLayerHolePunch.scale.y = 512/(0.85 * 1024);
+        this.twoOptionDialogBase.position.z = -5.5;
+        this.twoOptionDialogContainer = this.twoOptionDialogBase.addHorizontalLayoutSubBlock((1024-32), {borderWidth: 0, offset: 8, borderRadius: 0.0, margin: 0, backgroundColor: new THREE.Color(0x000000), backgroundOpacity: 1.0});
+
+
+        let messageBlock = this.twoOptionDialogContainer.addVerticalLayoutSubBlock(325, settingsBlockDefaultOptions);
+        this.twoOptionDialogTextBox = messageBlock.addText("Great job! Come back tomorrow for another workout.", {...defaultTextOptions, fontSize: 40});
+
+
+        let okCancelBlock = this.twoOptionDialogContainer.addVerticalLayoutSubBlock(64*2, {contentDirection:'row', justifyContent:'center', borderWidth: 0});      
+        okCancelBlock
+            .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+            .addButton(()=>{_this.onOkClicked()}, {...defaultButtonOptions, width: 150}).addText("OK");
+        // okCancelBlock
+        //     .addHorizontalLayoutSubBlock((150+12+12)*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 6.0, offset: 8})
+        //     .addVerticalLayoutSubBlock((48+6+6)*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 6.0, offset: 8})
+        //     .addButton(()=>{_this.onAudioSettingsAcceptClicked()}, {...defaultButtonOptions, width: 150}).addText("ACCEPT");
+            
+        // let _this = this;
+
+        // let settingsBlock;
+        // let settingValueBlock;
+       
+        // // Timed Round Options
+       
+        // // SFX Volume
+        // settingsBlock = this.audioSettingsContainer.addVerticalLayoutSubBlock(kSettingsBlockHeight, settingsBlockDefaultOptions);
+        // settingsBlock.addHorizontalLayoutSubBlock(kSettingsBlockLabelWidth, settingsLabelBlockDefaultOptions).addText("SFX:", settingsLabelDefaultOptions);
+        // settingsBlock
+        //     .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+        //     .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+        //     .addButton(()=>{_this.onSfxVolumeChanged(-0.1)}, settingsUpDownButtonDefaultOptions).addText("<");
+        // settingValueBlock = settingsBlock.addHorizontalLayoutSubBlock(kSettingsFieldWidth, settingsValueBlockDefaultOptions);
+        // this.sfxVolumeValueTextField = settingValueBlock.addText(this.getVolumeString(this.settings.sfxVolume), settingsValueTextDefaultOptions);
+        // settingsBlock
+        //     .addHorizontalLayoutSubBlock(48*2, {backgroundColor: new THREE.Color(0xff00ff), backgroundOpacity: 0.0, margin: 0.0, padding: 4.0, offset: 8})
+        //     .addVerticalLayoutSubBlock(40*2, {backgroundColor: new THREE.Color(0x9f7909), backgroundOpacity: 1.0, margin: 0.0, padding: 4.0, offset: 8})
+        //     .addButton(()=>{_this.onSfxVolumeChanged(0.1)}, settingsUpDownButtonDefaultOptions).addText(">");
+    }
+
+    showEndOfWorkoutDialog()
+    {
+        this.twoOptionDialogTextBox.set({content: "Great job! Come back tomorrow for another workout."});
+        this.dialogOkayCB = this.exitGameCallback;
+        this._showTwoOptionDialog();
+    }
+    _showTwoOptionDialog()
+    {
+        this.setCurrentMenu(this.twoOptionDialogBase);
+        this.uiQuadLayerHolePunch.scale.y = 512/(0.85 * 1024);
+    }
+
     formatTime(value)
     {
         let hours = Math.floor(value / 3600);
@@ -24356,6 +24748,31 @@ class MainMenu
     {
         this.settings.roundCount = Math.max(1, Math.min(this.settings.roundCount + increment, 16));
         this.roundCountValueTextField.set({content: this.settings.roundCount.toString()});
+    }
+
+    onSfxVolumeChanged(increment)
+    {
+        this.settings.sfxVolume = Math.max(0.0, Math.min(this.settings.sfxVolume + increment, 1.0));
+        this.sfxVolumeValueTextField.set({content: this.getVolumeString(this.settings.sfxVolume)});
+        console.log( "SFX Volume = " + (0,_box_js__WEBPACK_IMPORTED_MODULE_5__.getSfxVolume)() );
+
+        (0,_box_js__WEBPACK_IMPORTED_MODULE_5__.setSfxVolume)(this.settings.sfxVolume);
+
+        this.sfxVolumeAdjustSound.play(kZeroVector, 1.0);
+        // this.sfxVolumeAdjustSound.setVolume(this.settings.sfxVolume);
+
+        console.log("Play VolChange SFX");
+        // this.sfxVolumeAdjustSound.play();
+        //@TODO - update audio engine
+    }
+
+    onMusicVolumeChanged(increment)
+    {
+        this.settings.musicVolume = Math.max(0.0, Math.min(this.settings.musicVolume + increment, 1.0));
+        this.musicVolumeTextField.set({content: this.getVolumeString(this.settings.musicVolume)});
+
+        //@TODO - update audio engine
+        this.musicManager.setMusicVolume(this.settings.musicVolume);
     }
 
     onBagTypeChanged(val)
@@ -24400,6 +24817,14 @@ class MainMenu
         {
             return "SCRIPTED";
         }
+    }
+
+    getVolumeString(value)
+    {
+        console.assert(0<=value && value <= 1.0);
+
+        return (value * 100).toFixed().toString();
+
     }
 
     onWorkoutTypeChanged(val)
@@ -24462,7 +24887,8 @@ class MainMenu
 
         // this.scene.remove(this.startMenuBase);
         this.hide();
-        this.inputController.shutdown();
+        this.inputController.disable();
+        //this.inputController.shutdown();
         
 
         // @TODO - replace with workoutType when I hook up that part of the UI
@@ -24496,6 +24922,26 @@ class MainMenu
         this.setCurrentMenu(this.settingsMenuBase, true);
     }
 
+    onAudioSettingsButtonClicked()
+    {
+        if (true)
+        {
+            this.originalSettings = {...this.settings};
+
+        //this.createAudioSettingsMenu();
+            this.uiQuadLayerHolePunch.scale.y = 384/(0.85 * 1024);
+            three_mesh_ui__WEBPACK_IMPORTED_MODULE_0__["default"].update();
+        
+            this.setCurrentMenu(this.audioSettingsMenuBase, true);
+        }
+        // else
+        // {
+        //     this.setCurrentMenu(this.twoOptionDialogBase, true);
+        //     this.uiQuadLayerHolePunch.scale.y = 512/(0.85 * 1024);
+        //     // ThreeMeshUI.update();
+        // }
+    }
+
     onSettingsCancelClicked()
     {
         this.settings = this.originalSettings;
@@ -24509,6 +24955,30 @@ class MainMenu
         this.uiQuadScene.remove(this.workoutDescriptionTextBox);
         this.onWorkoutTypeChanged(0);
         this.setCurrentMenu(this.startMenuBase);
+        
+    }
+
+    onAudioSettingsCancelClicked()
+    {
+        this.settings = this.originalSettings;
+        this.musicManager.setMusicVolume(this.settings.musicVolume);
+        this.setCurrentMenu(this.startMenuBase);
+        this.uiQuadLayerHolePunch.scale.y = 1.0;
+    }
+    onAudioSettingsAcceptClicked()
+    {
+        this.writeSettings();
+        this.setCurrentMenu(this.startMenuBase);
+        this.uiQuadLayerHolePunch.scale.y = 1.0;
+    }
+
+    onOkClicked()
+    {
+        this.dialogOkayCB();
+    }
+    exitGameCallback()
+    {
+        (0,_box_js__WEBPACK_IMPORTED_MODULE_5__.EndWebXRSession)();
     }
 
     writeSettings()
@@ -24520,6 +24990,8 @@ class MainMenu
         window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
         window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
         window.localStorage.setItem("cfg_scriptedWorkoutId", _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].uid);
+        window.localStorage.setItem("cfg_sfxVolume", this.settings.sfxVolume );
+        window.localStorage.setItem("cfg_musicVolume", this.settings.musicVolume );
 
     }
     readSettings()
@@ -24527,14 +24999,17 @@ class MainMenu
         if (!window.localStorage.getItem("first_run"))
         {
             window.localStorage.setItem("first_run", "true");
-            window.localStorage.setItem("cfg_roundTime", this.settings.roundTime);
-            window.localStorage.setItem("cfg_roundCount", this.settings.roundCount);
-            window.localStorage.setItem("cfg_restTime", this.settings.restTime);
-            window.localStorage.setItem("cfg_bagType", this.settings.bagType);
-            window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
-            window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
-            window.localStorage.setItem("cfg_scriptedWorkoutId", _workoutData_js__WEBPACK_IMPORTED_MODULE_1__.workoutData[this.settings.whichScriptedWorkout][0].uid);
-            window.localStorage.setItem("cfg_arMode", this.settings.arMode ? 1 : 0)
+            this.writeSettings();
+            // window.localStorage.setItem("cfg_roundTime", this.settings.roundTime);
+            // window.localStorage.setItem("cfg_roundCount", this.settings.roundCount);
+            // window.localStorage.setItem("cfg_restTime", this.settings.restTime);
+            // window.localStorage.setItem("cfg_bagType", this.settings.bagType);
+            // window.localStorage.setItem("cfg_bagSwap", this.settings.doBagSwap ? 1 : 0);
+            // window.localStorage.setItem("cfg_workoutType", this.settings.workoutType);
+            // window.localStorage.setItem("cfg_scriptedWorkoutId", workoutData[this.settings.whichScriptedWorkout][0].uid);
+            // window.localStorage.setItem("cfg_arMode", this.settings.arMode ? 1 : 0)
+            // window.localStorage.setItem("cfg_sfxVolume", this.settings.sfxVolume );
+            // window.localStorage.setItem("cfg_musicVolume", this.settings.musicVolume );
         }
         else
         {
@@ -24589,6 +25064,21 @@ class MainMenu
                 {
                     this.settings.whichScriptedWorkout = matchedIndex;
                 }
+            }
+
+            val = window.localStorage.getItem("cfg_sfxVolume");
+            if (val)
+            {
+                this.settings.sfxVolume = parseFloat(val);
+                (0,_box_js__WEBPACK_IMPORTED_MODULE_5__.setSfxVolume)(this.settings.sfxVolume);
+            }
+            val = window.localStorage.getItem("cfg_musicVolume");
+            if (val)
+            {
+                
+                this.settings.musicVolume = parseFloat(val);
+                console.log("SET MUSIC VOLUME: " + this.settings.musicVolume);
+                this.musicManager.setMusicVolume(this.settings.musicVolume);
             }
 
             // val = window.localStorage.getItem("cfg_arMode");
@@ -24804,10 +25294,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MultiInstanceSound": () => (/* binding */ MultiInstanceSound)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _box_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./box.js */ "./src/box.js");
 
 
-class MultiInstanceSound extends three__WEBPACK_IMPORTED_MODULE_0__.Group
+
+class MultiInstanceSound extends three__WEBPACK_IMPORTED_MODULE_1__.Group
 {
     constructor(audioListener, numInstances, soundFiles)
     {
@@ -24818,14 +25310,14 @@ class MultiInstanceSound extends three__WEBPACK_IMPORTED_MODULE_0__.Group
         let i;
         for(i = 0; i < numInstances; i++)
         {
-            let sound = new three__WEBPACK_IMPORTED_MODULE_0__.PositionalAudio(audioListener);
+            let sound = new three__WEBPACK_IMPORTED_MODULE_1__.PositionalAudio(audioListener);
             sound.setRefDistance(40.0);
             sound.setVolume(1.0);
             this.soundInstances.push(sound);
         }
         this.nextInstanceIndex = 0;
 
-        var audioLoader = new three__WEBPACK_IMPORTED_MODULE_0__.AudioLoader();
+        var audioLoader = new three__WEBPACK_IMPORTED_MODULE_1__.AudioLoader();
                
         this.soundBuffers = [];
         let soundFile;
@@ -24846,7 +25338,7 @@ class MultiInstanceSound extends three__WEBPACK_IMPORTED_MODULE_0__.Group
             instance.stop();
 
         instance.position.copy(position);
-        instance.setVolume(volume);
+        instance.setVolume(volume * (0,_box_js__WEBPACK_IMPORTED_MODULE_0__.getSfxVolume)(), 0.0001);
         
         // select the actual sound audio to play
         if(this.soundBuffers.length == 1)
@@ -24914,7 +25406,7 @@ const MM_ROUND_INTENSITY_3 = 5;
 const MM_INTRAROUND = 6;
 const MM_OUTRO = 7;
 
-const kRegularVolume = 0.4 ;
+const kRegularVolume = 0.7 ;
 const kPausedVolume = 0.15;
 
 const labels = [
@@ -24937,6 +25429,7 @@ class MusicManager
         this.audioListener = audioListener;
         this.startTime = -1;
         this.currentLoop = null;
+        this.userVolumeAdjustment = 0.7;
 
         this.loops = [];
 
@@ -24960,7 +25453,7 @@ class MusicManager
             {
                 sound.setBuffer(buffer);
                 sound.setLoop(true);
-                sound.setVolume(kRegularVolume);
+                sound.setVolume(kRegularVolume * this.userVolumeAdjustment);
                 
             }
         )
@@ -25001,10 +25494,28 @@ class MusicManager
             // @TODO - do we want to offset into the new loop based on which bar we're on?
             if (this.currentLoop !== null)
             {
-                console.log("\tPlay " + labels[this.currentLoopId]);
+                console.log("\tPlay " + labels[this.currentLoopId] + " at volume: " + this.userVolumeAdjustment);
+                this.currentLoop.setVolume(kRegularVolume * this.userVolumeAdjustment, 0.0001);
+                console.log("Current Loop Volume: " + this.currentLoop.gain.gain.value)
                 this.currentLoop.play(transitionTime);
             }
         }
+    }
+
+    setMusicVolume( newVolume )
+    {
+        console.assert(0 <= newVolume && newVolume <= 1);
+        this.userVolumeAdjustment = newVolume;
+        if (this.currentLoop !== null)
+        {
+            this.currentLoop.setVolume(kRegularVolume * this.userVolumeAdjustment );
+        }
+
+    }
+
+    getMusicVolume()
+    {
+        return this.userVolumeAdjustment;
     }
 
     // timeToNextBeat()
@@ -25044,12 +25555,12 @@ class MusicManager
 
     onBlur()
     {
-        this.currentLoop.setVolume(kPausedVolume, 0.1);
+        this.currentLoop.setVolume(kPausedVolume * this.userVolumeAdjustment, 1.0); //0.1);
     }
 
     onFocus()
     {
-        this.currentLoop.setVolume(kRegularVolume, 0.1);
+        this.currentLoop.setVolume(kRegularVolume * this.userVolumeAdjustment, 0.1);
     }
 }
 
@@ -25319,7 +25830,7 @@ class PageUI
         this.uiButtonGroup.appendChild(this.uiAboutButton);
 
         let appVersionText = document.createElement("span");
-        appVersionText.innerHTML = "Version 0.9.4&beta;";
+        appVersionText.innerHTML = "Version 0.9.5&beta;";
         // appVersionText.innerHTML = "Version 0.9.4";
         appVersionText.className = "app_version_text";
         
@@ -26035,7 +26546,7 @@ class PlayerHud
         this.audioListener = audioListener;
 
         this.screenQuad = new three__WEBPACK_IMPORTED_MODULE_0__.Mesh(
-            new three__WEBPACK_IMPORTED_MODULE_0__.PlaneBufferGeometry(10.0, 10.0, 1, 1), 
+            new three__WEBPACK_IMPORTED_MODULE_0__.PlaneGeometry(10.0, 10.0, 1, 1), 
             new three__WEBPACK_IMPORTED_MODULE_0__.MeshBasicMaterial(
                 {
                     color: 0xFF2020, 

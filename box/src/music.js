@@ -19,7 +19,7 @@ export const MM_ROUND_INTENSITY_3 = 5;
 export const MM_INTRAROUND = 6;
 export const MM_OUTRO = 7;
 
-const kRegularVolume = 0.4 ;
+const kRegularVolume = 0.7 ;
 const kPausedVolume = 0.15;
 
 const labels = [
@@ -42,6 +42,7 @@ export class MusicManager
         this.audioListener = audioListener;
         this.startTime = -1;
         this.currentLoop = null;
+        this.userVolumeAdjustment = 0.7;
 
         this.loops = [];
 
@@ -65,7 +66,7 @@ export class MusicManager
             {
                 sound.setBuffer(buffer);
                 sound.setLoop(true);
-                sound.setVolume(kRegularVolume);
+                sound.setVolume(kRegularVolume * this.userVolumeAdjustment);
                 
             }
         )
@@ -106,10 +107,28 @@ export class MusicManager
             // @TODO - do we want to offset into the new loop based on which bar we're on?
             if (this.currentLoop !== null)
             {
-                console.log("\tPlay " + labels[this.currentLoopId]);
+                console.log("\tPlay " + labels[this.currentLoopId] + " at volume: " + this.userVolumeAdjustment);
+                this.currentLoop.setVolume(kRegularVolume * this.userVolumeAdjustment, 0.0001);
+                console.log("Current Loop Volume: " + this.currentLoop.gain.gain.value)
                 this.currentLoop.play(transitionTime);
             }
         }
+    }
+
+    setMusicVolume( newVolume )
+    {
+        console.assert(0 <= newVolume && newVolume <= 1);
+        this.userVolumeAdjustment = newVolume;
+        if (this.currentLoop !== null)
+        {
+            this.currentLoop.setVolume(kRegularVolume * this.userVolumeAdjustment );
+        }
+
+    }
+
+    getMusicVolume()
+    {
+        return this.userVolumeAdjustment;
     }
 
     // timeToNextBeat()
@@ -149,11 +168,11 @@ export class MusicManager
 
     onBlur()
     {
-        this.currentLoop.setVolume(kPausedVolume, 0.1);
+        this.currentLoop.setVolume(kPausedVolume * this.userVolumeAdjustment, 1.0); //0.1);
     }
 
     onFocus()
     {
-        this.currentLoop.setVolume(kRegularVolume, 0.1);
+        this.currentLoop.setVolume(kRegularVolume * this.userVolumeAdjustment, 0.1);
     }
 }
