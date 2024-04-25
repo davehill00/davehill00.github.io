@@ -726,7 +726,12 @@ export class BoxingSession
             this.TV.needsRenderUpdate = true;
         }
 
-        if (this.state == SESSION_NULL || this.state == SESSION_PAUSED)
+        if (this.state == SESSION_NULL || this.state == SESSION_MENU )
+        {
+            roundMessage = "";
+            stateMessage = "";
+        }
+        else if (this.state == SESSION_PAUSED)
         {
             roundMessage = "ROUND -/-";
             stateMessage = this.state == SESSION_PAUSED ? "PAUSED" : "IDLE";

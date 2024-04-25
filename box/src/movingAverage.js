@@ -71,7 +71,8 @@ export class MovingAverageEventsPerMinute
         if (totalTime < 0.3)
             return 0;
 
-        let rate = this.numSamples / totalTime * 60.0;
+        // Calculate events per minute. We need to compute events as "elapsed time between events", so N - 1 vs. N.
+        let rate = (this.numSamples - 1) / totalTime * 60.0;
         return rate; 
     }
 }

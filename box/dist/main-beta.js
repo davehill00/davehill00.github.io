@@ -21772,7 +21772,7 @@ class Controllers
             event.data.profiles.includes('generic-hand') ||
             event.data.profiles.includes('oculus-hand'))
         {
-            console.log("UNSUPPORTED CONTROLLER -- IGNORING:")
+            console.log("UNSUPPORTED CONTROLLER -- IGNORING CONNECT:")
             console.log(event.data);
             return;
         }
@@ -21783,6 +21783,7 @@ class Controllers
         {
             for(let cb of this.leftControllerConnectedCallbacks)
             {
+                console.log("INVOKING Connect Callback " + cb + " for left controller.")
                 cb(index, this.controllerGrips[index], this.controllerTargetRays[index], this.controllerGamepads[index], this.controllerModels[index]);
             }
         }
@@ -21790,6 +21791,7 @@ class Controllers
         {
             for(let cb of this.rightControllerConnectedCallbacks)
             {
+                console.log("INVOKING Connect Callback " + cb + " for right controller.")
                 cb(index, this.controllerGrips[index], this.controllerTargetRays[index], this.controllerGamepads[index], this.controllerModels[index]);
             }
         }
@@ -21797,6 +21799,19 @@ class Controllers
 
     controllerDisconnected(event, index)
     {
+        console.log("CONTROLLER DISCONNECTED");
+        console.log(event.data);
+
+        if (event.data.gamepad == null ||
+            event.data.gamepad.buttons.length < 2 ||
+            event.data.profiles.includes('generic-hand') ||
+            event.data.profiles.includes('oculus-hand'))
+        {
+            console.log("UNSUPPORTED CONTROLLER -- IGNORING DISCONNECT:")
+            console.log(event.data);
+            return;
+        }
+
         this.controllerGamepads[index] = null;
 
         if (event && event.data)
@@ -21805,21 +21820,24 @@ class Controllers
             {
                 for(let cb of this.leftControllerDisconnectedCallbacks)
                 {
+                    console.log("INVOKING Disconnect Callback " + cb + " for left controller.")
                     cb();
                 }
             }
             else if (event.data.handedness == "right")
             {
+                console.log(this.rightControllerDisconnectedCallbacks.length + " Right Controller Disconnect Callbacks to process.")
                 for(let cb of this.rightControllerDisconnectedCallbacks)
                 {
+                    console.log("INVOKING Disconnect Callback " + cb + " for right controller.")
                     cb();
                 }
             }
         }
         else
         {
-            log("MALFORMED DISCONNECT EVENT - NO DATA");
-            log(event);
+            console.log("MALFORMED DISCONNECT EVENT - NO DATA");
+            console.log(event);
         }
     }
 
@@ -23074,7 +23092,12 @@ class BoxingSession
             this.TV.needsRenderUpdate = true;
         }
 
-        if (this.state == SESSION_NULL || this.state == SESSION_PAUSED)
+        if (this.state == SESSION_NULL || this.state == SESSION_MENU )
+        {
+            roundMessage = "";
+            stateMessage = "";
+        }
+        else if (this.state == SESSION_PAUSED)
         {
             roundMessage = "ROUND -/-";
             stateMessage = this.state == SESSION_PAUSED ? "PAUSED" : "IDLE";
@@ -23726,6 +23749,7 @@ class MenuInputController
         this.callbacks = [];
         let cb = (index, targetRaySpace, gripSpace, gamepad, model) => {
             console.log("MENU: ControllerConnected CB - LEFT")
+            console.assert(_this.leftInputController.isSetUp === false);
             _this.setupInputController(_this.leftInputController, targetRaySpace, gripSpace, gamepad, model);
 
         };
@@ -23734,6 +23758,7 @@ class MenuInputController
         
         cb = (index, targetRaySpace, gripSpace, gamepad, model) => {
             console.log("MENU: ControllerConnected CB - RIGHT")
+            console.assert(_this.rightInputController.isSetUp === false);
             _this.setupInputController(_this.rightInputController, targetRaySpace, gripSpace, gamepad, model);
         }
         this.callbacks.push(cb);
@@ -23742,6 +23767,7 @@ class MenuInputController
 
         cb = () => {
             console.log("MENU: ControllerDisconnected CB - LEFT")
+            console.assert(_this.leftInputController.isSetUp === true);
             _this.wrapupInputController(_this.leftInputController);
         };
         this.callbacks.push(cb);
@@ -23749,10 +23775,12 @@ class MenuInputController
 
         cb = () => {
             console.log("MENU: ControllerDisconnected CB - RIGHT")
+            console.assert(_this.rightInputController.isSetUp === true);
             _this.wrapupInputController(_this.rightInputController);
         };
         this.callbacks.push(cb);
-        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerDisconnectedCallbacks.push();
+        _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerDisconnectedCallbacks.push(cb);
+        console.log("On Register, right Controller Disconnected Callbacks length = " + _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.rightControllerDisconnectedCallbacks.length );
     }
 
     shutdown()
@@ -23763,6 +23791,9 @@ class MenuInputController
         // this.scene.remove(this.rightInputController.gripSpace);
 
         let index;
+
+        console.log("MENU INPUT CONTROLLER SHUTDOWN -- FLUSHING ALL CALLBACKS");
+
         index = _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerConnectedCallbacks.indexOf(this.callbacks[0]); 
         _box_js__WEBPACK_IMPORTED_MODULE_5__.gControllers.leftControllerConnectedCallbacks.splice(index, 1);
 
@@ -23783,8 +23814,9 @@ class MenuInputController
         // this.leftInputController.targetRaySpace.visible = false;
         if (this.leftInputController  )
         {
+
             if (this.leftInputController.targetRaySpace) 
-            {
+            {   
                 this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
             }
             if (this.leftInputController.gripSpace)
@@ -23869,6 +23901,8 @@ class MenuInputController
         );
         ray.position.z -= halfLength + 0.003;
         ray.position.y -= 0.001;
+        ray.visible = false;
+        ray.name = "RAY"
         // ray.position.x -= 0.006;
 
         controller.model.envMap = this.scene.envMap;
@@ -23883,6 +23917,7 @@ class MenuInputController
             new THREE.PlaneGeometry(kWidth*4, kWidth*4), //, kWidth),
             new THREE.MeshBasicMaterial({color: 0xffffff, map: dotTexture, transparent: true})
         );
+        dot.name = "DOT";
         controller.gripSpace.add(dot);
         
         controller.contactDot = dot;
@@ -23894,6 +23929,7 @@ class MenuInputController
       
         this.leftHits = [];
         this.rightHits = [];       
+
     }
 
     enable()
@@ -23960,19 +23996,25 @@ class MenuInputController
     }
     wrapupInputController(controller)
     {
+        this.scene.remove(controller.targetRaySpace);
+        this.scene.remove(controller.gripSpace);
+        controller.gripSpace.children.length = 0;
+        controller.targetRaySpace.children.length = 0;
+
+        controller.contactDot = null;
         controller.gripSpace = null;
         controller.targetRaySpace = null;
         controller.gamepad = null;
         controller.model = null;
         controller.isSetUp = false;
-        this.scene.remove(controller.targetRaySpace);
-        this.scene.remove(controller.gripSpace);
     }
 
     onSessionStart(session)
     {
 
-        session.target.getSession().addEventListener("select", this.onSelect)
+        // @TODO - revive this if I want to handle hand input -- for now, I do not.
+
+        // session.target.getSession().addEventListener("select", this.onSelect)
     }
 
     update(dt, menu, worldGeo)
@@ -25203,7 +25245,8 @@ class MovingAverageEventsPerMinute
         if (totalTime < 0.3)
             return 0;
 
-        let rate = this.numSamples / totalTime * 60.0;
+        // Calculate events per minute. We need to compute events as "elapsed time between events", so N - 1 vs. N.
+        let rate = (this.numSamples - 1) / totalTime * 60.0;
         return rate; 
     }
 }

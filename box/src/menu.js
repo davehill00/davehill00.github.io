@@ -66,6 +66,7 @@ class MenuInputController
         this.callbacks = [];
         let cb = (index, targetRaySpace, gripSpace, gamepad, model) => {
             console.log("MENU: ControllerConnected CB - LEFT")
+            console.assert(_this.leftInputController.isSetUp === false);
             _this.setupInputController(_this.leftInputController, targetRaySpace, gripSpace, gamepad, model);
 
         };
@@ -74,6 +75,7 @@ class MenuInputController
         
         cb = (index, targetRaySpace, gripSpace, gamepad, model) => {
             console.log("MENU: ControllerConnected CB - RIGHT")
+            console.assert(_this.rightInputController.isSetUp === false);
             _this.setupInputController(_this.rightInputController, targetRaySpace, gripSpace, gamepad, model);
         }
         this.callbacks.push(cb);
@@ -82,6 +84,7 @@ class MenuInputController
 
         cb = () => {
             console.log("MENU: ControllerDisconnected CB - LEFT")
+            console.assert(_this.leftInputController.isSetUp === true);
             _this.wrapupInputController(_this.leftInputController);
         };
         this.callbacks.push(cb);
@@ -89,10 +92,12 @@ class MenuInputController
 
         cb = () => {
             console.log("MENU: ControllerDisconnected CB - RIGHT")
+            console.assert(_this.rightInputController.isSetUp === true);
             _this.wrapupInputController(_this.rightInputController);
         };
         this.callbacks.push(cb);
-        gControllers.rightControllerDisconnectedCallbacks.push();
+        gControllers.rightControllerDisconnectedCallbacks.push(cb);
+        console.log("On Register, right Controller Disconnected Callbacks length = " + gControllers.rightControllerDisconnectedCallbacks.length );
     }
 
     shutdown()
@@ -103,6 +108,9 @@ class MenuInputController
         // this.scene.remove(this.rightInputController.gripSpace);
 
         let index;
+
+        console.log("MENU INPUT CONTROLLER SHUTDOWN -- FLUSHING ALL CALLBACKS");
+
         index = gControllers.leftControllerConnectedCallbacks.indexOf(this.callbacks[0]); 
         gControllers.leftControllerConnectedCallbacks.splice(index, 1);
 
@@ -123,8 +131,9 @@ class MenuInputController
         // this.leftInputController.targetRaySpace.visible = false;
         if (this.leftInputController  )
         {
+
             if (this.leftInputController.targetRaySpace) 
-            {
+            {   
                 this.leftInputController.targetRaySpace.traverse( (obj)=>{obj.visible = false});
             }
             if (this.leftInputController.gripSpace)
@@ -209,6 +218,8 @@ class MenuInputController
         );
         ray.position.z -= halfLength + 0.003;
         ray.position.y -= 0.001;
+        ray.visible = false;
+        ray.name = "RAY"
         // ray.position.x -= 0.006;
 
         controller.model.envMap = this.scene.envMap;
@@ -223,6 +234,7 @@ class MenuInputController
             new THREE.PlaneGeometry(kWidth*4, kWidth*4), //, kWidth),
             new THREE.MeshBasicMaterial({color: 0xffffff, map: dotTexture, transparent: true})
         );
+        dot.name = "DOT";
         controller.gripSpace.add(dot);
         
         controller.contactDot = dot;
@@ -234,6 +246,7 @@ class MenuInputController
       
         this.leftHits = [];
         this.rightHits = [];       
+
     }
 
     enable()
@@ -300,19 +313,25 @@ class MenuInputController
     }
     wrapupInputController(controller)
     {
+        this.scene.remove(controller.targetRaySpace);
+        this.scene.remove(controller.gripSpace);
+        controller.gripSpace.children.length = 0;
+        controller.targetRaySpace.children.length = 0;
+
+        controller.contactDot = null;
         controller.gripSpace = null;
         controller.targetRaySpace = null;
         controller.gamepad = null;
         controller.model = null;
         controller.isSetUp = false;
-        this.scene.remove(controller.targetRaySpace);
-        this.scene.remove(controller.gripSpace);
     }
 
     onSessionStart(session)
     {
 
-        session.target.getSession().addEventListener("select", this.onSelect)
+        // @TODO - revive this if I want to handle hand input -- for now, I do not.
+
+        // session.target.getSession().addEventListener("select", this.onSelect)
     }
 
     update(dt, menu, worldGeo)

@@ -57,7 +57,7 @@ export class Controllers
             event.data.profiles.includes('generic-hand') ||
             event.data.profiles.includes('oculus-hand'))
         {
-            console.log("UNSUPPORTED CONTROLLER -- IGNORING:")
+            console.log("UNSUPPORTED CONTROLLER -- IGNORING CONNECT:")
             console.log(event.data);
             return;
         }
@@ -68,6 +68,7 @@ export class Controllers
         {
             for(let cb of this.leftControllerConnectedCallbacks)
             {
+                console.log("INVOKING Connect Callback " + cb + " for left controller.")
                 cb(index, this.controllerGrips[index], this.controllerTargetRays[index], this.controllerGamepads[index], this.controllerModels[index]);
             }
         }
@@ -75,6 +76,7 @@ export class Controllers
         {
             for(let cb of this.rightControllerConnectedCallbacks)
             {
+                console.log("INVOKING Connect Callback " + cb + " for right controller.")
                 cb(index, this.controllerGrips[index], this.controllerTargetRays[index], this.controllerGamepads[index], this.controllerModels[index]);
             }
         }
@@ -82,6 +84,19 @@ export class Controllers
 
     controllerDisconnected(event, index)
     {
+        console.log("CONTROLLER DISCONNECTED");
+        console.log(event.data);
+
+        if (event.data.gamepad == null ||
+            event.data.gamepad.buttons.length < 2 ||
+            event.data.profiles.includes('generic-hand') ||
+            event.data.profiles.includes('oculus-hand'))
+        {
+            console.log("UNSUPPORTED CONTROLLER -- IGNORING DISCONNECT:")
+            console.log(event.data);
+            return;
+        }
+
         this.controllerGamepads[index] = null;
 
         if (event && event.data)
@@ -90,21 +105,24 @@ export class Controllers
             {
                 for(let cb of this.leftControllerDisconnectedCallbacks)
                 {
+                    console.log("INVOKING Disconnect Callback " + cb + " for left controller.")
                     cb();
                 }
             }
             else if (event.data.handedness == "right")
             {
+                console.log(this.rightControllerDisconnectedCallbacks.length + " Right Controller Disconnect Callbacks to process.")
                 for(let cb of this.rightControllerDisconnectedCallbacks)
                 {
+                    console.log("INVOKING Disconnect Callback " + cb + " for right controller.")
                     cb();
                 }
             }
         }
         else
         {
-            log("MALFORMED DISCONNECT EVENT - NO DATA");
-            log(event);
+            console.log("MALFORMED DISCONNECT EVENT - NO DATA");
+            console.log(event);
         }
     }
 
